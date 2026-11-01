@@ -23,3 +23,6 @@ __pycache__/
 # Sistema
 .DS_Store
 .claude/settings.local.json
+
+# Corridas exploratorias (smoke tests): no entran en los resultados
+experimentos/*/ledger/exploracion/

@@ -1,0 +1,5 @@
+sesion,fecha,etapa,modelo,turnos,tokens_salida,tokens_cache_leidos,contexto_promedio,contexto_maximo,costo_usd,costo_fuente,supera_objetivo,linea_base_contexto,objetivo_contexto
+08a28c05-6f60-44ea-af46-c4d51105c4b7,2026-11-01T00:12:33,planificacion,claude-fable-5-1,65,100349,13355612,212258,316415,16.5007,cost-state,True,400000,100000
+d2e5b603-2b55-42d4-9898-ef129dce5e4b,2026-11-01T21:05:37,hipotesis,claude-opus-5-5,32,35695,2866590,92391,118197,3.5408,cost-state,False,400000,100000
+a5afcd58-12ea-4332-9ab8-49822bca2e03,2026-11-01T21:23:44,diseno,claude-opus-5-5,64,61670,8049927,127918,168071,5.0677,cost-state,True,400000,100000
+457cc09a-a528-48c5-849e-322b3261b914,2026-11-01T22:27:35,codigo,claude-sonnet-5-5,35,65429,4005270,118338,163646,,,True,400000,100000

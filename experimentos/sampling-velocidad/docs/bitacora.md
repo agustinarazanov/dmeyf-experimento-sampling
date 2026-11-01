@@ -126,3 +126,8 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `/opsx:update`, y la configuración de `gcloud` y `gh` en la misma sesión. El costo en US$ queda para
   `comun/tokens.py` (tarea 4.7).
 - Tutor: sin devolución. El post `zulip/01_hipotesis.md` sigue sin enviar.
+
+### 2026-11-01 — apertura: etapa código
+- Sesión: `457cc09a-a528-48c5-849e-322b3261b914` · modelo: Sonnet · etapa: **codigo**.
+- Tareas 3.1 a 4.7 de `tasks.md`: `comun/` (datos, baseline, ganancia, ledger, tokens), `src/` (muestreo, métodos,
+  correr, consolidar), `scripts/` (vm.sh, graficar.py) y `docs/operacion.md`.

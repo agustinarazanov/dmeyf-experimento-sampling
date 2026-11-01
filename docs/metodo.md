@@ -27,6 +27,7 @@ Hipótesis, diseño, código, corridas, análisis, informe. Cada etapa:
 - Subagentes solo para búsquedas o revisiones sin contexto.
 - Lo repetido va a scripts. Las corridas las hace la VM, no una conversación.
 - `/clear` al cerrar cada etapa.
+- Las etapas que no necesitan a una persona se corren con `scripts/etapa.sh` en vez de a mano.
 - `comun/tokens.py` escribe el `ledger/tokens.csv` del experimento. Clasifica cada sesión según la etapa que declara la
   bitácora.
 - Objetivo: menos de 100.000 tokens de contexto por turno. La línea de base de octubre ronda los 400.000.

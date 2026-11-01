@@ -49,8 +49,8 @@ tres personas.
 
 ### Requirement: Revisión que cierra cada etapa
 Cada etapa (hipótesis, diseño, código, resultados, informe) SHALL cerrarse con una revisión registrada en
-`docs/bitacora.md` que use la lista de `docs/revision.md`, hecha en una sesión limpia o por otro integrante, con fecha y
-hallazgos.
+`docs/bitacora.md` que use la lista de `docs/revision.md`, hecha en una sesión limpia (interactiva o la sesión de revisión de `scripts/etapa.sh`) o por otro integrante,
+con fecha y hallazgos.
 
 #### Scenario: Etapa cerrada
 - **WHEN** la bitácora marca una etapa como revisada
@@ -59,6 +59,15 @@ hallazgos.
 #### Scenario: Revisión que encuentra un problema
 - **WHEN** la revisión de resultados detecta una inconsistencia (por ejemplo, tiempos medidos en máquinas distintas)
 - **THEN** las corridas afectadas se marcan como inválidas en el ledger y la etapa no se cierra hasta repetirlas
+
+### Requirement: Lo que necesita a una persona se declara, no se improvisa
+Una sesión headless que encuentra una tarea que requiere a una persona (crear o borrar VMs, una respuesta del tutor, una
+decisión de diseño) SHALL escribir `BLOQUEADO` con el motivo en `ledger/sesiones/bloqueo.txt` y terminar sin marcar la
+tarea, y el loop de etapas SHALL detenerse ahí.
+
+#### Scenario: Etapa que necesita una VM
+- **WHEN** la etapa de corridas llega a una tarea que requiere crear una VM
+- **THEN** la sesión escribe el bloqueo, no crea la VM y `scripts/etapa.sh` termina con código 2
 
 ### Requirement: Comunicación con el tutor desde los documentos
 El post al tópico `sampling_1` y cualquier respuesta posterior SHALL derivarse de `docs/hipotesis.md` y

@@ -112,6 +112,16 @@ tasa, control reproduce el baseline, máquinas homogéneas; estadística aparead
 del ledger). Revisa una sesión limpia con la lista, y un integrante distinto del que ejecutó la etapa cuando sea posible.
 Alternativa descartada: revisar al final; los errores de diseño descubiertos tarde obligan a recorrer todo.
 
+**D10. Las etapas que no necesitan a un humano corren headless.** `scripts/etapa.sh <grupo> <modelo>` lanza
+`claude -p` con el modelo de la etapa, `--permission-mode acceptEdits`, `--max-budget-usd` y `--output-format json` para
+aplicar solo ese grupo de `tasks.md`, y después una segunda sesión limpia con Opus que revisa con `docs/revision.md` y
+cierra la bitácora. El costo de cada sesión sale del JSON (`total_cost_usd`) a `ledger/sesiones/costos.csv`, que es la
+medida más directa para `registro-tokens`. Si la etapa necesita a una persona (crear VMs, respuesta del tutor, decisión
+de diseño), la sesión escribe `BLOQUEADO` en `ledger/sesiones/bloqueo.txt` y el script corta. Las VMs nunca las crea
+una sesión headless. Alternativas consideradas: un Workflow de Claude Code (lo mismo con `agent()` por etapa, pero exige
+la sesión abierta y gasta por la cuenta de esa sesión) y una sesión orquestadora que lanza subagentes (paga coordinación
+en tokens). El script de shell es gratis de coordinar, corre desde cualquier terminal y queda versionado.
+
 ## Risks / Trade-offs
 
 - [Spot muere a mitad de una optimización] → cada trial de Optuna se persiste en SQLite en el bucket; la corrida se
@@ -125,6 +135,8 @@ Alternativa descartada: revisar al final; los errores de diseño descubiertos ta
 - [Fuga de 201910 a la selección] → el corredor solo evalúa 201910 en la etapa `final` y la etapa `optimizar` no lo carga.
 - [El trial de Google Cloud vence o la cuota es de 8 vCPU] → verificar fecha de alta y cuota antes de la fase 1; si hace
   falta, pasar a cuenta paga con alerta de presupuesto.
+- [Una sesión headless se desboca o hace algo irreversible] → tope en dólares por sesión, `acceptEdits` (sin
+  comandos destructivos sin aprobación), prohibido push y VMs en el prompt, y la revisión limpia después de cada grupo.
 - [Método de tokens que no se mide] → `tokens.py` corre al cerrar cada etapa y el número va a la bitácora.
 
 ## Migration Plan
