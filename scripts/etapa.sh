@@ -5,7 +5,7 @@
 # uso:  scripts/etapa.sh <grupo> <modelo> [experimento] [cambio] [modelo_revision]
 # ej.:  scripts/etapa.sh 3 sonnet
 #
-# Códigos de salida: 0 grupo cerrado · 1 una sesión falló (presupuesto, error) · 2 BLOQUEADO (necesita una persona).
+# Códigos de salida: 0 grupo cerrado · 1 una sesión falló · 2 BLOQUEADO (necesita una persona) · 4 EN_CURSO (VMs trabajando).
 # Cada sesión deja su JSON (con total_cost_usd) en ledger/sesiones/ y una fila en ledger/sesiones/costos.csv.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -20,6 +20,7 @@ PRESUPUESTO_REVISAR=${PRESUPUESTO_REVISAR:-2}
 DIR="experimentos/$EXP"
 LOG="$DIR/ledger/sesiones"
 BLOQUEO="$LOG/bloqueo.txt"
+EN_CURSO="$LOG/en_curso.txt"
 mkdir -p "$LOG"
 
 if [ -f "$BLOQUEO" ]; then
@@ -32,6 +33,7 @@ PERMITIDOS="Bash(openspec:*),Bash(python:*),Bash(python3:*),Bash(pytest:*),Bash(
 Bash(head:*),Bash(tail:*),Bash(wc:*),Bash(grep:*),Bash(rg:*),Bash(find:*),Bash(mkdir:*),Bash(chmod:*),Bash(sh -n:*),\
 Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git tag:*),Bash(git rev-parse:*),Bash(git describe:*),\
 Bash($DIR/scripts/vm.sh:*),Bash(sh $DIR/scripts/vm.sh:*),Bash(bash $DIR/scripts/vm.sh:*),\
+Bash($DIR/scripts/lanzar_fase.sh:*),Bash(bash $DIR/scripts/lanzar_fase.sh:*),Bash(pgrep:*),Bash(tail:*),\
 Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*)"
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
@@ -83,15 +85,18 @@ correr_claude "$MODELO" "$PRESUPUESTO_APLICAR" "$J_APLICAR" \
 El experimento es experimentos/$EXP; leé CLAUDE.md y docs/metodo.md antes de empezar. \
 PROYECTO y BUCKET ya están definidos: los carga .env (en la raíz del repo, ignorado por git) y los lee vm.sh; \
 no los busques en los documentos ni pidas que los definan. \
-Marcá cada tarea al terminarla. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
-no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Si una tarea necesita una VM, usá solo $DIR/scripts/vm.sh (ver \
-$DIR/docs/operacion.md), nunca gcloud directamente, y al final verificá con gcloud compute instances list que no \
-quedó ninguna encendida. Commiteá al cerrar cada tarea (sin Co-Authored-By). No hagas push y no cambies el diseño. \
+Marcá cada tarea al terminarla, solo con la evidencia que pide su texto. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
+no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con $DIR/scripts/lanzar_fase.sh <1|2|3> (una por fase, pueden ir las tres a la vez), \
+que vuelve enseguida y deja la VM trabajando horas; nunca gcloud ni vm.sh directamente. Si lanzaste fases y las \
+tareas dependen de sus resultados, no bloquees ni marques: escribí EN_CURSO y qué esperás en $EN_CURSO y terminá; \
+el loop espera a que las VMs terminen y vuelve a correr este grupo, y entonces consolidás, verificás y marcás. \
+Si los resultados ya están (ledger/corridas con filas, sin vm.sh corriendo: pgrep -f vm.sh), consolidá y marcá. Commiteá al cerrar cada tarea (sin Co-Authored-By). No hagas push y no cambies el diseño. \
 Si una tarea necesita algo que no podés hacer (una respuesta del tutor, una decisión de diseño, un reparto entre \
 personas), escribí BLOQUEADO y el motivo en $BLOQUEO y terminá." || RC=$?
 registrar "$J_APLICAR" "$GRUPO" aplicar "$RC"
 if [ -f "$BLOQUEO" ]; then echo "== BLOQUEADO:"; cat "$BLOQUEO"; exit 2; fi
 if [ "$RC" -ne 0 ] || ! exitoso "$J_APLICAR"; then echo "== la sesión de aplicar no terminó bien (rc $RC)"; exit 1; fi
+if [ -f "$EN_CURSO" ]; then echo "== EN_CURSO (VMs trabajando):"; cat "$EN_CURSO"; exit 4; fi
 fi
 
 echo "== revisar grupo $GRUPO con $MODELO_REV"

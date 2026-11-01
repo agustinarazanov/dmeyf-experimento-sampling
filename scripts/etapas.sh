@@ -24,6 +24,14 @@ while :; do
     ANTES=$(pendientes_de "$GRUPO")
     echo "== etapa $GRUPO ($ANTES pendientes) con $MODELO · $ENCABEZADO"
     RC=0; scripts/etapa.sh "$GRUPO" "$MODELO" "$EXP" "$CAMBIO" || RC=$?
+    if [ "$RC" -eq 4 ]; then
+        echo "== $(date +%H:%M) esperando a que terminen las VMs (vm.sh locales) · se revisa cada 5 min"
+        sleep 120
+        while pgrep -f "scripts/vm.sh" >/dev/null; do sleep 300; done
+        echo "== $(date +%H:%M) no queda ningún vm.sh corriendo; vuelvo al grupo $GRUPO"
+        rm -f "experimentos/$EXP/ledger/sesiones/en_curso.txt"
+        continue
+    fi
     if [ "$RC" -ne 0 ]; then echo "== detenido en el grupo $GRUPO (código $RC)"; exit "$RC"; fi
     AHORA=$(pendientes_de "$GRUPO")
     if [ "$AHORA" -ge "$ANTES" ]; then

@@ -1,0 +1,52 @@
+== etapa 5 (4 pendientes) con sonnet · ## 5. Etapa corridas (sesión: Sonnet vía `scripts/etapa.sh`; el trabajo lo hace la VM y las VMs las crea una persona)
+== aplicar grupo 5 con sonnet
+20:33:37  Skill      
+20:33:38  Bash       openspec instructions apply --change experimento-sampling-velocidad --json | head -c 3000; grep -n "
+20:33:41  Bash       sed -n 37,44p openspec/changes/experimento-sampling-velocidad/tasks.md; cat experimentos/sampling-ve
+20:33:44  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+20:33:46  Bash       D=/Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocida
+20:33:48  texto      Voy a usar las herramientas dedicadas.
+20:33:48  Bash       grep -n -i -A25 "Reparto y fases" /Users/agustina/Documents/segundo-cuatrimestre/experimento-samplin
+20:33:48  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:33:51  Bash       git tag; tail -30 experimentos/sampling-velocidad/docs/bitacora.md; gcloud compute instances list 2>
+20:33:53  Bash       git tag
+20:33:53  Bash       tail -30 experimentos/sampling-velocidad/docs/bitacora.md
+20:33:53  Bash       gcloud compute instances list 2>&1 | head -5
+20:33:57  Bash       git rev-parse --short corridas-v1 HEAD; git status --short | head; grep -n -i "u·min\|unidad u\|cali
+20:33:59  Bash       git rev-parse --short corridas-v1; git rev-parse --short HEAD; git log --oneline corridas-v1..HEAD |
+20:34:07  Bash       cd experimentos/sampling-velocidad/scripts && cat > fase1.txt <<'E'
+uniforme 1 0 optimizar
+uniforme 
+20:34:08  texto      Estoy armando las listas de configuraciones de las fases 1, 2 y 3 para lanzar las VMs. Uso Write par
+20:34:09  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:34:10  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:34:11  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:34:13  Bash       git add experimentos/sampling-velocidad/scripts/fase1.txt experimentos/sampling-velocidad/scripts/fa
+20:34:13  Bash       git commit -q -m "corridas: listas de configuraciones de las fases 1, 2 y 3"
+20:34:16  Bash       NOMBRE=sampling-f1 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scr
+20:34:16  Bash       NOMBRE=sampling-f2 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scr
+20:34:17  Bash       NOMBRE=sampling-f3 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scr
+20:34:19  texto      Redirijo los logs a una carpeta del repo, ya ignorada (`ledger/sesiones` o `exploracion`).
+20:34:19  Bash       git check-ignore -v experimentos/sampling-velocidad/ledger/exploracion/vm_f1.log
+20:34:22  Bash       NOMBRE=sampling-f1 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scr
+20:34:28  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:34:28  Bash       git add experimentos/sampling-velocidad/ledger/sesiones/bloqueo.txt
+20:34:29  Bash       gcloud compute instances list --format="value(name,status)"
+20:34:35  texto      Quedé bloqueada en el grupo 5: no pude lanzar `vm.sh`, así que no corrí ninguna de las tareas 5.1 a 
+20:34:35  fin        success · 28 turnos · US$ 0.2871
+aplicar g5: claude-sonnet-5-5 28 turnos US$ 0.2871 (success, rc 0)
+== BLOQUEADO:
+BLOQUEADO: grupo 5 (tareas 5.1–5.4). Esta sesión no pudo lanzar scripts/vm.sh: el permiso para ejecutarlo
+(con redirección del log) quedó pendiente de aprobación y la sesión no es interactiva. No se creó ninguna VM y no se
+marcó ninguna tarea.
+
+Hecho: listas de configuraciones en scripts/fase1.txt, fase2.txt y fase3.txt (commiteadas), según docs/diseno.md
+§ Reparto y fases. C-rep (fase 2) queda para después de la fase 1, porque necesita ledger/hp/C.json commiteado.
+
+Para retomar (una VM por fase, en paralelo; la cuota permite tres):
+  NOMBRE=sampling-f1 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scripts/fase1.txt
+  NOMBRE=sampling-f2 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scripts/fase2.txt
+  NOMBRE=sampling-f3 experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/scripts/fase3.txt
+Nota: el tag corridas-v1 está en 1ebe904 y HEAD tiene encima commits de operación/listas; la columna `commit` de las
+filas va a ser el HEAD desde el que se lance.
+== detenido en el grupo 5 (código 2)
