@@ -95,8 +95,9 @@ Todo sale de `ledger/apareado.csv`; nada se calcula a mano.
   y se borró junto con su disco en un minuto.
 - **Cuotas** (proyecto de Agustina): `CPUS_ALL_REGIONS` 32; en `northamerica-northeast2`, `CPUS` 100 y `N2_CPUS` 100.
   Alcanzan para una VM de 8 vCPU sin problema. Martín y Luis tienen que verificar las suyas antes de la fase 1.
-- **Trial**: según Agustina, el alta fue hace dos o tres semanas. Los templates del curso son del 13-oct, así que el
-  trial vence alrededor del 11-ene-2027. La fecha exacta se confirma en Facturación → Créditos antes de la fase 1.
+- **Trial**: el proyecto por defecto de Agustina ("My First Project") se creó el 11-oct-2026, que es la fecha de alta
+  probable, así que el trial vence alrededor del 9-ene-2027. Lo exacto se confirma en Facturación → Créditos antes de
+  la fase 1. Las corridas van en el proyecto `UBA DMEyF` (`proj-uba-261012163242176`).
 - Plataforma de CPU fija: las `n2` pueden caer en Cascade Lake o en Ice Lake, así que se crean con
   `--min-cpu-platform="Intel Ice Lake"`. Cada fila del ledger registra el modelo de CPU de `/proc/cpuinfo`, y el
   análisis de tiempos descarta las filas con otra CPU.

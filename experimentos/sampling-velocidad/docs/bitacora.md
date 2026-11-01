@@ -92,3 +92,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `docs/revision.md` queda en la raíz, compartido, y se creó `docs/metodo.md`.
 - `tasks.md`: las rutas quedaron alineadas con D0 y se agregó la tarea 2.0. Las tareas 1.x y 2.1 conservan su contenido;
   solo cambió dónde viven. `scripts/tokens.py` pasa a ser `comun/tokens.py`.
+
+### 2026-11-01 — tareas 2.2 y 2.3
+- **2.2, GCP**: no hay un template `n2-highmem-8`. La VM se crea desde `to-064ram-08vcpu`, sobrescribiendo la máquina
+  con `n2-highmem-8` y fijando `--min-cpu-platform="Intel Ice Lake"`, en `northamerica-northeast2-b`.
+  - Prueba: `prueba-sampling-n2` se creó con Ice Lake y spot, y se borró junto con su disco (19:19 a 19:21).
+  - Cuotas: `CPUS_ALL_REGIONS` 32 y `N2_CPUS` 100 en la región.
+  - Trial: el alta probable es del 11-oct (vence alrededor del 9-ene-2027); la fecha exacta queda por confirmar en la
+    consola.
+  - Detalle en `docs/diseno.md` § Máquina.
+- **2.3, repo**: es privado, en `agustinarazanov/dmeyf-experimento-sampling`. El prefijo `dmeyf` lo pidió Agustina para
+  los repos de la materia; el nombre no admite `/`. Por decisión de Agustina, no se mandaron invitaciones a Martín y
+  Luis. El README no menciona el dataset y `.gitignore` excluye los datos.
