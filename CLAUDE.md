@@ -22,7 +22,9 @@ commit.
 - **Lo repetido va a scripts.** Las corridas las hace la VM, no una conversación.
 - **Revisión en sesión limpia**: la lista de cada compuerta está en `docs/revision.md`; revisa una sesión nueva sin
   contexto (o un subagente `general-purpose`, que arranca vacío) o un integrante distinto.
-- Commits sin `Co-Authored-By` ni pie de Claude. Nada del dataset en el repo.
+- **Commitear sin pedir permiso**, en cualquier sesión (interactiva o headless), al cerrar una tarea o un grupo, con
+  mensaje descriptivo y sin `Co-Authored-By` ni pie de Claude. El push y los tags de corridas los decide Agustina salvo
+  que una tarea lo pida. Nada del dataset en el repo.
 
 ## Hechos que no están en el código
 

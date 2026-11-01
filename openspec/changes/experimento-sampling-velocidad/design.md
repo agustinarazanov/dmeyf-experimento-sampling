@@ -63,7 +63,8 @@ experimento; duplica datos, baseline y ganancia, y la comparación entre experim
 - H3 `opt-muestra`: Optuna sobre una muestra uniforme con r ∈ {0,1, 0,25}; con los mejores hiperparámetros se entrena
   el final con r = 1. Se compara con el control (optimizado sobre r = 1) en ganancia y en tiempo total (optimización
   más final). Es la hipótesis con más valor para el pipeline de 15 minutos.
-- Alternativa descartada: undersampling estratificado (es Sampling_2) y oversampling (sin sentido en boosting tabular).
+- H4 (`docs/hipotesis.md`): submuestreo informado de CONTINUA y pesos por fila; la corre un integrante por separado con
+  el mismo control, corredor y ledger. Descartado: oversampling (sin sentido en boosting tabular).
 
 **D2. Métricas y regla de decisión.** Selección por AUC en 201908 (lo pide el baseline). Comparación en 201910 por
 ganancia a envíos fijos (decide) y ganancia máxima de la curva (se reporta). El corte N* lo elige el control en
@@ -116,9 +117,12 @@ Alternativa descartada: revisar al final; los errores de diseño descubiertos ta
 `claude -p` con el modelo de la etapa, `--permission-mode acceptEdits`, `--max-budget-usd` y `--output-format json` para
 aplicar solo ese grupo de `tasks.md`, y después una segunda sesión limpia con Opus que revisa con `docs/revision.md` y
 cierra la bitácora. El costo de cada sesión sale del JSON (`total_cost_usd`) a `ledger/sesiones/costos.csv`, que es la
-medida más directa para `registro-tokens`. Si la etapa necesita a una persona (crear VMs, respuesta del tutor, decisión
-de diseño), la sesión escribe `BLOQUEADO` en `ledger/sesiones/bloqueo.txt` y el script corta. Las VMs nunca las crea
-una sesión headless. Alternativas consideradas: un Workflow de Claude Code (lo mismo con `agent()` por etapa, pero exige
+medida más directa para `registro-tokens`. La sesión solo puede correr los comandos de una lista explícita (`--allowedTools`): `openspec`, Python, git sin
+push, lectura de archivos, y las VMs únicamente a través de `scripts/vm.sh` del experimento, que crea, corre, sube y
+borra; `gcloud` solo para listar. Al terminar verifica que no quedó ninguna VM encendida. Si la etapa necesita a una
+persona (respuesta del tutor, decisión de diseño, reparto entre personas), escribe `BLOQUEADO` en
+`ledger/sesiones/bloqueo.txt` y el script corta. `scripts/etapas.sh` encadena las etapas pendientes hasta el primer
+bloqueo, eligiendo el modelo por el encabezado del grupo. Alternativas consideradas: un Workflow de Claude Code (lo mismo con `agent()` por etapa, pero exige
 la sesión abierta y gasta por la cuenta de esa sesión) y una sesión orquestadora que lanza subagentes (paga coordinación
 en tokens). El script de shell es gratis de coordinar, corre desde cualquier terminal y queda versionado.
 
@@ -135,8 +139,11 @@ en tokens). El script de shell es gratis de coordinar, corre desde cualquier ter
 - [Fuga de 201910 a la selección] → el corredor solo evalúa 201910 en la etapa `final` y la etapa `optimizar` no lo carga.
 - [El trial de Google Cloud vence o la cuota es de 8 vCPU] → verificar fecha de alta y cuota antes de la fase 1; si hace
   falta, pasar a cuenta paga con alerta de presupuesto.
-- [Una sesión headless se desboca o hace algo irreversible] → tope en dólares por sesión, `acceptEdits` (sin
-  comandos destructivos sin aprobación), prohibido push y VMs en el prompt, y la revisión limpia después de cada grupo.
+- [Una sesión headless se desboca o hace algo irreversible] → tope en dólares por sesión, lista cerrada de comandos
+  permitidos (sin push, sin `gcloud create/delete` directo), VMs solo por `vm.sh` con verificación final de que no quedó
+  ninguna, y la revisión limpia después de cada grupo.
+- [Una VM queda encendida tras un fallo de `vm.sh`] → la verificación final con `gcloud compute instances list` y la
+  alerta de presupuesto del trial; una VM spot de 64 GB olvidada cuesta ~US$ 4,5 por día.
 - [Método de tokens que no se mide] → `tokens.py` corre al cerrar cada etapa y el número va a la bitácora.
 
 ## Migration Plan

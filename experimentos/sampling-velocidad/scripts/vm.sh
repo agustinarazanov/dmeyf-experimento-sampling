@@ -15,6 +15,7 @@
 # Una VM nueva baja del bucket el panel y los SQLite de Optuna si existen, así que relanzar la misma lista retoma.
 set -euo pipefail
 cd "$(dirname "$0")/../../.."          # raíz del repo
+[ -f .env ] && { set -a; . ./.env; set +a; }   # PROYECTO y BUCKET pueden venir de .env
 LISTA=${1:?uso: vm.sh configuraciones.txt [--filas N]}
 shift || true
 EXTRA="$*"                              # p. ej. --filas 20000 (smoke de la propia VM)
@@ -28,7 +29,7 @@ EXP=experimentos/sampling-velocidad
 COMMIT=$(git rev-parse --short HEAD)
 G="gcloud compute --project=$PROYECTO"
 
-[ -z "$(git status --porcelain | grep -v '/ledger/' || true)" ] || echo "AVISO: árbol sucio; las filas quedarán con codigo_sucio=true" >&2
+[ -z "$(git status --porcelain | grep -v '/ledger/' || true)" ] || echo "AVISO: árbol sucio; a la VM va HEAD ($COMMIT), sin los cambios sin commitear" >&2
 
 borrar() { echo "== borrando $NOMBRE"; $G instances delete "$NOMBRE" --zone="$ZONA" --delete-disks=all --quiet || true; }
 trap borrar EXIT
@@ -50,7 +51,7 @@ cat > /tmp/remoto-$COMMIT.sh <<REMOTO
 set -uo pipefail
 cd ~ && rm -rf repo && mkdir repo && tar xzf repo-$COMMIT.tgz -C repo && cd repo
 python3 -m venv ~/venv && . ~/venv/bin/activate && pip install -q -r requirements.txt || { echo FALLO > ~/estado; exit 1; }
-export PYTHONPATH=../.. PERSONA="$PERSONA"
+export PYTHONPATH=../.. PERSONA="$PERSONA" COMMIT_REPO="$COMMIT"
 export DATOS_DIR=\${DATOS_DIR:-\$HOME/datos}; mkdir -p \$DATOS_DIR/optuna
 gsutil -q cp "$BUCKET/panel_2019.parquet" \$DATOS_DIR/ 2>/dev/null || true
 gsutil -q -m cp "$BUCKET/optuna/*.db" \$DATOS_DIR/optuna/ 2>/dev/null || true

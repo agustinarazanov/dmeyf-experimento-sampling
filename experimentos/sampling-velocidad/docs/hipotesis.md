@@ -8,8 +8,8 @@ cambio se anota en `docs/bitacora.md` con su motivo y las corridas previas queda
 Pregunta del tutor (Zulip 208986, 1-nov): **¿vale la pena el tradeoff entre velocidad y pérdida de performance?**
 
 Para el baseline de Bolaños (28-oct, Zulip 208135), ¿cuánto tiempo se ahorra y cuánta ganancia se pierde en 201910 si se
-usan menos filas para entrenar u optimizar, **sin alterar la proporción de clases**? El undersampling de CONTINUA lo
-estudia Sampling_2; acá la proporción de BAJA+1 ∪ BAJA+2 queda igual, en esperanza, en todos los brazos.
+usan menos filas para entrenar u optimizar? En H1, H2 y H3 la proporción de BAJA+1 ∪ BAJA+2 queda igual, en
+esperanza, en todos los brazos; H4 la cambia a propósito y la lleva un integrante por separado.
 
 ## Control (C)
 
@@ -113,7 +113,30 @@ estudia Sampling_2; acá la proporción de BAJA+1 ∪ BAJA+2 queda igual, en esp
 - **Riesgo conocido**: el `min_data_in_leaf` que se elige sobre la muestra queda chico para el train completo. Si eso
   hace perder a r_opt = 0,1, el reescalado se propone como trabajo futuro y no como un brazo nuevo.
 
+## H4 — Submuestreo informado de CONTINUA y pesos por fila (a cargo de un integrante, fuera de la grilla nuestra)
+
+Propuesta de un integrante del grupo a partir de lo que le funcionó en la primera competencia. No la implementa este
+repo en las fases 1 a 3; la corre él con el mismo control, el mismo corredor y el mismo ledger, como método adicional
+(`informado` y `pesado`) o en su propia carpeta `experimentos/sampling-informado/`.
+
+- **Variables**: (a) quedarse con el 100% de las bajas y el 20% de los CONTINUA, elegidos por un algoritmo (no al azar);
+  (b) quedarse con el 10% de los CONTINUA al azar y darle a cada fila un peso que compense la proporción.
+- **Métrica que decide**: el veredicto de cada variante contra el control, con las reglas comunes.
+- **Predicción**: *no pierde* en ninguna de las dos y A ≥ 4, porque el 80–90% de las filas que se descartan son
+  CONTINUA que el modelo ya separa bien.
+- **Se confirma** si (a) *no pierde*. **Se refuta** si (a) *pierde*. **Ninguna de las dos** si sale *indeterminado*.
+- **Qué la distingue de H1**: cambia la proporción de clases y la probabilidad queda descalibrada; el ranking no. Hay
+  que corregir la probabilidad con la tasa (o el peso) antes de usarla en un corte por umbral.
+- **Pendiente de definir por quien la lleva**: cuál es el algoritmo de selección de (a), y si los pesos de (b) van en
+  `weight` de LightGBM o en `scale_pos_weight`.
+
 ## Respuesta a la pregunta del tutor
+
+La pregunta no es velocidad contra ganancia sino qué se hace con el tiempo ahorrado. Si no se reinvierte, no vale la pena
+perder ni un 1%. Por eso, además de la comparación a datos iguales, hay una **comparación a tiempo igual**: el control
+completo contra la variante rápida con el tiempo sobrante gastado en más semillas (ensamble de K modelos de la variante,
+con K tal que el tiempo total iguale al del control). Sale del mismo ledger, sin corridas nuevas, porque las 10 semillas
+de cada brazo ya están. Predicción: a tiempo igual la variante rápida gana, y H3 es la que más rinde.
 
 Un brazo **vale la pena** si *no pierde* contra el control y además A ≥ 2, con la definición común de T. La respuesta
 del video es la lista de brazos que valen la pena, con su A y su Δ, más la curva tiempo-ganancia de todos los brazos.

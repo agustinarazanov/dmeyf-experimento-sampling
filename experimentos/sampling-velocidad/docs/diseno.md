@@ -103,10 +103,9 @@ Todo sale de `ledger/apareado.csv`; nada se calcula a mano.
   Alcanzan para una VM de 8 vCPU sin problema. Martín y Luis tienen que verificar las suyas antes de la fase 1.
 - **Trial**: alta el 11-oct-2026, confirmada por Agustina el 1-nov. Son 90 días, así que vence el **9-ene-2027**; al
   1-nov quedaban 69 días. Las corridas van en el proyecto `UBA DMEyF` (`proj-uba-261012163242176`).
-- **Pendiente antes de la fase 1, para Martín y Luis**: cada uno, en su proyecto del curso, verifica la fecha de alta
-  del trial, la cuota de `N2_CPUS` y `CPUS_ALL_REGIONS` y que existe `to-064ram-08vcpu`, crea y borra una VM de prueba
-  con el comando de arriba y lo anota en la bitácora. Luis tiene la carga más baja (68 u·min), así que es el margen
-  para reintentos por cortes spot.
+- **Decisión del 1-nov (Agustina)**: todas las corridas van en su cuenta y su proyecto. Un integrante lleva la H4 por
+  separado (`hipotesis.md`), con el mismo corredor y ledger, cuando la defina. No hay verificaciones pendientes de
+  otras cuentas.
 - Plataforma de CPU fija: las `n2` pueden caer en Cascade Lake o en Ice Lake, así que se crean con
   `--min-cpu-platform="Intel Ice Lake"`. Cada fila del ledger registra el modelo de CPU de `/proc/cpuinfo`, y el
   análisis de tiempos descarta las filas con otra CPU.
@@ -164,28 +163,25 @@ En `GOSS`, el factor 0,7 depende del `learning_rate` que elija Optuna, porque GO
 
 ## Reparto y fases
 
-Las tres personas corren el mismo commit, en VMs del mismo tipo, cada una en su cuenta. Las fases ordenan la
-dependencia y el reparto equilibra la carga.
+Todas las corridas salen del mismo commit (`corridas-v1`) y de la cuenta de Agustina, en VMs `n2-highmem-8` spot del
+mismo tipo. Las fases ordenan la dependencia; la cuota (`CPUS_ALL_REGIONS` 32) permite hasta tres VMs de 8 vCPU a la
+vez, así que las fases 2 y 3 pueden correr en paralelo con la 1 en VMs distintas.
 
-| fase | persona | corridas | carga (u·min) |
+| fase | VM | corridas | carga (u·min) |
 |---|---|---|---:|
-| 1 | Agustina | estudios `C`, `U0.25`, `U0.1` (en ese orden); finales `C`, `H3-0.25`, `H3-0.1`, `U0.25`, `U0.1` | 99,9 |
-| 2 | Martín | estudios y finales de `U0.5` y `U0.05` | 38,4 |
-| 2 | Luis | `C-rep` (con el JSON de `C` de la fase 1) | 10,0 |
-| 3 | Martín | estudios y finales de `B0.5` y `B0.25` | 62,5 |
-| 3 | Luis | estudios y finales de `B0.1` y `GOSS` | 58,0 |
+| 1 | A | estudios `C`, `U0.25`, `U0.1` (en ese orden); finales `C`, `H3-0.25`, `H3-0.1`, `U0.25`, `U0.1` | 99,9 |
+| 2 | B | estudios y finales de `U0.5` y `U0.05`; después `C-rep` (con el JSON de `C` de la fase 1) | 48,4 |
+| 3 | C | estudios y finales de `B0.5`, `B0.25`, `B0.1` y `GOSS` | 120,5 |
 
-Por persona: Agustina 99,9, Martín 100,9, Luis 68,0; total 268,8. Cada estudio y cada corrida final aparece una sola
-vez. Cada brazo tiene su estudio y sus finales en la misma VM; T(brazo) y T(C) sí vienen de VMs distintas, y la
-réplica `C-rep` mide cuánto varía el tiempo entre ellas.
+Total 268,8 u·min. Cada estudio y cada corrida final aparece una sola vez. Cada brazo tiene su estudio y sus finales
+en la misma VM; T(brazo) y T(C) vienen de VMs distintas, y la réplica `C-rep` en la VM B mide cuánto varía el tiempo
+entre VMs. H4 queda fuera de esta tabla: la corre quien la lleva, cuando esté definida.
 
 **Dependencias.**
 
 - Todo espera al cierre de la compuerta de código (`docs/revision.md` § 3) y al tag `corridas-v1`.
 - La fase 1 va primero: calibra u y produce el JSON de `C`, `U0.25` y `U0.1`.
-- Luis necesita el JSON de `C` (por git) para la réplica; sus corridas de fase 3 no esperan.
-- Martín arranca las fases 2 y 3 en paralelo con la fase 1, porque sus estudios no dependen de nada. La calibración de
-  u solo cambia el calendario, así que no la espera.
+- `C-rep` necesita el JSON de `C` (por el bucket o por git); el resto de las fases 2 y 3 no espera a nada.
 - N\* y δ salen del control, así que los veredictos esperan a que esté la fase 1 completa, pero las corridas no.
 
 **Corridas perdidas.** Si una VM spot muere, se crea otra, baja el panel y el SQLite del bucket, retoma el estudio y
@@ -195,7 +191,7 @@ de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
 ## Fuera de la grilla
 
 - **Pesos o selección de instancias sobre CONTINUA** (propuestas del grupo al cierre de hipótesis): cambian la
-  proporción de clases o su peso, que es territorio de Sampling_2. Solo entran si se reabre la compuerta de hipótesis
+  proporción de clases o su peso, que corresponde a H4 y corre por separado quien la propuso. Solo entran si se reabre la compuerta de hipótesis
   y se agregan a `hipotesis.md`.
 - **Reescalar `min_data_in_leaf` en H3**: queda como trabajo futuro, según `hipotesis.md`.
 - **Respuesta del tutor sobre H2**: si pide mantener `bagging_fraction` optimizado, salen `B0.5`, `B0.25` y `B0.1`, y

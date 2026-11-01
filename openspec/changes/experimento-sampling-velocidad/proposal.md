@@ -35,7 +35,8 @@ archivo bajan ese número sin perder calidad.
   informe final y guion del video. La lista de revisión por etapa y el método son del repo (`docs/`), no del
   experimento. El post al tutor sale de `docs/hipotesis.md` del experimento.
 
-Fuera de alcance: undersampling de la clase mayoritaria (Sampling_2), oversampling o SMOTE, selección de meses de
+Fuera de alcance de las tareas de este cambio: la H4 (submuestreo informado de CONTINUA y pesos por fila, propuesta
+por un integrante, que él corre con el mismo control y ledger), oversampling o SMOTE, selección de meses de
 entrenamiento (grupo Meses), features nuevas (grupos FE) y el pipeline productivo de la segunda entrega.
 
 ## Capabilities

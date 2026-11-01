@@ -61,13 +61,18 @@ con fecha y hallazgos.
 - **THEN** las corridas afectadas se marcan como inválidas en el ledger y la etapa no se cierra hasta repetirlas
 
 ### Requirement: Lo que necesita a una persona se declara, no se improvisa
-Una sesión headless que encuentra una tarea que requiere a una persona (crear o borrar VMs, una respuesta del tutor, una
-decisión de diseño) SHALL escribir `BLOQUEADO` con el motivo en `ledger/sesiones/bloqueo.txt` y terminar sin marcar la
+Una sesión headless que encuentra una tarea que requiere a una persona (una respuesta del tutor, una decisión de diseño,
+un reparto entre personas) SHALL escribir `BLOQUEADO` con el motivo en `ledger/sesiones/bloqueo.txt` y terminar sin marcar la
 tarea, y el loop de etapas SHALL detenerse ahí.
 
 #### Scenario: Etapa que necesita una VM
-- **WHEN** la etapa de corridas llega a una tarea que requiere crear una VM
-- **THEN** la sesión escribe el bloqueo, no crea la VM y `scripts/etapa.sh` termina con código 2
+- **WHEN** una tarea requiere una VM
+- **THEN** la sesión la usa solo a través del `scripts/vm.sh` del experimento, que la borra al terminar, y verifica
+  antes de cerrar que no quedó ninguna VM encendida
+
+#### Scenario: Etapa que necesita al tutor
+- **WHEN** una tarea depende de una respuesta del tutor que no llegó
+- **THEN** la sesión escribe el bloqueo con el motivo y `scripts/etapa.sh` termina con código 2
 
 ### Requirement: Comunicación con el tutor desde los documentos
 El post al tópico `sampling_1` y cualquier respuesta posterior SHALL derivarse de `docs/hipotesis.md` y

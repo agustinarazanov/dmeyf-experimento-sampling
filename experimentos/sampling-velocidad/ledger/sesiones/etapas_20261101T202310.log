@@ -1,0 +1,85 @@
+== etapa 4 (1 pendientes) con sonnet · ## 4. Etapa código: corredor y ledger (sesión: Sonnet)
+== grupo 4: solo queda la revisión; salteo la sesión de aplicar
+== revisar grupo 4 con opus
+20:23:13  Bash       grep -n "" openspec/changes/experimento-sampling-velocidad/tasks.md | sed -n '1,200p' | grep -n -i -
+20:23:17  Bash       sed -n 1,9p docs/revision.md; sed -n 36,48p docs/revision.md; echo ---; ls experimentos/sampling-vel
+20:23:19  Bash       sed -n 1,9p docs/revision.md; sed -n 36,48p docs/revision.md; echo ---; find experimentos/sampling-v
+20:23:22  Bash       sed -n 1,20p experimentos/sampling-velocidad/docs/bitacora.md; sed -n 125,200p experimentos/sampling
+20:23:25  Bash       export PYENV_VERSION=facultad; python -m pytest -q tests > /tmp/rev_pytest.txt 2>&1; tail -5 /tmp/re
+20:23:26  texto      Estoy corriendo los tests y revisando la CLI del corredor para empezar la lista de código.
+20:23:28  Bash       export PYENV_VERSION=facultad; python -m pytest -q tests > /tmp/rev_pytest.txt 2>&1; tail -5 /tmp/re
+20:23:30  Bash       PYENV_VERSION=facultad python -m pytest -q tests > /tmp/rev_pytest.txt 2>&1; tail -5 /tmp/rev_pytest
+20:23:31  Bash       PYENV_VERSION=facultad python experimentos/sampling-velocidad/src/correr.py --help
+20:23:31  Bash       ls ~/datos/experimentos-dmeyf
+20:23:33  Bash       python -m pytest -q tests
+20:23:37  Bash       python experimentos/sampling-velocidad/src/correr.py --help
+20:23:40  Bash       grep -n -i "python\|correr" experimentos/sampling-velocidad/docs/operacion.md | head -20
+20:23:42  Bash       cd experimentos/sampling-velocidad && PYTHONPATH=../.. python -m src.correr --help
+20:23:45  texto      Sigo: los tests pasan (9/9); armo un lanzador para correr el corredor sin variables de entorno, que 
+20:23:47  Write      /tmp/rev4/run.py
+20:23:48  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:23:53  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:23:54  Bash       grep -n "MESES_LEIDOS\|def asegurar_panel\|def cargar_meses\|DATOS_DIR\|log\.\(info\|warning\)" comu
+20:23:56  texto      Lanzo el smoke test de los cuatro métodos (`--filas 20000`, optimizar con pocos trials + final), con
+20:24:00  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:24:01  Bash       bash experimentos/sampling-velocidad/ledger/exploracion/_rev_smoke.sh
+20:24:07  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:24:08  Bash       python experimentos/sampling-velocidad/ledger/exploracion/_rev_smoke.py
+20:24:50  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:24:51  Bash       python experimentos/sampling-velocidad/ledger/exploracion/_rev_check.py > experimentos/sampling-velo
+20:25:00  Bash       head -12 experimentos/sampling-velocidad/ledger/exploracion/_rev_logs/check.txt; grep -n "def test" 
+20:25:03  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:25:14  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:25:15  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:25:17  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:25:22  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:25:23  Bash       python experimentos/sampling-velocidad/ledger/exploracion/_rev_commit.py
+20:25:24  Bash       git ls-files | grep -i -E "\.(parquet|gz|db|csv)$|crudo|competencia_02" | head
+20:25:24  Bash       gcloud compute instances list --format="value(name,status)"
+20:25:28  texto      Sin VMs `sampling-*` vivas (solo `desktop-jr`, ajena y apagada) y sin datos en git. Ahora los tokens
+20:25:29  Bash       python comun/tokens.py --help 2>&1 | head -15; sed -n 1,25p comun/tokens.py | grep -n "python\|uso\|
+20:25:31  Bash       python -m comun.tokens --experimento sampling-velocidad > experimentos/sampling-velocidad/ledger/exp
+20:25:34  Bash       ls -t ~/.claude/projects/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/ | head
+20:25:38  Bash       rm -r experimentos/sampling-velocidad/ledger/exploracion/_rev_run.py experimentos/sampling-velocidad
+20:25:40  Bash       python -m pytest -q tests
+20:25:43  Bash       tail -3 experimentos/sampling-velocidad/docs/bitacora.md
+20:25:45  texto      Todo verificado; escribo el cierre en la bitácora y marco la 4.8.
+20:25:58  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:25:59  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+20:26:09  texto      Revisé la etapa código (grupo 4) con la lista § 3 de `docs/revision.md`. Pasan los 9 ítems, uno de e
+20:26:09  fin        success · 41 turnos · US$ 1.0147
+revisar g4: claude-opus-5-5 41 turnos US$ 1.0147 (success, rc 0)
+== grupo 4 cerrado
+== etapa 5 (4 pendientes) con sonnet · ## 5. Etapa corridas (sesión: Sonnet vía `scripts/etapa.sh`; el trabajo lo hace la VM y las VMs las crea una persona)
+== aplicar grupo 5 con sonnet
+20:26:12  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/.claude/skills/openspec-apply-ch
+20:26:13  Bash       openspec instructions apply --change experimento-sampling-velocidad --json | head -c 6000; echo; ls 
+20:26:16  Bash       grep -n "^## \|^- \[" openspec/changes/experimento-sampling-velocidad/tasks.md | sed -n 1,80p; cat d
+20:26:20  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+20:26:22  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+20:26:22  Bash       ls ledger ledger/corridas ledger/sesiones
+20:26:24  Bash       sed -n 95,125p docs/diseno.md; sed -n 165,200p docs/diseno.md; git status --short | head -20; git ta
+20:26:28  texto      Resumen: leí el plan y el diseño. Las tareas 5.1 a 5.3 no se pueden correr desde esta sesión, así qu
+20:26:33  Bash       cat > ledger/sesiones/bloqueo.txt <<'EOF'
+BLOQUEADO: grupo 5 (corridas). No se ejecutó ni marcó ning
+20:26:38  texto      BLOQUEADO: no ejecuté ninguna tarea del grupo 5 y no marqué ninguna. El motivo está en `experimentos
+20:26:38  fin        success · 9 turnos · US$ 0.2108
+aplicar g5: claude-sonnet-5-5 9 turnos US$ 0.2108 (success, rc 0)
+== BLOQUEADO:
+BLOQUEADO: grupo 5 (corridas). No se ejecutó ni marcó ninguna tarea.
+
+1. Árbol sucio y sin tag corridas-v1. diseno.md exige commit + tag `corridas-v1` antes de la fase 1, y una fila con
+   árbol sucio no es válida (valida=false, no entra en resultados.csv). El árbol tiene cambios sin commitear (diseno.md,
+   correr.py, vm.sh, openspec/, scripts/etapa.sh, etc.) y `git tag` no devuelve ninguno. Commitear y taguear no
+   está autorizado en esta sesión.
+2. Reparto entre personas. 5.2 y 5.3 son de Martín y Luis, cada uno en su VM y su cuenta de Google Cloud. Esta sesión
+   solo tiene la cuenta de Agustina. Además, diseno.md § Pendiente dice que Martín y Luis todavía tienen que verificar
+   fecha de alta del trial, cuota y template, y anotarlo en la bitácora.
+3. Faltan PROYECTO y BUCKET para scripts/vm.sh (el proyecto de Agustina está en diseno.md, pero no hay bucket definido
+   en el repo) y el configuraciones.txt de la fase 1.
+4. 5.4 depende de que 5.1 a 5.3 existan (ledger/corridas/ no existe todavía).
+
+Para destrabar: (a) decidir el commit y tag corridas-v1; (b) indicar BUCKET y confirmar que se lanza la fase 1 (5.1,
+tarea de Agustina, ~100 u·min) con scripts/vm.sh; (c) Martín y Luis corren sus fases 2 y 3 en sus cuentas.
+Verificación de VMs: no se creó ninguna VM en esta sesión.
+== detenido en el grupo 5 (código 2)

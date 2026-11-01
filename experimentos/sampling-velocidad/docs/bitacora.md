@@ -131,3 +131,45 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Sesión: `457cc09a-a528-48c5-849e-322b3261b914` · modelo: Sonnet · etapa: **codigo**.
 - Tareas 3.1 a 4.7 de `tasks.md`: `comun/` (datos, baseline, ganancia, ledger, tokens), `src/` (muestreo, métodos,
   correr, consolidar), `scripts/` (vm.sh, graficar.py) y `docs/operacion.md`.
+
+### 2026-11-01 — 4.9 verificada a mano (sesión de planificación, Fable)
+- `scripts/etapa.sh` corrió el grupo 4 tres veces: dos con un bug de comillas (sesiones de 1 turno, US$ 0,004–0,01) y
+  una buena (7 turnos, US$ 0,40) que hizo la 4.6 en una VM real y bloqueó 4.8 y 4.9. En las tres, `costos.csv` recibió
+  su fila con modelo y costo, y el `BLOQUEADO` cortó `etapas.sh` con código 2 (antes del parche de `exit $?`, con 0:
+  hallazgo 1 de la revisión del script).
+- Revisión del script en sesión limpia (Opus, sin contexto): 7 hallazgos confirmados y 4 posibles, todos aplicados o
+  anotados en comentarios de `scripts/etapa.sh`.
+- Regla nueva: las tareas "Revisar" las hace y marca la sesión de revisión; el aplicador no las toca. Si en un grupo
+  solo queda la revisión, `etapa.sh` saltea la sesión de aplicar.
+
+### 2026-11-01 — cierre codigo
+- Sesión: `4ad957d6-9aae-41a0-8cdc-48b10bd3252d` · modelo: Opus · etapa: **revision** (tarea 4.8).
+- Revisor: sesión limpia (Opus, sin contexto de la implementación).
+- Lista: docs/revision.md § 3; ítems ✓ 9/9 (uno tras corregir).
+  - ✓ Smoke `--filas 20000 --trials 3` en la Mac: `uniforme 0.5`, `bagging 0.5`, `goss 1` y `opt-muestra 0.5`,
+    `optimizar` + `final` semilla 7, todos rc 0 y una fila cada uno en `ledger/exploracion/corridas/` (commit `909f4ae`).
+    Logs en `ledger/exploracion/_rev_logs/`.
+  - ✓ Determinismo: `uniforme 0.5` semilla 7 dos veces → hash `339fc6ce1e905e1e`, AUC 201908 0,879142, AUC 201910
+    0,858614 y ganancia 2.750.000 idénticos.
+  - ✓ `optimizar` lee solo `201903–201906, 201908` (línea `MESES_LEIDOS` del log) en los cuatro métodos; `final` agrega
+    201910. El corredor además falla si `optimizar` toca 201910.
+  - ✓ Columnas obligatorias: `test_falta_una_columna_y_se_nombra` pasa; las filas `final` no tienen nulos.
+  - ✓ `codigo_sucio`: True con el árbol sucio en la Mac. ✗ en la VM (ver hallazgo), corregido.
+  - ✓ `filas_train` U0.5 = 4.926 = 0,5 × 9.852 (exacto).
+  - ✓ Apareado solo en semillas comunes: `test_apareado_usa_solo_semillas_en_comun` y `test_consolidar_de_punta_a_punta`
+    pasan (pytest 9/9).
+  - ✓ `vm.sh` borra la VM: `trap borrar EXIT` con `--delete-disks=all`; tras el smoke de la 4.6
+    (`ledger/exploracion/smoke_vm.txt`) no queda ninguna `sampling-*` en `gcloud compute instances list`.
+  - ✓ Sin datos en el repo: `git ls-files` no tiene parquet, gz, db ni el crudo (solo `ledger/tokens.csv`).
+- Hallazgos: `vm.sh` manda `git archive HEAD` sin `.git`, así que en la VM `commit_y_sucio()` devolvía `sin-git` y
+  `codigo_sucio=False` (se ve en las filas U0.25 del smoke de VM). Las filas reales iban a quedar sin commit
+  trazable. El aviso de árbol sucio de `vm.sh` además decía lo contrario de lo que pasa (a la VM va HEAD limpio).
+- Corregido: `src/correr.py` usa `COMMIT_REPO` cuando no hay git (el archive de HEAD está limpio por construcción);
+  `scripts/vm.sh` exporta `COMMIT_REPO=$COMMIT` y el aviso dice que los cambios sin commitear no viajan. Probado sin
+  git, con y sin la variable; falta verlo en una VM real en la primera tanda de la fase 1 (columna `commit` ≠
+  `sin-git`).
+- Tokens (`comun/tokens.py`): etapa código `457cc09a` 37 turnos · contexto promedio 121.193 · ≈ US$ 1,71 (**supera el
+  objetivo**); `65a5d7fd` 7 · 39.337 · US$ 0,18; `b5e73664` 25 · 53.308 · US$ 0,40; sesiones de 1 turno de
+  `etapa.sh` (bug de comillas) ≈ US$ 0,23 en total. Esta revisión: ~25 turnos · ~47.000 por turno · ≈ US$ 1
+  (presupuesto US$ 2). Sin clasificar: `02a8a58c`, `3e0ced8f`, `34a0d6ac`.
+- Tutor: sin devolución.

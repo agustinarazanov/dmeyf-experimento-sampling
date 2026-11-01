@@ -50,9 +50,15 @@ def _git(*args: str) -> str:
 
 
 def commit_y_sucio() -> tuple[str, bool]:
-    """Commit corto y si hay cambios sin commitear. Los archivos del ledger no cuentan: cada corrida los agrega."""
+    """Commit corto y si hay cambios sin commitear. Los archivos del ledger no cuentan: cada corrida los agrega.
+
+    En la VM no hay `.git` (vm.sh copia un `git archive` de HEAD, limpio por construcción): el commit llega en
+    `COMMIT_REPO`."""
+    commit = _git("rev-parse", "--short", "HEAD")
+    if not commit:
+        return os.environ.get("COMMIT_REPO") or "sin-git", False
     cambios = [l for l in _git("status", "--porcelain", "--untracked-files=all").splitlines() if "/ledger/" not in l]
-    return (_git("rev-parse", "--short", "HEAD") or "sin-git"), bool(cambios)
+    return commit, bool(cambios)
 
 
 def tipo_de_maquina() -> str:

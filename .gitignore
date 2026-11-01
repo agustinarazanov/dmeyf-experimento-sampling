@@ -26,3 +26,4 @@ __pycache__/
 
 # Corridas exploratorias (smoke tests): no entran en los resultados
 experimentos/*/ledger/exploracion/
+.env

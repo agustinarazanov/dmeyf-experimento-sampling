@@ -1,0 +1,123 @@
+{
+ "duration_api_ms": 23994,
+ "stop_reason": "end_turn",
+ "session_id": "39405eeb-bc57-4421-b1c6-2a27ca30be01",
+ "total_cost_usd": 0.21081979999999997,
+ "usage": {
+  "input_tokens": 14,
+  "cache_creation_input_tokens": 39128,
+  "cache_read_input_tokens": 266298,
+  "output_tokens": 2765,
+  "output_tokens_details": {
+   "thinking_tokens": 359
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 39128,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 571,
+    "cache_read_input_tokens": 51334,
+    "cache_creation_input_tokens": 1205,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1205
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 14,
+   "outputTokens": 2765,
+   "cacheReadInputTokens": 266298,
+   "cacheCreationInputTokens": 39128,
+   "webSearchRequests": 0,
+   "costUSD": 0.21081979999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 359,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01PCKf7ugCgsQ54UJPpxQ7SJ",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad && cat docs/operacion.md | head -80; grep -n -i \"reparto\\|persona\\|fase\" docs/diseno.md | head -40; ls ledger ledger/corridas 2>&1 | head; ls ledger/sesiones; ls ~/datos/experimentos-dmeyf 2>&1 | head; gcloud compute instances list 2>&1 | tail -3"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 9,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "BLOQUEADO: no ejecuté ninguna tarea del grupo 5 y no marqué ninguna. El motivo está en `experimentos/sampling-velocidad/ledger/sesiones/bloqueo.txt`.\n\n- **Árbol sucio y sin tag:** `diseno.md` exige commit y tag `corridas-v1` antes de la fase 1, y una fila con árbol sucio queda con `valida=false`. Hay cambios sin commitear y `git tag` no devuelve nada. Commitear y taguear no estaba autorizado en esta sesión.\n- **Reparto entre personas:** 5.2 y 5.3 son de Martín y Luis, cada uno en su VM y su cuenta de Google Cloud. Además, siguen pendientes las verificaciones de su trial, su cuota y su template.\n- **Falta información para la VM:** no hay `BUCKET` definido ni `configuraciones.txt` para la fase 1. Sin eso no puedo lanzar `vm.sh`.\n- **5.4:** depende de que existan las filas de 5.1 a 5.3, y `ledger/corridas/` todavía no existe.\n\nNo creé ninguna VM. Verifiqué con `gcloud compute instances list` en el proyecto de Agustina: la única instancia es `desktop-jr`, que ya estaba y está en `TERMINATED`. No hice push ni cambié el diseño.\n\nPara seguir hace falta que decidas el commit y el tag `corridas-v1`, y que me pases el `BUCKET`. Con eso puedo lanzar la fase 1 (5.1, la parte de Agustina) con `scripts/vm.sh`.",
+ "ttft_ms": 1468,
+ "type": "result",
+ "duration_ms": 27339,
+ "uuid": "88143b73-98df-4429-bfc9-f1b08a5989e0",
+ "ttft_stream_ms": 1040,
+ "time_to_request_ms": 78,
+ "first_content_frame_ms": 1040,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 14,
+   "outputTokens": 2765,
+   "cacheReadInputTokens": 266298,
+   "cacheCreationInputTokens": 39128,
+   "webSearchRequests": 0,
+   "costUSD": 0.21081979999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 359,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

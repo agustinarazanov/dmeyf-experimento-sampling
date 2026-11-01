@@ -1,0 +1,50 @@
+== etapa 4 (3 pendientes) con sonnet · ## 4. Etapa código: corredor y ledger (sesión: Sonnet)
+== aplicar grupo 4 con sonnet
+20:14:14  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/.claude/skills/openspec-apply-ch
+20:14:14  Bash       openspec instructions apply --change experimento-sampling-velocidad --json | head -c 6000; echo; gre
+20:14:18  Bash       sed -n 25,37p openspec/changes/experimento-sampling-velocidad/tasks.md; cat docs/metodo.md | head -6
+20:14:20  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+20:14:23  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && cat .env.ejemplo; ls -a | 
+20:14:25  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && cat .env.ejemplo; grep -n 
+20:14:25  Bash       cat scripts/etapa.sh | head -80
+20:14:27  texto      Sigo con el grupo 4: faltan 4.6, 4.8 y 4.9. Reviso si hay `.env` con proyecto y bucket para la VM.
+20:14:28  Bash       ls .env 2>&1; gcloud storage ls --project=proj-uba-261012163242176 2>&1 | head -5; tail -25 experime
+20:14:32  Bash       ls requirements.txt; grep -n -iE "http|download|curl|csv.gz" comun/datos.py | head; git status --sho
+20:14:33  Bash       ls requirements.txt; grep -n -iE "http|download|curl|csv.gz" comun/datos.py | head; git status --sho
+20:14:35  Bash       gcloud storage ls gs://agustinarazanov_buckito2026/ 2>&1 | head; sed -n 35,70p comun/datos.py
+20:14:38  texto      Se descarga solo. Lanzo el smoke en la VM con una lista mínima.
+20:14:39  Bash       printf 'uniforme 0.25 0 optimizar\nuniforme 0.25 0,1 final\n' > /tmp/smoke_vm.txt && set -a && . ./.
+20:14:41  Bash       printf 'uniforme 0.25 0 optimizar\nuniforme 0.25 0,1 final\n' > /tmp/smoke_vm.txt && PROYECTO=proj-u
+20:14:44  texto      `vm.sh` no lee `.env` (como sí hace `etapa.sh`), así que le agrego esa carga y lo invoco sin variabl
+20:14:45  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:14:47  Bash       printf 'uniforme 0.25 0 optimizar\nuniforme 0.25 0,1 final\n' > /tmp/smoke_vm.txt && timeout 590 exp
+20:14:49  Bash       printf 'uniforme 0.25 0 optimizar\nuniforme 0.25 0,1 final\n' > /tmp/smoke_vm.txt && timeout 590 exp
+20:14:50  Write      /tmp/smoke_vm.txt
+20:14:52  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:14:53  Bash       experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocidad/ledger/exploracion/smo
+20:14:54  texto      Smoke de la VM corriendo en segundo plano; reviso el avance.
+20:14:54  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/b5e73664
+20:14:55  Monitor    
+20:14:57  texto      La VM se está creando y el script corre en segundo plano. Cuando termine me avisa, y después reviso 
+20:21:55  Bash       tail -15 /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling
+20:21:55  Bash       gcloud compute instances list
+20:21:58  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+20:22:04  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && sed -i 's/^- \[ \] 4.6 /- 
+20:22:08  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:22:09  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+20:22:14  texto      Del grupo 4 quedó hecha la 4.6. Las 4.8 y 4.9 quedan abiertas y las dejé como BLOQUEADO en `experime
+20:22:14  fin        success · 7 turnos · US$ 0.3962
+aplicar g4: claude-sonnet-5-5 7 turnos US$ 0.3962 (success, rc 0)
+== BLOQUEADO:
+BLOQUEADO: tareas 4.8 y 4.9 del grupo 4.
+
+4.6 quedó hecha: smoke real en VM (vm.sh, --filas 20000, 3 filas U0.25 en ledger/exploracion/corridas), VM borrada y
+`gcloud compute instances list` sin instancias de sampling. Se agregó a vm.sh la carga de .env (PROYECTO, BUCKET).
+
+- 4.8 exige revisión con la lista de código en una sesión limpia y cerrar la bitácora con los tokens de las sesiones 3 y 4.
+  Esta sesión es la que implementó, así que no puede revisarse a sí misma; la hace la sesión `revisar` de etapa.sh
+  (o una persona) y el cierre en bitácora lo firma el revisor.
+- 4.9 prueba scripts/etapa.sh, es decir, el script que me está ejecutando: probarlo desde adentro es recursivo y el caso
+  "BLOQUEADO a mano corta con código 2" requiere que una persona lo dispare y verifique fuera de esta sesión.
+  Evidencia parcial: ledger/sesiones/costos.csv ya tiene una fila por sesión con modelo y costo.
+== detenido en el grupo 4 (código 2)
