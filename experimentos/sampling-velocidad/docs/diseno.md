@@ -6,7 +6,8 @@ corridas previas quedan marcadas como de la versión anterior.
 
 ## Brazos
 
-Once brazos: el control y los diez de `hipotesis.md`. No hay otros.
+Once brazos: el control y los diez de `hipotesis.md`. No hay otros. `C-rep` (§ Grilla) es una réplica del control
+para la compuerta de resultados, no un brazo.
 
 | brazo | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
 |---|---|---|---|---|---|
@@ -33,8 +34,9 @@ Quedan nueve estudios: `C`, `U0.5`, `U0.25`, `U0.1`, `U0.05`, `B0.5`, `B0.25`, `
 
 - **Optimización**: 9 estudios × 40 trials = 360 entrenamientos, 100 iteraciones cada uno, sin early stopping.
 - **Finales**: 11 brazos × 10 semillas = 110 corridas. Cada una predice 201908 y 201910 y guarda las dos curvas.
-- **Réplica del control**: 10 corridas finales más de `C` en la VM de otra persona, con los mismos hiperparámetros. No
-  entran en Δ: sirven para la compuerta de resultados (el control se repite entre personas) y para medir cuánto varía
+- **Réplica del control**: brazo propio, **`C-rep`**: 10 corridas finales con el JSON de `C` y las mismas 10 semillas,
+  en la VM de otra persona. Tiene su propio nombre de brazo para que el id de la corrida (que incluye el brazo) no
+  choque con las de `C` y el corredor no las saltee. No entran en Δ: sirven para la compuerta de resultados (el control se repite entre personas) y para medir cuánto varía
   el tiempo entre VMs del mismo tipo.
 - **Total**: 9 filas `optimizar` y 120 filas `final` en el ledger.
 
@@ -84,20 +86,27 @@ Todo sale de `ledger/apareado.csv`; nada se calcula a mano.
 
   ```bash
   gcloud compute instances create <nombre> --zone=northamerica-northeast2-b \
-    --source-instance-template=projects/<proyecto>/regions/northamerica-northeast2/instanceTemplates/to-064ram-08vcpu \
+    --source-instance-template=projects/<proyecto-uba>/regions/northamerica-northeast2/instanceTemplates/to-064ram-08vcpu \
     --machine-type=n2-highmem-8 --min-cpu-platform="Intel Ice Lake"
   ```
 
   e2 queda descartada porque no deja fijar la plataforma de CPU.
 - **Región y zona**: `northamerica-northeast2`, que es donde están los templates del curso, en la zona `-b`. Si no hay
-  capacidad spot, se usa `-a` o `-c`, que también ofrecen Ice Lake.
+  capacidad spot, se usa `-a` o `-c`: las tres zonas listan Ice Lake entre sus plataformas (`gcloud compute zones
+  list`, 1-nov).
+- `<proyecto-uba>` es el proyecto del curso de cada persona (en el caso de Agustina, `proj-uba-261012163242176`, "UBA
+  DMEyF"). Los templates son del proyecto y no globales, así que cada uno los verifica con `gcloud compute
+  instance-templates list` en su proyecto.
 - **Prueba (tarea 2.2, 1-nov, cuenta de Agustina)**: `prueba-sampling-n2` se creó con `n2-highmem-8`, Ice Lake y spot,
   y se borró junto con su disco en un minuto.
-- **Cuotas** (proyecto de Agustina): `CPUS_ALL_REGIONS` 32; en `northamerica-northeast2`, `CPUS` 100 y `N2_CPUS` 100.
+- **Cuotas** (proyecto `proj-uba-261012163242176` de Agustina): `CPUS_ALL_REGIONS` 32; en `northamerica-northeast2`, `CPUS` 100 y `N2_CPUS` 100.
   Alcanzan para una VM de 8 vCPU sin problema. Martín y Luis tienen que verificar las suyas antes de la fase 1.
-- **Trial**: el proyecto por defecto de Agustina ("My First Project") se creó el 11-oct-2026, que es la fecha de alta
-  probable, así que el trial vence alrededor del 9-ene-2027. Lo exacto se confirma en Facturación → Créditos antes de
-  la fase 1. Las corridas van en el proyecto `UBA DMEyF` (`proj-uba-261012163242176`).
+- **Trial**: alta el 11-oct-2026, confirmada por Agustina el 1-nov. Son 90 días, así que vence el **9-ene-2027**; al
+  1-nov quedaban 69 días. Las corridas van en el proyecto `UBA DMEyF` (`proj-uba-261012163242176`).
+- **Pendiente antes de la fase 1, para Martín y Luis**: cada uno, en su proyecto del curso, verifica la fecha de alta
+  del trial, la cuota de `N2_CPUS` y `CPUS_ALL_REGIONS` y que existe `to-064ram-08vcpu`, crea y borra una VM de prueba
+  con el comando de arriba y lo anota en la bitácora. Luis tiene la carga más baja (68 u·min), así que es el margen
+  para reintentos por cortes spot.
 - Plataforma de CPU fija: las `n2` pueden caer en Cascade Lake o en Ice Lake, así que se crean con
   `--min-cpu-platform="Intel Ice Lake"`. Cada fila del ledger registra el modelo de CPU de `/proc/cpuinfo`, y el
   análisis de tiempos descarta las filas con otra CPU.
@@ -105,8 +114,14 @@ Todo sale de `ledger/apareado.csv`; nada se calcula a mano.
 - Las corridas en la Mac (`--filas 20000`) son smoke tests con `etapa = exploracion` y no entran en `resultados.csv`.
 - Un único commit con tag `corridas-v1` para todas las fases y personas. Si hay que corregir código a mitad de camino,
   se crea `corridas-v2`, se anota en la bitácora y se repiten las corridas afectadas.
-- El ledger se comparte por git (`ledger/corridas/`, `ledger/curvas/`, `ledger/hp/`). El estudio SQLite de Optuna vive
-  en el bucket de cada persona, para retomarlo si la VM spot muere.
+- El ledger se comparte por git (`ledger/corridas/`, `ledger/curvas/`, `ledger/hp/`).
+- El template borra la VM cuando spot la detiene, disco incluido. Por eso, lo que tiene que sobrevivir se copia al
+  bucket de cada persona:
+  - el **SQLite de Optuna** es un archivo local en la VM y se copia al bucket (`gsutil cp`) al terminar cada trial. No
+    se abre sobre gcsfuse, porque SQLite necesita locking;
+  - el **panel 2019 en Parquet** se sube una vez después de armarlo. Una VM nueva lo baja del bucket en vez de
+    rehacer la media hora de preparación;
+  - las **filas de `ledger/corridas/` y `ledger/curvas/`** se suben al terminar cada corrida.
 
 ## Estimación de horas y costo
 
@@ -130,7 +145,7 @@ predicción. Supuesto: u ≈ 1 min en `n2-highmem-8`. Factores de costo relativo
 | `GOSS` | 28,0 | 7,0 | 28,7 | 1,4 |
 | `H3-0.25` | (de `U0.25`) | 10,0 | 15,5 | 2,6 |
 | `H3-0.1` | (de `U0.1`) | 10,0 | 10,4 | 3,9 |
-| réplica `C` | — | 10,0 | — | — |
+| `C-rep` | — | 10,0 | — | — |
 | **total** | **191,0** | **77,8** | | |
 
 - **Cómputo**: 268,8 u·min ≈ 4,5 h con u = 1 min. Se suma media hora por VM para bajar el crudo y armar el panel (tres
@@ -156,13 +171,13 @@ dependencia y el reparto equilibra la carga.
 |---|---|---|---:|
 | 1 | Agustina | estudios `C`, `U0.25`, `U0.1` (en ese orden); finales `C`, `H3-0.25`, `H3-0.1`, `U0.25`, `U0.1` | 99,9 |
 | 2 | Martín | estudios y finales de `U0.5` y `U0.05` | 38,4 |
-| 2 | Luis | réplica de `C` (con el JSON de la fase 1) | 10,0 |
+| 2 | Luis | `C-rep` (con el JSON de `C` de la fase 1) | 10,0 |
 | 3 | Martín | estudios y finales de `B0.5` y `B0.25` | 62,5 |
 | 3 | Luis | estudios y finales de `B0.1` y `GOSS` | 58,0 |
 
 Por persona: Agustina 99,9, Martín 100,9, Luis 68,0; total 268,8. Cada estudio y cada corrida final aparece una sola
 vez. Cada brazo tiene su estudio y sus finales en la misma VM; T(brazo) y T(C) sí vienen de VMs distintas, y la
-réplica de `C` mide cuánto varía el tiempo entre ellas.
+réplica `C-rep` mide cuánto varía el tiempo entre ellas.
 
 **Dependencias.**
 
@@ -173,8 +188,8 @@ réplica de `C` mide cuánto varía el tiempo entre ellas.
   u solo cambia el calendario, así que no la espera.
 - N\* y δ salen del control, así que los veredictos esperan a que esté la fase 1 completa, pero las corridas no.
 
-**Corridas perdidas.** Si una VM spot muere, el estudio se retoma desde su SQLite y las finales se relanzan con la
-lista de configuraciones. El corredor saltea las que ya tienen fila en `ledger/corridas/`. Si un brazo termina con menos
+**Corridas perdidas.** Si una VM spot muere, se crea otra, baja el panel y el SQLite del bucket, retoma el estudio y
+relanza las finales con la lista de configuraciones. El corredor saltea las que ya tienen fila en `ledger/corridas/`. Si un brazo termina con menos
 de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
 
 ## Fuera de la grilla

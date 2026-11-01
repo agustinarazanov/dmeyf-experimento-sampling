@@ -14,7 +14,7 @@
 - [x] 2.1 Escribir `experimentos/sampling-velocidad/docs/diseno.md` con la grilla completa (método, tasas, semillas, trials), métricas, estadística apareada, tipo de VM, reparto por persona y fases; verificar que el total de corridas y las horas estimadas están calculados
 - [x] 2.2 Verificar en la consola de Google Cloud la fecha de alta del trial y la cuota de vCPU, y anotar en `experimentos/sampling-velocidad/docs/diseno.md` qué template y zona se usan; verificar que una VM `n2-highmem-8` spot se crea y se borra desde el template
 - [x] 2.3 Publicar el repo en GitHub (privado hasta la entrega), invitar a Martín y Luis, agregar `README.md` con cómo correr en Mac y en VM, la lista de experimentos y cómo agregar uno copiando `plantilla/`; verificar que un clon limpio tiene `.gitignore` para datos y que el README no menciona el dataset
-- [ ] 2.4 Revisar la etapa con la lista de diseño y cerrar en la bitácora; verificar que la devolución del tutor, si llegó, está incorporada con id de Zulip
+- [x] 2.4 Revisar la etapa con la lista de diseño y cerrar en la bitácora; verificar que la devolución del tutor, si llegó, está incorporada con id de Zulip
 
 ## 3. Etapa código: preparación de datos (sesión: Sonnet)
 

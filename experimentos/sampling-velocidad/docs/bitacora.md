@@ -66,7 +66,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 ### 2026-11-01 — apertura: etapa diseño
 - Sesión: `a5afcd58-12ea-4332-9ab8-49822bca2e03` · modelo: Opus · etapa: **diseno**.
 - Tarea 2.1: `docs/diseno.md` con 11 brazos, 9 estudios de Optuna (H3 comparte los suyos con `U0.25` y `U0.1`), 110
-  finales más 10 de réplica del control, ≈ 6 h de VM (≈ 15 h en el peor caso, ≈ US$ 8) y el reparto por persona.
+  finales más 10 de réplica del control, ≈ 6 h de VM (≈ 15 h en el peor caso, ≈ US$ 9) y el reparto por persona.
   D7 de `design.md` se actualizó para que coincida.
 - Revisión preliminar con la lista § 2, a cargo de un subagente `general-purpose` sin contexto: ✓ 7/8, con el ítem de
   la devolución del tutor en n/a. No encontró errores aritméticos.
@@ -98,9 +98,31 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   con `n2-highmem-8` y fijando `--min-cpu-platform="Intel Ice Lake"`, en `northamerica-northeast2-b`.
   - Prueba: `prueba-sampling-n2` se creó con Ice Lake y spot, y se borró junto con su disco (19:19 a 19:21).
   - Cuotas: `CPUS_ALL_REGIONS` 32 y `N2_CPUS` 100 en la región.
-  - Trial: el alta probable es del 11-oct (vence alrededor del 9-ene-2027); la fecha exacta queda por confirmar en la
-    consola.
+  - Trial: alta el 11-oct, confirmada por Agustina; vence el 9-ene-2027.
   - Detalle en `docs/diseno.md` § Máquina.
 - **2.3, repo**: es privado, en `agustinarazanov/dmeyf-experimento-sampling`. El prefijo `dmeyf` lo pidió Agustina para
   los repos de la materia; el nombre no admite `/`. Por decisión de Agustina, no se mandaron invitaciones a Martín y
   Luis. El README no menciona el dataset y `.gitignore` excluye los datos.
+
+### 2026-11-01 — cierre diseño
+- Sesión: `a5afcd58-12ea-4332-9ab8-49822bca2e03` · modelo: Opus
+- Revisor: subagente `general-purpose` sin contexto. Pasó dos veces: la preliminar (ver la apertura) y esta final.
+- Lista: docs/revision.md § 2. Pasada final ✓ 7/7 aplicables; el ítem del tutor es n/a. Al recalcular, coincidieron
+  todos los números.
+- Hallazgos de la pasada final:
+  - **bloqueante**: la réplica del control chocaba con la regla de saltear las corridas que ya tienen fila;
+  - **bloqueante**: el template borra la VM spot con su disco, y el SQLite de Optuna no funciona sobre gcsfuse;
+  - **menores**: el proyecto del template y de las cuotas no estaba nombrado; faltaba la verificación de Ice Lake en
+    las zonas `-a` y `-c`; quedaban pendientes de Martín y Luis sin listar; la bitácora decía US$ 8 y el diseño US$ 9.
+- Corregido:
+  - la réplica pasa a ser un brazo propio, `C-rep`;
+  - el SQLite es local y se copia al bucket después de cada trial; el panel y las filas del ledger también se suben,
+    y una VM nueva los baja;
+  - quedaron nombrados el proyecto y las zonas, con la lista de pendientes de Martín y Luis antes de la fase 1;
+  - US$ 9 en los dos documentos.
+  - La carga más baja de Luis queda como margen para reintentos.
+- Tokens: 61 turnos · contexto promedio 125.991 por turno (máximo 165.868) · 59.180 de salida. **No se cumple el
+  objetivo** de < 100.000. Pesaron la reorganización del repo a mitad de etapa, que reabrió `tasks.md` con
+  `/opsx:update`, y la configuración de `gcloud` y `gh` en la misma sesión. El costo en US$ queda para
+  `comun/tokens.py` (tarea 4.7).
+- Tutor: sin devolución. El post `zulip/01_hipotesis.md` sigue sin enviar.
