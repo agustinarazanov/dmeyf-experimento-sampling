@@ -81,6 +81,8 @@ correr_claude "$MODELO" "$PRESUPUESTO_APLICAR" "$J_APLICAR" \
     "Aplicá solo el grupo $GRUPO de tasks.md del cambio $CAMBIO siguiendo \
 .claude/skills/openspec-apply-change/SKILL.md (openspec instructions apply --change $CAMBIO --json). \
 El experimento es experimentos/$EXP; leé CLAUDE.md y docs/metodo.md antes de empezar. \
+PROYECTO y BUCKET ya están definidos: los carga .env (en la raíz del repo, ignorado por git) y los lee vm.sh; \
+no los busques en los documentos ni pidas que los definan. \
 Marcá cada tarea al terminarla. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
 no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Si una tarea necesita una VM, usá solo $DIR/scripts/vm.sh (ver \
 $DIR/docs/operacion.md), nunca gcloud directamente, y al final verificá con gcloud compute instances list que no \

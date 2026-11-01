@@ -51,7 +51,7 @@ los hilos coinciden; si no, la columna `nota` lo dice.
 ## VM
 
 ```bash
-PROYECTO=<proyecto-uba> BUCKET=gs://<bucket> scripts/vm.sh configuraciones.txt
+scripts/vm.sh configuraciones.txt        # PROYECTO y BUCKET salen de .env en la raíz del repo (ver .env.ejemplo)
 ```
 
 `vm.sh` crea la VM spot desde `to-064ram-08vcpu` con `n2-highmem-8` e Ice Lake (`docs/diseno.md` § Máquina), copia el repo
