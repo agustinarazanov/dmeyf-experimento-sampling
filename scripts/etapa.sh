@@ -21,6 +21,7 @@ DIR="experimentos/$EXP"
 LOG="$DIR/ledger/sesiones"
 BLOQUEO="$LOG/bloqueo.txt"
 EN_CURSO="$LOG/en_curso.txt"
+mkdir -p "$LOG"; rm -f "$EN_CURSO"          # es una señal por sesión, no un mensaje para una persona
 mkdir -p "$LOG"
 
 if [ -f "$BLOQUEO" ]; then
