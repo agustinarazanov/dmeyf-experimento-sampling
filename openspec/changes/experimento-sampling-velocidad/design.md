@@ -126,6 +126,16 @@ bloqueo, eligiendo el modelo por el encabezado del grupo. Alternativas considera
 la sesión abierta y gasta por la cuenta de esa sesión) y una sesión orquestadora que lanza subagentes (paga coordinación
 en tokens). El script de shell es gratis de coordinar, corre desde cualquier terminal y queda versionado.
 
+**D11. Reporte visual: un HTML estático generado desde el ledger.** `src/reporte.py` lee `resultados.csv`,
+`apareado.csv`, las curvas y los documentos de hipótesis y diseño, y escribe `informe/reporte.html` con las figuras
+embebidas (SVG o PNG en base64, matplotlib con la paleta de `v_estilo` de `competencia-2`, validada con la skill
+`dataviz`). Secciones: introducción (pregunta, hipótesis, control, regla), tabla de todos los brazos, gráfico tiempo
+contra ganancia, una sección por hipótesis con bandas de curvas y veredicto, comparación a tiempo igual, y al pie la
+fecha, el commit y el estado del ledger. Los brazos sin datos se muestran como pendientes. Alternativas descartadas: un
+notebook (no se abre sin entorno y mezcla código con lectura) y un dashboard con servidor (nada que operar). Se puede
+publicar tal cual como artefacto para el tutor; el markdown de `docs/hipotesis.md` se convierte con una función mínima,
+sin dependencia nueva.
+
 ## Risks / Trade-offs
 
 - [Spot muere a mitad de una optimización] → cada trial de Optuna se persiste en SQLite en el bucket; la corrida se

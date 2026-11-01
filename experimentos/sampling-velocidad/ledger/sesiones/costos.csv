@@ -14,3 +14,4 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado
 2026-11-01T20:26,5,aplicar,claude-sonnet-5-5,9,0.2108,39405eeb-bc57-4421-b1c6-2a27ca30be01,success,0
 2026-11-01T20:32,5,aplicar,claude-sonnet-5-5,13,0.1812,cfbfb542-6488-49ad-bb73-f9d36ad7e787,success,0
 2026-11-01T20:34,5,aplicar,claude-sonnet-5-5,28,0.2871,71410cb4-d46c-4384-840e-aa64934e0f51,success,0
+2026-11-01T20:36,5,aplicar,claude-sonnet-5-5,12,0.1505,0ed9c55a-ac71-41a7-a85e-4b95b7e56554,success,0

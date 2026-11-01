@@ -43,7 +43,8 @@
 
 ## 6. Etapa análisis e informe (6.1 y 6.4 con Sonnet vía `scripts/etapa.sh`; 6.2 y 6.3 con Opus)
 
-- [ ] 6.1 Generar tablas apareadas y curvas tiempo-ganancia por hipótesis en `experimentos/sampling-velocidad/informe/figuras/` y decidir cada hipótesis con su regla escrita; verificar que cada decisión cita una fila de `apareado.csv`
+- [ ] 6.0 Crear `experimentos/sampling-velocidad/src/reporte.py` que genera `informe/reporte.html` desde el ledger y los documentos (introducción, tabla de brazos, tiempo contra ganancia, sección por hipótesis con bandas y veredicto, comparación a tiempo igual, pie con fecha y commit); verificar que corre con el ledger parcial de la fase 1 mostrando los brazos faltantes como pendientes, que dos corridas seguidas dan el mismo HTML salvo la fecha, y que el archivo abre sin servidor
+- [ ] 6.1 Regenerar el reporte con el ledger completo y exportar sus figuras a `experimentos/sampling-velocidad/informe/figuras/` para el video y decidir cada hipótesis con su regla escrita; verificar que cada decisión cita una fila de `apareado.csv`
 - [ ] 6.2 Escribir `experimentos/sampling-velocidad/informe/informe.md` (hipótesis, diseño, limitaciones, resultados, conclusiones, qué seguiría) y el guion del video de 10 minutos en `experimentos/sampling-velocidad/informe/guion.md` con la estructura pedida por Bolaños; verificar que el guion no explica el baseline y que la biblio está lista para postear en Zulip
 - [ ] 6.3 Revisar informe y guion con la lista de informe en sesión limpia; verificar que ninguna afirmación carece de tabla o figura
 - [ ] 6.4 Cerrar el registro de tokens: correr `comun/tokens.py`, comparar contexto promedio y costo equivalente contra octubre en `experimentos/sampling-velocidad/docs/bitacora.md`; verificar que la comparación tiene la misma unidad (tokens por turno y US$ equivalentes) y una conclusión sobre el método

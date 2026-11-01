@@ -1,0 +1,5 @@
+EN_CURSO
+Lancé las fases 1, 2 y 3 con lanzar_fase.sh (VMs sampling-f1, sampling-f2, sampling-f3, n2-highmem-8 spot; logs en ledger/sesiones/vm_f<N>.log).
+Espero que vm.sh termine en las tres (pgrep -f vm.sh vacío) y que el ledger de las corridas vuelva con filas.
+Al volver: consolidar, verificar 5.1 (30 filas finales, misma máquina y commit), 5.2 (train por tasa, sin codigo_sucio),
+5.3 (bagging_fraction fijo), 5.4 (consolidar.py --sanity, anotar VMs borradas y gasto) y marcar.

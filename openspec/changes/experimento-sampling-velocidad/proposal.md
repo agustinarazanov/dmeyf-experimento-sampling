@@ -31,6 +31,9 @@ archivo bajan ese número sin perder calidad.
   apareado por semilla y las curvas de ganancia.
 - Un **registro de tokens** por sesión de Claude Code, calculado desde los transcripts locales, comparado contra la
   línea de base de octubre.
+- Un **reporte visual** regenerable desde el ledger (`informe/reporte.html`): introducción de qué se está probando,
+  tabla de todos los brazos contra el control, gráfico tiempo contra ganancia y una sección por hipótesis con su
+  veredicto. Es la vista que comparte el grupo y la que sostiene el video.
 - Documentos del experimento en `experimentos/sampling-velocidad/docs/`: hipótesis, diseño experimental, bitácora,
   informe final y guion del video. La lista de revisión por etapa y el método son del repo (`docs/`), no del
   experimento. El post al tutor sale de `docs/hipotesis.md` del experimento.
@@ -49,6 +52,7 @@ entrenamiento (grupo Meses), features nuevas (grupos FE) y el pipeline productiv
 - `ledger-resultados`: qué registra cada corrida, cómo se acumula sin pisar y qué se puede derivar de él (tablas
   apareadas, curvas de ganancia).
 - `registro-tokens`: cómo se mide el consumo de Claude por sesión y etapa, y contra qué se compara.
+- `reporte-visual`: qué muestra el reporte del experimento, de dónde salen sus números y cómo se regenera.
 
 ### Modified Capabilities
 (ninguna: el repo es nuevo)

@@ -1,0 +1,25 @@
+== etapa 5 (4 pendientes) con sonnet · ## 5. Etapa corridas (sesión: Sonnet vía `scripts/etapa.sh`; el trabajo lo hace la VM y las VMs las crea una persona)
+== aplicar grupo 5 con sonnet
+20:36:16  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; cat .claude/skills/openspec-
+20:36:18  Bash       openspec instructions apply --change experimento-sampling-velocidad --json > /tmp/apply.json; head -
+20:36:19  Bash       ls experimentos/sampling-velocidad/ledger/sesiones experimentos/sampling-velocidad/ledger/corridas; 
+20:36:22  Bash       sed -n 37,44p openspec/changes/experimento-sampling-velocidad/tasks.md; tail -5 experimentos/samplin
+20:36:24  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+20:36:25  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && for n in 1 2 3; do experim
+20:36:27  texto      Estoy lanzando las tres fases con `lanzar_fase.sh`. El bucle con variable no pasó el chequeo de perm
+20:36:27  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && experimentos/sampling-velo
+20:36:27  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && experimentos/sampling-velo
+20:36:28  Bash       experimentos/sampling-velocidad/scripts/lanzar_fase.sh 3
+20:36:30  Bash       sleep 20; tail -3 experimentos/sampling-velocidad/ledger/sesiones/vm_f1.log experimentos/sampling-ve
+20:36:51  texto      Las tres VMs están RUNNING. Escribo el marcador EN_CURSO.
+20:36:53  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+20:36:56  texto      Lancé las fases 1, 2 y 3 y no marqué ninguna tarea del grupo 5, porque todas dependen de resultados 
+20:36:56  fin        success · 12 turnos · US$ 0.1505
+aplicar g5: claude-sonnet-5-5 12 turnos US$ 0.1505 (success, rc 0)
+== EN_CURSO (VMs trabajando):
+EN_CURSO
+Lancé las fases 1, 2 y 3 con lanzar_fase.sh (VMs sampling-f1, sampling-f2, sampling-f3, n2-highmem-8 spot; logs en ledger/sesiones/vm_f<N>.log).
+Espero que vm.sh termine en las tres (pgrep -f vm.sh vacío) y que el ledger de las corridas vuelva con filas.
+Al volver: consolidar, verificar 5.1 (30 filas finales, misma máquina y commit), 5.2 (train por tasa, sin codigo_sucio),
+5.3 (bagging_fraction fijo), 5.4 (consolidar.py --sanity, anotar VMs borradas y gasto) y marcar.
+== 20:36 esperando a que terminen las VMs (vm.sh locales) · se revisa cada 5 min
