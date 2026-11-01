@@ -1,0 +1,53 @@
+# Tasks
+
+## 1. Etapa hipótesis (sesión: Opus)
+
+- [x] 1.1 Escribir `experimentos/sampling-velocidad/docs/hipotesis.md` con pregunta, H1, H2, H3, predicción numérica y regla de decisión de cada una, y el control; verificar que cada hipótesis nombra una sola variable y una métrica que la decide
+- [x] 1.2 Escribir `docs/revision.md` (raíz, compartido) con las cinco listas de compuerta (hipótesis, diseño, código, resultados, informe); verificar que cada lista cabe en una pantalla
+- [x] 1.3 Crear `experimentos/sampling-velocidad/docs/bitacora.md` con la entrada de apertura y el formato de cierre de etapa (fecha, etapa, revisor, hallazgos, tokens); verificar que la primera entrada declara la etapa de esta sesión
+- [x] 1.4 Redactar el post para `Experimentos - Lunes > sampling_1` a partir de `experimentos/sampling-velocidad/docs/hipotesis.md` (hipótesis, partición con Sampling_2, pregunta sobre la adaptación de H2) y guardarlo en `experimentos/sampling-velocidad/docs/zulip/01_hipotesis.md`; verificar que entra en una pantalla de Zulip
+- [x] 1.5 Revisar la etapa en sesión limpia con la lista de hipótesis y cerrar en la bitácora; verificar que la entrada tiene fecha, revisor y tokens de la sesión
+
+## 2. Etapa diseño (sesión: Opus)
+
+- [x] 2.0 Reorganizar el repo al layout D0: crear `comun/`, `experimentos/sampling-velocidad/{docs,src,scripts,ledger,informe}`, `plantilla/` (misma estructura, con `docs/hipotesis.md`, `docs/diseno.md` y `docs/bitacora.md` vacíos) y `docs/metodo.md` (etapas y reglas de tokens); mover hipótesis, diseño, bitácora y `zulip/` a `experimentos/sampling-velocidad/docs/` y anotarlo en la bitácora; verificar que `docs/` de la raíz solo tiene `metodo.md` y `revision.md`
+- [x] 2.1 Escribir `experimentos/sampling-velocidad/docs/diseno.md` con la grilla completa (método, tasas, semillas, trials), métricas, estadística apareada, tipo de VM, reparto por persona y fases; verificar que el total de corridas y las horas estimadas están calculados
+- [ ] 2.2 Verificar en la consola de Google Cloud la fecha de alta del trial y la cuota de vCPU, y anotar en `experimentos/sampling-velocidad/docs/diseno.md` qué template y zona se usan; verificar que una VM `n2-highmem-8` spot se crea y se borra desde el template
+- [ ] 2.3 Publicar el repo en GitHub (privado hasta la entrega), invitar a Martín y Luis, agregar `README.md` con cómo correr en Mac y en VM, la lista de experimentos y cómo agregar uno copiando `plantilla/`; verificar que un clon limpio tiene `.gitignore` para datos y que el README no menciona el dataset
+- [ ] 2.4 Revisar la etapa con la lista de diseño y cerrar en la bitácora; verificar que la devolución del tutor, si llegó, está incorporada con id de Zulip
+
+## 3. Etapa código: preparación de datos (sesión: Sonnet)
+
+- [ ] 3.1 Crear `comun/datos.py` y `comun/baseline.py` (meses, target, espacio de hiperparámetros, defaults): descarga del crudo desde GCS a `DATOS_DIR`, panel 2019 con lags y deltas 2 en DuckDB (SQL copiado de `competencia-2/src/fe_panel.py`), target BAJA+1 ∪ BAJA+2 y marca de BAJA+2, guardado en Parquet; verificar con `--filas 20000` que el panel tiene lag y delta de cada columna numérica y que 201901–201902 no tienen target
+- [ ] 3.2 Crear `comun/ganancia.py` con ganancia acumulada, curva de corte y ganancia a envíos fijos (valores de la cátedra en una constante documentada); verificar con un test sobre un vector sintético de 10 scores
+- [ ] 3.3 Instalar `libomp` en la Mac (`brew install libomp`) y dejar en `README.md` el requisito; verificar que `import lightgbm` carga en el pyenv `facultad`
+
+## 4. Etapa código: corredor y ledger (sesión: Sonnet)
+
+- [ ] 4.1 Crear `experimentos/sampling-velocidad/src/muestreo.py` con muestreo uniforme por semilla y hash de la muestra; verificar que dos llamadas con la misma semilla dan el mismo hash y que la tasa produce ± 0,1% de las filas esperadas
+- [ ] 4.2 Crear `experimentos/sampling-velocidad/src/correr.py` con la CLI (método, tasa, semilla, etapa, `--hp`, `--filas`), etapa `optimizar` (Optuna 40 trials, AUC 201908, estudio SQLite reanudable, JSON de mejores hiperparámetros) y etapa `final` (10 semillas por invocación o una, ganancia y curva en 201910); verificar que la etapa `optimizar` no carga 201910 (grep en el log de meses leídos)
+- [ ] 4.3 Implementar los métodos `uniforme`, `bagging`, `goss` y `opt-muestra` como funciones que devuelven (datos, params) a partir del baseline; verificar con `--filas 20000` que cada método corre de punta a punta y escribe su fila
+- [ ] 4.4 Implementar en `comun/ledger.py` la escritura de `experimentos/sampling-velocidad/ledger/corridas/<id>.csv` con todas las columnas obligatorias, tiempos por fase, memoria máxima, tipo de máquina, hilos, commit y `codigo_sucio`; verificar que falta una columna y el corredor falla nombrándola
+- [ ] 4.5 Implementar la consolidación y el apareado en `comun/ledger.py` y crear `experimentos/sampling-velocidad/src/consolidar.py` que arma `ledger/resultados.csv` y `ledger/apareado.csv` del experimento (diferencia contra el control apareada por semilla: media, desvío, IC 95%, semillas ganadas) y `experimentos/sampling-velocidad/scripts/graficar.py` para las bandas de curvas por brazo; verificar con tres filas sintéticas que el apareado usa solo semillas en común
+- [ ] 4.6 Crear `experimentos/sampling-velocidad/scripts/vm.sh` (crear VM desde el template, copiar el repo, instalar deps, lanzar `nohup` con una lista de configuraciones, subir `ledger/corridas/` al bucket, apagar) y `experimentos/sampling-velocidad/docs/operacion.md`; verificar en una VM real con `--filas 20000` que el ciclo completo termina con la VM borrada
+- [ ] 4.7 Crear `comun/tokens.py` que lee los transcripts del repo y escribe el `ledger/tokens.csv` del experimento por sesión y etapa con la línea de base de octubre; verificar que corre dos veces sin cambiar el CSV y que las sesiones de las etapas 1 a 4 aparecen con sus tokens
+- [ ] 4.8 Revisar la etapa con la lista de código (smoke test, determinismo repetido, ledger completo) en sesión limpia y cerrar en la bitácora con los tokens de las sesiones 3 y 4
+
+## 5. Etapa corridas (sesión: Sonnet, mínima; el trabajo lo hace la VM)
+
+- [ ] 5.1 Fase 1: control (optimizar r = 1 y 10 semillas finales) y H3 (optimizar con r = 0,1 y 0,25, 10 semillas finales con r = 1) en una VM; verificar que las 30 filas finales están consolidadas con la misma máquina y commit
+- [ ] 5.2 Fase 2: H1 con r ∈ {0,5, 0,25, 0,1, 0,05}, optimización por tasa y 10 semillas, repartida entre dos personas; verificar que las filas de train de cada corrida coinciden con la tasa y que no hay `codigo_sucio`
+- [ ] 5.3 Fase 3: H2 con `bagging_fraction` ∈ {0,5, 0,25, 0,1} y `goss`, optimización y 10 semillas; verificar que `bagging_fraction` quedó fijo y no optimizado en esas filas
+- [ ] 5.4 Sanity de resultados: el control reproduce AUC y ganancia dentro del ruido entre dos personas, tiempos solo del mismo tipo de máquina, ninguna corrida exploratoria en `resultados.csv`; verificar con `consolidar.py --sanity` y anotar en la bitácora las VMs borradas y el gasto del trial
+
+## 6. Etapa análisis e informe (sesión: Opus para el informe, Sonnet para tablas)
+
+- [ ] 6.1 Generar tablas apareadas y curvas tiempo-ganancia por hipótesis en `experimentos/sampling-velocidad/informe/figuras/` y decidir cada hipótesis con su regla escrita; verificar que cada decisión cita una fila de `apareado.csv`
+- [ ] 6.2 Escribir `experimentos/sampling-velocidad/informe/informe.md` (hipótesis, diseño, limitaciones, resultados, conclusiones, qué seguiría) y el guion del video de 10 minutos en `experimentos/sampling-velocidad/informe/guion.md` con la estructura pedida por Bolaños; verificar que el guion no explica el baseline y que la biblio está lista para postear en Zulip
+- [ ] 6.3 Revisar informe y guion con la lista de informe en sesión limpia; verificar que ninguna afirmación carece de tabla o figura
+- [ ] 6.4 Cerrar el registro de tokens: correr `comun/tokens.py`, comparar contexto promedio y costo equivalente contra octubre en `experimentos/sampling-velocidad/docs/bitacora.md`; verificar que la comparación tiene la misma unidad (tokens por turno y US$ equivalentes) y una conclusión sobre el método
+
+## Workflow follow-up
+
+- Grabar y publicar el video, postear el link y la bibliografía en `Experimentos - Lunes > sampling_1`.
+- Archivar el cambio una vez entregado el video.

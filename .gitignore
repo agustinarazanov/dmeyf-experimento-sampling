@@ -1,0 +1,25 @@
+# Datos: nunca en el repo (viven en DATOS_DIR)
+*.csv.gz
+*.parquet
+*.feather
+*.duckdb
+*.db
+*.sqlite
+*.sqlite3
+datos/
+data/
+
+# Modelos y salidas pesadas
+*.txt.model
+*.lgb
+modelos/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store
+.claude/settings.local.json
