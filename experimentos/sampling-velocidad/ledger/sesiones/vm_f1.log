@@ -7,3 +7,7 @@ NAME         ZONE                       MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  
 sampling-f1  northamerica-northeast2-b  n2-highmem-8  true         10.188.0.5   34.130.253.139  RUNNING
 == copiando el repo @ 2bd8a63
 == corriendo; seguimiento: gcloud compute --project=proj-uba-261012163242176 ssh sampling-f1 --zone=northamerica-northeast2-b --command='tail -f ~/corrida.log'
+== estado: DONE
+== trayendo el ledger
+== borrando sampling-f1
+Deleted [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f1].
