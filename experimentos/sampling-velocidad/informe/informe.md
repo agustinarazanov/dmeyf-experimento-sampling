@@ -21,7 +21,9 @@ Diez brazos contra el control, cada uno con su propio Optuna (40 trials, AUC en 
 todos. Decide la ganancia en 201910 al corte N* = 3.300 envíos, que sale del control en 201908. Δ es la diferencia contra
 el control apareada por semilla, con IC 95% t. Con δ = 2% de la ganancia del control (5,52 M$): *no pierde* si la cota
 inferior del IC es ≥ −δ, *pierde* si la media es < −δ, *indeterminado* en el resto. T es el tiempo de la optimización más
-un modelo final, medido en `n2-highmem-8`. Tres fases en VMs spot, 119 corridas válidas, un solo tipo de máquina. Detalle
+un modelo final, medido en `n2-highmem-8`. Tres fases en VMs spot y una cuarta que repite los finales guardando
+predicciones: 129 corridas válidas en `resultados.csv` (9 optimizaciones y 120 finales de 12 brazos, C-rep incluido), un
+solo tipo de máquina. Detalle
 en `docs/hipotesis.md` y `docs/diseno.md`.
 
 ## Resultados
@@ -54,10 +56,14 @@ Figura principal: `figuras/tiempo_vs_ganancia.png`. Bandas de curvas por hipóte
   sobra en un ensamble de K semillas (K ≤ 10). Contra Ḡ_C = 276,10 M$ quedan arriba U0.5 (+6,05), H3-0.1 (+3,85),
   H3-0.25 (+2,75), U0.25 y B0.25 (+0,55), y abajo U0.1 y B0.1 (−4,95) y U0.05 (−23,65). El ensamble de las 10 semillas
   del control da 275,55 M$, o sea que ensamblar casi no suma. La predicción (la variante rápida gana y H3 es la que más
-  rinde) se cumple en parte: solo U0.5 supera a Ḡ_C por más de δ, y es U0.5, no H3, la que más rinde.
+  rinde) se cumple en parte: cinco de los ocho brazos con ensamble quedan arriba de Ḡ_C, pero los tres más agresivos
+  quedan abajo y es U0.5, no H3, la que más rinde. Como referencia, solo U0.5 supera a Ḡ_C por más de δ.
 
 ## Limitaciones
 
+- Adaptación de H2: en los brazos `B*` `bagging_fraction` es la variable y sale del espacio de Optuna, mientras que el
+  control y `uniforme` la siguen optimizando. Por eso `bagging` y `uniforme` no tienen la misma fracción efectiva por
+  iteración y la comparación entre ellos es solo descriptiva.
 - Una sola semilla de Optuna por brazo: Δ incluye la suerte de la optimización y el IC no la mide.
 - U0.25/H3-0.25 y U0.1/H3-0.1 comparten estudio: no son evidencia independiente entre sí.
 - La réplica del control (C-rep) se corrió en otra VM de la misma cuenta, no por otra persona.
@@ -75,7 +81,8 @@ Figura principal: `figuras/tiempo_vs_ganancia.png`. Bandas de curvas por hipóte
 El tradeoff vale la pena si lo que se achica es la **optimización**, no el entrenamiento del modelo final. Optimizar
 sobre el 10% de las filas y entrenar con todas da la misma ganancia que el control (dentro de δ) en un octavo del tiempo.
 Entrenar el final con menos filas sí pierde, al azar desde r = 0,25 y dentro de LightGBM con f = 0,1. Por qué: la
-optimización es lo que domina T (40 trials contra un solo final), y los hiperparámetros que elige Optuna se trasladan
+optimización es lo que domina T (en el control, 748 s de Optuna contra 35 s de un final; tabla de `reporte.html`
+§ A tiempo igual y `ledger/estudios.csv`), y los hiperparámetros que elige Optuna se trasladan
 bien de la muestra al total. Gastar el tiempo ahorrado en más semillas no cambia la respuesta. Los dos H3 siguen
 arriba del control y los brazos agresivos siguen abajo. El único que mejora de forma notable es U0.5, que a datos
 iguales era indeterminado. Como es un solo número sin intervalo, no alcanza para declararlo ganador.

@@ -300,3 +300,26 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Resultado: ensamble de 10 de C = 275,55 M$ contra Ḡ_C = 276,10. Arriba de Ḡ_C quedan U0.5 (+6,05), H3-0.1
   (+3,85), H3-0.25 (+2,75), U0.25 y B0.25 (+0,55). Abajo, U0.1 y B0.1 (−4,95) y U0.05 (−23,65). B0.5 y GOSS tienen
   K = 0. La predicción se cumple en parte: H3 no es la que más rinde.
+
+### 2026-11-02 — cierre informe
+- Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (tarea 6.3).
+- Revisor: sesión limpia (Opus, sin contexto de las sesiones del grupo 6).
+- Lista: docs/revision.md § 5; ítems ✓ 7/7 después de las correcciones (dos ✗ al empezar).
+  - ✓ Cada hipótesis se decide con su regla de `hipotesis.md`: H1 ninguna de las dos (U0.5 indeterminado, U0.05
+    pierde), H2 refutada (B0.1 pierde), H3 confirmada (H3-0.25 no pierde). Los números de `informe.md` y `guion.md`
+    coinciden con `apareado.csv` y con `decisiones.md` (Δ, IC, A y la tabla a tiempo igual; 275,55 = 276,10 − 0,55).
+  - ✗→✓ Afirmaciones sin cita: "la optimización domina T" no citaba nada (ahora: 748 s de Optuna contra 35 s de un
+    final en C, `estudios.csv` y `reporte.html`). "Tres fases, 119 corridas válidas" estaba desactualizado: son 129
+    filas válidas (9 optimizaciones y 120 finales) y hay una fase 4.
+  - ✓ Refutaciones y empates con el mismo peso (tabla completa, H2 refutada y H1 sin decisión en el texto y el guion).
+  - ✗→✓ Limitaciones: estaban las semillas y el mes único, pero faltaba la adaptación de H2 (`bagging_fraction` fuera
+    de Optuna). Agregada en `informe.md` y en el bloque de limitaciones de `guion.md`.
+  - ✓ Guion en 10:00 con hipótesis, diseño, limitaciones, resultados y conclusiones; no explica el baseline.
+  - ✓ Bibliografía lista para Zulip.
+- Hallazgo menor: la frase a tiempo igual de `informe.md` usaba δ como si fuera el criterio de la predicción, y
+  `hipotesis.md` no le pone umbral. Se reescribió como en `decisiones.md` (cinco de ocho arriba de Ḡ_C, δ solo como
+  referencia). No cambia ninguna conclusión.
+- Corregido: `informe/informe.md` (Diseño, Resultados a tiempo igual, Limitaciones, Conclusiones) y `informe/guion.md`
+  (limitaciones). Sin cambios en código, ledger ni `decisiones.md`.
+- Tokens: ~20 turnos · ≈ US$ 0,8 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
+- Tutor: sin devolución nueva.
