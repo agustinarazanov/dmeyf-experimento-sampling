@@ -156,3 +156,51 @@ p=Path('experimentos/sampling-velocidad/informe/informe.md
 18:08:42  Bash       python - <<'EOF'
 from pathlib import Path
 p=Path('openspec/changes/experimento-sampling-velocidad/ta
+18:08:53  texto      Terminé el grupo 6, salvo la 6.3, que queda para la sesión de revisión. Hice dos commits sin push: `
+18:08:53  fin        success · 45 turnos · US$ 1.6013
+aplicar g6: claude-opus-5-5 45 turnos US$ 1.6013 (success, rc 0)
+== revisar grupo 6 con opus
+18:08:58  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; grep -n "^## \|^- \[" opensp
+18:09:00  Bash       grep -n "^#\|^- \[" openspec/changes/experimento-sampling-velocidad/tasks.md docs/revision.md
+18:09:04  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+18:09:07  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:09:07  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:09:13  Bash       grep -n -i "adapta\|confirma\|refuta\|ninguna\|vale la pena\|tiempo igual\|U0.5\|K =" docs/hipotesis
+18:09:16  texto      Reviso el grupo 6 contra la lista de informe: ya leí informe y guion, ahora verifico las reglas de `
+18:09:17  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:09:26  Bash       grep -n "^#\|^|" informe/decisiones.md | cut -c1-220; grep -n -i "domina\|t_opt\|fracci" informe/dec
+18:09:30  Bash       head -1 ledger/resultados.csv | tr ',' '\n' | grep -n -i "tiempo\|seg\|brazo\|etapa" ; head -1 ledge
+18:09:33  Bash       python -c "
+import pandas as pd
+e=pd.read_csv('ledger/estudios.csv');r=pd.read_csv('ledger/resultado
+18:09:44  Bash       python -c "
+import pandas as pd
+r=pd.read_csv('ledger/resultados.csv');e=pd.read_csv('ledger/estudio
+18:09:50  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:09:55  texto      Aplico las correcciones: faltaba la adaptación de H2 en limitaciones, había un conteo de corridas vi
+18:09:57  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:09:59  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:10:01  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:10:03  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:10:04  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:10:07  texto      Ahora cierro la etapa en la bitácora; miro el formato de cierre.
+18:10:08  Bash       grep -n "^#" docs/bitacora.md | tail -8; tail -c 1800 docs/bitacora.md
+18:10:10  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:10:21  Bash       cat >> docs/bitacora.md <<'EOF'
+
+### 2026-11-02 — cierre informe
+- Sesión: revisión headless en sesi
+18:10:23  texto      Uso Edit en lugar del heredoc.
+18:10:30  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:10:31  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+18:10:36  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && git add experimentos/sampl
+18:10:38  Bash       git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling add experimentos/sampling
+18:10:40  Bash       git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling commit -q -m "6.3: revisi
+18:10:40  Bash       git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling log --oneline -1
+18:10:42  Bash       git add informe/informe.md informe/guion.md docs/bitacora.md ../../openspec/changes/experimento-samp
+18:10:45  Bash       git commit -q -m "6.3: revisión en sesión limpia de informe y guion (lista § 5): se agrega la adapta
+18:10:53  texto      Terminé la revisión del grupo 6 (tarea 6.3) con la lista de informe de `docs/revision.md` § 5. Despu
+18:10:53  fin        success · 29 turnos · US$ 0.9076
+revisar g6: claude-opus-5-5 29 turnos US$ 0.9076 (success, rc 0)
+== grupo 6 cerrado
+== no quedan tareas pendientes
