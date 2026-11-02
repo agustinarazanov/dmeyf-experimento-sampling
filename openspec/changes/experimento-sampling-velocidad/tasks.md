@@ -40,6 +40,7 @@
 - [x] 5.2 Fase 2: H1 con r ∈ {0,5, 0,25, 0,1, 0,05}, optimización por tasa y 10 semillas, en una segunda VM de la cuenta de Agustina en paralelo con la fase 1; verificar que las filas de train de cada corrida coinciden con la tasa y que no hay `codigo_sucio`
 - [x] 5.3 Fase 3: H2 con `bagging_fraction` ∈ {0,5, 0,25, 0,1} y `goss`, optimización y 10 semillas; verificar que `bagging_fraction` quedó fijo y no optimizado en esas filas
 - [x] 5.4 Sanity de resultados: el control reproduce AUC y ganancia dentro del ruido entre dos personas, tiempos solo del mismo tipo de máquina, ninguna corrida exploratoria en `resultados.csv`; verificar con `consolidar.py --sanity` y anotar en la bitácora las VMs borradas y el gasto del trial
+- [x] 5.5 Revisar la etapa con la lista de resultados (`docs/revision.md` § 4) en sesión limpia y cerrar en la bitácora; lo que necesite un humano va a `ledger/sesiones/bloqueo.txt`
 
 ## 6. Etapa análisis e informe (6.1 y 6.4 con Sonnet vía `scripts/etapa.sh`; 6.2 y 6.3 con Opus)
 

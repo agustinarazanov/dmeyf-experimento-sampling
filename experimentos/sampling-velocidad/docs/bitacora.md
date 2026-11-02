@@ -214,3 +214,30 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Gasto del trial: no se puede leer desde la sesión (la consola de facturación no es accesible). Solo hay una
   estimación sin medir: el incidente de la fase 3 costó ≈ US$ 2,7 de VM ociosa. Agustina debe confirmar el saldo en
   Billing antes del análisis.
+
+### 2026-11-02 — cierre corridas
+- Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (tarea 5.5).
+- Revisor: sesión limpia (Opus, sin contexto de las sesiones del grupo 5).
+- Lista: docs/revision.md § 4; ítems ✓ 6/8 (dos con desvío anotado, ninguno invalida filas).
+  - ✓ (con desvío) Una máquina (`n2-highmem-8`) en las 120 finales; fase 1 y fase 3 con un solo commit (`2bd8a63`).
+    La fase 2 mezcla commits: U0.1 y U0.25 en `2bd8a63`, U0.5, U0.05 y C-rep en `79039c9`. `git diff --stat
+    2bd8a63 79039c9` solo toca `consolidar.py`, `vm.sh`, `fase2.txt`, `etapa.sh` y documentos; `correr.py`,
+    `metodos.py`, `muestreo.py` y `comun/` no cambian, así que el código que entrena es el mismo.
+  - ✓ Sin `codigo_sucio`, sin `etapa = exploracion`, sin commit `sin-git`; 129 filas, todas `valida`.
+  - ✓ Filas de train = tasa × 506.871 en U (253.436, 126.718, 50.687, 25.344); B, GOSS y H3 final con r = 1 usan las
+    506.871 completas, como corresponde.
+  - ✗ El control "entre dos personas": `C-rep` corrió en otra VM (fase 2), pero `persona = agustina` en C y C-rep.
+    Reproduce exacto (ΔAUC = 0, Δganancia = 0), lo que prueba el determinismo entre VMs, no entre personas.
+    Tiempo de entrenamiento: C 33,7 s (sd 1,4) y C-rep 31,6 s (sd 0,3), un 6% de diferencia entre VMs del mismo tipo.
+    Hay que tenerlo en cuenta al comparar tiempos de brazos que vienen de VMs distintas.
+  - ✓ `bagging_fraction` fijo en las 44 filas de H2 (`--sanity`).
+  - ✓ 10 semillas en los 12 brazos (incluye C-rep), las mismas 10 que el control.
+  - ✓ `apareado.csv`: 10 brazos con media, sd, IC 95% de Δganancia y ΔAUC, semillas ganadas y veredicto.
+  - ✗ VMs borradas: sí (`vm_f{1,2,3}.log`). Gasto: **no anotado**, falta leerlo en Billing.
+- Hallazgos: los dos ✗ y el desvío de commits de arriba. `consolidar.py --sanity` da OK en todo; su chequeo de
+  "un commit" solo mira la fase 1.
+- Corregido: nada en código ni en ledger. Se agregó la tarea 5.5 en `tasks.md`, que no existía. Pendientes humanos en
+  `ledger/sesiones/bloqueo.txt`: el gasto del trial y aceptar C-rep como réplica entre VMs o pedir a Martín o Luis
+  que corran las 10 finales de C en su cuenta.
+- Tokens: ~20 turnos · ≈ US$ 0,8 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
+- Tutor: sin devolución.

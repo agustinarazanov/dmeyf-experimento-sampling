@@ -1,0 +1,8 @@
+2026-11-02 · revisión del grupo 5 (tarea 5.5). Dos cosas necesitan a un humano antes del análisis (grupo 6):
+
+1. Gasto del trial: leer en Google Cloud Billing el saldo y el gasto de las fases 1 a 3 (incluido el incidente de la
+   fase 3, estimado en US$ 2,7) y anotarlo en docs/bitacora.md, en la entrada "cierre corridas".
+2. Reproducción del control "entre dos personas" (docs/revision.md § 4): C-rep corrió en otra VM, pero de la misma
+   persona (persona = agustina) y reprodujo exacto. Decidir una de dos:
+   (a) aceptarlo como réplica entre VMs y anotarlo como limitación en el informe, o
+   (b) que Martín o Luis corran las 10 finales de C (JSON ledger/hp/C.json) en su cuenta, como brazo C-rep2.
