@@ -68,7 +68,10 @@ done < ~/configuraciones.txt
 echo DONE > ~/estado
 REMOTO
 $G scp /tmp/remoto-$COMMIT.sh "$NOMBRE":~/remoto.sh --zone="$ZONA"
-$G ssh "$NOMBRE" --zone="$ZONA" --command="rm -f ~/estado; nohup bash ~/remoto.sh > ~/remoto.log 2>&1 &"
+# La corrida va en una unidad transitoria de systemd, no en la sesión ssh: el 1-nov una actualización automática
+# (unattended-upgrades reinició el agente de Google) mató el nohup de la fase 3 sin dejar traza. Por eso además se
+# apagan los timers de apt mientras dura la VM.
+$G ssh "$NOMBRE" --zone="$ZONA" --command="rm -f ~/estado; sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer unattended-upgrades >/dev/null 2>&1; sudo systemd-run --quiet --unit=corrida --uid=\$USER --gid=\$USER --setenv=HOME=\$HOME --setenv=PATH=/usr/local/bin:/usr/bin:/bin -p WorkingDirectory=\$HOME -p StandardOutput=append:\$HOME/remoto.log -p StandardError=append:\$HOME/remoto.log bash \$HOME/remoto.sh"
 
 echo "== corriendo; seguimiento: $G ssh $NOMBRE --zone=$ZONA --command='tail -f ~/corrida.log'"
 until [ "$($G ssh "$NOMBRE" --zone="$ZONA" --command='cat ~/estado 2>/dev/null' 2>/dev/null || true)" != "" ]; do sleep 60; done

@@ -173,3 +173,19 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `etapa.sh` (bug de comillas) ≈ US$ 0,23 en total. Esta revisión: ~25 turnos · ~47.000 por turno · ≈ US$ 1
   (presupuesto US$ 2). Sin clasificar: `02a8a58c`, `3e0ced8f`, `34a0d6ac`.
 - Tutor: sin devolución.
+
+## 2026-11-02 · incidente en la fase 3 (VM `sampling-f3`)
+
+- Qué pasó: las fases 1 y 2 terminaron solas (ledger traído, VMs borradas). En la fase 3, a las 00:38:55 UTC
+  `unattended-upgrades` actualizó paquetes y reinició `google-guest-agent`; en ese momento murió el proceso de la
+  corrida completo (el `nohup bash remoto.sh` y su python) sin traza en `corrida.log` ni `remoto.log`. GOSS quedó con
+  1 trial de 40 y `~/estado` nunca se escribió, así que `vm.sh` siguió esperando ~14 h con la VM ociosa (≈ US$ 2,7 de
+  spot). Las corridas de bagging 0,5/0,25/0,1 ya estaban en el ledger y no se perdieron.
+- Qué se hizo: en la misma VM se apagaron los timers de apt y se relanzó solo `goss` (optimizar + 10 semillas) como
+  unidad transitoria de systemd (`systemd-run`), fuera de la sesión de usuario; Optuna retomó desde el trial 1. El
+  supervisor `vm.sh` local siguió vivo y cierra la fase cuando aparezca DONE.
+- Cambio: `vm.sh` ahora lanza la corrida remota con `systemd-run` y desactiva `apt-daily*` y `unattended-upgrades`
+  al arrancar la VM. Pendiente: que `vm.sh` detecte un `~/estado` vacío con la VM sin procesos de python por más de N
+  minutos y lo declare FALLO en vez de esperar para siempre.
+- Tiempos de GOSS: como el reinicio corta la optimización, el `tiempo_optimizacion_s` de GOSS sale de la corrida
+  retomada (39 trials + 1 previo); se anota para la sección de tiempos.
