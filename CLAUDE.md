@@ -7,9 +7,11 @@ Joaquín I. Aramendía; tópico Zulip `Experimentos - Lunes > sampling_1`. Pregu
 tradeoff entre velocidad y pérdida de performance? Sampling_2 hace undersampling de la clase mayoritaria; **nosotros
 aislamos la velocidad sin tocar la proporción de clases**.
 
-**Todo el plan está en `openspec/changes/experimento-sampling-velocidad/`** (proposal, specs, design, tasks). Leer
-`design.md` antes que nada; `tasks.md` dice qué sigue y con qué modelo. Avanzar con `/opsx:apply
-experimento-sampling-velocidad`. Cada experimento importa solo de `comun/` y de su carpeta; un cambio en `comun/` se anuncia en el
+**El cambio `experimento-sampling-velocidad` está cerrado y archivado** (2-nov-2026) en
+`openspec/changes/archive/2026-11-02-experimento-sampling-velocidad/` (proposal, design, tasks); las specs vigentes
+quedaron consolidadas en `openspec/specs/`. Los entregables están en `experimentos/sampling-velocidad/informe/`.
+Un experimento nuevo (propio o de otro integrante) se propone con `openspec new change` siguiendo `plantilla/` y
+`docs/metodo.md`; los scripts headless `scripts/etapas.sh <exp> <cambio>` sirven para cualquier cambio. Cada experimento importa solo de `comun/` y de su carpeta; un cambio en `comun/` se anuncia en el
 commit.
 
 ## Reglas de trabajo (son parte del experimento, se miden)
