@@ -189,3 +189,8 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   minutos y lo declare FALLO en vez de esperar para siempre.
 - Tiempos de GOSS: como el reinicio corta la optimización, el `tiempo_optimizacion_s` de GOSS sale de la corrida
   retomada (39 trials + 1 previo); se anota para la sección de tiempos.
+- Segundo tropiezo, propio: edité `vm.sh` mientras el supervisor de la fase 3 seguía corriendo; bash lee el script a
+  medida que avanza, así que al llegar a "trayendo el ledger" leyó el archivo nuevo desplazado y falló con un error de
+  sintaxis; el trap borró la VM. GOSS ya había terminado (40 trials y 10 semillas) y `remoto.sh` sube el ledger al
+  bucket tras cada configuración, así que no se perdió nada: se trajo con `gcloud storage rsync`. Regla: no editar
+  un script de bash mientras corre; si hace falta, reemplazarlo con un archivo nuevo (`mv`), nunca reescribirlo.
