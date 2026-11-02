@@ -1,0 +1,13 @@
+# fase 4 (D12): solo finales, con predicciones; los JSON de hp ya están en el bucket
+uniforme 1 todas final
+uniforme 1 todas final C-rep
+uniforme 0.5 todas final
+uniforme 0.25 todas final
+uniforme 0.1 todas final
+uniforme 0.05 todas final
+opt-muestra 0.25 todas final
+opt-muestra 0.1 todas final
+bagging 0.5 todas final
+bagging 0.25 todas final
+bagging 0.1 todas final
+goss 1 todas final

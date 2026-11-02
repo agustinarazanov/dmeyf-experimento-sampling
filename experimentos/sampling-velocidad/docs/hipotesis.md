@@ -137,6 +137,9 @@ perder ni un 1%. Por eso, además de la comparación a datos iguales, hay una **
 completo contra la variante rápida con el tiempo sobrante gastado en más semillas (ensamble de K modelos de la variante,
 con K tal que el tiempo total iguale al del control). Sale del mismo ledger, sin corridas nuevas, porque las 10 semillas
 de cada brazo ya están. Predicción: a tiempo igual la variante rápida gana, y H3 es la que más rinde.
+*Nota del 2-nov (después de las fases 1 a 3, antes de ver ningún ensamble):* el ledger guardaba curvas y no predicciones,
+así que el ensamble no salía "sin corridas nuevas". Se agrega una fase 4 que repite solo los finales guardando
+predicciones (`diseno.md` § Fases, D12). La predicción no cambia.
 
 Un brazo **vale la pena** si *no pierde* contra el control y además A ≥ 2, con la definición común de T. La respuesta
 del video es la lista de brazos que valen la pena, con su A y su Δ, más la curva tiempo-ganancia de todos los brazos.

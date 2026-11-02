@@ -175,10 +175,17 @@ vez, así que las fases 2 y 3 pueden correr en paralelo con la 1 en VMs distinta
 | 1 | A | estudios `C`, `U0.25`, `U0.1` (en ese orden); finales `C`, `H3-0.25`, `H3-0.1`, `U0.25`, `U0.1` | 99,9 |
 | 2 | B | estudios y finales de `U0.5` y `U0.05`; después `C-rep` (con el JSON de `C` de la fase 1) | 48,4 |
 | 3 | C | estudios y finales de `B0.5`, `B0.25`, `B0.1` y `GOSS` | 120,5 |
+| 4 | D | solo finales de los 12 brazos (11 + `C-rep`) con los JSON ya guardados, guardando predicciones (agregada el 2-nov, D12) | ≈ 60 |
 
 Total 268,8 u·min. Cada estudio y cada corrida final aparece una sola vez. Cada brazo tiene su estudio y sus finales
 en la misma VM; T(brazo) y T(C) vienen de VMs distintas, y la réplica `C-rep` en la VM B mide cuánto varía el tiempo
 entre VMs. H4 queda fuera de esta tabla: la corre quien la lleva, cuando esté definida.
+
+**Fase 4 (agregada el 2-nov).** Las fases 1 a 3 no guardaron predicciones, solo curvas, y la comparación a tiempo igual
+necesita promediar probabilidades. La fase 4 repite únicamente los finales (sin estudios) de los 12 brazos en una sola
+VM, con `src/correr.py` ya guardando `ledger/predicciones/<id>.parquet`. Por la clave del ledger (sin commit) esas filas
+reemplazan a las anteriores: las ganancias son las mismas (determinismo, como mostró `C-rep`) y los tiempos finales
+quedan todos medidos en la misma máquina. Los tiempos de optimización siguen siendo los de las fases 1 a 3.
 
 **Dependencias.**
 

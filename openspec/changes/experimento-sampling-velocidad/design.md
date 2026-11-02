@@ -136,6 +136,20 @@ notebook (no se abre sin entorno y mezcla código con lectura) y un dashboard co
 publicar tal cual como artefacto para el tutor; el markdown de `docs/hipotesis.md` se convierte con una función mínima,
 sin dependencia nueva.
 
+**D12. El ledger guarda las predicciones de cada corrida final; la comparación a tiempo igual sale de una fase 4.**
+La hipótesis decía que el ensamble de K semillas salía "del mismo ledger, sin corridas nuevas", pero el ledger guardaba
+curvas de ganancia y no predicciones, y una curva no se promedia con otra. Decisión (2-nov): `src/correr.py` escribe por
+cada final `ledger/predicciones/<id>.parquet` (`numero_de_cliente`, `prob` float32, `es_baja2` int8, en el orden del mes
+de test) y la fila lo referencia en `predicciones_201910`; los parquet no van a git (ya los excluye `.gitignore`), viven
+en el bucket y `vm.sh` los trae con el resto del ledger. Una fase 4 vuelve a correr solo los finales de los 12 brazos
+(11 + `C-rep`) con los JSON de hiperparámetros ya guardados, en una sola VM; por la clave sin commit (spec
+`ledger-resultados`) esas filas reemplazan a las de las fases 1 a 3, así que además todos los tiempos finales quedan
+medidos en la misma máquina. Las ganancias no cambian (LightGBM es determinista con la misma semilla, hilos y tipo de
+máquina: `C-rep` lo mostró con Δ = 0), así que los veredictos a datos iguales no se recalculan por otra razón que la
+trazabilidad. Alternativas descartadas: aceptar la comparación como pendiente (deja sin responder la pregunta del
+tutor sobre qué se hace con el tiempo ahorrado) y usar el máximo de G entre K semillas (sesgo de selección, cambia la
+definición). Costo: ≈ 1 h de VM spot.
+
 ## Risks / Trade-offs
 
 - [Spot muere a mitad de una optimización] → cada trial de Optuna se persiste en SQLite en el bucket; la corrida se

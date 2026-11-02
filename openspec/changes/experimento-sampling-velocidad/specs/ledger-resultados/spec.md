@@ -48,3 +48,17 @@ entre semillas de cada brazo junto al control.
 #### Scenario: Gráfico de un brazo
 - **WHEN** se pide la curva de un método y tasa
 - **THEN** se obtiene la banda (mínimo, mediana, máximo entre semillas) y la del control en el mismo eje
+
+### Requirement: Predicciones de cada corrida final
+Cada corrida final SHALL guardar sus predicciones del mes de test en `ledger/predicciones/<id>.parquet` con las columnas
+`numero_de_cliente`, `prob` y `es_baja2` en el orden del mes de test, y la fila del ledger SHALL referenciarlas en la
+columna `predicciones_201910`. Los parquet no van a git: viajan por el bucket y la máquina que consolida los trae junto
+con el resto del ledger. Las filas anteriores a esta columna siguen siendo legibles.
+
+#### Scenario: Ensamble de K semillas
+- **WHEN** el reporte arma la comparación a tiempo igual de un brazo con K ≥ 2
+- **THEN** promedia las probabilidades de las primeras K semillas del brazo fila a fila y calcula la ganancia al corte N* sobre `es_baja2`, sin volver a entrenar
+
+#### Scenario: Corrida sin predicciones
+- **WHEN** una fila no tiene `predicciones_201910` o el archivo no está
+- **THEN** la comparación a tiempo igual de ese brazo sale como pendiente y el resto del reporte no se ve afectado
