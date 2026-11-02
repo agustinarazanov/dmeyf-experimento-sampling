@@ -249,3 +249,29 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   ≈ 14 h fueron la VM ociosa del incidente. Total ≈ 17 h ≈ **US$ 3,5 a 4**, de los cuales ≈ 2,7 son el incidente. La
   cifra exacta hay que leerla en Google Cloud Billing (cuenta `Mi cuenta de facturación`); el trial de US$ 300 queda
   prácticamente intacto. El smoke de la etapa 4 y el bucket suman centavos.
+
+### 2026-11-02 — grupo 6 (reporte, decisiones, informe, tokens)
+
+- Etapa: análisis e informe, sesión headless (Opus). Revisor: pendiente (6.3, sesión limpia).
+- 6.0: `src/reporte.py` escribe `informe/reporte.html`. Probado con el ledger completo y con uno parcial de la fase 1
+  (`scripts/ledger_parcial.py`), que muestra los brazos que faltan como pendientes. Dos corridas seguidas dan el mismo
+  archivo y no tiene recursos externos. **Queda sin marcar** porque la comparación a tiempo igual calcula K pero no el
+  ensamble: el ledger guarda curvas de ganancia y no predicciones. Ver `ledger/sesiones/bloqueo.txt`.
+- 6.1: figuras en `informe/figuras/`, decisiones en `informe/decisiones.md`: H1 ninguna de las dos, H2 refutada, H3
+  confirmada. Valen la pena H3-0.1 y H3-0.25.
+- 6.2: `informe/informe.md` y `informe/guion.md`.
+- 6.4, tokens contra octubre (`comun/tokens.py`, 28 sesiones en `ledger/tokens.csv`; a esta sesión le falta el costo
+  porque todavía no cerró):
+
+  | | contexto promedio por turno | turnos | US$ equivalentes | US$ por turno |
+  |---|---|---|---|---|
+  | octubre (`dmeyf2026`) | 400.000 | 2.509 | 694 | 0,28 |
+  | este experimento, todas las sesiones | 131.275 | 530 | 31,37 | 0,059 |
+  | este experimento, sin la planificación | 74.589 | 359 | 14,87 | 0,041 |
+
+  El promedio está ponderado por turnos. Conclusión sobre el método: el contexto por turno bajó un 67% en total y un
+  81% sin la planificación. Las sesiones por etapa quedan debajo del objetivo de 100.000. Lo superaron la planificación
+  (250.283, Fable), el diseño (127.918) y la primera sesión de código (121.193). El costo por turno bajó unas 5 veces.
+  Lo que más ayudó fue cortar por etapa con `/clear`, mandar las salidas largas a archivo y que las corridas las hagan
+  las VMs y no la conversación. Lo que infla el contexto son las sesiones largas e interactivas de diseño. Siete
+  sesiones quedaron `sin-etapa`; hay que clasificarlas a mano.

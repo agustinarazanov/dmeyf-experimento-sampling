@@ -48,7 +48,7 @@
 - [x] 6.1 Regenerar el reporte con el ledger completo y exportar sus figuras a `experimentos/sampling-velocidad/informe/figuras/` para el video y decidir cada hipótesis con su regla escrita; verificar que cada decisión cita una fila de `apareado.csv`
 - [x] 6.2 Escribir `experimentos/sampling-velocidad/informe/informe.md` (hipótesis, diseño, limitaciones, resultados, conclusiones, qué seguiría) y el guion del video de 10 minutos en `experimentos/sampling-velocidad/informe/guion.md` con la estructura pedida por Bolaños; verificar que el guion no explica el baseline y que la biblio está lista para postear en Zulip
 - [ ] 6.3 Revisar informe y guion con la lista de informe en sesión limpia; verificar que ninguna afirmación carece de tabla o figura
-- [ ] 6.4 Cerrar el registro de tokens: correr `comun/tokens.py`, comparar contexto promedio y costo equivalente contra octubre en `experimentos/sampling-velocidad/docs/bitacora.md`; verificar que la comparación tiene la misma unidad (tokens por turno y US$ equivalentes) y una conclusión sobre el método
+- [x] 6.4 Cerrar el registro de tokens: correr `comun/tokens.py`, comparar contexto promedio y costo equivalente contra octubre en `experimentos/sampling-velocidad/docs/bitacora.md`; verificar que la comparación tiene la misma unidad (tokens por turno y US$ equivalentes) y una conclusión sobre el método
 
 ## Workflow follow-up
 
