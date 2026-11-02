@@ -286,3 +286,17 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Las 120 finales anteriores están en `reemplazadas.csv` (110 de `2bd8a63`, 30 de `79039c9`; algunas semillas tienen
   dos filas viejas por el relanzamiento de C-rep). **Determinismo**: `ganancia_max_201910` y `auc_test` idénticos a
   los reemplazados en los 140 pares brazo-semilla; ninguna diferencia que anotar.
+
+### 2026-11-02 — tarea 6.7 (comparación a tiempo igual) y cierre de 6.0
+
+- `src/reporte.py` arma, para cada brazo con K ≥ 2, el ensamble de las primeras K semillas (orden de
+  `SEMILLAS_FINALES`, K acotado a 10), promediando `prob` fila a fila desde `ledger/predicciones/`. Mide la ganancia al
+  corte N* con `comun/ganancia.py` y la compara con Ḡ_C y con el ensamble de las 10 semillas de C. Agrega la figura
+  `tiempo_igual.png`. Regenerados `informe/reporte.html`, `informe/figuras/`, `informe/decisiones.md` (A con los
+  tiempos de la fase 4: ningún veredicto ni decisión cambia), `informe.md` y `guion.md`.
+- Verificado: con una copia del ledger sin un parquet de H3-0.1, esa fila sale "pendiente: faltan predicciones" y el
+  HTML fuera de la sección es idéntico. Con el ledger completo no queda ninguna celda pendiente. Dos corridas dan el
+  mismo HTML salvo el pie, sin recursos externos. `python -m pytest`: 11 passed.
+- Resultado: ensamble de 10 de C = 275,55 M$ contra Ḡ_C = 276,10. Arriba de Ḡ_C quedan U0.5 (+6,05), H3-0.1
+  (+3,85), H3-0.25 (+2,75), U0.25 y B0.25 (+0,55). Abajo, U0.1 y B0.1 (−4,95) y U0.05 (−23,65). B0.5 y GOSS tienen
+  K = 0. La predicción se cumple en parte: H3 no es la que más rinde.

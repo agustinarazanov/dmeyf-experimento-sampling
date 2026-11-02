@@ -23,9 +23,12 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 from comun import ledger as lg
+from comun.baseline import SEMILLAS_FINALES
+from comun.ganancia import ganancia
 
 EXPERIMENTO = Path(__file__).resolve().parents[1]
 LEDGER = EXPERIMENTO / "ledger"
@@ -245,28 +248,99 @@ def html_tabla(cab, filas) -> str:
             + "".join("<tr>" + "".join(td(c) for c in f) + "</tr>" for f in filas) + "</table>")
 
 
-def tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame) -> str:
-    """K = semillas del brazo que entran en T(control): (T_C − T_opt) / T_final, con T_final medio del brazo."""
-    intro = ("<p>Se le da a cada brazo el tiempo del control: después de su optimización, el sobrante se gasta en K "
-             "modelos finales con semillas distintas, K = ⌊(T(C) − T_opt) / T_final⌋, acotado a las "
-             f"{N_SEMILLAS} semillas que hay. T_final es la media de <code>tiempo_entrenamiento_s</code> del brazo y "
-             "T_opt = T − T_final.</p>")
-    if ap.empty or not estado(lg.CONTROL, fin)[1]:
-        return intro + "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
-    tc = ap["tiempo_total_control_s"].iloc[0]
-    filas = []
+def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int, ledger: Path) -> float | None:
+    """Ganancia al corte N* del promedio de `prob` de las primeras k semillas (orden de `semillas_pedidas`).
+
+    None si falta alguna de esas semillas o su parquet de predicciones.
+    """
+    sub = fin[fin["brazo"] == brazo].set_index("semilla")
+    probs, es_baja2, clientes = [], None, None
+    for s in SEMILLAS_FINALES[:k]:
+        ruta = sub["predicciones_201910"].get(s) if "predicciones_201910" in sub else None
+        if not isinstance(ruta, str) or not (ledger / ruta).exists():
+            return None
+        p = pd.read_parquet(ledger / ruta)
+        if clientes is None:
+            clientes, es_baja2 = p["numero_de_cliente"].to_numpy(), p["es_baja2"].to_numpy()
+        elif not np.array_equal(clientes, p["numero_de_cliente"].to_numpy()):
+            raise ValueError(f"{brazo} semilla {s}: las predicciones no están en el mismo orden de clientes")
+        probs.append(p["prob"].to_numpy(dtype="float64"))
+    return ganancia(np.mean(probs, axis=0), es_baja2, n_est)
+
+
+def calcular_tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path) -> tuple[float | None, dict]:
+    """(G del ensamble de las 10 semillas del control, {brazo: (T_opt, T_final, K, G del ensamble de K) o None})."""
+    n_est, tc = int(ap["n_estrella"].iloc[0]), ap["tiempo_total_control_s"].iloc[0]
+    g_c10 = ensamble(fin, lg.CONTROL, N_SEMILLAS, n_est, ledger)
+    datos = {}
     for b in BRAZOS:
         r = fila(ap, b)
         if r is None or not estado(b, fin)[1]:
-            filas.append([b, "pendiente", "pendiente", "pendiente", "pendiente"])
+            datos[b] = None
             continue
         t_fin = fin.loc[fin["brazo"] == b, "tiempo_entrenamiento_s"].mean()
         t_opt = r["tiempo_total_s"] - t_fin
         k = max(0, math.floor((tc - t_opt) / t_fin))
-        filas.append([b, f"{t_opt:,.0f}", f"{t_fin:,.1f}", f"{k:,}" + (f" (se usan {N_SEMILLAS})" if k > N_SEMILLAS
-                                                                       else ""),
-                      "pendiente: el ledger guarda curvas, no predicciones; el ensamble no se puede armar"])
-    return intro + html_tabla(("brazo", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES}"), filas)
+        g = ensamble(fin, b, min(k, N_SEMILLAS), n_est, ledger) if k >= 2 else None
+        datos[b] = (t_opt, t_fin, k, g)
+    return g_c10, datos
+
+
+def tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Path | None) -> str:
+    """K = semillas del brazo que entran en T(control): (T_C − T_opt) / T_final, con T_final medio del brazo."""
+    intro = ("<p>Se le da a cada brazo el tiempo del control: después de su optimización, el sobrante se gasta en K "
+             "modelos finales con semillas distintas, K = ⌊(T(C) − T_opt) / T_final⌋, acotado a las "
+             f"{N_SEMILLAS} semillas que hay. T_final es la media de <code>tiempo_entrenamiento_s</code> del brazo y "
+             "T_opt = T − T_final. Para K ≥ 2 se promedia fila a fila <code>prob</code> de las primeras K semillas "
+             f"(en el orden de <code>semillas_pedidas</code>) y se mide la ganancia en {MES} al corte N*. Se compara "
+             "con Ḡ_C (un modelo del control, media de sus 10 semillas) y, como referencia, con el ensamble de las "
+             f"{N_SEMILLAS} semillas del control.</p>")
+    if ap.empty or not estado(lg.CONTROL, fin)[1]:
+        return intro + "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
+    g_c1 = g_control(fin, ap)
+    g_c10, datos = calcular_tiempo_igual(fin, ap, ledger)
+    ref = f"Ḡ_C = {_m(g_c1)} M$; ensamble de {N_SEMILLAS} semillas del control = " + (
+        f"{_m(g_c10)} M$" if g_c10 is not None else "pendiente (faltan predicciones del control)")
+    filas = []
+    for b in BRAZOS:
+        d = datos[b]
+        if d is None:
+            filas.append([b] + ["pendiente"] * 6)
+            continue
+        t_opt, t_fin, k, g = d
+        k_txt = f"{k:,}" + (f" (se usan {N_SEMILLAS})" if k > N_SEMILLAS else "")
+        if k < 2:
+            filas.append([b, f"{t_opt:,.0f}", f"{t_fin:,.1f}", k_txt] + ["no aplica (K < 2)"] * 3)
+        elif g is None:
+            filas.append([b, f"{t_opt:,.0f}", f"{t_fin:,.1f}", k_txt] + ["pendiente: faltan predicciones"] * 3)
+        else:
+            filas.append([b, f"{t_opt:,.0f}", f"{t_fin:,.1f}", k_txt, _m(g), _m(g - g_c1),
+                          _m(g - g_c10) if g_c10 is not None else "pendiente"])
+    return (intro + f"<p>{html.escape(ref)}.</p>"
+            + html_tabla(("brazo", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)",
+                          "G − Ḡ_C (M$)", f"G − ensamble {N_SEMILLAS} de C (M$)"), filas)
+            + fig_tiempo_igual(g_c1, g_c10, datos, figuras))
+
+
+def fig_tiempo_igual(g_c1: float, g_c10: float | None, datos: dict, figuras: Path | None) -> str:
+    pts = [(b, d[3]) for b, d in datos.items() if d is not None and d[3] is not None]
+    if not pts:
+        return "<p class='pend'>pendiente: ningún brazo tiene su ensamble</p>"
+    fig, ax = plt.subplots(figsize=(7.5, 0.35 * len(pts) + 1.6))
+    for i, (b, g) in enumerate(pts):
+        ax.scatter([g / 1e6], [i], color=COLOR[HIP_DE[b]], zorder=3)
+        ax.annotate(f"K={min(datos[b][2], N_SEMILLAS)}", (g / 1e6, i), textcoords="offset points", xytext=(6, -3),
+                    fontsize=7, color=COLOR[HIP_DE[b]])
+    ax.axvline(g_c1 / 1e6, color=COLOR["C"], ls=":", lw=1, label="Ḡ_C (un modelo)")
+    if g_c10 is not None:
+        ax.axvline(g_c10 / 1e6, color=COLOR["C"], ls="--", lw=1, label=f"ensamble de {N_SEMILLAS} de C")
+    ax.set_yticks(range(len(pts)), [b for b, _ in pts], fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlabel(f"ganancia en {MES} al corte N* (M$)")
+    ax.set_title("A tiempo igual: ensamble de K semillas de cada brazo", fontsize=10)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.legend(frameon=False, fontsize=8)
+    return png(fig, "tiempo_igual", figuras)
 
 
 def seccion_hipotesis(h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path,
@@ -317,7 +391,7 @@ def generar(ledger: Path = LEDGER, figuras: Path | None = None) -> str:
         f"<section><h2>Todos los brazos contra el control</h2><p>{html.escape(n_est)}. Vale la pena: no pierde y "
         f"A ≥ {A_VALE:g}.</p>{tabla_brazos(fin, ap)}{fig_tiempo_ganancia(ap, figuras)}</section>"
         + "".join(seccion_hipotesis(h, seccion(hip, h + " "), fin, ap, ledger, figuras) for h in HIPOTESIS)
-        + f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(fin, ap)}</section>"
+        + f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(fin, ap, ledger, figuras)}</section>"
         + markdown("## Limitaciones previstas\n" + seccion(hip, "Limitaciones"))
         + f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
           f"finales, {completos}/{len(BRAZOS) + 1} brazos con {N_SEMILLAS} semillas</footer>"

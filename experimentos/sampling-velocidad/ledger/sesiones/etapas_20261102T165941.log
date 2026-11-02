@@ -109,3 +109,50 @@ L='experimentos/sampling-velocidad/ledger/'
 18:05:27  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
 18:05:29  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
 18:05:31  Bash       git add -A experimentos/sampling-velocidad/ledger experimentos/sampling-velocidad/docs/bitacora.md o
+18:05:32  texto      Ahora 6.7. Veo cómo `reporte.py` calcula hoy la comparación a tiempo igual.
+18:05:34  Bash       wc -l experimentos/sampling-velocidad/src/reporte.py comun/ganancia.py; grep -n "def \|tiempo_igual\
+18:05:37  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:05:38  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:05:39  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/ganancia.py
+18:05:45  Bash       grep -rn "semillas_pedidas\|SEMILLAS\b" --include=*.py comun experimentos/sampling-velocidad/src | h
+18:05:47  Bash       grep -rn "semillas_pedidas\|^SEMILLAS\|SEMILLAS =" comun experimentos/sampling-velocidad/src experim
+18:05:54  Bash       sed -n 105,118p experimentos/sampling-velocidad/src/correr.py; python -c "
+import pandas as pd; r=pd
+18:06:01  texto      Implemento el ensamble en `reporte.py`.
+18:06:25  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:06:26  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:06:28  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:06:33  Bash       python -m experimentos.sampling-velocidad.src.reporte --figuras experimentos/sampling-velocidad/info
+18:06:34  Bash       python -m experimentos.sampling-velocidad.src.reporte --figuras experimentos/sampling-velocidad/info
+18:06:43  Bash       python - <<'EOF'
+import importlib; R=importlib.import_module('experimentos.sampling-velocidad.src.re
+18:06:51  texto      Las ganancias a N=3300 son discretas (pasos de 1,1 M$), así que los empates entre U0.25/B0.25 son co
+18:06:52  Bash       git diff --stat; git diff experimentos/sampling-velocidad/ledger/apareado.csv | grep "^[-+]B\|^[-+]U
+18:06:55  Bash       git diff bcb23d6 HEAD -- experimentos/sampling-velocidad/ledger/apareado.csv | grep "^[-+][A-Z]" | c
+18:07:00  texto      Deltas y veredictos idénticos; solo A se mueve un poco (ninguna decisión cambia). Verifico "sin parq
+18:07:05  Bash       rm -rf /tmp/ledger_sinpq && cp -R experimentos/sampling-velocidad/ledger /tmp/ledger_sinpq && rm /tm
+18:07:11  Bash       python - <<'EOF'
+import importlib, re, shutil, tempfile
+from pathlib import Path
+R=importlib.import_
+18:07:19  Bash       grep -o ".\{150\}pendiente.\{80\}" experimentos/sampling-velocidad/informe/reporte.html
+18:07:21  texto      Ninguna celda pendiente (el único match es "inde*pendiente*"). Corro los tests.
+18:07:22  Bash       pytest -q 2>&1 | tail -3
+18:07:24  Bash       pytest -q 2>&1 | grep -m5 "Error\|error:"; git stash -q && pytest -q 2>&1 | tail -1; git stash pop -
+18:07:26  Bash       pytest -q 2>&1 | grep -m6 "Error"
+18:07:28  Bash       python -m pytest -q 2>&1 | tail -2
+18:07:32  texto      Tests OK. Ahora `decisiones.md`.
+18:07:33  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:08:02  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:08:06  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:08:07  texto      Ahora `informe.md` y `guion.md`: busco las secciones a tocar.
+18:08:09  Bash       grep -n "^#\|8,47\|4,50\|1,67\|781\|11,38\|1,22\|tiempo igual\|pendiente" experimentos/sampling-velo
+18:08:11  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:08:11  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+18:08:30  Bash       python - <<'EOF'
+from pathlib import Path
+p=Path('experimentos/sampling-velocidad/informe/informe.md
+18:08:34  texto      Marco 6.7 y 6.0 y anoto en la bitácora.
+18:08:42  Bash       python - <<'EOF'
+from pathlib import Path
+p=Path('openspec/changes/experimento-sampling-velocidad/ta

@@ -28,15 +28,15 @@ en `docs/hipotesis.md` y `docs/diseno.md`.
 
 | brazo | Δ media (M$) | IC 95% (M$) | A | veredicto | vale la pena |
 |---|---|---|---|---|---|
-| H3-0.1 | 4,07 | [−0,27; 8,41] | 8,47 | no pierde | sí |
-| H3-0.25 | 4,18 | [−0,60; 8,96] | 4,50 | no pierde | sí |
+| H3-0.1 | 4,07 | [−0,27; 8,41] | 8,41 | no pierde | sí |
+| H3-0.25 | 4,18 | [−0,60; 8,96] | 4,48 | no pierde | sí |
 | U0.5 | −1,32 | [−6,77; 4,13] | 2,28 | indeterminado | no |
 | U0.25 | −6,38 | [−11,21; −1,55] | 4,89 | pierde | no |
 | U0.1 | −16,94 | [−23,35; −10,53] | 9,85 | pierde | no |
-| U0.05 | −33,77 | [−39,84; −27,70] | 11,38 | pierde | no |
+| U0.05 | −33,77 | [−39,84; −27,70] | 11,42 | pierde | no |
 | B0.5 | −0,11 | [−4,46; 4,24] | 0,78 | no pierde | no |
-| B0.25 | 0,66 | [−2,86; 4,18] | 1,22 | no pierde | no |
-| B0.1 | −7,81 | [−12,27; −3,35] | 1,67 | pierde | no |
+| B0.25 | 0,66 | [−2,86; 4,18] | 1,21 | no pierde | no |
+| B0.1 | −7,81 | [−12,27; −3,35] | 1,85 | pierde | no |
 | GOSS | 0,55 | [−2,60; 3,70] | 0,72 | no pierde | no |
 
 Figura principal: `figuras/tiempo_vs_ganancia.png`. Bandas de curvas por hipótesis: `figuras/bandas_H1.png`,
@@ -44,21 +44,27 @@ Figura principal: `figuras/tiempo_vs_ganancia.png`. Bandas de curvas por hipóte
 
 - **H1, ninguna de las dos**: la pérdida crece a medida que baja r (todas las tasas debajo de 0,5 pierden) y U0.5 queda
   indeterminado. No hay frontera dentro de la grilla.
-- **H2, refutada**: con f = 0,1 pierde. Con 0,5 y 0,25 no pierde, pero casi no acelera (A ≤ 1,22), porque el `Dataset`
+- **H2, refutada**: con f = 0,1 pierde. Con 0,5 y 0,25 no pierde, pero casi no acelera (A ≤ 1,21), porque el `Dataset`
   completo se arma igual. GOSS no pierde y es más lento que el control.
-- **H3, confirmada**: las dos tasas no pierden y aceleran 4,5 y 8,5 veces. Ninguna *gana*: las cotas inferiores son
+- **H3, confirmada**: las dos tasas no pierden y aceleran 4,5 y 8,4 veces. Ninguna *gana*: las cotas inferiores son
   negativas, aunque la media de Δ es positiva.
 - U0.25 y H3-0.25 comparten el estudio de Optuna, o sea los mismos hiperparámetros. U0.25 pierde y H3-0.25 no, así que en
   H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una muestra.
+- **A tiempo igual** (`figuras/tiempo_igual.png`, `decisiones.md` § A tiempo igual): cada brazo gasta el tiempo que le
+  sobra en un ensamble de K semillas (K ≤ 10). Contra Ḡ_C = 276,10 M$ quedan arriba U0.5 (+6,05), H3-0.1 (+3,85),
+  H3-0.25 (+2,75), U0.25 y B0.25 (+0,55), y abajo U0.1 y B0.1 (−4,95) y U0.05 (−23,65). El ensamble de las 10 semillas
+  del control da 275,55 M$, o sea que ensamblar casi no suma. La predicción (la variante rápida gana y H3 es la que más
+  rinde) se cumple en parte: solo U0.5 supera a Ḡ_C por más de δ, y es U0.5, no H3, la que más rinde.
 
 ## Limitaciones
 
 - Una sola semilla de Optuna por brazo: Δ incluye la suerte de la optimización y el IC no la mide.
 - U0.25/H3-0.25 y U0.1/H3-0.1 comparten estudio: no son evidencia independiente entre sí.
 - La réplica del control (C-rep) se corrió en otra VM de la misma cuenta, no por otra persona.
-- La comparación a tiempo igual (ensamble de K semillas del brazo rápido) quedó pendiente: el ledger guarda las curvas
-  de ganancia y no las predicciones, y el ensamble no se puede armar sin volver a correr los finales. El reporte muestra
-  los K.
+- La comparación a tiempo igual da un solo número por brazo (un ensamble, un mes), sin intervalo. A N* fijo la
+  ganancia se mueve en pasos de 1,1 M$, así que diferencias de uno o dos BAJA+2 no se distinguen del ruido. Para
+  armarla hubo que repetir los finales guardando predicciones (fase 4). Las ganancias salieron idénticas, pero los
+  tiempos (y por lo tanto A y K) son los de esa repetición.
 - Un solo año (2019) y un solo mes de test (201910). Los tiempos valen para `n2-highmem-8` y en otra máquina solo se
   trasladan las aceleraciones relativas.
 - `num_iterations = 100` fijo y `force_col_wise`: T(C) no es el tiempo del baseline con la configuración automática.
@@ -70,11 +76,13 @@ El tradeoff vale la pena si lo que se achica es la **optimización**, no el entr
 sobre el 10% de las filas y entrenar con todas da la misma ganancia que el control (dentro de δ) en un octavo del tiempo.
 Entrenar el final con menos filas sí pierde, al azar desde r = 0,25 y dentro de LightGBM con f = 0,1. Por qué: la
 optimización es lo que domina T (40 trials contra un solo final), y los hiperparámetros que elige Optuna se trasladan
-bien de la muestra al total.
+bien de la muestra al total. Gastar el tiempo ahorrado en más semillas no cambia la respuesta. Los dos H3 siguen
+arriba del control y los brazos agresivos siguen abajo. El único que mejora de forma notable es U0.5, que a datos
+iguales era indeterminado. Como es un solo número sin intervalo, no alcanza para declararlo ganador.
 
 ## Qué seguiría
 
-- Guardar las predicciones de los finales y armar la comparación a tiempo igual.
+- Repetir la comparación a tiempo igual en otro mes de test (o con bootstrap de clientes) para darle un intervalo.
 - Reescalar `min_data_in_leaf` al pasar de la muestra al total en H3, y bajar r_opt debajo de 0,1.
 - Más semillas de Optuna para medir la suerte de la optimización.
 - Correr H4 con el mismo control y el mismo ledger.
