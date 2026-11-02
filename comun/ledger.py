@@ -19,7 +19,7 @@ from scipy import stats
 COLUMNAS: list[str] = [
     "id", "fecha", "brazo", "metodo", "tasa", "semilla", "etapa", "etapa_corrida", "estudio", "hp",
     "filas_train", "hash_muestra", "auc_val", "auc_test", "ganancia_max_201910", "envios_max_201910",
-    "curva_201908", "curva_201910",
+    "curva_201908", "curva_201910", "predicciones_201910",
     "tiempo_preparacion_s", "tiempo_optimizacion_s", "tiempo_entrenamiento_s", "tiempo_lgbtrain_s",
     "memoria_max_mb", "maquina", "cpu", "hilos", "load_avg", "commit", "codigo_sucio", "persona", "valida",
 ]
@@ -55,7 +55,9 @@ def leer_corridas(directorio: Path) -> pd.DataFrame:
     archivos = sorted(directorio.glob("*.csv"))
     if not archivos:
         return pd.DataFrame(columns=COLUMNAS)
-    return pd.concat([pd.read_csv(a) for a in archivos], ignore_index=True)
+    # Las filas anteriores a D12 no tienen `predicciones_201910`: se leen con la columna vacía.
+    corridas = pd.concat([pd.read_csv(a) for a in archivos], ignore_index=True)
+    return corridas.reindex(columns=list(dict.fromkeys([*COLUMNAS, *corridas.columns])))
 
 
 # --- consolidación ------------------------------------------------------------

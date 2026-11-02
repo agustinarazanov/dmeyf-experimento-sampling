@@ -25,6 +25,24 @@ def test_fila_completa_se_escribe(tmp_path):
     assert list(lg.leer_corridas(tmp_path).columns) == lg.COLUMNAS
 
 
+def test_fila_nueva_exige_predicciones(tmp_path):
+    f = fila()
+    del f["predicciones_201910"]
+    with pytest.raises(ValueError, match="predicciones_201910"):
+        lg.escribir_fila(tmp_path, f)
+
+
+def test_fila_vieja_sin_predicciones_se_consolida(tmp_path):
+    vieja = {c: v for c, v in fila(id="vieja", brazo="C", metodo="uniforme", tasa=1.0, semilla=1).items()
+             if c != "predicciones_201910"}
+    pd.DataFrame([vieja]).to_csv(tmp_path / "vieja.csv", index=False)
+    lg.escribir_fila(tmp_path, fila(id="nueva", brazo="C", metodo="uniforme", tasa=1.0, semilla=2,
+                                    predicciones_201910="predicciones/nueva.parquet"))
+    resultados, _ = lg.consolidar_corridas(lg.leer_corridas(tmp_path))
+    assert sorted(resultados["id"]) == ["nueva", "vieja"]
+    assert resultados.set_index("id")["predicciones_201910"].isna().to_dict() == {"nueva": False, "vieja": True}
+
+
 def sintetica(brazo, semillas, gs, **kw):
     return pd.DataFrame({
         "brazo": brazo, "metodo": "uniforme", "tasa": 0.5, "semilla": semillas, "g": gs, "auc_test": 0.9,

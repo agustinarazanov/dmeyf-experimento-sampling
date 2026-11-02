@@ -81,5 +81,5 @@ echo "== estado: $ESTADO"
 echo "== trayendo el ledger"
 mkdir -p "$EXP/ledger"
 gsutil -q -m rsync -r "$BUCKET/ledger/" "$EXP/ledger/" || true
-$G scp --recurse "$NOMBRE":~/repo/$EXP/ledger/corridas "$NOMBRE":~/repo/$EXP/ledger/curvas "$NOMBRE":~/repo/$EXP/ledger/hp "$EXP/ledger/" --zone="$ZONA" 2>/dev/null || true
+$G scp --recurse "$NOMBRE":~/repo/$EXP/ledger/corridas "$NOMBRE":~/repo/$EXP/ledger/curvas "$NOMBRE":~/repo/$EXP/ledger/hp "$NOMBRE":~/repo/$EXP/ledger/predicciones "$EXP/ledger/" --zone="$ZONA" 2>/dev/null || true
 [ "$ESTADO" = DONE ]   # el trap borra la VM; el código de salida dice si la tanda terminó

@@ -27,6 +27,7 @@ from datetime import datetime
 from pathlib import Path
 
 import lightgbm as lgb
+import numpy as np
 import optuna
 import pandas as pd
 from sklearn.metrics import roc_auc_score
@@ -272,12 +273,18 @@ def final(cx: Contexto) -> None:
         r_va, r_te = f"{cx.rel}curvas/{id_}_{bl.MES_VALIDACION}.csv", f"{cx.rel}curvas/{id_}_{bl.MES_TEST}.csv"
         curva_va.to_csv(LEDGER / r_va, index=False)
         curva_te.to_csv(LEDGER / r_te, index=False)
+        # D12: predicciones de test en el orden del mes, para ensamblar semillas en la comparación a tiempo igual
+        (cx.base / "predicciones").mkdir(parents=True, exist_ok=True)
+        r_pred = f"{cx.rel}predicciones/{id_}.parquet"
+        pd.DataFrame({
+            dt.ID: test[dt.ID].to_numpy().astype(np.int64), "prob": p_te.astype(np.float32), dt.BAJA2: b2_te.astype(np.int8),
+        }).to_parquet(LEDGER / r_pred, index=False)
         envios, g_max = gn.ganancia_maxima(curva_te)
         lg.escribir_fila(cx.base / "corridas", cx.fila(
             id=id_, semilla=semilla, etapa_corrida="final", hp=json.dumps(hp), filas_train=len(datos),
             hash_muestra=muestreo.hash_muestra(idx, len(train)), auc_val=auc(y_va, p_va), auc_test=auc(y_te, p_te),
             ganancia_max_201910=g_max, envios_max_201910=envios, curva_201908=r_va, curva_201910=r_te,
-            tiempo_preparacion_s=round(t_prep, 3), tiempo_optimizacion_s=0.0, tiempo_entrenamiento_s=round(t_ent, 3),
+            predicciones_201910=r_pred, tiempo_preparacion_s=round(t_prep, 3), tiempo_optimizacion_s=0.0, tiempo_entrenamiento_s=round(t_ent, 3),
             tiempo_lgbtrain_s=round(t_lgb, 3), memoria_max_mb=memoria_max_mb(),
         ))
         log.info("%s semilla %d: AUC 201910 %.5f, ganancia máx %.0f en %d envíos, %.1f s", cx.brazo, semilla,
