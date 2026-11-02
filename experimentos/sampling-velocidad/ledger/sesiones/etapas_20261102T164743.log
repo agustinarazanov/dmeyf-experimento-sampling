@@ -1,0 +1,69 @@
+== etapa 5 (1 pendientes) con sonnet · ## 5. Etapa corridas (sesión: Sonnet vía `scripts/etapa.sh`; el trabajo lo hace la VM y las VMs las crea una persona)
+== aplicar grupo 5 con sonnet
+16:47:44  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/.claude/skills/openspec-apply-ch
+16:47:45  Bash       grep -n "^## \|^- \[" openspec/changes/experimento-sampling-velocidad/tasks.md | sed -n 1,200p; ls e
+16:47:49  Bash       tail -5 experimentos/sampling-velocidad/ledger/sesiones/etapas_20261102T164743.log; python -m experi
+16:47:50  Bash       python -m experimentos.sampling-velocidad.src.consolidar --sanity > /tmp/sanity.txt 2>&1; echo rc=$?
+16:47:51  Bash       tail -40 experimentos/sampling-velocidad/docs/bitacora.md; tail -5 experimentos/sampling-velocidad/l
+16:47:52  Bash       python -m experimentos.sampling-velocidad.src.consolidar --sanity > /tmp/sanity.txt 2>&1; tail -40 /
+16:47:53  Bash       python -m experimentos.sampling-velocidad.src.consolidar --sanity
+16:47:57  texto      Sanity pasa completo. Falta anotar en la bitácora las VMs borradas y el gasto; reviso los logs de la
+16:47:58  Bash       tail -n 3 experimentos/sampling-velocidad/ledger/sesiones/vm_f2.log experimentos/sampling-velocidad/
+16:48:03  Bash       cat >> experimentos/sampling-velocidad/docs/bitacora.md <<'EOF'
+
+## 2026-11-02 · cierre del grupo 5 
+16:48:04  Bash       git status --short
+16:48:05  texto      Nada se ejecutó. Hago los pasos por separado, con Write/Edit.
+16:48:06  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:48:06  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:48:10  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:48:11  Bash       git add experimentos/sampling-velocidad/docs/bitacora.md openspec/changes/experimento-sampling-veloc
+16:48:15  texto      Terminé el grupo 5: las tareas 5.1 a 5.4 están marcadas y la 5.4 quedó commiteada. No hice push.
+16:48:15  fin        success · 15 turnos · US$ 0.2285
+aplicar g5: claude-sonnet-5-5 15 turnos US$ 0.2285 (success, rc 0)
+== revisar grupo 5 con opus
+16:48:19  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; grep -n "" docs/revision.md 
+16:48:23  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; sed -n '49,75p' docs/revisio
+16:48:26  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+16:48:28  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+16:48:32  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; export PYENV_VERSION=faculta
+16:48:35  texto      Estoy revisando el grupo 5 (resultados) contra la lista § 4; ahora corro `consolidar.py --sanity` y 
+16:48:36  Bash       grep -n "argparse\|add_argument\|__main__\|sys.argv" /Users/agustina/Documents/segundo-cuatrimestre/
+16:48:38  Bash       PYENV_VERSION=facultad python src/consolidar.py --sanity > /tmp/rev5_sanity.txt 2>&1; echo rc=$?; ta
+16:48:40  Bash       PYENV_VERSION=facultad python src/consolidar.py --sanity > /tmp/rev5_sanity.txt 2>&1; tail -30 /tmp/
+16:48:42  Bash       PYENV_VERSION=facultad python /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/ex
+16:48:44  Bash       python /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-vel
+16:48:46  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && python -m experimentos.sam
+16:48:51  texto      Sanity del script OK. Ahora chequeos independientes del ledger (commit por fase, semillas por brazo,
+16:48:55  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+16:49:03  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && git diff --stat 2bd8a63 79
+16:49:05  Bash       git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling diff --stat 2bd8a63 79039
+16:49:06  Bash       grep -n "U0.5\|U0.05\|C-rep\|79039c9\|2bd8a63\|reemplaz" /Users/agustina/Documents/segundo-cuatrimes
+16:49:08  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:49:09  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:49:13  Bash       git diff --stat 2bd8a63 79039c9
+16:49:18  Bash       grep -rn "C-rep\|dos personas\|otra persona" /Users/agustina/Documents/segundo-cuatrimestre/experime
+16:49:24  Bash       python -c "
+import pandas as pd
+r=pd.read_csv('ledger/resultados.csv'); f=r[r.etapa=='final']
+for b 
+16:49:31  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:49:47  Bash       cat >> docs/bitacora.md <<'EOF'
+
+### 2026-11-02 — cierre corridas
+- Sesión: revisión headless en ses
+16:49:51  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && git add openspec/changes/e
+16:49:53  Bash       git add ../../openspec/changes/experimento-sampling-velocidad/tasks.md docs/bitacora.md ledger/sesio
+16:50:03  texto      Revisé el grupo 5 con la lista de resultados (`docs/revision.md` § 4): pasan 6 de 8 ítems, y para ce
+16:50:03  fin        success · 25 turnos · US$ 0.8689
+revisar g5: claude-opus-5-5 25 turnos US$ 0.8689 (success, rc 0)
+== BLOQUEADO en la revisión:
+2026-11-02 · revisión del grupo 5 (tarea 5.5). Dos cosas necesitan a un humano antes del análisis (grupo 6):
+
+1. Gasto del trial: leer en Google Cloud Billing el saldo y el gasto de las fases 1 a 3 (incluido el incidente de la
+   fase 3, estimado en US$ 2,7) y anotarlo en docs/bitacora.md, en la entrada "cierre corridas".
+2. Reproducción del control "entre dos personas" (docs/revision.md § 4): C-rep corrió en otra VM, pero de la misma
+   persona (persona = agustina) y reprodujo exacto. Decidir una de dos:
+   (a) aceptarlo como réplica entre VMs y anotarlo como limitación en el informe, o
+   (b) que Martín o Luis corran las 10 finales de C (JSON ledger/hp/C.json) en su cuenta, como brazo C-rep2.
+== detenido en el grupo 5 (código 2)

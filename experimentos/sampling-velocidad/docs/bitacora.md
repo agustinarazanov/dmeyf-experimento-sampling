@@ -241,3 +241,11 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   que corran las 10 finales de C en su cuenta.
 - Tokens: ~20 turnos · ≈ US$ 0,8 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
 - Tutor: sin devolución.
+- Decisión (2-nov, sesión principal, por la regla del 1-nov de que todas las fases corren en la cuenta de Agustina):
+  **se acepta `C-rep` como réplica entre VMs** y se declara como limitación en el informe; no se pide una corrida a
+  otro integrante. `diseno.md` § Grilla y `docs/revision.md` § 4 quedan redactados así.
+- Gasto del trial, **estimado** desde los tiempos de vida de las VMs (n2-highmem-8 spot ≈ US$ 0,19/h más el disco de
+  256 GB): fase 1 ≈ 0,7 h, fase 2 ≈ 0,75 h, relanzamiento de la fase 2 (C-rep) ≈ 0,4 h, fase 3 ≈ 15,3 h de las cuales
+  ≈ 14 h fueron la VM ociosa del incidente. Total ≈ 17 h ≈ **US$ 3,5 a 4**, de los cuales ≈ 2,7 son el incidente. La
+  cifra exacta hay que leerla en Google Cloud Billing (cuenta `Mi cuenta de facturación`); el trial de US$ 300 queda
+  prácticamente intacto. El smoke de la etapa 4 y el bucket suman centavos.

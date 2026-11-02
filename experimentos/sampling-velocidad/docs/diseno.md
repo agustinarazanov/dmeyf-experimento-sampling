@@ -35,9 +35,12 @@ Quedan nueve estudios: `C`, `U0.5`, `U0.25`, `U0.1`, `U0.05`, `B0.5`, `B0.25`, `
 - **Optimización**: 9 estudios × 40 trials = 360 entrenamientos, 100 iteraciones cada uno, sin early stopping.
 - **Finales**: 11 brazos × 10 semillas = 110 corridas. Cada una predice 201908 y 201910 y guarda las dos curvas.
 - **Réplica del control**: brazo propio, **`C-rep`**: 10 corridas finales con el JSON de `C` y las mismas 10 semillas,
-  en la VM de otra persona. Tiene su propio nombre de brazo para que el id de la corrida (que incluye el brazo) no
-  choque con las de `C` y el corredor no las saltee. No entran en Δ: sirven para la compuerta de resultados (el control se repite entre personas) y para medir cuánto varía
-  el tiempo entre VMs del mismo tipo.
+  en otra VM. El diseño original la ponía en la VM de otra persona; con la decisión del 1-nov (todas las fases en la
+  cuenta de Agustina) la réplica es entre VMs de la misma persona, y eso queda como limitación declarada en el informe:
+  prueba el determinismo entre máquinas, no la reproducción entre integrantes. Tiene su propio nombre de brazo para que
+  el id de la corrida (que incluye el brazo) no choque con las de `C` y el corredor no las saltee. No entran en Δ:
+  sirven para la compuerta de resultados (el control se repite) y para medir cuánto varía el tiempo entre VMs del
+  mismo tipo.
 - **Total**: 9 filas `optimizar` y 120 filas `final` en el ledger.
 
 **Semillas finales**, iguales en todos los brazos y en este orden: 100003, 200003, 300007, 400009, 500009, 600011,

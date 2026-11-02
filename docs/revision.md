@@ -51,7 +51,7 @@ Las listas son las mismas para todos los experimentos. Las rutas son relativas a
 - [ ] Todas las filas finales son del mismo tipo de máquina y del mismo commit por fase.
 - [ ] No hay `codigo_sucio` ni `etapa = exploracion` en `resultados.csv`.
 - [ ] Las filas de train de cada corrida coinciden con su tasa.
-- [ ] El control da AUC y ganancia que se repiten, dentro del ruido, entre dos personas.
+- [ ] El control da AUC y ganancia que se repiten, dentro del ruido, en una segunda corrida independiente (otra persona si la hay; si no, otra VM, y queda anotado como limitación).
 - [ ] En los brazos de H2, `bagging_fraction` quedó fijo y no optimizado.
 - [ ] Cada brazo tiene sus 10 semillas, y si no, está anotado por qué.
 - [ ] `apareado.csv` tiene media, desvío, IC 95% y semillas ganadas para cada brazo contra su referencia.
