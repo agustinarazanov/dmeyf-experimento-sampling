@@ -1,0 +1,165 @@
+{
+ "duration_api_ms": 154698,
+ "stop_reason": "end_turn",
+ "session_id": "b63c70d0-2dea-4ce8-bd0a-192ff63b4131",
+ "total_cost_usd": 1.033983,
+ "usage": {
+  "input_tokens": 80,
+  "cache_creation_input_tokens": 49107,
+  "cache_read_input_tokens": 1983635,
+  "output_tokens": 12204,
+  "output_tokens_details": {
+   "thinking_tokens": 1280
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 49107,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 864,
+    "cache_read_input_tokens": 62320,
+    "cache_creation_input_tokens": 198,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 198
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 80,
+   "outputTokens": 12204,
+   "cacheReadInputTokens": 1983635,
+   "cacheCreationInputTokens": 49107,
+   "webSearchRequests": 0,
+   "costUSD": 1.033983,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1280,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012dh3wDeSFefjkM5dhQzVGg",
+   "tool_input": {
+    "command": "openspec instructions apply --change experimento-sampling-velocidad --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; echo; grep -n \"^## 6\" -A 60 openspec/changes/experimento-sampling-velocidad/tasks.md | head -80; git show --stat HEAD | head -30; cat experimentos/sampling-velocidad/ledger/sesiones/en_curso.txt 2>/dev/null; git diff --stat",
+    "description": "Get apply instructions and group 6 tasks"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DbvCpEqBtE7CaWSdDUZa2u",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad && ls ledger ledger/sesiones; ls ledger/predicciones 2>/dev/null | wc -l; pgrep -f vm.sh; git diff --stat; tail -5 ledger/sesiones/etapas_20261102T165941.log",
+    "description": "Check ledger state and running VMs"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01EoTAQwoGNKPcMzASCx9c55",
+   "tool_input": {
+    "command": "E=/Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad; ls $E/ledger $E/ledger/sesiones; ls $E/ledger/predicciones 2>/dev/null | wc -l; pgrep -f vm.sh; tail -5 $E/ledger/sesiones/etapas_20261102T165941.log",
+    "description": "Check ledger state and running VMs"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Wx8hnVP6AMuEBHquv6hKrS",
+   "tool_input": {
+    "command": "pytest -q > /tmp/pytest_65.txt 2>&1; tail -5 /tmp/pytest_65.txt",
+    "description": "Run test suite"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01KCjKjvewQPev2EQ6uuSsB3",
+   "tool_input": {
+    "command": "python -m experimentos.sampling-velocidad.src.correr --metodo uniforme --tasa 1 --semilla 0 --etapa final --filas 20000 > /tmp/corrida_65.log 2>&1",
+    "timeout": 600000,
+    "description": "Run local smoke final of control arm"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01KWk69BfNhRKcUeqp3tmSaR",
+   "tool_input": {
+    "command": "git check-ignore -v experimentos/sampling-velocidad/ledger/exploracion/predicciones/x.parquet experimentos/sampling-velocidad/ledger/predicciones/x.parquet experimentos/sampling-velocidad/ledger/exploracion/corrida_65.log",
+    "description": "Check parquet files are git-ignored"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 52,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Hice la 6.5 y dejé la fase 4 corriendo. La 6.6 y la 6.7 todavía no están: dependen de los resultados de esa VM.\n\n**6.5, hecha y marcada** (commit propio):\n- `src/correr.py` guarda por cada final `ledger/predicciones/<id>.parquet` con `numero_de_cliente`, `prob` (float32) y `es_baja2` (int8), en el orden del mes de test.\n- **Cambio en `comun/`** (anunciado en el commit): `comun/ledger.py` agrega la columna `predicciones_201910`. Las filas viejas, que no la tienen, se siguen leyendo con esa columna vacía.\n- `scripts/vm.sh` ahora trae también `predicciones/` por scp.\n- Agregué dos tests en `tests/test_ledger.py`: una fila nueva sin la columna falla, y una vieja se consolida igual. Los tests de ledger y consolidar pasan (9 de 9). No corrí el resto de la suite.\n- Corrí localmente `C` con `--filas 20000 --etapa final`: el parquet tiene las tres columnas y 2634 filas, las mismas que el mes de test. Quedó en `ledger/exploracion/` y no se commiteó (los parquet están ignorados por git).\n\nDos cosas a tener en cuenta:\n- `pytest` a secas y `python -m experimentos.sampling-velocidad.src.correr` fallan desde la raíz porque no encuentran `comun` ni `src`. Para los tests usé `python -m pytest`, y para la corrida, `python -c` con `runpy`, que agrega las rutas sin variables de entorno.\n- El id de cliente venía como float en el panel; lo guardo como int64.\n\n**6.6, en curso:** lancé `lanzar_fase.sh 4` en la VM `sampling-f4` (log en `ledger/sesiones/vm_f4.log`). Dejé en `ledger/sesiones/en_curso.txt` qué hay que verificar cuando vuelva la VM: 120 finales del mismo commit y la misma máquina, 120 parquet, las 120 filas anteriores en `reemplazadas.csv` y las mismas ganancias y AUC que antes. Saqué `bloqueo.txt`, porque la decisión D12 ya lo resolvía.\n\n**Pendientes:** la 6.7 y el cierre de la 6.0 esperan esos parquet. La 6.3 queda para la sesión de revisión. No hice push.",
+ "ttft_ms": 3046,
+ "type": "result",
+ "duration_ms": 175888,
+ "uuid": "be1a966d-f36b-48be-ad04-e62b539f4e44",
+ "ttft_stream_ms": 2508,
+ "time_to_request_ms": 238,
+ "first_content_frame_ms": 2509,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 80,
+   "outputTokens": 12204,
+   "cacheReadInputTokens": 1983635,
+   "cacheCreationInputTokens": 49107,
+   "webSearchRequests": 0,
+   "costUSD": 1.033983,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1280,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

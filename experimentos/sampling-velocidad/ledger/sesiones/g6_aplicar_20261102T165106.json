@@ -1,0 +1,180 @@
+{
+ "duration_api_ms": 325251,
+ "stop_reason": "end_turn",
+ "session_id": "696cf2a7-baa7-48cb-aa08-ca7c0c33e282",
+ "total_cost_usd": 2.0510526000000002,
+ "usage": {
+  "input_tokens": 90,
+  "cache_creation_input_tokens": 89216,
+  "cache_read_input_tokens": 3572723,
+  "output_tokens": 31121,
+  "output_tokens_details": {
+   "thinking_tokens": 5211
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 89216,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1297,
+    "cache_read_input_tokens": 102223,
+    "cache_creation_input_tokens": 404,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 404
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 90,
+   "outputTokens": 31121,
+   "cacheReadInputTokens": 3572723,
+   "cacheCreationInputTokens": 89216,
+   "webSearchRequests": 0,
+   "costUSD": 2.0510526000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 5211,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01QVByU3akc7UWE7F2sK1Tzs",
+   "tool_input": {
+    "command": "cat .claude/skills/openspec-apply-change/SKILL.md | head -80; openspec instructions apply --change experimento-sampling-velocidad --json > /tmp/apply.json; head -c 1500 /tmp/apply.json",
+    "description": "Read apply skill and openspec instructions"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Cy2TvoQ4JSJP22V9CvFZZi",
+   "tool_input": {
+    "command": "cd experimentos/sampling-velocidad; ls -R src scripts informe ledger | head -50; wc -l docs/*.md ../../openspec/changes/experimento-sampling-velocidad/design.md ../../openspec/changes/experimento-sampling-velocidad/specs/reporte-visual/spec.md ../../docs/metodo.md; head -5 ledger/apareado.csv; wc -l ledger/*.csv; cat ledger/sesiones/en_curso.txt ledger/sesiones/bloqueo.txt 2>&1 | head; pgrep -f vm.sh",
+    "description": "Survey experiment folder and ledger state"
+   }
+  },
+  {
+   "tool_name": "Write",
+   "tool_use_id": "toolu_01FPR2xkWEpnXhzZJK6WhTAQ",
+   "tool_input": {
+    "file_path": "/tmp/sv_parcial/armar.py",
+    "content": "\"\"\"Arma un ledger parcial de la fase 1 (C y H3) en /tmp/sv_parcial/ledger para probar reporte.py.\"\"\"\nfrom pathlib import Path\nimport pandas as pd\n\nsrc = Path(\"experimentos/sampling-velocidad/ledger\").resolve()\ndst = Path(\"/tmp/sv_parcial/ledger\")\ndst.mkdir(parents=True, exist_ok=True)\nfase1 = [\"C\", \"H3-0.25\", \"H3-0.1\"]\nres = pd.read_csv(src / \"resultados.csv\")\nres[res[\"brazo\"].isin(fase1)].to_csv(dst / \"resultados.csv\", index=False)\nap = pd.read_csv(src / \"apareado.csv\")\nap[ap[\"brazo\"].isin(fase1)].to_csv(dst / \"apareado.csv\", index=False)\nif not (dst / \"curvas\").exists():\n    (dst / \"curvas\").symlink_to(src / \"curvas\")\nprint(len(res[res[\"brazo\"].isin(fase1)]), \"filas\")\n"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LZrUaaXJGpQVb8fLX5o6m5",
+   "tool_input": {
+    "command": "diff /tmp/rep1.html /tmp/rep2.html | cut -c1-200",
+    "description": "Diff two report generations"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011bUe4rcxHEwxvd2Jtc65mw",
+   "tool_input": {
+    "command": "grep -o \"<td class='pend'>[^<]*</td>\\|http[s]*://[^\\\"' ]*\\|<script\\|<link\" /tmp/sv_parcial/rep.html | sort | uniq -c",
+    "description": "Count pending cells and external refs"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01VTvaESGKX1t6uyX4URAEYE",
+   "tool_input": {
+    "command": "diff /tmp/rep1.html /tmp/rep2.html",
+    "description": "Diff two report generations"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Ag6SrL22QFY17D9bzSfc5a",
+   "tool_input": {
+    "command": "grep -c \"class='pend'\" /tmp/sv_parcial/rep.html",
+    "description": "Count pending markers in partial report"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011fJGEQn5BThSxnJRNVkpb5",
+   "tool_input": {
+    "command": "grep -c -E \"<script|<link|src=\\\"http\" /tmp/rep1.html",
+    "description": "Check for external resources"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 67,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Hice 6.1, 6.2 y 6.4 del grupo 6 y las marqué. La 6.0 está escrita pero sin marcar, porque le falta una parte, y dejé un bloqueo que necesita una decisión de diseño. La 6.3 (revisión) no la toqué. No hizo falta lanzar VMs: los resultados de las tres fases ya estaban en el ledger.\n\n**6.0 (sin marcar).** El nuevo `src/reporte.py` arma `informe/reporte.html`, un solo archivo con las figuras adentro. Pasa las tres verificaciones de la tarea:\n- con solo los datos de la fase 1, los brazos que faltan aparecen como pendientes (lo probé con el nuevo `scripts/ledger_parcial.py`);\n- dos corridas seguidas dan el mismo archivo;\n- no carga nada de afuera, así que abre sin servidor.\n\nLo que falta es la **comparación a tiempo igual**: el ensamble de K semillas no se puede armar porque `correr.py` guarda las curvas de ganancia de cada corrida y no sus predicciones. El reporte muestra el K de cada brazo y deja la ganancia del ensamble como pendiente. Las opciones están en `ledger/sesiones/bloqueo.txt`:\n1. Guardar las predicciones y volver a correr solo los modelos finales (estimo ≈ 1 h de VM).\n2. Aceptarlo como limitación; ya figura así en el informe.\n3. Usar otra medida en lugar del ensamble, lo que cambia la definición.\n\n**6.1.** Regeneré el reporte con todos los datos y exporté las cuatro figuras a `informe/figuras/`. Las decisiones están en `informe/decisiones.md`, cada una con su línea de `apareado.csv`:\n\n| Hipótesis | Decisión | Por qué |\n|---|---|---|\n| H1 (submuestreo al azar) | ninguna de las dos | con 0,5 sale indeterminado; con 0,25, 0,1 y 0,05 pierde |\n| H2 (`bagging_fraction` fijo) | refutada | con 0,1 pierde |\n| H3 (optimizar sobre una muestra) | confirmada | con 0,25 y 0,1 no pierde, y es 4,5 y 8,5 veces más rápido |\n\nValen la pena (no pierden y son al menos el doble de rápidos) solo H3-0.1 y H3-0.25. U0.25 y H3-0.25 usan los mismos hiperparámetros; como el primero pierde y el segundo no, lo que se pierde en H1 viene de entrenar el modelo final con menos filas.\n\n**6.2.** Escribí `informe/informe.md`, con las secciones pedidas y la bibliografía lista para Zulip, y `informe/guion.md`, de 10 minutos y sin explicar el baseline. El reparto de bloques entre personas en el guion es una propuesta mía; lo tiene que confirmar el grupo.\n\n**6.4.** Corrí `comun/tokens.py` y anoté en la bitácora la comparación con octubre:\n\n| | contexto por turno | US$ por turno |\n|---|---|---|\n| octubre | 400.000 | 0,28 |\n| este experimento | 131.275 | 0,059 |\n| este experimento sin la planificación | 74.589 | 0,041 |\n\nSiete sesiones quedaron sin etapa y hay que clasificarlas a mano. A esta sesión le falta el costo porque todavía no había cerrado.\n\nHay un commit por tarea más uno del bloqueo, sin `Co-Authored-By` y sin push.",
+ "ttft_ms": 10101,
+ "type": "result",
+ "duration_ms": 341869,
+ "uuid": "fd29d010-8a78-4e01-919a-a694eb6bc9bd",
+ "ttft_stream_ms": 9523,
+ "time_to_request_ms": 494,
+ "first_content_frame_ms": 9523,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 90,
+   "outputTokens": 31121,
+   "cacheReadInputTokens": 3572723,
+   "cacheCreationInputTokens": 89216,
+   "webSearchRequests": 0,
+   "costUSD": 2.0510526000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 5211,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

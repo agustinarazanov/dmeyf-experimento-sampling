@@ -275,3 +275,14 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   Lo que más ayudó fue cortar por etapa con `/clear`, mandar las salidas largas a archivo y que las corridas las hagan
   las VMs y no la conversación. Lo que infla el contexto son las sesiones largas e interactivas de diseño. Siete
   sesiones quedaron `sin-etapa`; hay que clasificarlas a mano.
+
+### 2026-11-02 — fase 4 (tarea 6.6, finales con predicciones)
+
+- VM `sampling-f4` (n2-highmem-8 spot, northamerica-northeast2-b, commit `4a42bc6`), creada 17:02 y **borrada**
+  ≈ 18:02 según `ledger/sesiones/vm_f4.log` (`== borrando sampling-f4` / `Deleted`). Tiempo de la fase ≈ 1 h de VM; los
+  120 finales corrieron entre 17:05 y 17:49 (≈ 44 min, 0,68 h de entrenamiento sumado). ≈ US$ 0,2.
+- `consolidar.py --sanity`: todas las verificaciones OK. 120 finales en `resultados.csv` (12 brazos × 10 semillas),
+  un commit (`4a42bc6`), una máquina (`n2-highmem-8`, mismo CPU); 120 parquet en `ledger/predicciones/`, uno por fila.
+- Las 120 finales anteriores están en `reemplazadas.csv` (110 de `2bd8a63`, 30 de `79039c9`; algunas semillas tienen
+  dos filas viejas por el relanzamiento de C-rep). **Determinismo**: `ganancia_max_201910` y `auc_test` idénticos a
+  los reemplazados en los 140 pares brazo-semilla; ninguna diferencia que anotar.

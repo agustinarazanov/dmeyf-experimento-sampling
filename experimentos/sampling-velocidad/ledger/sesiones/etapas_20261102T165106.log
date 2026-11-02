@@ -1,0 +1,101 @@
+== etapa 6 (5 pendientes) con opus · ## 6. Etapa análisis e informe (6.1 y 6.4 con Sonnet vía `scripts/etapa.sh`; 6.2 y 6.3 con Opus)
+== aplicar grupo 6 con opus
+16:51:17  Bash       cat .claude/skills/openspec-apply-change/SKILL.md | head -80; openspec instructions apply --change e
+16:51:19  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/.claude/skills/openspec-apply-ch
+16:51:20  Bash       openspec instructions apply --change experimento-sampling-velocidad --json
+16:51:29  Bash       cd experimentos/sampling-velocidad; ls -R src scripts informe ledger | head -50; wc -l docs/*.md ../
+16:51:31  Bash       ls -R experimentos/sampling-velocidad/src experimentos/sampling-velocidad/scripts experimentos/sampl
+16:51:32  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:51:32  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:51:35  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:51:36  Bash       head -c 1500 experimentos/sampling-velocidad/ledger/resultados.csv
+16:51:37  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:51:41  texto      Resultados de las fases ya consolidados (10 brazos completos); ahora escribo `reporte.py` para la ta
+16:51:42  Bash       grep -rn -i "tiempo igual\|ensamble\|predicc.*guard\|n_estrella\|def apare" openspec/changes/experim
+16:51:45  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:51:45  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:51:46  Bash       grep -n "pred\|np.save\|to_parquet\|curva" experimentos/sampling-velocidad/src/correr.py
+16:52:00  Bash       grep -n "^#" experimentos/sampling-velocidad/docs/diseno.md
+16:52:01  Bash       grep -n "^def \|^CONTROL\|^[A-Z_]* =" comun/ledger.py
+16:52:13  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:52:15  texto      Escribo el generador.
+16:53:12  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:53:17  Bash       python -m experimentos.sampling-velocidad.src.reporte --salida /tmp/rep1.html
+16:53:22  texto      Ahora la prueba con ledger parcial (solo fase 1) y el determinismo.
+16:53:25  Write      /tmp/sv_parcial/armar.py
+16:53:31  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:53:32  Bash       python experimentos/sampling-velocidad/scripts/ledger_parcial.py /tmp/sv_parcial
+16:53:34  Bash       python -m experimentos.sampling-velocidad.src.reporte --ledger /tmp/sv_parcial --salida /tmp/sv_parc
+16:53:35  Bash       python -m experimentos.sampling-velocidad.src.reporte --salida /tmp/rep2.html
+16:53:40  Bash       diff /tmp/rep1.html /tmp/rep2.html | cut -c1-200
+16:53:41  Bash       grep -o "<td class='pend'>[^<]*</td>\|http[s]*://[^\"' ]*\|<script\|<link" /tmp/sv_parcial/rep.html 
+16:53:43  Bash       diff /tmp/rep1.html /tmp/rep2.html
+16:53:44  Bash       grep -c "class='pend'" /tmp/sv_parcial/rep.html
+16:53:45  Bash       grep -c -E "<script|<link|src=\"http" /tmp/rep1.html
+16:53:48  Bash       python experimentos/sampling-velocidad/scripts/ledger_parcial.py experimentos/sampling-velocidad/inf
+16:53:49  Bash       python -m experimentos.sampling-velocidad.src.reporte --figuras experimentos/sampling-velocidad/info
+16:53:52  texto      Reporte generado; verifico determinismo y la versión parcial.
+16:53:53  Bash       python -m experimentos.sampling-velocidad.src.reporte --salida experimentos/sampling-velocidad/infor
+16:53:54  Bash       python -m experimentos.sampling-velocidad.src.reporte --ledger experimentos/sampling-velocidad/infor
+16:53:59  Bash       diff experimentos/sampling-velocidad/informe/reporte.html experimentos/sampling-velocidad/informe/_p
+16:54:00  Bash       grep -o -E "<td class='pend'>[^<]*|<p class='pend'>[^<]*|<script|<link|src=.http" experimentos/sampl
+16:54:04  texto      Las dos generaciones dan el mismo archivo, el parcial muestra los brazos pendientes y no hay referen
+16:54:04  Bash       rm -r experimentos/sampling-velocidad/informe/_prueba
+16:54:05  Bash       ls experimentos/sampling-velocidad/informe/figuras
+16:54:07  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:54:17  Bash       git add experimentos/sampling-velocidad/src/reporte.py experimentos/sampling-velocidad/scripts/ledge
+16:54:18  Bash       git commit -q -m "6.0: src/reporte.py genera informe/reporte.html desde el ledger (tabla de brazos, 
+16:54:20  texto      Ahora 6.1: decisiones por hipótesis citando `apareado.csv`.
+16:54:34  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:54:37  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:54:40  Bash       git commit -q -am "6.1: reporte regenerado con el ledger completo, figuras en informe/figuras/, deci
+16:54:43  Bash       git add experimentos/sampling-velocidad/informe/decisiones.md
+16:54:43  Bash       git commit -q --amend --no-edit
+16:54:49  texto      Ahora 6.2: informe y guion.
+16:55:11  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:55:24  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:55:27  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:55:28  Bash       git add experimentos/sampling-velocidad/informe/informe.md experimentos/sampling-velocidad/informe/g
+16:55:32  Bash       git commit -q -m "6.2: informe/informe.md (hipótesis, diseño, limitaciones, resultados, conclusiones
+16:55:34  texto      Ahora 6.4: registro de tokens.
+16:55:34  Bash       python -m comun.tokens --help
+16:55:36  Bash       python -m comun.tokens --experimento sampling-velocidad
+16:55:39  Bash       head -3 experimentos/sampling-velocidad/ledger/tokens.csv
+16:55:43  Bash       python -c "import pandas as pd; t=pd.read_csv('experimentos/sampling-velocidad/ledger/tokens.csv'); 
+16:55:47  Bash       tail -25 experimentos/sampling-velocidad/docs/bitacora.md
+16:55:49  Bash       grep -n "^## \|^### " experimentos/sampling-velocidad/docs/bitacora.md
+16:55:51  texto      Anoto la comparación de tokens en la bitácora (6.4).
+16:55:52  Bash       wc -l experimentos/sampling-velocidad/docs/bitacora.md
+16:55:54  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:56:07  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:56:10  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+16:56:11  Bash       git add experimentos/sampling-velocidad/docs/bitacora.md experimentos/sampling-velocidad/ledger/toke
+16:56:15  Bash       git commit -q -m "6.4: tokens.py corrido; bitácora compara contexto por turno y US$ contra octubre (
+16:56:20  texto      Queda el bloqueo de 6.0 (ensamble a tiempo igual).
+16:56:21  Bash       ls experimentos/sampling-velocidad/ledger/sesiones/bloqueo.txt experimentos/sampling-velocidad/ledge
+16:56:31  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+16:56:34  Bash       git add experimentos/sampling-velocidad/ledger/sesiones/bloqueo.txt
+16:56:35  Bash       git commit -q -m "grupo 6: bloqueo en 6.0, el ensamble a tiempo igual necesita predicciones que el l
+16:56:48  texto      Hice 6.1, 6.2 y 6.4 del grupo 6 y las marqué. La 6.0 está escrita pero sin marcar, porque le falta u
+16:56:48  fin        success · 67 turnos · US$ 2.0511
+aplicar g6: claude-opus-5-5 67 turnos US$ 2.0511 (success, rc 0)
+== BLOQUEADO:
+BLOQUEADO (2026-11-02, grupo 6, tarea 6.0)
+
+La tarea 6.0 pide la comparación a tiempo igual: un ensamble de K semillas del brazo contra el control (spec reporte-visual,
+"Comparación a tiempo igual"; hipotesis.md § Respuesta dice que sale "del mismo ledger, sin corridas nuevas"). No se
+puede armar: correr.py guarda las curvas de ganancia de cada final y no las predicciones, y sin predicciones no hay
+ensamble. Hoy reporte.py calcula K por brazo, K = ⌊(T(C) − T_opt) / T_final⌋ acotado a 10, y muestra la G del ensamble
+como "pendiente". Todo lo demás de 6.0 está hecho y verificado: ledger parcial con pendientes, mismo HTML dos veces,
+sin servidor.
+
+Es una decisión de diseño. Opciones:
+  1. Agregar a correr.py que guarde las predicciones de 201910 (ledger/predicciones/<id>.parquet) y volver a correr solo
+     las etapas `final` de los 11 brazos. Con los JSON de hp ya guardados, es ≈ 1 h de VM.
+  2. Aceptarlo como limitación: la comparación a tiempo igual queda fuera y se marca 6.0 con esa salvedad, que ya está
+     en informe.md § Limitaciones.
+  3. Usar un proxy sin ensamble, por ejemplo el máximo de G entre K semillas. Cambia la definición, así que también es
+     una decisión de diseño.
+
+6.1, 6.2 y 6.4 están hechas y marcadas. 6.3 (revisión) queda para la sesión limpia.
+== detenido en el grupo 6 (código 2)

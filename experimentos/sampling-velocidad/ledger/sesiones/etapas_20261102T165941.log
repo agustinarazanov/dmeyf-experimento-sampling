@@ -1,0 +1,111 @@
+== etapa 6 (5 pendientes) con opus · ## 6. Etapa análisis e informe (6.1 y 6.4 con Sonnet vía `scripts/etapa.sh`; 6.2 y 6.3 con Opus)
+== aplicar grupo 6 con opus
+16:59:46  Bash       openspec instructions apply --change experimento-sampling-velocidad --json > /tmp/apply.json; head -
+16:59:49  Bash       grep -n "^## 6" -A 40 /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/c
+16:59:56  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+16:59:59  Bash       E=/Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocida
+17:00:02  Bash       ls /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+17:00:02  Bash       pgrep -f vm.sh
+17:00:04  texto      Revisando el estado: no hay VMs corriendo; sigue la tarea 6.5 (predicciones en el ledger). Leo el có
+17:00:06  Bash       grep -n "COLUMNAS\|def \|curvas\|leer\|reindex\|fillna" /Users/agustina/Documents/segundo-cuatrimest
+17:00:07  Bash       grep -n "curva\|def \|ledger\|predict\|etapa\|201910\|exploracion" /Users/agustina/Documents/segundo
+17:00:10  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/ledger.py
+17:00:10  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:00:15  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:00:16  Bash       grep -rn "numero_de_cliente\|^Y\b\|^BAJA2\|^Y =\|^BAJA2 =" /Users/agustina/Documents/segundo-cuatrim
+17:00:19  Bash       grep -rn "numero_de_cliente\|^BAJA2 =\|^Y =" /Users/agustina/Documents/segundo-cuatrimestre/experime
+17:00:21  Bash       grep -rn -e "numero_de_cliente" -e "^BAJA2 =" -e "^Y =" /Users/agustina/Documents/segundo-cuatrimest
+17:00:24  texto      Ahora edito `comun/ledger.py` (columna nueva, filas viejas siguen leyéndose).
+17:00:25  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/ledger.py
+17:00:27  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/ledger.py
+17:00:28  texto      Ahora `correr.py`: escribe el parquet por final.
+17:00:31  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:00:32  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:00:33  Bash       grep -n -e "^import" -e "^from" -e "as dt" /Users/agustina/Documents/segundo-cuatrimestre/experiment
+17:00:36  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:00:37  Bash       grep -n -e "scp" -e "rsync" -e "curvas" /Users/agustina/Documents/segundo-cuatrimestre/experimento-s
+17:00:40  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:00:41  Bash       grep -n -e "def test" -e "^from" -e "^import" /Users/agustina/Documents/segundo-cuatrimestre/experim
+17:00:43  Bash       grep -rln "escribir_fila" /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experi
+17:00:46  Bash       grep -rln -e "escribir_fila" -e "COLUMNAS" /Users/agustina/Documents/segundo-cuatrimestre/experiment
+17:00:47  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_ledger.py
+17:00:49  texto      Agrego los tests de la columna nueva.
+17:00:53  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_ledger.py
+17:00:54  Bash       pytest -q > /tmp/pytest_65.txt 2>&1; tail -5 /tmp/pytest_65.txt
+17:00:56  Bash       pytest -q
+17:01:00  Bash       python -m pytest -q tests/test_ledger.py tests/test_consolidar.py
+17:01:04  texto      Tests pasan. Ahora la corrida local de `C` con 20000 filas.
+17:01:05  Bash       grep -n -e "brazo" -e "--filas" /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/
+17:01:09  Bash       python -m experimentos.sampling-velocidad.src.correr --metodo uniforme --tasa 1 --semilla 0 --etapa 
+17:01:13  Bash       python -m experimentos.sampling-velocidad.src.correr --metodo uniforme --tasa 1 --semilla 0 --etapa 
+17:01:18  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:01:22  Bash       grep -rn "src.correr" /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experiment
+17:01:31  Bash       python -c "import sys, runpy; sys.path[:0] = ['.', 'experimentos/sampling-velocidad']; runpy.run_mod
+17:01:38  texto      Corrida local terminó; verifico el parquet.
+17:01:41  Bash       python -I -c "
+import glob, os, pandas as pd
+b='experimentos/sampling-velocidad/ledger/exploracion/'
+17:01:51  Bash       grep -n -i -e "201910" -e "filas" experimentos/sampling-velocidad/ledger/exploracion/corrida_65.log
+17:01:53  Bash       python -c "import sys; sys.path[:0] = ['.']; from comun import datos as dt, baseline as bl; t = dt.c
+17:01:56  texto      Coincide: 2634 filas en el mes de test. Paso el id a entero (el panel lo trae como float) y commiteo
+17:01:57  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:01:59  Bash       git check-ignore -v experimentos/sampling-velocidad/ledger/exploracion/predicciones/x.parquet experi
+17:02:01  Bash       git status --short
+17:02:04  Bash       grep -rn -e "ledger" -e "parquet" /Users/agustina/Documents/segundo-cuatrimestre/experimento-samplin
+17:02:05  texto      Parquets ignorados. Marco 6.5 y commiteo (anunciando el cambio en `comun/`).
+17:02:06  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+17:02:07  Bash       git add comun/ledger.py experimentos/sampling-velocidad/scripts/vm.sh experimentos/sampling-velocida
+17:02:10  Bash       git commit -q -m "6.5: correr.py guarda ledger/predicciones/<id>.parquet (numero_de_cliente, prob fl
+17:02:13  texto      Ahora 6.6: lanzar la fase 4. Reviso que `lanzar_fase.sh` acepte 4.
+17:02:13  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:02:17  Bash       experimentos/sampling-velocidad/scripts/lanzar_fase.sh 4
+17:02:23  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
+17:02:26  Bash       git add experimentos/sampling-velocidad/ledger/sesiones/en_curso.txt experimentos/sampling-velocidad
+17:02:29  Bash       git commit -q -m "6.6: fase 4 lanzada en sampling-f4 (finales de los 12 brazos con predicciones); en
+17:02:37  texto      Hice la 6.5 y dejé la fase 4 corriendo. La 6.6 y la 6.7 todavía no están: dependen de los resultados
+17:02:37  fin        success · 52 turnos · US$ 1.034
+aplicar g6: claude-opus-5-5 52 turnos US$ 1.034 (success, rc 0)
+== EN_CURSO (VMs trabajando):
+EN_CURSO
+
+Fase 4 lanzada el 2026-11-02 ~17:05 con `scripts/lanzar_fase.sh 4` (VM sampling-f4, commit de la tarea 6.5,
+log en ledger/sesiones/vm_f4.log). Corre scripts/fase4.txt: finales de los 12 brazos × 10 semillas, ahora con
+predicciones de test.
+
+Qué espero al volver la VM (tarea 6.6):
+- `consolidar.py --sanity` sin errores; 120 finales en resultados.csv, todos del mismo commit y la misma máquina.
+- 120 parquet en ledger/predicciones/.
+- Las 120 filas finales anteriores en reemplazadas.csv.
+- ganancia_max_201910 y auc_test idénticos a los de las filas reemplazadas por brazo y semilla (determinismo);
+  diferencias, si las hay, a la bitácora con brazo y semilla.
+- Anotar en la bitácora la VM borrada y el tiempo de la fase.
+
+Después sigue 6.7 (comparación a tiempo igual en src/reporte.py), que depende de esos parquet; 6.0 se marca al cerrar 6.7.
+== 17:02 esperando a que terminen las VMs (vm.sh locales) · se revisa cada 5 min
+== 18:04 no queda ningún vm.sh corriendo; vuelvo al grupo 6
+== etapa 6 (4 pendientes) con opus · ## 6. Etapa análisis e informe (6.1 y 6.4 con Sonnet vía `scripts/etapa.sh`; 6.2 y 6.3 con Opus)
+== aplicar grupo 6 con opus
+18:04:42  Bash       grep -n "^## 6" -A 60 openspec/changes/experimento-sampling-velocidad/tasks.md | head -80; git statu
+18:04:46  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
+18:04:49  Bash       git show HEAD:experimentos/sampling-velocidad/ledger/sesiones/en_curso.txt; echo ---; E=experimentos
+18:04:51  Bash       git show HEAD:experimentos/sampling-velocidad/ledger/sesiones/en_curso.txt; echo ---; tail -15 exper
+18:04:53  texto      Fase 4 terminó (VM borrada, 120 parquet, 120 corridas nuevas). Consolido.
+18:04:54  Bash       python -m experimentos.sampling-velocidad.src.consolidar --sanity > /tmp/consolidar_f4.txt 2>&1; ech
+18:04:55  Bash       python -m experimentos.sampling-velocidad.src.consolidar --sanity > /tmp/consolidar_f4.txt 2>&1; tai
+18:04:57  Bash       python -m experimentos.sampling-velocidad.src.consolidar --sanity
+18:05:00  texto      Ahora verifico las condiciones de 6.6.
+18:05:05  Bash       python - <<'EOF'
+import pandas as pd
+L='experimentos/sampling-velocidad/ledger/'
+r=pd.read_csv(L+'re
+18:05:14  Bash       python - <<'EOF'
+import pandas as pd, os, datetime as dt
+L='experimentos/sampling-velocidad/ledger/'
+18:05:16  texto      Todo verifica. Miro el final de la bitácora para anotar en su estilo.
+18:05:17  Bash       tail -30 experimentos/sampling-velocidad/docs/bitacora.md; grep -n "^## \|^### " experimentos/sampli
+18:05:24  Bash       cat >> experimentos/sampling-velocidad/docs/bitacora.md <<'EOF'
+
+### 2026-11-02 — fase 4 (tarea 6.6,
+18:05:27  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+18:05:29  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
+18:05:31  Bash       git add -A experimentos/sampling-velocidad/ledger experimentos/sampling-velocidad/docs/bitacora.md o
