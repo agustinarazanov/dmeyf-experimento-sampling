@@ -23,7 +23,8 @@ COLUMNAS: list[str] = [
     "tiempo_preparacion_s", "tiempo_optimizacion_s", "tiempo_entrenamiento_s", "tiempo_lgbtrain_s",
     "memoria_max_mb", "maquina", "cpu", "hilos", "load_avg", "commit", "codigo_sucio", "persona", "valida",
 ]
-CLAVE: list[str] = ["brazo", "metodo", "tasa", "semilla", "etapa", "commit"]
+#: Sin `commit`: la misma semilla no puede contar dos veces; una repetición con código más nuevo reemplaza a la anterior.
+CLAVE: list[str] = ["brazo", "metodo", "tasa", "semilla", "etapa"]
 CONTROL = "C"
 #: Brazos que no entran en Δ: el control y su réplica (`docs/diseno.md` § Grilla).
 SIN_DELTA = {"C", "C-rep"}

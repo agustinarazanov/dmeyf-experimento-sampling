@@ -194,3 +194,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   sintaxis; el trap borró la VM. GOSS ya había terminado (40 trials y 10 semillas) y `remoto.sh` sube el ledger al
   bucket tras cada configuración, así que no se perdió nada: se trajo con `gcloud storage rsync`. Regla: no editar
   un script de bash mientras corre; si hace falta, reemplazarlo con un archivo nuevo (`mv`), nunca reescribirlo.
+- Grupo 5, dos sesiones headless (US$ 0,48 y 0,14). La primera consolidó, escribió `consolidar.py --sanity`, vio que
+  faltaba la réplica del control y relanzó la fase 2 con `C-rep`; como la VM arranca sin ledger, volvió a correr
+  también U0.5 y U0.05 (los estudios de Optuna se retoman, así que solo repitió las 10 semillas de cada uno). Eso dejó
+  la misma semilla dos veces, con dos commits, y la clave del ledger incluía el commit: el apareado rompió. La segunda
+  sesión además se trabó porque antepuso `PYENV_VERSION=... python`, forma que la lista de permisos no cubre.
+- Decisión: la clave del ledger ya no incluye el commit (spec `ledger-resultados` y `comun/ledger.py`); una repetición
+  con código más nuevo reemplaza a la anterior. Resultado: 22 filas de U0.5/U0.05 en `reemplazadas.csv`, `--sanity`
+  pasa completo y `C-rep` reproduce al control exacto (ΔAUC = 0, Δganancia = 0: LightGBM es determinista con la misma
+  semilla, hilos y máquina). El prompt de `etapa.sh` ahora pide `python` a secas.

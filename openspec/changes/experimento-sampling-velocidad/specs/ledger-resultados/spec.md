@@ -19,7 +19,7 @@ optimización y entrenamiento, memoria máxima, tipo de máquina, hilos, commit,
 
 ### Requirement: Acumulación sin conflictos
 Cada corrida SHALL escribirse en su propio archivo bajo el `ledger/corridas/` del experimento, y un comando de
-consolidación SHALL producir el `ledger/resultados.csv` de ese experimento ordenado y sin duplicados por clave (método, tasa, semilla, etapa, commit).
+consolidación SHALL producir el `ledger/resultados.csv` de ese experimento ordenado y sin duplicados por clave (brazo, método, tasa, semilla, etapa). El commit no forma parte de la clave: una corrida repetida con código más nuevo reemplaza a la anterior, porque la misma semilla no puede contar dos veces en el apareado.
 
 #### Scenario: Dos personas corren en paralelo
 - **WHEN** dos integrantes registran corridas y hacen push
@@ -28,6 +28,10 @@ consolidación SHALL producir el `ledger/resultados.csv` de ese experimento orde
 #### Scenario: Corrida repetida
 - **WHEN** se consolida una clave que ya existe
 - **THEN** se conserva la más reciente y la anterior queda marcada como reemplazada
+
+#### Scenario: Misma semilla corrida en dos commits
+- **WHEN** una fase se relanza y vuelve a correr un brazo y una semilla ya registrados con otro commit
+- **THEN** en `resultados.csv` queda una sola fila por brazo y semilla (la más reciente) y la otra va a `reemplazadas.csv`
 
 ### Requirement: Tablas apareadas por semilla
 El sistema SHALL derivar del ledger, para cada brazo experimental, la diferencia contra el control apareada por semilla

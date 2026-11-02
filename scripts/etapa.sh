@@ -86,6 +86,8 @@ correr_claude "$MODELO" "$PRESUPUESTO_APLICAR" "$J_APLICAR" \
 El experimento es experimentos/$EXP; leé CLAUDE.md y docs/metodo.md antes de empezar. \
 PROYECTO y BUCKET ya están definidos: los carga .env (en la raíz del repo, ignorado por git) y los lee vm.sh; \
 no los busques en los documentos ni pidas que los definan. \
+Corré python y pytest a secas desde la raíz del repo (python -m experimentos.sampling-velocidad.src.X): el entorno ya está resuelto; \
+no antepongas variables de entorno (PYENV_VERSION=..., PYTHONPATH=...) ni export, porque esa forma no está en la lista de comandos permitidos y te la van a negar. \
 Marcá cada tarea al terminarla, solo con la evidencia que pide su texto. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
 no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con $DIR/scripts/lanzar_fase.sh <1|2|3> (una por fase, pueden ir las tres a la vez), \
 que vuelve enseguida y deja la VM trabajando horas; nunca gcloud ni vm.sh directamente. Si lanzaste fases y las \

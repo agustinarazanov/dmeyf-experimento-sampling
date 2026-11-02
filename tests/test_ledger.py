@@ -53,7 +53,7 @@ def test_veredictos_cubren_todo():
 
 def test_consolidar_conserva_la_mas_reciente_y_marca_la_anterior():
     a = fila(id="a", fecha="2026-11-01T10:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=1, commit="abc")
-    b = fila(id="b", fecha="2026-11-01T11:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=1, commit="abc")
+    b = fila(id="b", fecha="2026-11-01T11:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=1, commit="def")
     sucia = fila(id="c", fecha="2026-11-01T12:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=2, commit="abc", valida=False)
     res, rem = lg.consolidar_corridas(pd.DataFrame([a, b, sucia]))
     assert list(res["id"]) == ["b"]
