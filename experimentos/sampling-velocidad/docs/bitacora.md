@@ -203,3 +203,14 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   con código más nuevo reemplaza a la anterior. Resultado: 22 filas de U0.5/U0.05 en `reemplazadas.csv`, `--sanity`
   pasa completo y `C-rep` reproduce al control exacto (ΔAUC = 0, Δganancia = 0: LightGBM es determinista con la misma
   semilla, hilos y máquina). El prompt de `etapa.sh` ahora pide `python` a secas.
+
+## 2026-11-02 · cierre del grupo 5 (sanity de resultados, tarea 5.4)
+
+- `consolidar.py --sanity`: todo OK. 30 finales de la fase 1 en una máquina y un commit; los 8 brazos de H1/H2 con 10
+  finales; filas de train dentro de ±0,1% de la tasa; sin `codigo_sucio`; `bagging_fraction` fijo en las 44 filas de H2;
+  ninguna corrida exploratoria en `resultados.csv`; un solo tipo de máquina (`n2-highmem-8`); `C-rep` reproduce al
+  control exacto (ΔAUC = 0, Δganancia = 0).
+- VMs borradas (según `ledger/sesiones/vm_f{1,2,3}.log`, "Deleted"): `sampling-f1`, `sampling-f2`, `sampling-f3`.
+- Gasto del trial: no se puede leer desde la sesión (la consola de facturación no es accesible). Solo hay una
+  estimación sin medir: el incidente de la fase 3 costó ≈ US$ 2,7 de VM ociosa. Agustina debe confirmar el saldo en
+  Billing antes del análisis.
