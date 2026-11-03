@@ -7,11 +7,11 @@
 
 ## 2. Registro de brazos y código en `comun/` (sesión: Sonnet)
 
-- [ ] 2.1 Crear `comun/brazos.py` con la tabla de D2 (brazo → dueño, método, tasa, estudio; estudio → dueño) y `comun/rutas.py` (`ledger(exp)`, `docs(exp)`, `informe(exp)`); verificar con un test que cada brazo de `apareado.csv` y cada estudio de `estudios.csv` tiene dueño, y que un brazo desconocido falla nombrándolo
-- [ ] 2.2 Mover `muestreo.py` y `metodos.py` a `comun/`. Hacer que `estudio()` y `brazo()` salgan del registro y que los imports sean `from comun import …`; verificar que los nombres de estudio y brazo de cada `(método, tasa)` de la grilla son los mismos que antes (test)
-- [ ] 2.3 Mover `correr.py` a `comun/`: la fila va al ledger del dueño del brazo y los hp se leen y escriben en el ledger del dueño del estudio (spec `corrida-reproducible`); verificar con el smoke test de la Mac (`--filas 20000`) una optimización de `U0.25` en `h1/ledger` y un final de `H3-0.25` en `h3/ledger` que lee `h1/ledger/hp/U0.25.json`
-- [ ] 2.4 Mover `consolidar.py` a `comun/` con `--experimento X` (filas de X, finales de `C` y N* desde `control`) y sin argumento para todos; mover `tests/test_consolidar.py` a la nueva ruta y agregar un caso con dos ledgers; verificar que `pytest` pasa
-- [ ] 2.5 Agregar `python -m comun.brazos --verificar`: compara la sección `## Dependencias` de cada `diseno.md` con lo que implica el registro, detecta ciclos y lista qué se rompe si falta una carpeta (spec `dependencias-entre-experimentos`); verificar con tests de un ciclo armado a mano y de una carpeta faltante
+- [x] 2.1 Crear `comun/brazos.py` con la tabla de D2 (brazo → dueño, método, tasa, estudio; estudio → dueño) y `comun/rutas.py` (`ledger(exp)`, `docs(exp)`, `informe(exp)`); verificar con un test que cada brazo de `apareado.csv` y cada estudio de `estudios.csv` tiene dueño, y que un brazo desconocido falla nombrándolo
+- [x] 2.2 Mover `muestreo.py` y `metodos.py` a `comun/`. Hacer que `estudio()` y `brazo()` salgan del registro y que los imports sean `from comun import …`; verificar que los nombres de estudio y brazo de cada `(método, tasa)` de la grilla son los mismos que antes (test)
+- [x] 2.3 Mover `correr.py` a `comun/`: la fila va al ledger del dueño del brazo y los hp se leen y escriben en el ledger del dueño del estudio (spec `corrida-reproducible`); verificar con el smoke test de la Mac (`--filas 20000`) una optimización de `U0.25` en `h1/ledger` y un final de `H3-0.25` en `h3/ledger` que lee `h1/ledger/hp/U0.25.json`
+- [x] 2.4 Mover `consolidar.py` a `comun/` con `--experimento X` (filas de X, finales de `C` y N* desde `control`) y sin argumento para todos; mover `tests/test_consolidar.py` a la nueva ruta y agregar un caso con dos ledgers; verificar que `pytest` pasa
+- [x] 2.5 Agregar `python -m comun.brazos --verificar`: compara la sección `## Dependencias` de cada `diseno.md` con lo que implica el registro, detecta ciclos y lista qué se rompe si falta una carpeta (spec `dependencias-entre-experimentos`); verificar con tests de un ciclo armado a mano y de una carpeta faltante
 
 ## 3. Separación del ledger (sesión: Sonnet)
 
