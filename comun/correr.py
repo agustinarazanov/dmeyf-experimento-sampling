@@ -1,13 +1,16 @@
 """Punto de entrada del experimento: una configuración (método, tasa, semilla, etapa) -> filas del ledger.
 
-    export PYTHONPATH=../..        # la raíz del repo, para ver `comun/`
-    python -m src.correr --metodo uniforme --tasa 0.25 --semilla 0 --etapa optimizar
-    python -m src.correr --metodo uniforme --tasa 0.25 --semilla todas --etapa final
+    python -m comun.correr --metodo uniforme --tasa 0.25 --semilla 0 --etapa optimizar
+    python -m comun.correr --metodo uniforme --tasa 0.25 --semilla todas --etapa final
+
+Se corre desde la raíz del repo. La fila va al ledger del experimento dueño del brazo y los hiperparámetros se
+guardan y se leen en el ledger del dueño del estudio (`comun/brazos.py`): un final de `H3-0.25` escribe en
+`experimentos/h3/ledger/` y lee `experimentos/h1/ledger/hp/U0.25.json`.
 
 `optimizar` corre Optuna (40 trials, AUC en 201908, una semilla) y guarda los mejores hiperparámetros en
-`ledger/hp/<estudio>.json`; no carga 201910. `final` entrena con ese JSON y evalúa en 201908 y 201910 (curvas) para cada
+`<ledger del estudio>/hp/<estudio>.json`; no carga 201910. `final` entrena con ese JSON y evalúa en 201908 y 201910 (curvas) para cada
 semilla pedida; saltea las que ya tienen fila válida. Con `--filas N` (o con `--trials` distinto de 40, o con el árbol
-sucio) la corrida es exploratoria y va a `ledger/exploracion/`, fuera de los resultados.
+sucio) la corrida es exploratoria y va a `<ledger>/exploracion/`, fuera de los resultados.
 """
 
 from __future__ import annotations
@@ -33,21 +36,20 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 
 from comun import baseline as bl
+from comun import brazos
 from comun import datos as dt
 from comun import ganancia as gn
 from comun import ledger as lg
-from src import metodos, muestreo
+from comun import metodos, muestreo, rutas
 
 log = logging.getLogger("correr")
-EXPERIMENTO = Path(__file__).resolve().parents[1]
-LEDGER = EXPERIMENTO / "ledger"
 
 
 # --- entorno -------------------------------------------------------------------
 
 
 def _git(*args: str) -> str:
-    return subprocess.run(["git", "-C", str(EXPERIMENTO), *args], capture_output=True, text=True).stdout.strip()
+    return subprocess.run(["git", "-C", str(rutas.RAIZ), *args], capture_output=True, text=True).stdout.strip()
 
 
 def commit_y_sucio() -> tuple[str, bool]:
@@ -117,12 +119,15 @@ class Contexto:
         self.commit, self.sucio = commit_y_sucio()
         self.explora = bool(a.filas) or a.trials != bl.N_TRIALS
         self.valida = not self.explora and not self.sucio
-        self.base = LEDGER / "exploracion" if self.explora else LEDGER
         self.rel = "exploracion/" if self.explora else ""
         self.etapa = "exploracion" if self.explora else a.etapa
         self.metodo = "uniforme" if (a.metodo == "opt-muestra" and a.etapa == "optimizar") else a.metodo
         self.estudio = metodos.estudio(a.metodo, a.tasa)
         self.brazo = a.brazo or metodos.brazo(self.metodo, a.tasa)
+        self.raiz = rutas.ledger(brazos.dueno_brazo(self.brazo))  # ledger del dueño del brazo: filas, curvas, predicciones
+        self.base = self.raiz / "exploracion" if self.explora else self.raiz
+        ledger_estudio = rutas.ledger(brazos.dueno_estudio(self.estudio))  # ledger del dueño del estudio: hp
+        self.base_hp = ledger_estudio / "exploracion" if self.explora else ledger_estudio
         sufijo = f"_smoke{a.filas}" if a.filas else ("_exp" if self.explora else "")
         self.db = bl.DATOS_DIR / "optuna" / f"{self.estudio}{sufijo}.db"
 
@@ -144,7 +149,7 @@ class Contexto:
         return base
 
     def ruta_hp(self) -> Path:
-        return Path(self.a.hp) if self.a.hp else self.base / "hp" / f"{self.estudio}.json"
+        return Path(self.a.hp) if self.a.hp else self.base_hp / "hp" / f"{self.estudio}.json"
 
 
 def _dataset_params() -> dict:
@@ -214,7 +219,7 @@ def optimizar(cx: Contexto) -> None:
         "filas_train": filas_train, "hash_muestra": hash_, "commit": cx.commit, "codigo_sucio": cx.sucio,
         "fecha": datetime.now().isoformat(timespec="seconds"),
     }
-    (cx.base / "hp").mkdir(parents=True, exist_ok=True)
+    cx.ruta_hp().parent.mkdir(parents=True, exist_ok=True)
     cx.ruta_hp().write_text(json.dumps(resumen, indent=2, ensure_ascii=False))
     lg.escribir_fila(cx.base / "corridas", cx.fila(
         id=id_, semilla=bl.SEMILLA_OPTUNA, etapa_corrida="optimizar", hp=json.dumps(study.best_params),
@@ -271,14 +276,14 @@ def final(cx: Contexto) -> None:
         curva_te = gn.curva_de_corte(p_te, b2_te)
         (cx.base / "curvas").mkdir(parents=True, exist_ok=True)
         r_va, r_te = f"{cx.rel}curvas/{id_}_{bl.MES_VALIDACION}.csv", f"{cx.rel}curvas/{id_}_{bl.MES_TEST}.csv"
-        curva_va.to_csv(LEDGER / r_va, index=False)
-        curva_te.to_csv(LEDGER / r_te, index=False)
+        curva_va.to_csv(cx.raiz / r_va, index=False)
+        curva_te.to_csv(cx.raiz / r_te, index=False)
         # D12: predicciones de test en el orden del mes, para ensamblar semillas en la comparación a tiempo igual
         (cx.base / "predicciones").mkdir(parents=True, exist_ok=True)
         r_pred = f"{cx.rel}predicciones/{id_}.parquet"
         pd.DataFrame({
             dt.ID: test[dt.ID].to_numpy().astype(np.int64), "prob": p_te.astype(np.float32), dt.BAJA2: b2_te.astype(np.int8),
-        }).to_parquet(LEDGER / r_pred, index=False)
+        }).to_parquet(cx.raiz / r_pred, index=False)
         envios, g_max = gn.ganancia_maxima(curva_te)
         lg.escribir_fila(cx.base / "corridas", cx.fila(
             id=id_, semilla=semilla, etapa_corrida="final", hp=json.dumps(hp), filas_train=len(datos),
@@ -300,7 +305,7 @@ def parsear(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--tasa", type=float, required=True, help="r (uniforme, opt-muestra) o fracción f (bagging)")
     p.add_argument("--semilla", default="0", help="un entero, lista separada por comas o `todas` (10 semillas finales)")
     p.add_argument("--etapa", required=True, choices=["optimizar", "final"])
-    p.add_argument("--hp", help="JSON de hiperparámetros (por defecto ledger/hp/<estudio>.json)")
+    p.add_argument("--hp", help="JSON de hiperparámetros (por defecto <ledger del dueño del estudio>/hp/<estudio>.json)")
     p.add_argument("--filas", type=int, help="smoke test: panel de ~N filas, corrida exploratoria")
     p.add_argument("--brazo", help="nombre de brazo si no es el que sale del método (C-rep)")
     p.add_argument("--trials", type=int, default=bl.N_TRIALS, help="solo para pruebas: distinto de 40 es exploratorio")
@@ -308,6 +313,9 @@ def parsear(argv: list[str] | None = None) -> argparse.Namespace:
     a = p.parse_args(argv)
     try:
         metodos.validar(a.metodo, a.tasa)
+        efectivo = "uniforme" if (a.metodo == "opt-muestra" and a.etapa == "optimizar") else a.metodo
+        brazos.dueno_brazo(a.brazo or metodos.brazo(efectivo, a.tasa))  # brazo sin dueño: falla antes de cargar datos
+        brazos.dueno_estudio(metodos.estudio(a.metodo, a.tasa))
         if a.etapa == "optimizar" and a.semilla not in ("0", str(bl.SEMILLA_OPTUNA)):
             raise ValueError(f"--semilla inválida para optimizar: {a.semilla} (la de Optuna es {bl.SEMILLA_OPTUNA})")
         if a.etapa == "final":
