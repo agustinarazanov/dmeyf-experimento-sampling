@@ -431,3 +431,30 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Correcciones: ruta anotada como "`src/correr.py` (hoy `comun/correr.py`)". `tasks.md` no tenía tarea de revisión
   del grupo 4; se agregó la 4.5 y se marcó.
 - Tokens: ~25 turnos · ≈ US$ 1,1 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
+
+### 2026-11-03 — cierre revisión del grupo 5 de `separar-hipotesis` (reportes e informes)
+- Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (grupo 5, tareas 5.1–5.3).
+- Revisor: sesión limpia (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código, aplicada a `comun/reporte.py`) y § 5 (informe, aplicada a `informe/` de `h1`–`h3`
+  y `sampling_1`); ningún ✗.
+  - ✓ `pytest` completo: 57 pasan (8 de `tests/test_reporte.py`: idempotencia, hipótesis nueva, ledger vacío).
+  - ✓ Determinismo del reporte: `python -m comun.reporte --todos` regenera los cinco `reporte.html`; el `diff` por
+    palabra contra HEAD solo cambia el pie (fecha y commit). Se descartó la regeneración.
+  - ✓ `python -m comun.brazos --verificar` sin problemas.
+  - ✓ No hay datos del dataset en el repo (`git ls-files`). Smoke test, `optimizar` sin 201910, columnas del ledger,
+    `codigo_sucio`, filas de train, `consolidar.py` y `vm.sh`: n/a (el grupo no toca el corredor).
+  - ✓ Cada veredicto de `h1`–`h3/informe/informe.md` sigue la regla de su `docs/hipotesis.md` (H1 ninguna de las dos
+    por U0.25 pierde; H2 refutada por B0.1 pierde; H3 confirmada por H3-0.25 no pierde); Δ e IC de cada fila coinciden
+    con `ledger/apareado.csv` de su experimento; A coincide con `reporte.html`.
+  - ✓ Refutación (H2) y "ninguna" (H1) con el mismo peso que la confirmación (H3), en los informes propios y en el
+    conjunto.
+  - ✓ Limitaciones: semilla de Optuna única, un mes de test y un año en los cuatro; adaptación de H2 y GOSS descriptivo
+    en `h2`; estudios de `h1` en `h3` y en `h1`; el conjunto remite a ellos.
+  - ✓ Enlaces y rutas citadas en `informe.md` de `h1`–`h3` y `sampling_1`, `decisiones.md` y `guion.md` existen.
+  - n/a Duración del guion, guion sin baseline y bibliografía: no cambiaron en el grupo 5.
+- Hallazgos: `sampling_1/informe/informe.md` § Diseño decía "cada uno con su propio Optuna", falso para H3 (reusa los
+  estudios de `h1`; el mismo párrafo cuenta 9 optimizaciones); y un corte de línea suelto en "Detalle / en".
+- Correcciones: § Diseño aclara "H3 reusa los estudios de U0.25 y U0.1"; corte de línea unido. `tasks.md` no tenía
+  tarea de revisión del grupo 5; se agregó la 5.4 y se marcó.
+- Tokens: ~30 turnos · ≈ US$ 0,9 (presupuesto US$ 2). La sesión del grupo 5 costó US$ 1,04 (`costos.csv`).
+  `comun/tokens.py` no se corrió en esta sesión.

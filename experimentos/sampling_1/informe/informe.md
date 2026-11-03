@@ -19,14 +19,13 @@ proporción de clases (eso lo estudia Sampling_2).
 
 ## Diseño
 
-Diez brazos contra el control, cada uno con su propio Optuna (40 trials, AUC en 201908) y 10 semillas finales iguales en
-todos. Decide la ganancia en 201910 al corte N* = 3.300 envíos, que sale del control en 201908. Δ es la diferencia contra
+Diez brazos contra el control, cada uno con su Optuna (40 trials, AUC en 201908; H3 reusa los estudios de U0.25 y U0.1)
+y 10 semillas finales iguales en todos. Decide la ganancia en 201910 al corte N* = 3.300 envíos, que sale del control en 201908. Δ es la diferencia contra
 el control apareada por semilla, con IC 95% t. Con δ = 2% de la ganancia del control (5,52 M$): *no pierde* si la cota
 inferior del IC es ≥ −δ, *pierde* si la media es < −δ, *indeterminado* en el resto. T es el tiempo de la optimización más
 un modelo final, medido en `n2-highmem-8`. Tres fases en VMs spot y una cuarta que repite los finales guardando
 predicciones: 129 corridas válidas en `resultados.csv` (9 optimizaciones y 120 finales de 12 brazos, C-rep incluido), un
-solo tipo de máquina. Detalle
-en `docs/hipotesis.md` y `docs/diseno.md`.
+solo tipo de máquina. Detalle en `docs/hipotesis.md` y `docs/diseno.md`.
 
 ## Resultados
 
