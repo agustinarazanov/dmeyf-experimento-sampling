@@ -478,3 +478,28 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   4. `--salida` fuera de `informe/` rompe los enlaces relativos: anotado.
   5. `scripts/etapa.sh` vs `scripts/etapas.sh` ambiguo: ahora dice qué hace cada uno.
 - Tokens: subagente ~56.000 tokens, 20 herramientas. Sesiones headless del grupo 6 en `costos.csv`.
+
+### 2026-11-03 — cierre revisión del grupo 6 de `separar-hipotesis` (tokens, documentación e integración)
+- Sesión: `069aa733-ba79-4b18-8633-133355d4836b` · modelo: Opus · etapa: **revision** (grupo 6, tareas 6.1–6.5).
+- Revisor: sesión limpia (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código, aplicada a `comun/tokens.py` y a la integración) y § 5 (informe); ningún ✗.
+  - ✓ `pytest` completo: 61 pasan, incluidos los cuatro de `tests/test_tokens.py` (cada experimento registra lo que
+    declara, sin dueño va a `sampling_1`, doble declaración falla, etapa headless por cambio y grupo).
+  - ✓ `python -m comun.brazos --verificar`: código 0, ninguna línea `PROBLEMA`.
+  - ✓ `python -m comun.tokens` sin `--experimento` regenera los cinco; en `sampling_1/ledger/tokens.csv` solo cambian
+    filas del 3-nov (sesiones posteriores a la separación); las anteriores quedan idénticas.
+  - ✓ `git grep sampling-velocidad` fuera de lo histórico (archivo de openspec, bitácora, `ledger/sesiones/`, este
+    cambio) solo aparece en `CLAUDE.md` y `README.md` (notas del cambio archivado y del renombre), y en `comun/tokens.py`
+    y su test (clave del cambio archivado en `ETAPA_DE_GRUPO_POR_CAMBIO`): todo legítimo.
+  - ✓ Guía § Agregar una hipótesis enlazada desde `README.md` y `CLAUDE.md`; la plantilla trae `## Dependencias` y la
+    referencia a las reglas de `control` en `hipotesis.md`. La prueba con `h9` en worktree y el clon limpio con el smoke
+    de un brazo por experimento (6.3 y 6.5) están en la entrada anterior; no se repitieron.
+  - ✓ Ningún archivo del dataset en `git ls-files`.
+  - n/a resto de § 3 (smoke de los cuatro métodos, determinismo, meses leídos, columnas, `codigo_sucio`, filas de train,
+    `consolidar.py`, `vm.sh`): el grupo 6 no toca ese código; lo cubren los tests y la revisión del grupo 2.
+  - n/a § 5: el grupo 6 no toca `informe/` (el único código que cambia es `comun/tokens.py`); los informes se revisaron
+    en el grupo 5.
+- Hallazgos: ninguno bloqueante. Observación: varias sesiones del 2 y 3-nov (entre ellas `cf0dc9c0…`, la interactiva
+  del cambio) siguen `sin-etapa` en `tokens.csv`; clasificarlas no es del grupo 6.
+- Correcciones: ninguna.
+- Tokens: ~20 turnos · ≈ US$ 0,6 (presupuesto US$ 2). `comun/tokens.py` corrido en esta sesión.
