@@ -381,3 +381,22 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   este cambio).
 - Correcciones: ninguna en código. `tasks.md` no tenía tarea de revisión del grupo 3; se agregó la 3.5 y se marcó.
 - Tokens: ~15 turnos · ≈ US$ 0,7 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
+
+### 2026-11-03 — grupo 4 de `separar-hipotesis` (documentos por experimento)
+- Sesión: `eccad74f-e7e0-4f11-b5b6-110f0c62bcf1` (headless) · modelo: Opus · etapa: **diseno**.
+- Separación de los documentos según D5, moviendo los textos tal cual y ajustando solo referencias cruzadas:
+  - `control/docs/`: § Control y § Métricas y reglas comunes (`hipotesis.md`); brazo `C`, `C-rep`, semillas,
+    parámetros fijos, métricas que se calculan, máquina y `## Dependencias` vacía (`diseno.md`). En § Métricas que se
+    calculan, los pasos 3 y 6 remiten a `hipotesis.md` en vez de repetir las fórmulas de δ y A (dc6d9ce).
+  - `h1/`, `h2/`, `h3/docs/`: la sección de su H, sus brazos y su grilla, y `## Dependencias` (`control`; `h3` además
+    `h1`). Estudios compartidos completos en `h1` y con remisión en `h3`. Las limitaciones propias pasaron a su
+    `hipotesis.md` (GOSS a `h2`, estudio compartido a `h3`), y lo que quedaba fuera de la grilla de cada H a su
+    `diseno.md` (7c34254).
+  - `sampling_1/docs/`: pregunta, H4 pendiente, respuesta al tutor, limitaciones comunes, estimación, reparto y fases,
+    devolución del tutor, enlaces y `## Dependencias` (`control`, `h1`, `h2`, `h3`) (ffc2e26).
+  - Bitácoras de `control`, `h1`, `h2` y `h3` abiertas con puntero a esta, hipótesis revisada el 1-nov y los commits
+    de la separación.
+- Verificado: `python -m comun.brazos --verificar` sin problemas; `grep` de G, Δ, δ, T, A, N* y veredictos: solo en
+  `control/docs/hipotesis.md`; 17 pasajes de D5, cada uno en un solo documento de `docs/`. `informe/informe.md` y
+  `informe/reporte.html` de `sampling_1` todavía repiten textos (el reporte se genera de `hipotesis.md`): grupo 5.
+- Revisión del grupo 4: pendiente, en sesión limpia.
