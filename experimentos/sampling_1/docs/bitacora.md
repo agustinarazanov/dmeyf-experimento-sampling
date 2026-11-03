@@ -351,3 +351,33 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   (ignorado por git).
 - Correcciones: ninguna en código. `tasks.md` no tenía tarea de revisión del grupo 2; se agregó la 2.6 y se marcó.
 - Tokens: ~30 turnos · ≈ US$ 0,7 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
+
+### 2026-11-03 — cierre revisión del grupo 3 de `separar-hipotesis` (separación del ledger)
+- Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (grupo 3, tareas 3.1–3.4).
+- Revisor: sesión limpia (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código) y § 4 (resultados, solo lo que toca la separación); ningún ✗.
+  - n/a smoke, determinismo, `optimizar` sin 201910, columnas obligatorias, `codigo_sucio`, filas de train: el grupo
+    3 no toca `comun/` (diff de los cinco commits: solo `scripts/`, `tests/test_separar_ledger.py`, ledgers y
+    `tasks.md`); revisados en el grupo 2.
+  - ✓ `consolidar` aparea solo semillas en común: `pytest` 49 passed (incluye `test_separar_ledger.py`).
+  - ✓ `vm.sh` borra la VM: `trap borrar EXIT` se instala después de la salida de `--en-seco` y antes de
+    `instances create`, con `--delete-disks=all`; verificado leyendo el script. No pude ejecutar `bash -n` ni
+    `--en-seco` (la sesión headless no tiene permiso para correr scripts de shell); queda la verificación a mano de
+    4d55ac4. `lanzar_fase.sh` en la raíz y el atajo de `sampling_1/scripts/` revisados leyendo: rutas y `pgrep` coinciden.
+  - ✓ Sin datos en el repo: ningún parquet, csv.gz, SQLite ni `predicciones/` versionado; `predicciones/` y
+    `exploracion/` de `control`, `h1`–`h3` y `sampling_1` aparecen como ignorados.
+  - ✓ Conservación: `python -m scripts.separar_ledger --origen experimentos/sampling_1/ledger --verificar` → OK.
+    La unión de los `resultados.csv` de `control`, `h1`, `h2`, `h3` tiene 129 `id` únicos, iguales a los del
+    manifiesto; cada dueño tiene solo sus brazos (control: C, C-rep; h1: U*; h2: B*, GOSS; h3: H3-*).
+  - ✓ 3.3 repetida: `python -m comun.consolidar` no cambia ningún archivo versionado; la unión de los `apareado.csv`
+    de `h1`–`h3` contra `apareado_previo.csv`: 10 brazos en ambos, diferencia máxima 0 en todas las columnas
+    numéricas (Δ, IC, A, n, tiempos) y mismos veredicto, nota y semillas.
+  - ✓ Sin `codigo_sucio` (129 False) ni `etapa = exploracion` (120 final, 9 optimizar) en los ledgers repartidos.
+  - n/a máquina y commit por fase, réplica del control, H2 con `bagging_fraction` fijo, 10 semillas, VMs borradas y
+    gasto: la separación no agrega corridas ni cambia filas.
+- Hallazgos menores (sin corrección, no bloquean): `python scripts/separar_ledger.py` falla con
+  `ModuleNotFoundError: comun`; hay que usar `python -m scripts.separar_ledger`, como dice su docstring. El final de
+  `vm.sh` extrae los ledgers de la VM encima de los locales después del rsync del bucket (comportamiento anterior a
+  este cambio).
+- Correcciones: ninguna en código. `tasks.md` no tenía tarea de revisión del grupo 3; se agregó la 3.5 y se marcó.
+- Tokens: ~15 turnos · ≈ US$ 0,7 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
