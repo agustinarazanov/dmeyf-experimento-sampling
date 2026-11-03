@@ -1,10 +1,14 @@
-"""Genera `informe/reporte.html` desde el ledger y los documentos del experimento.
+"""Genera `experimentos/<exp>/informe/reporte.html` desde los ledgers y los documentos.
 
-    python -m experimentos.sampling_1.src.reporte [--ledger DIR] [--salida HTML] [--figuras DIR]
+    python -m comun.reporte --experimento h1 [--salida HTML] [--figuras DIR]
+    python -m comun.reporte --todos
 
-Lee `ledger/resultados.csv`, `ledger/apareado.csv`, las curvas y `docs/hipotesis.md` / `docs/diseno.md`. Un único HTML
-con las figuras embebidas (PNG en base64), sin servidor. Los brazos sin datos salen como pendientes; ningún número se
-escribe a mano. Con `--figuras` además guarda cada figura como PNG (para el video).
+Un reporte por experimento. Para `control`: su sección de `docs/hipotesis.md` y el estado de C. Para cada `hN`: su
+hipótesis, la tabla de sus brazos contra el control y las bandas de curvas. Para `sampling_1`: todos los brazos de
+todas las hipótesis registradas en `comun/brazos.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.
+Lee `resultados.csv`, `apareado.csv` y las curvas de los ledgers de `experimentos/*/` (los finales de C salen de
+`control`). Un único HTML con las figuras embebidas (PNG en base64), sin servidor. Los brazos sin datos salen como
+pendientes; ningún número se escribe a mano. Con `--figuras` además guarda cada figura como PNG (para el video).
 """
 
 from __future__ import annotations
@@ -26,26 +30,39 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from comun import brazos as reg
 from comun import ledger as lg
+from comun import rutas
 from comun.baseline import SEMILLAS_FINALES
 from comun.ganancia import ganancia
 
-EXPERIMENTO = Path(__file__).resolve().parents[1]
-LEDGER = EXPERIMENTO / "ledger"
-DOCS = EXPERIMENTO / "docs"
 N_SEMILLAS = 10
 MES = 201910
-
-# Brazos de docs/diseno.md § Brazos, en orden de lectura; el control primero.
-HIPOTESIS = {
-    "H1": ("Submuestreo uniforme del train", ["U0.5", "U0.25", "U0.1", "U0.05"]),
-    "H2": ("Muestrear dentro de LightGBM", ["B0.5", "B0.25", "B0.1", "GOSS"]),
-    "H3": ("Optimizar sobre una muestra, entrenar con todo", ["H3-0.25", "H3-0.1"]),
-}
-BRAZOS = [b for _, bs in HIPOTESIS.values() for b in bs]
-COLOR = {"C": "#555555", "H1": "#2a6fb0", "H2": "#c4501b", "H3": "#2e8b57"}
-HIP_DE = {b: h for h, (_, bs) in HIPOTESIS.items() for b in bs}
+SIN_REPORTE = {"C", "C-rep"}  # brazos del control: no tienen Δ, van en la fila C
+PALETA = ["#2a6fb0", "#c4501b", "#2e8b57", "#8e5ea2", "#b8860b", "#c0392b"]
+COLOR_C = "#555555"
 A_VALE = 2.0  # hipotesis.md § Respuesta: vale la pena si no pierde y A ≥ 2
+
+
+class Contexto:
+    """Qué hipótesis y brazos entran en un reporte, salido del registro de `comun/brazos.py` (no de listas a mano)."""
+
+    def __init__(self, exp: str):
+        self.exp = exp
+        self.agregador = exp == reg.AGREGADOR
+        self.exps = [e for e in reg.duenos() if e != reg.CONTROL] if self.agregador else \
+            ([] if exp == reg.CONTROL else [exp])
+        self.hipotesis: dict[str, tuple[str, list[str]]] = {}  # "H1" -> (título, brazos)
+        for e in self.exps:
+            md = rutas.docs(e) / "hipotesis.md"
+            sec = secciones(md.read_text()) if md.exists() else {}
+            clave = next((k for k in sec if re.match(r"^H\d+\b", k)), e.upper())
+            nombre, titulo = re.match(r"^(\S+)\s*(?:—\s*)?(.*)$", clave).groups()
+            self.hipotesis[nombre] = (titulo or nombre,
+                                      [b.nombre for b in reg.brazos_de(e) if b.nombre not in SIN_REPORTE])
+        self.brazos = [b for _, bs in self.hipotesis.values() for b in bs]
+        self.hip_de = {b: h for h, (_, bs) in self.hipotesis.items() for b in bs}
+        self.color = {h: PALETA[i % len(PALETA)] for i, h in enumerate(self.hipotesis)}
 
 
 # --- markdown mínimo (títulos, listas, tablas, párrafos, negrita, cursiva, código) ---
@@ -112,10 +129,27 @@ def seccion(sec: dict[str, str], prefijo: str) -> str:
 
 # --- datos ---
 
-def cargar(ledger: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
-    res = pd.read_csv(ledger / "resultados.csv") if (ledger / "resultados.csv").exists() else pd.DataFrame()
-    ap = pd.read_csv(ledger / "apareado.csv") if (ledger / "apareado.csv").exists() else pd.DataFrame()
-    fin = res[res["etapa"] == "final"] if not res.empty else pd.DataFrame(columns=["brazo"])
+def _absolutas(fin: pd.DataFrame, base: Path) -> pd.DataFrame:
+    """Rutas de curvas y predicciones absolutas, para mezclar finales de varios ledgers y leerlas igual."""
+    fin = fin.copy()
+    for col in [c for c in fin.columns if c.startswith(("curva_", "predicciones_"))]:
+        fin[col] = fin[col].map(lambda r: str(base / r) if isinstance(r, str) else r)
+    return fin
+
+
+def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """(finales de los ledgers `exps`, apareado de todos los dueños de brazos). Las rutas de curvas y predicciones
+    salen absolutas."""
+    finales = []
+    for e in exps:
+        f = rutas.ledger(e) / "resultados.csv"
+        if f.exists():
+            r = pd.read_csv(f)
+            finales.append(_absolutas(r[r["etapa"] == "final"], rutas.ledger(e)))
+    fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=["brazo"])
+    aps = [pd.read_csv(rutas.ledger(e) / "apareado.csv") for e in reg.duenos()
+           if (rutas.ledger(e) / "apareado.csv").exists()]
+    ap = pd.concat(aps, ignore_index=True).drop_duplicates("brazo") if aps else pd.DataFrame()
     return fin, ap.set_index("brazo") if not ap.empty else ap
 
 
@@ -153,23 +187,23 @@ def png(fig, nombre: str, figuras: Path | None) -> str:
     return f'<img alt="{nombre}" src="data:image/png;base64,{base64.b64encode(buf.getvalue()).decode()}">'
 
 
-def fig_tiempo_ganancia(ap: pd.DataFrame, figuras: Path | None) -> str:
+def fig_tiempo_ganancia(ctx: Contexto, ap: pd.DataFrame, figuras: Path | None) -> str:
     if ap.empty:
         return "<p class='pend'>pendiente: no hay apareado.csv (falta el control)</p>"
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
     gc, tc = ap["g_control"].iloc[0], ap["tiempo_total_control_s"].iloc[0]
-    ax.scatter([tc], [gc / 1e6], s=90, color=COLOR["C"], marker="s", zorder=3, label="control")
-    for h in HIPOTESIS:
-        sub = ap[ap.index.isin(HIPOTESIS[h][1])]
+    ax.scatter([tc], [gc / 1e6], s=90, color=COLOR_C, marker="s", zorder=3, label="control")
+    for h in ctx.hipotesis:
+        sub = ap[ap.index.isin(ctx.hipotesis[h][1])]
         if sub.empty:
             continue
         g = (sub["g_control"] + sub["delta_g_media"]) / 1e6
         ax.errorbar(sub["tiempo_total_s"], g, yerr=[(sub["delta_g_media"] - sub["delta_g_ic_inf"]) / 1e6,
                                                      (sub["delta_g_ic_sup"] - sub["delta_g_media"]) / 1e6],
-                    fmt="o", color=COLOR[h], capsize=3, label=h, zorder=2)
+                    fmt="o", color=ctx.color[h], capsize=3, label=h, zorder=2)
         for b, x, y in zip(sub.index, sub["tiempo_total_s"], g):
-            ax.annotate(b, (x, y), textcoords="offset points", xytext=(5, 4), fontsize=8, color=COLOR[h])
-    ax.axhline((gc - ap["delta_g_margen"].iloc[0]) / 1e6, color=COLOR["C"], ls=":", lw=1, label="control − δ")
+            ax.annotate(b, (x, y), textcoords="offset points", xytext=(5, 4), fontsize=8, color=ctx.color[h])
+    ax.axhline((gc - ap["delta_g_margen"].iloc[0]) / 1e6, color=COLOR_C, ls=":", lw=1, label="control − δ")
     ax.set_xscale("log")
     ax.set_xlabel("tiempo del pipeline T (s, escala log)")
     ax.set_ylabel(f"ganancia media en {MES} al corte N* (M$)")
@@ -179,24 +213,26 @@ def fig_tiempo_ganancia(ap: pd.DataFrame, figuras: Path | None) -> str:
     return png(fig, "tiempo_vs_ganancia", figuras)
 
 
-def banda(fin: pd.DataFrame, brazo: str, ledger: Path) -> pd.DataFrame | None:
+def banda(fin: pd.DataFrame, brazo: str) -> pd.DataFrame | None:
+    if f"curva_{MES}" not in fin:
+        return None
     rutas = fin.loc[fin["brazo"] == brazo, f"curva_{MES}"]
     if rutas.empty:
         return None
-    m = pd.concat([lg.leer_curva(ledger, r).set_index("envios")["ganancia"] for r in rutas], axis=1)
+    m = pd.concat([lg.leer_curva(Path(), r).set_index("envios")["ganancia"] for r in rutas], axis=1)
     return pd.DataFrame({"min": m.min(axis=1), "mediana": m.median(axis=1), "max": m.max(axis=1)})
 
 
-def fig_bandas(h: str, fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Path | None) -> str:
-    brazos = [b for b in HIPOTESIS[h][1] if estado(b, fin)[0]]
-    bc = banda(fin, lg.CONTROL, ledger)
+def fig_bandas(ctx: Contexto, h: str, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:
+    brazos = [b for b in ctx.hipotesis[h][1] if estado(b, fin)[0]]
+    bc = banda(fin, lg.CONTROL)
     if bc is None or not brazos:
         return "<p class='pend'>pendiente: faltan curvas del control o de los brazos</p>"
     n = len(brazos)
     fig, axs = plt.subplots(1, n, figsize=(3.6 * n, 3.4), sharey=True, squeeze=False)
     n_est = int(ap["n_estrella"].iloc[0]) if not ap.empty else None
     for ax, b in zip(axs[0], brazos):
-        for nombre, color, bd in (("C", COLOR["C"], bc), (b, COLOR[h], banda(fin, b, ledger))):
+        for nombre, color, bd in (("C", COLOR_C, bc), (b, ctx.color[h], banda(fin, b))):
             ax.fill_between(bd.index, bd["min"] / 1e6, bd["max"] / 1e6, color=color, alpha=0.2, lw=0)
             ax.plot(bd.index, bd["mediana"] / 1e6, color=color, lw=1.4, label=nombre)
         if n_est:
@@ -217,21 +253,21 @@ def _m(x: float) -> str:
     return f"{x / 1e6:,.2f}"
 
 
-def tabla_brazos(fin: pd.DataFrame, ap: pd.DataFrame) -> str:
+def tabla_brazos(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
     cab = ("brazo", "hipótesis", "semillas", "G media (M$)", "Δ media (M$)", "IC 95% de Δ (M$)", "semillas ganadas",
            "T (s)", "A", "veredicto", "vale la pena")
     filas = []
     if not ap.empty:
         filas.append(["C", "control", estado("C", fin)[0], _m(ap["g_control"].iloc[0]), "—", "—", "—",
                       f"{ap['tiempo_total_control_s'].iloc[0]:,.0f}", "1,00", "—", "—"])
-    for b in BRAZOS:
+    for b in ctx.brazos:
         r, n = fila(ap, b), estado(b, fin)[0]
         if r is None:
-            filas.append([b, HIP_DE[b], n] + ["pendiente"] * 8)
+            filas.append([b, ctx.hip_de[b], n] + ["pendiente"] * 8)
             continue
         v = veredicto(ap, fin, b)
         vale = "sí" if v in ("no pierde", "gana") and r["aceleracion"] >= A_VALE else "no"
-        filas.append([b, HIP_DE[b], int(r["n_semillas"]), _m(r["g_control"] + r["delta_g_media"]),
+        filas.append([b, ctx.hip_de[b], int(r["n_semillas"]), _m(r["g_control"] + r["delta_g_media"]),
                       _m(r["delta_g_media"]), f"[{_m(r['delta_g_ic_inf'])}, {_m(r['delta_g_ic_sup'])}]",
                       f"{int(r['semillas_ganadas'])}/{int(r['n_semillas'])}", f"{r['tiempo_total_s']:,.0f}",
                       f"{r['aceleracion']:.2f}", v, vale if not v.startswith("pendiente") else "pendiente"])
@@ -248,7 +284,7 @@ def html_tabla(cab, filas) -> str:
             + "".join("<tr>" + "".join(td(c) for c in f) + "</tr>" for f in filas) + "</table>")
 
 
-def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int, ledger: Path) -> float | None:
+def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int) -> float | None:
     """Ganancia al corte N* del promedio de `prob` de las primeras k semillas (orden de `semillas_pedidas`).
 
     None si falta alguna de esas semillas o su parquet de predicciones.
@@ -257,9 +293,9 @@ def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int, ledger: Path) ->
     probs, es_baja2, clientes = [], None, None
     for s in SEMILLAS_FINALES[:k]:
         ruta = sub["predicciones_201910"].get(s) if "predicciones_201910" in sub else None
-        if not isinstance(ruta, str) or not (ledger / ruta).exists():
+        if not isinstance(ruta, str) or not Path(ruta).exists():
             return None
-        p = pd.read_parquet(ledger / ruta)
+        p = pd.read_parquet(ruta)
         if clientes is None:
             clientes, es_baja2 = p["numero_de_cliente"].to_numpy(), p["es_baja2"].to_numpy()
         elif not np.array_equal(clientes, p["numero_de_cliente"].to_numpy()):
@@ -268,12 +304,12 @@ def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int, ledger: Path) ->
     return ganancia(np.mean(probs, axis=0), es_baja2, n_est)
 
 
-def calcular_tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path) -> tuple[float | None, dict]:
+def calcular_tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> tuple[float | None, dict]:
     """(G del ensamble de las 10 semillas del control, {brazo: (T_opt, T_final, K, G del ensamble de K) o None})."""
     n_est, tc = int(ap["n_estrella"].iloc[0]), ap["tiempo_total_control_s"].iloc[0]
-    g_c10 = ensamble(fin, lg.CONTROL, N_SEMILLAS, n_est, ledger)
+    g_c10 = ensamble(fin, lg.CONTROL, N_SEMILLAS, n_est)
     datos = {}
-    for b in BRAZOS:
+    for b in ctx.brazos:
         r = fila(ap, b)
         if r is None or not estado(b, fin)[1]:
             datos[b] = None
@@ -281,12 +317,12 @@ def calcular_tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path) -> 
         t_fin = fin.loc[fin["brazo"] == b, "tiempo_entrenamiento_s"].mean()
         t_opt = r["tiempo_total_s"] - t_fin
         k = max(0, math.floor((tc - t_opt) / t_fin))
-        g = ensamble(fin, b, min(k, N_SEMILLAS), n_est, ledger) if k >= 2 else None
+        g = ensamble(fin, b, min(k, N_SEMILLAS), n_est) if k >= 2 else None
         datos[b] = (t_opt, t_fin, k, g)
     return g_c10, datos
 
 
-def tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Path | None) -> str:
+def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:
     """K = semillas del brazo que entran en T(control): (T_C − T_opt) / T_final, con T_final medio del brazo."""
     intro = ("<p>Se le da a cada brazo el tiempo del control: después de su optimización, el sobrante se gasta en K "
              "modelos finales con semillas distintas, K = ⌊(T(C) − T_opt) / T_final⌋, acotado a las "
@@ -298,11 +334,11 @@ def tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Pat
     if ap.empty or not estado(lg.CONTROL, fin)[1]:
         return intro + "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
     g_c1 = g_control(fin, ap)
-    g_c10, datos = calcular_tiempo_igual(fin, ap, ledger)
+    g_c10, datos = calcular_tiempo_igual(ctx, fin, ap)
     ref = f"Ḡ_C = {_m(g_c1)} M$; ensamble de {N_SEMILLAS} semillas del control = " + (
         f"{_m(g_c10)} M$" if g_c10 is not None else "pendiente (faltan predicciones del control)")
     filas = []
-    for b in BRAZOS:
+    for b in ctx.brazos:
         d = datos[b]
         if d is None:
             filas.append([b] + ["pendiente"] * 6)
@@ -319,21 +355,21 @@ def tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Pat
     return (intro + f"<p>{html.escape(ref)}.</p>"
             + html_tabla(("brazo", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)",
                           "G − Ḡ_C (M$)", f"G − ensamble {N_SEMILLAS} de C (M$)"), filas)
-            + fig_tiempo_igual(g_c1, g_c10, datos, figuras))
+            + fig_tiempo_igual(ctx, g_c1, g_c10, datos, figuras))
 
 
-def fig_tiempo_igual(g_c1: float, g_c10: float | None, datos: dict, figuras: Path | None) -> str:
+def fig_tiempo_igual(ctx: Contexto, g_c1: float, g_c10: float | None, datos: dict, figuras: Path | None) -> str:
     pts = [(b, d[3]) for b, d in datos.items() if d is not None and d[3] is not None]
     if not pts:
         return "<p class='pend'>pendiente: ningún brazo tiene su ensamble</p>"
     fig, ax = plt.subplots(figsize=(7.5, 0.35 * len(pts) + 1.6))
     for i, (b, g) in enumerate(pts):
-        ax.scatter([g / 1e6], [i], color=COLOR[HIP_DE[b]], zorder=3)
+        ax.scatter([g / 1e6], [i], color=ctx.color[ctx.hip_de[b]], zorder=3)
         ax.annotate(f"K={min(datos[b][2], N_SEMILLAS)}", (g / 1e6, i), textcoords="offset points", xytext=(6, -3),
-                    fontsize=7, color=COLOR[HIP_DE[b]])
-    ax.axvline(g_c1 / 1e6, color=COLOR["C"], ls=":", lw=1, label="Ḡ_C (un modelo)")
+                    fontsize=7, color=ctx.color[ctx.hip_de[b]])
+    ax.axvline(g_c1 / 1e6, color=COLOR_C, ls=":", lw=1, label="Ḡ_C (un modelo)")
     if g_c10 is not None:
-        ax.axvline(g_c10 / 1e6, color=COLOR["C"], ls="--", lw=1, label=f"ensamble de {N_SEMILLAS} de C")
+        ax.axvline(g_c10 / 1e6, color=COLOR_C, ls="--", lw=1, label=f"ensamble de {N_SEMILLAS} de C")
     ax.set_yticks(range(len(pts)), [b for b, _ in pts], fontsize=8)
     ax.invert_yaxis()
     ax.set_xlabel(f"ganancia en {MES} al corte N* (M$)")
@@ -343,9 +379,9 @@ def fig_tiempo_igual(g_c1: float, g_c10: float | None, datos: dict, figuras: Pat
     return png(fig, "tiempo_igual", figuras)
 
 
-def seccion_hipotesis(h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path,
+def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame,
                       figuras: Path | None) -> str:
-    titulo, brazos = HIPOTESIS[h]
+    titulo, brazos = ctx.hipotesis[h]
     filas = []
     for b in brazos:
         r = fila(ap, b)
@@ -356,13 +392,13 @@ def seccion_hipotesis(h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame, le
             f"<details open><summary>Predicción y regla (de <code>docs/hipotesis.md</code>)</summary>"
             f"{markdown(md_h, 1)}</details>"
             + html_tabla(("brazo", "veredicto", "Δ media (M$)", "IC 95% (M$)", "A"), filas)
-            + fig_bandas(h, fin, ap, ledger, figuras) + "</section>")
+            + fig_bandas(ctx, h, fin, ap, figuras) + "</section>")
 
 
 def commit() -> str:
     try:
         return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
-                              cwd=EXPERIMENTO, check=True).stdout.strip()
+                              cwd=rutas.RAIZ, check=True).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
         return "desconocido"
 
@@ -374,41 +410,66 @@ th{background:#f3f3f3}td.pierde{background:#f8d7d0}td.ok{background:#d6ecd9}td.i
 details{margin:.5em 0}summary{cursor:pointer;font-weight:600}footer{margin-top:3em;color:#666;font-size:.85em}"""
 
 
-def generar(ledger: Path = LEDGER, figuras: Path | None = None) -> str:
-    fin, ap = cargar(ledger)
-    hip = secciones((DOCS / "hipotesis.md").read_text())
-    dis = secciones((DOCS / "diseno.md").read_text())
-    intro = (markdown("## Pregunta\n" + seccion(hip, "Pregunta"))
-             + markdown("## Control\n" + seccion(hip, "Control"))
-             + markdown("## Brazos\n" + seccion(dis, "Brazos"))
-             + markdown("## Métricas y regla de decisión\n" + seccion(hip, "Métricas")))
+def _leer(exp: str, nombre: str) -> dict[str, str]:
+    f = rutas.docs(exp) / f"{nombre}.md"
+    return secciones(f.read_text()) if f.exists() else {}
+
+
+def enlaces(exp: str, exps: list[str]) -> str:
+    """Enlaces relativos a los reportes de los demás experimentos del registro."""
+    otros = [e for e in dict.fromkeys([reg.AGREGADOR, reg.CONTROL, *exps]) if e != exp]
+    items = "".join(f"<li><a href='../../{e}/informe/reporte.html'>{e}</a></li>" for e in otros)
+    return f"<section><h2>Otros reportes</h2><ul>{items}</ul></section>"
+
+
+def generar(exp: str, figuras: Path | None = None) -> str:
+    ctx = Contexto(exp)
+    fin, ap = cargar([reg.CONTROL, *ctx.exps])
+    hip, dis = _leer(exp, "hipotesis"), _leer(exp, "diseno")
+    if exp == reg.CONTROL:
+        intro = (markdown("## Control\n" + seccion(hip, "Control"))
+                 + markdown("## Métricas y reglas comunes\n" + seccion(hip, "Métricas")))
+    elif ctx.agregador:
+        intro = markdown("## Pregunta\n" + seccion(hip, "Pregunta"))
+    else:
+        intro = (markdown("## Brazos\n" + seccion(dis, "Brazos"))
+                 + "<p>Las reglas, G, Δ, δ, T, A y N* están en <code>control/docs/hipotesis.md</code> "
+                   "(<a href='../../control/informe/reporte.html'>reporte del control</a>).</p>")
     n_est = f"N* = {int(ap['n_estrella'].iloc[0]):,} envíos (de 201908); δ = {_m(ap['delta_g_margen'].iloc[0])} M$" \
         if not ap.empty else "N* pendiente"
-    completos = sum(estado(b, fin)[1] for b in ["C", *BRAZOS])
-    cuerpo = (
-        "<h1>Sampling_1 — velocidad contra ganancia</h1>"
-        f"<section>{intro}</section>"
-        f"<section><h2>Todos los brazos contra el control</h2><p>{html.escape(n_est)}. Vale la pena: no pierde y "
-        f"A ≥ {A_VALE:g}.</p>{tabla_brazos(fin, ap)}{fig_tiempo_ganancia(ap, figuras)}</section>"
-        + "".join(seccion_hipotesis(h, seccion(hip, h + " "), fin, ap, ledger, figuras) for h in HIPOTESIS)
-        + f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(fin, ap, ledger, figuras)}</section>"
-        + markdown("## Limitaciones previstas\n" + seccion(hip, "Limitaciones"))
-        + f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
-          f"finales, {completos}/{len(BRAZOS) + 1} brazos con {N_SEMILLAS} semillas</footer>"
-    )
-    return (f"<!doctype html><html lang='es'><head><meta charset='utf-8'><title>Sampling_1 — reporte</title>"
-            f"<style>{CSS}</style></head><body>{cuerpo}</body></html>\n")
+    completos = sum(estado(b, fin)[1] for b in ["C", *ctx.brazos])
+    titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)
+    cuerpo = (f"<h1>{html.escape(titulo)}</h1><section>{intro}</section>"
+              f"<section><h2>{'Todos los brazos' if ctx.agregador else 'Brazos'} contra el control</h2><p>"
+              f"{html.escape(n_est)}. Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_brazos(ctx, fin, ap)}"
+              + (fig_tiempo_ganancia(ctx, ap, figuras) if ctx.agregador else "") + "</section>")
+    if ctx.agregador:
+        cuerpo += f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(ctx, fin, ap, figuras)}</section>"
+    else:
+        for h in ctx.hipotesis:
+            cuerpo += seccion_hipotesis(ctx, h, seccion(hip, h + " "), fin, ap, figuras)
+    cuerpo += markdown("## Limitaciones previstas\n" + seccion(hip, "Limitaciones"))
+    cuerpo += enlaces(exp, [e for e in reg.duenos() if e != reg.CONTROL])
+    cuerpo += (f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
+               f"finales, {completos}/{len(ctx.brazos) + 1} brazos con {N_SEMILLAS} semillas</footer>")
+    return (f"<!doctype html><html lang='es'><head><meta charset='utf-8'><title>{html.escape(titulo)} — reporte"
+            f"</title><style>{CSS}</style></head><body>{cuerpo}</body></html>\n")
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    p.add_argument("--ledger", type=Path, default=LEDGER)
-    p.add_argument("--salida", type=Path, default=EXPERIMENTO / "informe" / "reporte.html")
+    g = p.add_mutually_exclusive_group(required=True)
+    g.add_argument("--experimento", help="carpeta de experimentos/ (control, h1, ..., sampling_1)")
+    g.add_argument("--todos", action="store_true", help="un reporte por cada experimento del registro")
+    p.add_argument("--salida", type=Path, help="HTML de salida (solo con --experimento)")
     p.add_argument("--figuras", type=Path, help="además guarda las figuras como PNG en este directorio")
     a = p.parse_args()
-    a.salida.parent.mkdir(parents=True, exist_ok=True)
-    a.salida.write_text(generar(a.ledger, a.figuras))
-    print(a.salida)
+    exps = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR] if a.todos else [a.experimento]
+    for exp in exps:
+        salida = a.salida or rutas.informe(exp) / "reporte.html"
+        salida.parent.mkdir(parents=True, exist_ok=True)
+        salida.write_text(generar(exp, a.figuras))
+        print(salida)
 
 
 if __name__ == "__main__":
