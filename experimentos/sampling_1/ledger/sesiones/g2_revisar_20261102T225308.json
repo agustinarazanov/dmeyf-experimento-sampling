@@ -1,0 +1,165 @@
+{
+ "duration_api_ms": 104640,
+ "stop_reason": "end_turn",
+ "session_id": "b5c5f067-7905-4e61-a114-67c3477c1425",
+ "total_cost_usd": 0.7659222,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 44359,
+  "cache_read_input_tokens": 1134551,
+  "output_tokens": 9197,
+  "output_tokens_details": {
+   "thinking_tokens": 1937
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 44359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 974,
+    "cache_read_input_tokens": 55794,
+    "cache_creation_input_tokens": 368,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 368
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 50,
+   "outputTokens": 9197,
+   "cacheReadInputTokens": 1134551,
+   "cacheCreationInputTokens": 44359,
+   "webSearchRequests": 0,
+   "costUSD": 0.7659222,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1937,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01QXSrsKUyH7RH8mPPxiT9oD",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; export PYENV_VERSION=facultad; python -m pytest -q 2>&1 | tail -3; python -m comun.brazos --verificar 2>&1 | tail -8; git ls-files | grep -Ei '\\.(csv\\.gz|parquet|feather)$' | head; ls experimentos/h1/ledger experimentos/h3/ledger 2>&1 | head -20; python -m comun.correr --help 2>&1 | head -25",
+    "description": "Run tests, verifier, data check, inspect ledgers"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01X9Nec7YBne5m2WWkjiWC6v",
+   "tool_input": {
+    "command": "PYENV_VERSION=facultad python -m pytest -q > /tmp/rev_g2_pytest.txt 2>&1; tail -3 /tmp/rev_g2_pytest.txt",
+    "description": "Run the test suite"
+   }
+  },
+  {
+   "tool_name": "Write",
+   "tool_use_id": "toolu_01995h42iF9r7eTJj2MYVKA4",
+   "tool_input": {
+    "file_path": "/tmp/rev_g2/smoke.sh",
+    "content": "#!/bin/bash\n# Smoke de revisión del grupo 2: cuatro métodos, optimizar con 2 trials sobre 20000 filas; uniforme dos veces (determinismo).\ncd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling || exit 1\nfor m in \"uniforme 0.25\" \"uniforme 0.25\" \"bagging 0.25\" \"goss 0.25\" \"opt-muestra 0.25\"; do\n  set -- $m\n  echo \"=== $1 $2\"\n  python -m comun.correr --metodo \"$1\" --tasa \"$2\" --etapa optimizar --filas 20000 --trials 2 2>&1 | tail -4\ndone\npython -m comun.correr --metodo opt-muestra --tasa 0.25 --etapa final --semilla 0 --filas 20000 2>&1 | tail -3\n"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01QVtN1bvriinaWZY4PTRsDo",
+   "tool_input": {
+    "command": "for i in 1 2; do python -m comun.correr --metodo opt-muestra --tasa 0.25 --etapa final --semilla 0 --filas 20000 2>&1 | grep -E \"semilla 0|hp|Error\" | tail -2; done; ls experimentos/h3/ledger/exploracion/corridas/",
+    "timeout": 600000,
+    "description": "Run H3 final twice to check determinism"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01J2MGQe4YY5i1sXfNce8ZtH",
+   "tool_input": {
+    "command": "git ls-files | grep -Ei \"parquet|csv.gz|sqlite|\\.db$|predicciones/\" | head -5; git check-ignore -v experimentos/h2/ledger/exploracion/hp/B0.25.json",
+    "description": "Check for tracked data and ignore rules"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01JLcjb4DCAgDLEfWHrPsUbZ",
+   "tool_input": {
+    "command": "git check-ignore -v experimentos/h2/ledger/exploracion/hp/B0.25.json",
+    "description": "Check exploratory output is ignored"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 30,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "El grupo 2 de `separar-hipotesis` pasa la revisión de código de `docs/revision.md` § 3: 7 ítems pasan, 2 no aplican y ninguno falla. No hizo falta corregir código ni escribir `bloqueo.txt`. Commit `aa93237`.\n\n**Lo que corrí y salió bien:**\n- **Tests:** `pytest` pasa los 46.\n- **Smoke con `--filas 20000`:** los cuatro métodos corren y cada fila va al ledger que le corresponde. U0.25 va a `h1`, B0.25 y GOSS a `h2`, y el final de H3-0.25 va a `h3` usando los hiperparámetros de `h1/.../hp/U0.25.json`.\n- **Determinismo:** corrí el final de H3-0.25 dos veces y dio el mismo hash de muestra, el mismo AUC (0,82477) y la misma ganancia (3.025.000).\n- **201910:** `optimizar` no lo lee; el log solo muestra 201903–201906 y 201908.\n- **Filas de train:** U0.25 entrena con 2.463 filas, exactamente 0,25 × 9.852.\n- **`codigo_sucio`:** vale verdadero cuando hay cambios sin commitear.\n- **Columnas y apareo:** si falta una columna, el corredor falla nombrándola. `consolidar` aparea solo las semillas en común y también pasa el caso con dos ledgers.\n- **Datos:** no hay ninguno versionado en el repo.\n- **No aplican:** que `vm.sh` borre la VM (esos scripts se tocan en la tarea 3.4) y la parte de informe.\n\n**Para tener en cuenta:**\n- `python -m comun.brazos --verificar` termina con error porque todavía faltan `control/`, `h2/` y la sección `## Dependencias` de los `diseno.md`. Es lo esperado hasta el grupo 4, y muestra que el verificador detecta lo que falta.\n- Hallazgo menor que dejé sin corregir: con `--trials 2`, el estudio de prueba retoma uno guardado de antes (\"40 de 2 trials hechos\") e informa el tiempo acumulado (57,2 s). Solo afecta a las corridas de prueba.\n- `tasks.md` no tenía una tarea de revisión para el grupo 2, así que agregué la 2.6 y la marqué como hecha.\n- La entrada de la bitácora tiene fecha, sesión, revisor, hallazgos, correcciones y tokens (≈ US$ 0,7, estimado a mano). No corrí `comun/tokens.py`.\n- No incluí en el commit `costos.csv` ni el JSON `g2_aplicar_…` que ya estaban sin commitear; los dejé como estaban.",
+ "ttft_ms": 3040,
+ "type": "result",
+ "duration_ms": 837465,
+ "uuid": "6e8cbd06-a5e2-4136-8ab2-527cbb8c207e",
+ "ttft_stream_ms": 2500,
+ "time_to_request_ms": 116,
+ "first_content_frame_ms": 2501,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 50,
+   "outputTokens": 9197,
+   "cacheReadInputTokens": 1134551,
+   "cacheCreationInputTokens": 44359,
+   "webSearchRequests": 0,
+   "costUSD": 0.7659222,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1937,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
