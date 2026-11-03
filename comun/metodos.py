@@ -9,7 +9,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from src import muestreo
+from comun import brazos, muestreo
 
 METODOS = ("uniforme", "bagging", "goss", "opt-muestra")
 
@@ -53,21 +53,11 @@ def sin_bagging_fraction(metodo: str) -> bool:
     return metodo in ("bagging", "goss")
 
 
-def _t(tasa: float) -> str:
-    return f"{tasa:g}"
-
-
 def estudio(metodo: str, tasa: float) -> str:
-    """Nombre del estudio de Optuna. `opt-muestra` usa el de `uniforme` con la misma tasa."""
-    if metodo in ("uniforme", "opt-muestra"):
-        return "C" if (metodo == "uniforme" and tasa == 1) else f"U{_t(tasa)}"
-    if metodo == "bagging":
-        return f"B{_t(tasa)}"
-    return "GOSS"
+    """Nombre del estudio de Optuna, del registro de brazos. `opt-muestra` usa el de `uniforme` con la misma tasa."""
+    return brazos.brazo(brazos.nombre(metodo, tasa)).estudio
 
 
 def brazo(metodo: str, tasa: float) -> str:
-    """Nombre del brazo de la grilla (`C-rep` se pide con `--brazo`)."""
-    if metodo == "opt-muestra":
-        return f"H3-{_t(tasa)}"
-    return estudio(metodo, tasa)
+    """Nombre del brazo de la grilla (`C-rep` se pide con `--brazo`). Falla nombrándolo si no está en el registro."""
+    return brazos.brazo(brazos.nombre(metodo, tasa)).nombre
