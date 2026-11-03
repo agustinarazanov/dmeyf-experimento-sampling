@@ -16,8 +16,8 @@
 
 ## 3. Separación del ledger (sesión: Sonnet)
 
-- [ ] 3.1 Escribir `scripts/separar_ledger.py` (D4) con `--verificar`, que reparte por dueño `resultados.csv`, `estudios.csv`, `reemplazadas.csv`, `hp/`, `curvas/`, `corridas/` y `predicciones/`, y deja en `sampling_1` lo que no tiene brazo; verificar con un test sobre un ledger sintético de tres brazos que ningún `id` se pierde ni se duplica
-- [ ] 3.2 Guardar `sampling_1/ledger/apareado.csv` como `apareado_previo.csv`, correr la separación sobre el ledger real (con las predicciones locales) y `--verificar`; verificar que la unión de los `resultados.csv` de `control`, `h1`, `h2` y `h3` tiene los mismos `id` que el original
+- [x] 3.1 Escribir `scripts/separar_ledger.py` (D4) con `--verificar`, que reparte por dueño `resultados.csv`, `estudios.csv`, `reemplazadas.csv`, `hp/`, `curvas/`, `corridas/` y `predicciones/`, y deja en `sampling_1` lo que no tiene brazo; verificar con un test sobre un ledger sintético de tres brazos que ningún `id` se pierde ni se duplica
+- [x] 3.2 Guardar `sampling_1/ledger/apareado.csv` como `apareado_previo.csv`, correr la separación sobre el ledger real (con las predicciones locales) y `--verificar`; verificar que la unión de los `resultados.csv` de `control`, `h1`, `h2` y `h3` tiene los mismos `id` que el original
 - [ ] 3.3 Correr `python -m comun.consolidar` para todos y comparar la unión de los `apareado.csv` con `apareado_previo.csv`; verificar que coinciden fila por fila (diferencia 0 en Δ, IC, A y n). Si no coinciden, no se sigue
 - [ ] 3.4 Ajustar `scripts/vm.sh` y `scripts/lanzar_fase.sh` (movidos a la raíz) para correr `python -m comun.correr` desde la raíz y sincronizar `experimentos/*/ledger/` contra `$BUCKET/experimentos/<exp>/ledger/` (D7); dejar los `faseN.txt` en `sampling_1/scripts/`; agregar a `vm.sh` un flag `--en-seco` que imprime comandos y destinos y sale antes de cualquier `gcloud` o `gsutil`; verificar solo con `bash -n` y con `--en-seco`. **No ejecutar `vm.sh` ni `lanzar_fase.sh` sin `--en-seco`: este cambio no crea VMs**
 
