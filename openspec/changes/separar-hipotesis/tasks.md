@@ -12,6 +12,7 @@
 - [x] 2.3 Mover `correr.py` a `comun/`: la fila va al ledger del dueño del brazo y los hp se leen y escriben en el ledger del dueño del estudio (spec `corrida-reproducible`); verificar con el smoke test de la Mac (`--filas 20000`) una optimización de `U0.25` en `h1/ledger` y un final de `H3-0.25` en `h3/ledger` que lee `h1/ledger/hp/U0.25.json`
 - [x] 2.4 Mover `consolidar.py` a `comun/` con `--experimento X` (filas de X, finales de `C` y N* desde `control`) y sin argumento para todos; mover `tests/test_consolidar.py` a la nueva ruta y agregar un caso con dos ledgers; verificar que `pytest` pasa
 - [x] 2.5 Agregar `python -m comun.brazos --verificar`: compara la sección `## Dependencias` de cada `diseno.md` con lo que implica el registro, detecta ciclos y lista qué se rompe si falta una carpeta (spec `dependencias-entre-experimentos`); verificar con tests de un ciclo armado a mano y de una carpeta faltante
+- [x] 2.6 Revisión en sesión limpia del grupo 2 con la lista de código de `docs/revision.md` y cierre en `sampling_1/docs/bitacora.md`
 
 ## 3. Separación del ledger (sesión: Sonnet)
 

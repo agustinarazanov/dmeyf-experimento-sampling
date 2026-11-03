@@ -323,3 +323,31 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   (limitaciones). Sin cambios en código, ledger ni `decisiones.md`.
 - Tokens: ~20 turnos · ≈ US$ 0,8 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
 - Tutor: sin devolución nueva.
+
+### 2026-11-02 — cierre revisión del grupo 2 de `separar-hipotesis` (registro de brazos y código en `comun/`)
+- Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (grupo 2, tareas 2.1–2.5).
+- Revisor: sesión limpia (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código); 7 ✓, 2 n/a, ningún ✗.
+  - ✓ Smoke `--filas 20000` en la Mac, los cuatro métodos, una fila cada uno y en el ledger del dueño: U0.25 →
+    `h1/ledger/exploracion`, B0.25 y GOSS → `h2/ledger/exploracion`, final de H3-0.25 → `h3/ledger/exploracion`
+    leyendo `h1/ledger/exploracion/hp/U0.25.json`.
+  - ✓ Determinismo: dos finales de H3-0.25 semilla 0 dan el mismo `hash_muestra` (b063898d8598c66e), AUC 201910
+    0,82477 y ganancia máx 3.025.000; dos optimizaciones de U0.25, mismo hash (6f080ebbfe0677d9) y AUC 201908.
+  - ✓ `optimizar` no lee 201910: el log de `MESES_LEIDOS` muestra 201903–201906 y 201908; 201910 solo en `final`.
+  - ✓ Columna obligatoria faltante falla nombrándola (`comun/ledger.py`, `test_falta_una_columna_y_se_nombra`).
+  - ✓ `codigo_sucio`: False con el árbol limpio y True con `costos.csv` modificado (filas de esta sesión).
+  - ✓ Filas de train: U0.25 registra 2.463 = 0,25 × 9.852 (exacto).
+  - ✓ `consolidar` aparea solo semillas en común (`test_apareado_usa_solo_semillas_en_comun`) y el caso con dos
+    ledgers pasa (`test_consolidar_con_dos_ledgers`).
+  - n/a `vm.sh` borra la VM: los scripts de VM se tocan en la tarea 3.4.
+  - ✓ Sin datos en el repo: ningún parquet, csv.gz, sqlite ni `predicciones/` versionado; `exploracion/` ignorado.
+  - n/a sin cambios en `informe/`.
+- Además: `python -m pytest` 46 passed. `python -m comun.brazos --verificar` sale con código 1 porque faltan
+  `control/`, `h2/` y la sección `## Dependencias` de los `diseno.md`: es lo esperado hasta el grupo 4 (4.1, 4.2), y
+  muestra que el verificador detecta carpetas y declaraciones faltantes y lista qué se rompe.
+- Hallazgos menores (sin corrección, no bloquean): con `--trials 2` el estudio exploratorio de U0.25 retoma un
+  SQLite previo con 40 trials ("40 de 2 trials hechos") y el tiempo informado (57,2 s) es el del estudio acumulado; lo
+  mismo GOSS (5 trials). Solo afecta corridas exploratorias. El smoke creó `experimentos/h2/ledger/exploracion/`
+  (ignorado por git).
+- Correcciones: ninguna en código. `tasks.md` no tenía tarea de revisión del grupo 2; se agregó la 2.6 y se marcó.
+- Tokens: ~30 turnos · ≈ US$ 0,7 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
