@@ -43,9 +43,9 @@ correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> c
 }
 
 registrar() {  # $1 archivo json, $2 grupo, $3 rol, $4 código de salida
-    python3 - "$1" "$2" "$3" "$4" "$LOG/costos.csv" <<'PY'
+    python3 - "$1" "$2" "$3" "$4" "$LOG/costos.csv" "$CAMBIO" <<'PY'
 import json, sys, csv, datetime, pathlib
-archivo, grupo, rol, rc, salida = sys.argv[1:]
+archivo, grupo, rol, rc, salida, cambio = sys.argv[1:]
 d = json.load(open(archivo))
 uso = d.get("modelUsage") or {}
 modelo = max(uso, key=lambda m: (uso[m] or {}).get("outputTokens", 0)) if uso else ""
@@ -55,7 +55,7 @@ fila = {
     "turnos": d.get("num_turns", ""),
     "costo_usd": round(d.get("total_cost_usd") or 0, 4),
     "sesion": d.get("session_id", ""),
-    "resultado": d.get("subtype", ""), "codigo": rc,
+    "resultado": d.get("subtype", ""), "codigo": rc, "cambio": cambio,
 }
 p = pathlib.Path(salida); nuevo = not p.exists()
 with p.open("a", newline="") as f:

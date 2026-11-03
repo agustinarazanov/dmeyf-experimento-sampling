@@ -2,8 +2,10 @@
 
     python -m comun.tokens [--experimento sampling_1]
 
-Lee `~/.claude/projects/<repo>/*.jsonl`, clasifica cada sesión por la etapa que declara `docs/bitacora.md` del
-experimento y escribe `experimentos/<experimento>/ledger/tokens.csv`, ordenado y sin datos volátiles: correrlo dos veces
+Lee `~/.claude/projects/<repo>/*.jsonl`, clasifica cada sesión por la etapa que declara la `docs/bitacora.md` de algún
+experimento (o su `ledger/sesiones/costos.csv`) y escribe `experimentos/<experimento>/ledger/tokens.csv` con las
+sesiones que ese experimento declara; la sesión que ninguno declara va a `sampling_1`, y si dos experimentos declaran
+la misma, falla. Sin `--experimento` regenera el de todos. El archivo sale ordenado y sin datos volátiles: correrlo dos veces
 sin sesiones nuevas no cambia el archivo. El costo sale del `cost-state` que Claude Code guarda en el transcript
 (USD por modelo) y, para las sesiones headless de `scripts/etapa.sh`, de `ledger/sesiones/costos.csv`, que tiene
 prioridad. Una sesión sin ninguna de las dos fuentes queda con el costo vacío: no se estima con precios supuestos.
@@ -28,6 +30,13 @@ OBJETIVO_CONTEXTO = 100_000
 
 #: Etapa de una sesión headless según el grupo de `tasks.md` que aplicó (`scripts/etapa.sh`).
 ETAPA_DE_GRUPO = {"1": "hipotesis", "2": "diseno", "3": "codigo", "4": "codigo", "5": "corridas", "6": "informe"}
+#: La etapa sale del cambio y del grupo: cada cambio numera sus grupos distinto. Un `costos.csv` sin columna `cambio`
+#: (o con el campo vacío) es del cambio archivado `experimento-sampling-velocidad`.
+ETAPA_DE_GRUPO_POR_CAMBIO = {
+    "experimento-sampling-velocidad": ETAPA_DE_GRUPO,
+    "separar-hipotesis": {"1": "codigo", "2": "codigo", "3": "codigo", "4": "diseno", "5": "informe", "6": "codigo"},
+}
+DUENO_SIN_DECLARAR = "sampling_1"
 COLUMNAS = [
     "sesion", "fecha", "etapa", "modelo", "turnos", "tokens_salida", "tokens_cache_leidos", "contexto_promedio",
     "contexto_maximo", "costo_usd", "costo_fuente", "supera_objetivo", "linea_base_contexto", "objetivo_contexto",
@@ -110,19 +119,45 @@ def costos_csv(ruta: Path) -> dict[str, tuple[str, float]]:
         return {}
     salida = {}
     for f in csv.DictReader(ruta.open()):
-        etapa = "revision" if f.get("rol") == "revisar" else ETAPA_DE_GRUPO.get(f.get("grupo", ""), "sin-etapa")
+        grupos = ETAPA_DE_GRUPO_POR_CAMBIO.get(f.get("cambio") or "experimento-sampling-velocidad", {})
+        etapa = "revision" if f.get("rol") == "revisar" else grupos.get(f.get("grupo", ""), "sin-etapa")
         if f.get("sesion"):
             salida[f["sesion"]] = (etapa, float(f["costo_usd"] or 0))
     return salida
 
 
+def declaraciones(experimento: str, raiz: Path) -> tuple[dict[str, str], dict[str, tuple[str, float]]]:
+    """(bitácora, costos.csv) de un experimento: lo que ese experimento declara de cada sesión."""
+    exp = raiz / "experimentos" / experimento
+    bitacora = exp / "docs" / "bitacora.md"
+    return (etapas_de_la_bitacora(bitacora.read_text()) if bitacora.exists() else {},
+            costos_csv(exp / "ledger" / "sesiones" / "costos.csv"))
+
+
+def experimentos_de(raiz: Path) -> list[str]:
+    return sorted(p.name for p in (raiz / "experimentos").iterdir() if (p / "docs").is_dir())
+
+
+def duenos(raiz: Path) -> dict[str, str]:
+    """sesión -> experimento que la declara; falla si dos experimentos declaran la misma."""
+    dueno: dict[str, str] = {}
+    for e in experimentos_de(raiz):
+        bitacora, headless = declaraciones(e, raiz)
+        for s in set(bitacora) | set(headless):
+            if dueno.setdefault(s, e) != e:
+                raise SystemExit(f"la sesión {s} la declaran {dueno[s]} y {e}: dejar una sola declaración")
+    return dueno
+
+
 def registrar(experimento: str = "sampling_1", raiz: Path = RAIZ, proyectos: Path = PROYECTOS) -> list[dict]:
     exp = raiz / "experimentos" / experimento
-    declaradas = etapas_de_la_bitacora((exp / "docs" / "bitacora.md").read_text())
-    headless = costos_csv(exp / "ledger" / "sesiones" / "costos.csv")
+    dueno = duenos(raiz)
+    declaradas, headless = declaraciones(experimento, raiz)
     proyecto = proyectos / re.sub(r"[^A-Za-z0-9]", "-", str(raiz))
     en_repo = {p.stem: p for p in proyecto.glob("*.jsonl")}
-    ids = set(en_repo) | set(declaradas) | set(headless)
+    ids = set(declaradas) | set(headless)
+    if experimento == DUENO_SIN_DECLARAR:
+        ids |= {s for s in en_repo if s not in dueno}
     filas = []
     for s in ids:
         ruta = en_repo.get(s) or next(iter(proyectos.glob(f"*/{s}.jsonl")), None)  # p. ej. la planificación, en dmeyf2026
@@ -151,9 +186,11 @@ def resumen(filas: list[dict]) -> str:
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    p.add_argument("--experimento", default="sampling_1")
+    p.add_argument("--experimento", help="uno solo; sin esto se regeneran todos")
     a = p.parse_args()
-    print(resumen(registrar(a.experimento)))
+    for e in [a.experimento] if a.experimento else experimentos_de(RAIZ):
+        print(f"== {e}")
+        print(resumen(registrar(e)))
 
 
 if __name__ == "__main__":
