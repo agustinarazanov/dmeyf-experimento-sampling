@@ -1,8 +1,10 @@
 # Informe — Sampling_1: velocidad contra ganancia
 
 Comisión lunes: Agustina Razanov, Martín López, Luis María Laguinge. Tutor: Joaquín I. Aramendía. Los números salen de
-`ledger/apareado.csv` (por línea en `informe/decisiones.md`) y las figuras de `informe/reporte.html` y
-`informe/figuras/`.
+`apareado.csv` de `h1`, `h2` y `h3` (`ledger/apareado_previo.csv` es la copia anterior a la separación,
+que cita por línea `informe/decisiones.md`) y las figuras de `informe/reporte.html` y `informe/figuras/`. El informe de
+cada hipótesis está en [`h1`](../../h1/informe/informe.md), [`h2`](../../h2/informe/informe.md) y
+[`h3`](../../h3/informe/informe.md); acá va la comparación y lo que es común.
 
 ## Hipótesis
 
@@ -44,12 +46,11 @@ en `docs/hipotesis.md` y `docs/diseno.md`.
 Figura principal: `figuras/tiempo_vs_ganancia.png`. Bandas de curvas por hipótesis: `figuras/bandas_H1.png`,
 `bandas_H2.png`, `bandas_H3.png`.
 
-- **H1, ninguna de las dos**: la pérdida crece a medida que baja r (todas las tasas debajo de 0,5 pierden) y U0.5 queda
-  indeterminado. No hay frontera dentro de la grilla.
-- **H2, refutada**: con f = 0,1 pierde. Con 0,5 y 0,25 no pierde, pero casi no acelera (A ≤ 1,21), porque el `Dataset`
-  completo se arma igual. GOSS no pierde y es más lento que el control.
-- **H3, confirmada**: las dos tasas no pierden y aceleran 4,5 y 8,4 veces. Ninguna *gana*: las cotas inferiores son
-  negativas, aunque la media de Δ es positiva.
+- **H1, ninguna de las dos** (informe de [`h1`](../../h1/informe/informe.md)): la pérdida crece a medida que baja r y
+  U0.5 queda indeterminado.
+- **H2, refutada** ([`h2`](../../h2/informe/informe.md)): con f = 0,1 pierde y con 0,5 y 0,25 casi no acelera (A ≤ 1,21).
+  GOSS es descriptivo.
+- **H3, confirmada** ([`h3`](../../h3/informe/informe.md)): las dos tasas no pierden y aceleran 4,5 y 8,4 veces.
 - U0.25 y H3-0.25 comparten el estudio de Optuna, o sea los mismos hiperparámetros. U0.25 pierde y H3-0.25 no, así que en
   H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una muestra.
 - **A tiempo igual** (`figuras/tiempo_igual.png`, `decisiones.md` § A tiempo igual): cada brazo gasta el tiempo que le
@@ -61,9 +62,8 @@ Figura principal: `figuras/tiempo_vs_ganancia.png`. Bandas de curvas por hipóte
 
 ## Limitaciones
 
-- Adaptación de H2: en los brazos `B*` `bagging_fraction` es la variable y sale del espacio de Optuna, mientras que el
-  control y `uniforme` la siguen optimizando. Por eso `bagging` y `uniforme` no tienen la misma fracción efectiva por
-  iteración y la comparación entre ellos es solo descriptiva.
+- Las limitaciones propias de cada hipótesis (GOSS descriptivo y adaptación de `bagging_fraction` en H2, estudios
+  compartidos con `h1` en H3) están en su informe.
 - Una sola semilla de Optuna por brazo: Δ incluye la suerte de la optimización y el IC no la mide.
 - U0.25/H3-0.25 y U0.1/H3-0.1 comparten estudio: no son evidencia independiente entre sí.
 - La réplica del control (C-rep) se corrió en otra VM de la misma cuenta, no por otra persona.
@@ -82,7 +82,7 @@ El tradeoff vale la pena si lo que se achica es la **optimización**, no el entr
 sobre el 10% de las filas y entrenar con todas da la misma ganancia que el control (dentro de δ) en un octavo del tiempo.
 Entrenar el final con menos filas sí pierde, al azar desde r = 0,25 y dentro de LightGBM con f = 0,1. Por qué: la
 optimización es lo que domina T (en el control, 748 s de Optuna contra 35 s de un final; tabla de `reporte.html`
-§ A tiempo igual y `ledger/estudios.csv`), y los hiperparámetros que elige Optuna se trasladan
+§ A tiempo igual y `control/ledger/estudios.csv`), y los hiperparámetros que elige Optuna se trasladan
 bien de la muestra al total. Gastar el tiempo ahorrado en más semillas no cambia la respuesta. Los dos H3 siguen
 arriba del control y los brazos agresivos siguen abajo. El único que mejora de forma notable es U0.5, que a datos
 iguales era indeterminado. Como es un solo número sin intervalo, no alcanza para declararlo ganador.

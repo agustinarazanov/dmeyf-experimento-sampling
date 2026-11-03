@@ -34,7 +34,7 @@
 
 - [x] 5.1 Mover `reporte.py` a `comun/` con `--experimento X` y `--todos` (D3): reporte por `hN` (intro, tabla de sus brazos, bandas) y reporte de `sampling_1` (todos los brazos, tiempo-ganancia, tiempo igual, enlaces); mantener el test de idempotencia; verificar que generar dos veces da el mismo archivo salvo la fecha
 - [x] 5.2 Generar los cinco `reporte.html` y comparar la tabla de `sampling_1` con la de `sampling_1/informe/informe.md` § Resultados; verificar que cada Δ, IC, A y veredicto coincide (spec `reporte-visual`, "Mismos números que antes de separar")
-- [ ] 5.3 Escribir `h1/`, `h2/`, `h3/informe/informe.md` con su bullet y sus filas de § Resultados, sus limitaciones propias (H3: estudios de `h1`; H2: GOSS descriptivo) y un enlace al informe conjunto; dejar en `sampling_1/informe/informe.md` la comparación y lo común; verificar que `decisiones.md` y `guion.md` siguen citando rutas que existen
+- [x] 5.3 Escribir `h1/`, `h2/`, `h3/informe/informe.md` con su bullet y sus filas de § Resultados, sus limitaciones propias (H3: estudios de `h1`; H2: GOSS descriptivo) y un enlace al informe conjunto; dejar en `sampling_1/informe/informe.md` la comparación y lo común; verificar que `decisiones.md` y `guion.md` siguen citando rutas que existen
 
 ## 6. Tokens, documentación del repo e integración (sesión: Sonnet; revisión: Opus en sesión limpia)
 

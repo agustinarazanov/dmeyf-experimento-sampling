@@ -1,7 +1,9 @@
 # Decisiones por hipótesis
 
-Cada decisión aplica la regla escrita en `docs/hipotesis.md` al veredicto de `ledger/apareado.csv` (línea del archivo,
-contando el encabezado como 1). Comunes a todas las filas: N* = 3.300 envíos (de 201908), Ḡ_C = 276,10 M$,
+Cada decisión aplica la regla escrita en `h1/docs/hipotesis.md`, `h2/docs/hipotesis.md` y `h3/docs/hipotesis.md` (reglas comunes en
+`control/docs/hipotesis.md`) al veredicto de `ledger/apareado_previo.csv`, la copia de `apareado.csv` anterior a la
+separación por hipótesis (línea del archivo, contando el encabezado como 1; los mismos números están en el
+`apareado.csv` de cada `hN`). Comunes a todas las filas: N* = 3.300 envíos (de 201908), Ḡ_C = 276,10 M$,
 δ = 5,52 M$, 10 semillas en común, T(C) = 783,2 s. Los tiempos son los de la fase 4 (finales repetidos con
 predicciones, D12); las ganancias son idénticas a las de las fases 1 a 3 (bitácora, tarea 6.6). Figuras en
 `informe/figuras/` y en `informe/reporte.html`.
