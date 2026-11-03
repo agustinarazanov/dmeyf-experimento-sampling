@@ -1,0 +1,179 @@
+{
+ "duration_api_ms": 217446,
+ "stop_reason": "end_turn",
+ "session_id": "cf0acd57-7a2c-4b65-b357-bbd84076a9af",
+ "total_cost_usd": 1.0351304,
+ "usage": {
+  "input_tokens": 72,
+  "cache_creation_input_tokens": 97840,
+  "cache_read_input_tokens": 2899564,
+  "output_tokens": 35367,
+  "output_tokens_details": {
+   "thinking_tokens": 5334
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 97840,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 923,
+    "cache_read_input_tokens": 110255,
+    "cache_creation_input_tokens": 996,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 996
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 72,
+   "outputTokens": 35367,
+   "cacheReadInputTokens": 2899564,
+   "cacheCreationInputTokens": 97840,
+   "webSearchRequests": 0,
+   "costUSD": 1.0351304,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 5334,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01L7JwviZxJCwrtuPphQ77eE",
+   "tool_input": {
+    "command": "cat .claude/skills/openspec-apply-change/SKILL.md | head -80; openspec instructions apply --change separar-hipotesis --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; grep -n \"^## \\|^- \\[\" openspec/changes/separar-hipotesis/tasks.md | sed -n 1,200p"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01VfuS2xZoKkQdJ4LU88gQc8",
+   "tool_input": {
+    "command": "openspec instructions apply --change separar-hipotesis --json > /tmp/apply.json"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019vAEHxG2vdC2bJUUKoKWFh",
+   "tool_input": {
+    "command": "grep -rln \"reporte\" --exclude-dir=.git --exclude-dir=archive --exclude-dir=__pycache__ --exclude-dir=ledger . | head -30; sed -n 1,60p comun/consolidar.py; for e in control h1 h2 h3 sampling_1; do echo == $e; grep -n \"^#\" experimentos/$e/docs/hipotesis.md experimentos/$e/docs/diseno.md; done"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01U4DbNwtgSp4W7jCXArF99r",
+   "tool_input": {
+    "command": "sed -n 80,100p openspec/changes/separar-hipotesis/design.md; sed -n 1,60p experimentos/sampling_1/informe/informe.md; sed -n 1,12p experimentos/h1/docs/diseno.md; sed -n 1,15p experimentos/sampling_1/docs/hipotesis.md; wc -l experimentos/*/ledger/resultados.csv experimentos/*/ledger/apareado.csv; git -C . log --oneline -1 -- experimentos/sampling_1/informe/reporte.html"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_014AqyaVZm7F6s7JFZqzGTTH",
+   "tool_input": {
+    "command": "cat > /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/parche_reporte.py <<'EOF'\nfrom pathlib import Path\np = Path(\"comun/reporte.py\")\ns = p.read_text()\n\ndef sub(a, b, n=1):\n    global s\n    assert s.count(a) == n, (a, s.count(a))\n    s = s.replace(a, b)\n\nsub('''\"\"\"Genera `informe/reporte.html` desde el ledger y los documentos del experimento.\n\n    python -m experimentos.sampling_1.src.reporte [--ledger DIR] [--salida HTML] [--figuras DIR]\n\nLee `ledger/resultados.csv`, `ledger/apareado.csv`, las curvas y `docs/hipotesis.md` / `docs/diseno.md`. Un único HTML\ncon las figuras embebidas (PNG en base64), sin servidor. Los brazos sin datos salen como pendientes; ningún número se\nescribe a mano. Con `--figuras` además guarda cada figura como PNG (para el video).\n\"\"\"''', '''\"\"\"Genera `experimentos/<exp>/informe/reporte.html` desde los ledgers y los documentos.\n\n    python -m comun.reporte --experimento h1 [--salida HTML] [--figuras DIR]\n    python -m comun.reporte --todos\n\nUn reporte por experimento. Para `control`: su sección de `docs/hipotesis.md` y el estado de C. Para cada `hN`: su\nhipótesis, la tabla de sus brazos contra el control y las bandas de curvas. Para `sampling_1`: todos los brazos de\ntodas las hipótesis registradas en `comun/brazos.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.\nLee `resultados.csv`, `apareado.csv` y las curvas de los ledgers de `experimentos/*/` (los finales de C salen de\n`control`). Un único HTML con las figuras embebidas (PNG en base64), sin servidor. Los brazos sin datos salen como\npendientes; ningún número se escribe a mano. Con `--figuras` además guarda cada figura como PNG (para el video).\n\"\"\"''')\nsub(\"from comun import ledger as lg\\n\", \"from comun import brazos as reg\\nfrom comun import ledger as lg\\nfrom comun import rutas\\n\")\nsub('''EXPERIMENTO = Path(__file__).resolve().parents[1]\nLEDGER = EXPERIMENTO / \"ledger\"\nDOCS = EXPERIMENTO / \"docs\"\nN_SEMILLAS = 10\nMES = 201910\n\n# Brazos de docs/diseno.md § Brazos, en orden de lectura; el control primero.\nHIPOTESIS = {\n    \"H1\": (\"Submuestreo uniforme del train\", [\"U0.5\", \"U0.25\", \"U0.1\", \"U0.05\"]),\n    \"H2\": (\"Muestrear dentro de LightGBM\", [\"B0.5\", \"B0.25\", \"B0.1\", \"GOSS\"]),\n    \"H3\": (\"Optimizar sobre una muestra, entrenar con todo\", [\"H3-0.25\", \"H3-0.1\"]),\n}\nBRAZOS = [b for _, bs in HIPOTESIS.values() for b in bs]\nCOLOR = {\"C\": \"#555555\", \"H1\": \"#2a6fb0\", \"H2\": \"#c4501b\", \"H3\": \"#2e8b57\"}\nHIP_DE = {b: h for h, (_, bs) in HIPOTESIS.items() for b in bs}\nA_VALE''', '''N_SEMILLAS = 10\nMES = 201910\nSIN_REPORTE = {\"C\", \"C-rep\"}  # brazos del control: no tienen Δ, van en la fila C\nPALETA = [\"#2a6fb0\", \"#c4501b\", \"#2e8b57\", \"#8e5ea2\", \"#b8860b\", \"#c0392b\"]\nCOLOR_C = \"#555555\"\nA_VALE''')\n\n# --- bloque de contexto por experimento, antes de \"markdown mínimo\"\nsub('''# --- markdown mínimo''', '''class Contexto:\n    \"\"\"Qué hipótesis y brazos entran en un reporte, salido del registro de `comun/brazos.py` (no de listas a mano).\"\"\"\n\n    def __init__(self, exp: str):\n        self.exp = exp\n        self.agregador = exp == reg.AGREGADOR\n        self.exps = [e for e in reg.duenos() if e != reg.CONTROL] if self.agregador else \\\\\n            ([] if exp == reg.CONTROL else [exp])\n        self.hipotesis: dict[str, tuple[str, list[str]]] = {}  # \"H1\" -> (título, brazos)\n        for e in self.exps:\n            md = rutas.docs(e) / \"hipotesis.md\"\n            sec = secciones(md.read_text()) if md.exists() else {}\n            clave = next((k for k in sec if re.match(r\"^H\\\\d+\\\\b\", k)), e.upper())\n            nombre, _, titulo = re.match(r\"^(\\\\S+)\\\\s*(—\\\\s*)?(.*)$\", clave).groups()\n            self.hipotesis[nombre] = (titulo or nombre, [b.nombre for b in reg.brazos_de(e) if b.nombre not in SIN_REPORTE])\n        self.brazos = [b for _, bs in self.hipotesis.values() for b in bs]\n        self.hip_de = {b: h for h, (_, bs) in self.hipotesis.items() for b in bs}\n        self.color = {\"C\": COLOR_C, **{h: PALETA[i % len(PALETA)] for i, h in enumerate(self.hipotesis)}}\n        self.exp_de = {h: e for h, e in zip(self.hipotesis, self.exps)}\n\n\n# --- markdown mínimo''')\n\n# --- datos\nsub('''def cargar(ledger: Path) -> tuple[pd.DataFrame, pd.DataFrame]:\n    res = pd.read_csv(ledger / \"resultados.csv\") if (ledger / \"resultados.csv\").exists() else pd.DataFrame()\n    ap = pd.read_csv(ledger / \"apareado.csv\") if (ledger / \"apareado.csv\").exists() else pd.DataFrame()\n    fin = res[res[\"etapa\"] == \"final\"] if not res.empty else pd.DataFrame(columns=[\"brazo\"])\n    return fin, ap.set_index(\"brazo\") if not ap.empty else ap\n''', '''def _absolutas(fin: pd.DataFrame, base: Path) -> pd.DataFrame:\n    \"\"\"Rutas de curvas y predicciones absolutas, para mezclar finales de varios ledgers y leerlas igual.\"\"\"\n    fin = fin.copy()\n    for col in [c for c in fin.columns if c.startswith((\"curva_\", \"predicciones_\"))]:\n        fin[col] = fin[col].map(lambda r: str(base / r) if isinstance(r, str) else r)\n    return fin\n\n\ndef cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:\n    \"\"\"(finales de los ledgers `exps`, apareado de todos los dueños de brazos). Las rutas de curvas y predicciones\n    salen absolutas.\"\"\"\n    finales = []\n    for e in exps:\n        f = rutas.ledger(e) / \"resultados.csv\"\n        if f.exists():\n            r = pd.read_csv(f)\n            finales.append(_absolutas(r[r[\"etapa\"] == \"final\"], rutas.ledger(e)))\n    fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=[\"brazo\"])\n    aps = [pd.read_csv(rutas.ledger(e) / \"apareado.csv\") for e in reg.duenos()\n           if (rutas.ledger(e) / \"apareado.csv\").exists()]\n    ap = pd.concat(aps, ignore_index=True).drop_duplicates(\"brazo\") if aps else pd.DataFrame()\n    return fin, ap.set_index(\"brazo\") if not ap.empty else ap\n''')\n\n# --- figuras: ctx\nsub('def fig_tiempo_ganancia(ap: pd.DataFrame, figuras: Path | None) -> str:', 'def fig_tiempo_ganancia(ctx: Contexto, ap: pd.DataFrame, figuras: Path | None) -> str:')\nsub('''    ax.scatter([tc], [gc / 1e6], s=90, color=COLOR[\"C\"], marker=\"s\", zorder=3, label=\"control\")\n    for h in HIPOTESIS:\n        sub = ap[ap.index.isin(HIPOTESIS[h][1])]''', '''    ax.scatter([tc], [gc / 1e6], s=90, color=COLOR_C, marker=\"s\", zorder=3, label=\"control\")\n    for h in ctx.hipotesis:\n        sub = ap[ap.index.isin(ctx.hipotesis[h][1])]''')\nsub('fmt=\"o\", color=COLOR[h], capsize', 'fmt=\"o\", color=ctx.color[h], capsize')\nsub('xytext=(5, 4), fontsize=8, color=COLOR[h])', 'xytext=(5, 4), fontsize=8, color=ctx.color[h])')\nsub('color=COLOR[\"C\"], ls=\":\", lw=1, label=\"control − δ\")', 'color=COLOR_C, ls=\":\", lw=1, label=\"control − δ\")')\n\nsub('''def banda(fin: pd.DataFrame, brazo: str, ledger: Path) -> pd.DataFrame | None:''', '''def banda(fin: pd.DataFrame, brazo: str) -> pd.DataFrame | None:''')\nsub('lg.leer_curva(ledger, r).set_index', 'lg.leer_curva(Path(), r).set_index')  # rutas absolutas: `cargar` las dejó así\nsub('''def fig_bandas(h: str, fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Path | None) -> str:\n    brazos = [b for b in HIPOTESIS[h][1] if estado(b, fin)[0]]\n    bc = banda(fin, lg.CONTROL, ledger)''', '''def fig_bandas(ctx: Contexto, h: str, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:\n    brazos = [b for b in ctx.hipotesis[h][1] if estado(b, fin)[0]]\n    bc = banda(fin, lg.CONTROL)''')\nsub('''((\"C\", COLOR[\"C\"], bc), (b, COLOR[h], banda(fin, b, ledger))):''', '''((\"C\", COLOR_C, bc), (b, ctx.color[h], banda(fin, b))):''')\n\n# --- tabla_brazos\nsub('def tabla_brazos(fin: pd.DataFrame, ap: pd.DataFrame) -> str:', 'def tabla_brazos(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:')\nsub('''    for b in BRAZOS:\n        r, n = fila(ap, b), estado(b, fin)[0]\n        if r is None:\n            filas.append([b, HIP_DE[b], n]''', '''    for b in ctx.brazos:\n        r, n = fila(ap, b), estado(b, fin)[0]\n        if r is None:\n            filas.append([b, ctx.hip_de[b], n]''')\nsub('filas.append([b, HIP_DE[b], int(r[\"n_semillas\"])', 'filas.append([b, ctx.hip_de[b], int(r[\"n_semillas\"])')\n\n# --- tiempo igual\nsub('''def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int, ledger: Path) -> float | None:''', '''def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int) -> float | None:''')\nsub('''        if not isinstance(ruta, str) or not (ledger / ruta).exists():\n            return None\n        p = pd.read_parquet(ledger / ruta)''', '''        if not isinstance(ruta, str) or not Path(ruta).exists():\n            return None\n        p = pd.read_parquet(ruta)''')\nsub('''def calcular_tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path) -> tuple''', '''def calcular_tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> tuple''')\nsub('ensamble(fin, lg.CONTROL, N_SEMILLAS, n_est, ledger)', 'ensamble(fin, lg.CONTROL, N_SEMILLAS, n_est)')\nsub('''    for b in BRAZOS:\n        r = fila(ap, b)\n        if r is None or not estado(b, fin)[1]:''', '''    for b in ctx.brazos:\n        r = fila(ap, b)\n        if r is None or not estado(b, fin)[1]:''')\nsub('ensamble(fin, b, min(k, N_SEMILLAS), n_est, ledger)', 'ensamble(fin, b, min(k, N_SEMILLAS), n_est)')\nsub('def tiempo_igual(fin: pd.DataFrame, ap: pd.DataFrame, ledger: Path, figuras: Path | None) -> str:', 'def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:')\nsub('calcular_tiempo_igual(fin, ap, ledger)', 'calcular_tiempo_igual(ctx, fin, ap)')\nsub('''    for b in BRAZOS:\n        d = datos[b]''', '''    for b in ctx.brazos:\n        d = datos[b]''')\nsub('+ fig_tiempo_igual(g_c1, g_c10, datos, figuras))', '+ fig_tiempo_igual(ctx, g_c1, g_c10, datos, figuras))')\nsub('def fig_tiempo_igual(g_c1: float,', 'def fig_tiempo_igual(ctx: Contexto, g_c1: float,')\nsub('''        ax.scatter([g / 1e6], [i], color=COLOR[HIP_DE[b]], zorder=3)''', '''        ax.scatter([g / 1e6], [i], color=ctx.color[ctx.hip_de[b]], zorder=3)''')\nsub('fontsize=7, color=COLOR[HIP_DE[b]])', 'fontsize=7, color=ctx.color[ctx.hip_de[b]])')\nsub('ax.axvline(g_c1 / 1e6, color=COLOR[\"C\"]', 'ax.axvline(g_c1 / 1e6, color=COLOR_C')\nsub('ax.axvline(g_c10 / 1e6, color=COLOR[\"C\"]', 'ax.axvline(g_c10 / 1e6, color=COLOR_C')\n\n# --- seccion_hipotesis .. main: reescritos\ni = s.index(\"def seccion_hipotesis(\")\nj = s.index(\"def commit()\")\ns = s[:i] + '''def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame,\n                      figuras: Path | None) -> str:\n    titulo, brazos = ctx.hipotesis[h]\n    filas = []\n    for b in brazos:\n        r = fila(ap, b)\n        filas.append([b, veredicto(ap, fin, b)] + ([f\"{_m(r['delta_g_media'])}\",\n                      f\"[{_m(r['delta_g_ic_inf'])}, {_m(r['delta_g_ic_sup'])}]\", f\"{r['aceleracion']:.2f}\"]\n                                                  if r is not None else [\"pendiente\"] * 3))\n    return (f\"<section><h2>{h} — {html.escape(titulo)}</h2>\"\n            f\"<details open><summary>Predicción y regla (de <code>docs/hipotesis.md</code>)</summary>\"\n            f\"{markdown(md_h, 1)}</details>\"\n            + html_tabla((\"brazo\", \"veredicto\", \"Δ media (M$)\", \"IC 95% (M$)\", \"A\"), filas)\n            + fig_bandas(ctx, h, fin, ap, figuras) + \"</section>\")\n\n\n''' + s[j:]\ns = s.replace(\"cwd=EXPERIMENTO, check=True\", \"cwd=rutas.RAIZ, check=True\")\n\ni = s.index(\"def generar(\")\ns = s[:i] + '''def _leer(exp: str, nombre: str) -> dict[str, str]:\n    f = rutas.docs(exp) / f\"{nombre}.md\"\n    return secciones(f.read_text()) if f.exists() else {}\n\n\ndef enlaces(exp: str, exps: list[str]) -> str:\n    \"\"\"Enlaces relativos a los reportes de los demás experimentos que existen en el registro.\"\"\"\n    otros = [e for e in [reg.AGREGADOR, reg.CONTROL, *exps] if e != exp]\n    items = \"\".join(f\"<li><a href='../../{e}/informe/reporte.html'>{e}</a></li>\" for e in dict.fromkeys(otros))\n    return f\"<section><h2>Otros reportes</h2><ul>{items}</ul></section>\"\n\n\ndef generar(exp: str, figuras: Path | None = None) -> str:\n    ctx = Contexto(exp)\n    todos = [e for e in reg.duenos() if e != reg.CONTROL]\n    fin, ap = cargar([reg.CONTROL, *ctx.exps])\n    hip = _leer(exp, \"hipotesis\")\n    dis = _leer(exp, \"diseno\")\n    ctl = _leer(reg.CONTROL, \"hipotesis\")\n    if exp == reg.CONTROL:\n        intro = markdown(\"## Control\\\\n\" + seccion(hip, \"Control\")) + markdown(\"## Métricas y reglas comunes\\\\n\" + seccion(hip, \"Métricas\"))\n    elif ctx.agregador:\n        intro = markdown(\"## Pregunta\\\\n\" + seccion(hip, \"Pregunta\"))\n    else:\n        intro = (markdown(\"## Brazos\\\\n\" + seccion(dis, \"Brazos\"))\n                 + \"<p>Las reglas, G, Δ, δ, T, A y N* están en el <a href='../../control/informe/reporte.html'>reporte \"\n                   \"del control</a> (<code>control/docs/hipotesis.md</code>).</p>\")\n    n_est = f\"N* = {int(ap['n_estrella'].iloc[0]):,} envíos (de 201908); δ = {_m(ap['delta_g_margen'].iloc[0])} M$\" \\\\\n        if not ap.empty else \"N* pendiente\"\n    completos = sum(estado(b, fin)[1] for b in [\"C\", *ctx.brazos])\n    titulo = {\"control\": \"Control\", reg.AGREGADOR: \"Sampling_1 — velocidad contra ganancia\"}.get(exp, exp)\n    cuerpo = (f\"<h1>{html.escape(titulo)}</h1><section>{intro}</section>\"\n              f\"<section><h2>{'Todos los brazos' if ctx.agregador else 'Brazos'} contra el control</h2><p>\"\n              f\"{html.escape(n_est)}. Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_brazos(ctx, fin, ap)}\"\n              + (fig_tiempo_ganancia(ctx, ap, figuras) if ctx.agregador else \"\") + \"</section>\")\n    if not ctx.agregador:\n        for h in ctx.hipotesis:\n            cuerpo += seccion_hipotesis(ctx, h, seccion(hip, h + \" \"), fin, ap, figuras)\n        cuerpo += markdown(\"## Limitaciones previstas\\\\n\" + seccion(hip, \"Limitaciones\"))\n    else:\n        cuerpo += f\"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(ctx, fin, ap, figuras)}</section>\"\n        cuerpo += markdown(\"## Limitaciones previstas\\\\n\" + seccion(hip, \"Limitaciones\"))\n    cuerpo += enlaces(exp, todos)\n    cuerpo += (f\"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas \"\n               f\"finales, {completos}/{len(ctx.brazos) + 1} brazos con {N_SEMILLAS} semillas</footer>\")\n    return (f\"<!doctype html><html lang='es'><head><meta charset='utf-8'><title>{html.escape(titulo)} — reporte</title>\"\n            f\"<style>{CSS}</style></head><body>{cuerpo}</body></html>\\\\n\")\n\n\ndef main() -> None:\n    p = argparse.ArgumentParser(description=__doc__.split(\"\\\\n\")[0])\n    g = p.add_mutually_exclusive_group(required=True)\n    g.add_argument(\"--experimento\", help=\"carpeta de experimentos/ (control, h1, ..., sampling_1)\")\n    g.add_argument(\"--todos\", action=\"store_true\", help=\"un reporte por cada experimento del registro\")\n    p.add_argument(\"--salida\", type=Path, help=\"HTML de salida (solo con --experimento)\")\n    p.add_argument(\"--figuras\", type=Path, help=\"además guarda las figuras como PNG en este directorio\")\n    a = p.parse_args()\n    exps = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR] if a.todos else [a.experimento]\n    for exp in exps:\n        salida = a.salida or rutas.informe(exp) / \"reporte.html\"\n        salida.parent.mkdir(parents=True, exist_ok=True)\n        salida.write_text(generar(exp, a.figuras))\n        print(salida)\n\n\nif __name__ == \"__main__\":\n    main()\n'''\np.write_text(s)\nEOF\ncd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && python parche_reporte.py && rm parche_reporte.py && python -m comun.reporte --todos"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01KUaDpNXKQZAoEgq4Lffq5s",
+   "tool_input": {
+    "command": "for e in control h1 h2 h3; do echo $e $(grep -o \"pendiente\" experimentos/$e/informe/reporte.html | wc -l) $(grep -o \"<img\" experimentos/$e/informe/reporte.html | wc -l) $(grep -o \"−6,38\\|-6.38\" experimentos/$e/informe/reporte.html | wc -l); done; grep -o \"<footer>.*</footer>\" experimentos/*/informe/reporte.html"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Qu1zb8VVg4binMEUSGmF2z",
+   "tool_input": {
+    "command": "sed -i 's/^- \\[ \\] 5.1 /- [x] 5.1 /; s/^- \\[ \\] 5.2 /- [x] 5.2 /' openspec/changes/separar-hipotesis/tasks.md && git add -A experimentos/*/informe/reporte.html openspec/changes/separar-hipotesis/tasks.md && git commit -q -m \"separar-hipotesis 5.1-5.2: cinco reporte.html regenerados con comun.reporte --todos; la tabla de sampling_1 coincide con informe.md § Resultados en Δ, IC, A y veredicto de los 10 brazos (0 diferencias, comparación por script); tareas 5.1 y 5.2 marcadas\" && git log --oneline -1; sed -n 1,40p experimentos/h1/docs/hipotesis.md; sed -n 1,30p experimentos/h2/docs/hipotesis.md; cat experimentos/sampling_1/informe/decisiones.md | head -40; grep -n \"informe\\|reporte\\|figuras\" experimentos/sampling_1/informe/guion.md | head -20"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01CZHy5KK7km22UPCUM5gUDz",
+   "tool_input": {
+    "command": "grep -on \"[a-z_/]*\\(ledger\\|docs\\|informe\\|figuras\\)/[A-Za-z_./0-9]*\" experimentos/sampling_1/informe/decisiones.md experimentos/sampling_1/informe/guion.md experimentos/sampling_1/informe/informe.md | sort -t: -k3 -u; ls experimentos/sampling_1/informe/figuras; head -3 experimentos/sampling_1/ledger/apareado_previo.csv | cut -c1-80"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01JXU6K6SXYM4bkNGZjvCfqs",
+   "tool_input": {
+    "command": "sed -i 's#^- Figura: `figuras/bandas_H1.png` en el \\[conjunto\\](../../sampling_1/informe/figuras/) y en `reporte.html`.#- Figura: [`bandas_H1.png`](../../sampling_1/informe/figuras/bandas_H1.png) y [`reporte.html`](reporte.html).#' experimentos/h1/informe/informe.md\nsed -i 's#^- Figura: `bandas_H2.png` en el \\[conjunto\\](../../sampling_1/informe/figuras/) y en `reporte.html`.#- Figura: [`bandas_H2.png`](../../sampling_1/informe/figuras/bandas_H2.png) y [`reporte.html`](reporte.html).#' experimentos/h2/informe/informe.md\nsed -i 's#^- Figura: `bandas_H3.png` en el \\[conjunto\\](../../sampling_1/informe/figuras/) y en `reporte.html`.#- Figura: [`bandas_H3.png`](../../sampling_1/informe/figuras/bandas_H3.png) y [`reporte.html`](reporte.html).#' experimentos/h3/informe/informe.md\nsed -i 's#^`ledger/apareado.csv` de `h1`, `h2` y `h3` (#`apareado.csv` de `h1`, `h2` y `h3` (#' experimentos/sampling_1/informe/informe.md\ngrep -n \"Figura:\" experimentos/h?/informe/informe.md; sed -n 3,7p experimentos/sampling_1/informe/informe.md"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 48,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Las tareas 5.1, 5.2 y 5.3 del grupo 5 están hechas, marcadas en `tasks.md` y commiteadas. `pytest` completo pasa (57 tests). No lancé corridas en VM ni hice push.\n\n- **5.1** (`74bcd25`): `reporte.py` pasó a `comun/reporte.py`, con `--experimento X` y `--todos`.\n  - **Contenido:** los brazos y las hipótesis salen del registro de `comun/brazos.py`, así que una hipótesis nueva aparece en el reporte de `sampling_1` sin tocar el generador. Cada `hN` muestra su hipótesis, sus brazos y sus bandas. `sampling_1` muestra todos los brazos, tiempo-ganancia, tiempo igual y enlaces.\n  - **Tests:** `tests/test_reporte.py` cubre generar dos veces (mismo archivo salvo la fecha), una hipótesis nueva en el registro y un ledger vacío (brazos pendientes, sin error).\n- **5.2** (`f1b4eb0`): generé los cinco `reporte.html` y comparé por script la tabla de `sampling_1` con `informe.md` § Resultados. Los 10 brazos coinciden en Δ, IC, A y veredicto, con 0 diferencias.\n- **5.3** (`654f4ab`): escribí `h1`, `h2` y `h3/informe/informe.md` con su bullet, sus filas, sus limitaciones propias y el enlace al informe conjunto. H3 declara la dependencia de los estudios de `h1` y H2 declara GOSS como descriptivo. El informe de `sampling_1` quedó con la comparación y lo común. Un script confirmó que los enlaces y las rutas citadas en esos informes, en `decisiones.md` y en `guion.md` existen; para eso corregí dos rutas viejas:\n  - `ledger/apareado.csv` pasó a `apareado_previo.csv` en `decisiones.md`, donde las líneas citadas son las de esa copia.\n  - `ledger/estudios.csv` pasó a `control/ledger/estudios.csv` en `informe.md`.\n\n`ledger_parcial.py`, que está en `sampling_1/scripts/`, todavía menciona `src/reporte.py` en su docstring y lee el ledger viejo; no lo toqué porque no es parte del grupo.\n\nQuedan sin hacer los commits de `costos.csv` y de los `.json` de sesiones, que no son míos. No escribí `en_curso.txt` ni `bloqueo.txt`, porque ninguna tarea esperaba VMs ni estaba bloqueada.",
+ "ttft_ms": 1612,
+ "type": "result",
+ "duration_ms": 1159286,
+ "uuid": "3b154fcf-e69f-41e5-852e-941e52b650af",
+ "ttft_stream_ms": 801,
+ "time_to_request_ms": 149,
+ "first_content_frame_ms": 802,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 72,
+   "outputTokens": 35367,
+   "cacheReadInputTokens": 2899564,
+   "cacheCreationInputTokens": 97840,
+   "webSearchRequests": 0,
+   "costUSD": 1.0351304,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 5334,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
