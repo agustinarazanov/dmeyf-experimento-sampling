@@ -31,7 +31,7 @@ fi
 # Límite conocido: python puede invocar lo que sea; la baranda real es el prompt, la revisión y la alerta de presupuesto.
 PERMITIDOS="Bash(openspec:*),Bash(python:*),Bash(python3:*),Bash(pytest:*),Bash(cd:*),Bash(ls:*),Bash(cat:*),\
 Bash(head:*),Bash(tail:*),Bash(wc:*),Bash(grep:*),Bash(rg:*),Bash(find:*),Bash(mkdir:*),Bash(chmod:*),Bash(sh -n:*),\
-Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git tag:*),Bash(git rev-parse:*),Bash(git describe:*),\
+Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git tag:*),Bash(git rev-parse:*),Bash(git describe:*),Bash(git mv:*),Bash(git rm:*),\
 Bash($DIR/scripts/vm.sh:*),Bash(sh $DIR/scripts/vm.sh:*),Bash(bash $DIR/scripts/vm.sh:*),\
 Bash($DIR/scripts/lanzar_fase.sh:*),Bash(bash $DIR/scripts/lanzar_fase.sh:*),Bash(pgrep:*),Bash(tail:*),\
 Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*)"
