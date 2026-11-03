@@ -2,11 +2,10 @@
 
 Escrito antes de cualquier corrida real. Los cambios posteriores se anotan en `docs/bitacora.md`.
 
+El control, G, Δ, δ, T, A, N* y los veredictos están en [`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) y
+no se repiten: se citan.
+
 ## Pregunta
-
-## Control (C)
-
-## Métricas y reglas comunes
 
 ## H1 — <variable>
 
