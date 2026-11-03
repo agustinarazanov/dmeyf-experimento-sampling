@@ -1,6 +1,6 @@
 """Arma un ledger parcial de la fase 1 (C y H3) para probar `src/reporte.py` con brazos pendientes (tarea 6.0).
 
-    python experimentos/conjunto/scripts/ledger_parcial.py DESTINO
+    python experimentos/sampling_1/scripts/ledger_parcial.py DESTINO
 
 Copia las filas de C, H3-0.25 y H3-0.1 de `resultados.csv` y `apareado.csv` y enlaza `curvas/`.
 """

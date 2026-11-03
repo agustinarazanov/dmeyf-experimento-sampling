@@ -1,6 +1,6 @@
 """Genera `informe/reporte.html` desde el ledger y los documentos del experimento.
 
-    python -m experimentos.conjunto.src.reporte [--ledger DIR] [--salida HTML] [--figuras DIR]
+    python -m experimentos.sampling_1.src.reporte [--ledger DIR] [--salida HTML] [--figuras DIR]
 
 Lee `ledger/resultados.csv`, `ledger/apareado.csv`, las curvas y `docs/hipotesis.md` / `docs/diseno.md`. Un único HTML
 con las figuras embebidas (PNG en base64), sin servidor. Los brazos sin datos salen como pendientes; ningún número se
