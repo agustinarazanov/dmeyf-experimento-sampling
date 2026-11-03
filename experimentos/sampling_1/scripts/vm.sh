@@ -25,7 +25,7 @@ REGION=${ZONA%-*}
 TEMPLATE=${TEMPLATE:-to-064ram-08vcpu}
 NOMBRE=${NOMBRE:-sampling-$(whoami | tr -c 'a-z0-9\n' '-')}
 PERSONA=${PERSONA:-$(git config user.name)}
-EXP=experimentos/sampling-velocidad
+EXP=experimentos/conjunto
 COMMIT=$(git rev-parse --short HEAD)
 G="gcloud compute --project=$PROYECTO"
 
