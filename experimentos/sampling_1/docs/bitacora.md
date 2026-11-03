@@ -458,3 +458,23 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   tarea de revisión del grupo 5; se agregó la 5.4 y se marcó.
 - Tokens: ~30 turnos · ≈ US$ 0,9 (presupuesto US$ 2). La sesión del grupo 5 costó US$ 1,04 (`costos.csv`).
   `comun/tokens.py` no se corrió en esta sesión.
+
+### 2026-11-03 — grupo 6 de `separar-hipotesis`: verificación de 6.3 y 6.5 (sesión interactiva)
+- Sesión: interactiva (la del cambio) · modelo: Opus · etapa: **revision**. El loop headless se bloqueó en 6.3 y 6.5
+  porque `git worktree add` y `git clone` fuera de la raíz no están en su lista de permitidos; se hicieron desde acá.
+- 6.5, clon limpio en una carpeta temporal con `DATOS_DIR` en `~/datos/experimentos-dmeyf` (panel de 20000 filas):
+  `python -m pytest` 61 pasan; `comun.brazos --verificar` sin `PROBLEMA`; `comun.reporte --todos` regenera los cinco;
+  smoke `--filas 20000 --trials 2` de `C`, `U0.25`, `B0.5` (optimizar) y `H3-0.25` (final, hp de `h1`), los cuatro rc 0
+  y cada fila en `exploracion/` de su dueño. En el repo, los cinco `reporte.html` regenerados solo cambiaban el pie: se
+  descartaron.
+- 6.3, revisor: subagente `general-purpose` sin contexto en un `git worktree` temporal, siguiendo solo
+  `docs/metodo.md` § Agregar una hipótesis: creó `h9` con el brazo `U0.02`; `--verificar` pasa, el reporte de
+  `sampling_1` (con `--salida`) lista `h9`, y `git diff --stat` no toca `control` ni `h1`–`h3`. Worktree descartado.
+- Pasos donde la guía no alcanzó, corregidos en `docs/metodo.md`:
+  1. `--verificar` exige `h9` en `## Dependencias` de `sampling_1/docs/diseno.md`, pero la guía decía que `sampling_1`
+     no se toca: ahora es la excepción explícita (reglas y paso 3).
+  2. "Tiene que decir que no hay problemas": `--verificar` no imprime eso; ahora dice código 0 y ninguna línea `PROBLEMA`.
+  3. "Abrir `docs/bitacora.md`" sin formato de primera entrada: ahora dice `### fecha — apertura` bajo `## Entradas`.
+  4. `--salida` fuera de `informe/` rompe los enlaces relativos: anotado.
+  5. `scripts/etapa.sh` vs `scripts/etapas.sh` ambiguo: ahora dice qué hace cada uno.
+- Tokens: subagente ~56.000 tokens, 20 herramientas. Sesiones headless del grupo 6 en `costos.csv`.

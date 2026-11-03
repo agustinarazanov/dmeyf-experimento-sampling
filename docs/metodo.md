@@ -27,7 +27,8 @@ Hipótesis, diseño, código, corridas, análisis, informe. Cada etapa:
 - Subagentes solo para búsquedas o revisiones sin contexto.
 - Lo repetido va a scripts. Las corridas las hace la VM, no una conversación.
 - `/clear` al cerrar cada etapa.
-- Las etapas que no necesitan a una persona se corren con `scripts/etapa.sh` en vez de a mano.
+- Las etapas que no necesitan a una persona se corren headless en vez de a mano: `scripts/etapas.sh <exp> <cambio>`
+  recorre todos los grupos pendientes de `tasks.md`; `scripts/etapa.sh <grupo> …` corre uno solo (lo usa `etapas.sh`).
 - `comun/tokens.py` escribe el `ledger/tokens.csv` de cada experimento. Clasifica cada sesión según la etapa que declara
   la bitácora de algún experimento (o su `ledger/sesiones/costos.csv`); la que nadie declara va a `sampling_1` y si dos
   la declaran falla.
@@ -63,7 +64,8 @@ plantilla/                la estructura vacía de un experimento
 
 - Cada hipótesis es dueña de **su** carpeta y de **su** `ledger/`: escribe ahí las filas de sus brazos y los
   hiperparámetros de sus estudios. No se editan ni se commitean cambios en las carpetas ni los ledgers de `control`, `h1`–`h3`
-  ni `sampling_1`; si hace falta algo de ellos, se lee.
+  ni `sampling_1`; si hace falta algo de ellos, se lee. Única excepción: sumar la línea `` - `hN` `` a `## Dependencias` de
+  `sampling_1/docs/diseno.md` (el conjunto depende de todas las hipótesis y `--verificar` lo exige; ver paso 3).
 - Lo único compartido que se edita es `comun/`, y el cambio se anuncia en el mensaje del commit.
 
 ### 2. Pasos, en orden
@@ -73,9 +75,13 @@ plantilla/                la estructura vacía de un experimento
 2. `cp -r plantilla experimentos/hN`, reemplazar `<experimento>` por `hN` en los títulos de `docs/` y completar
    `docs/hipotesis.md`: variable, métrica que decide, predicción y reglas
    de confirmación y refutación. Las definiciones de G, Δ, δ, T, A, N* y los veredictos se **citan** de
-   [`control/docs/hipotesis.md`](../experimentos/control/docs/hipotesis.md), no se copian. Abrir `docs/bitacora.md`.
+   [`control/docs/hipotesis.md`](../experimentos/control/docs/hipotesis.md), no se copian. Abrir `docs/bitacora.md`
+   con una primera entrada bajo `## Entradas` (`### AAAA-MM-DD — apertura`, quién, sesión y etapa `hipotesis`); los
+   cierres de etapa siguen el formato que trae la plantilla.
 3. En `docs/diseno.md` completar los brazos, la grilla y el resto, y declarar `## Dependencias`: la plantilla ya trae
-   `control` (finales de `C`, N* y δ); sumar un experimento más por cada estudio ajeno que se use (ver 3).
+   `control` (finales de `C`, N* y δ); sumar un experimento más por cada estudio ajeno que se use (ver 3). Agregar además
+   `` - `hN` `` a `## Dependencias` de `experimentos/sampling_1/docs/diseno.md`: es la única línea que se toca fuera de
+   `hN/` y `comun/`.
 4. Registrar en `comun/brazos.py`, y anunciarlo en el commit:
    - cada brazo en `BRAZOS`: `Brazo(nombre, "hN", método, tasa, estudio)`;
    - cada estudio de Optuna propio en `ESTUDIOS`: `"nombre": "hN"`.
@@ -85,7 +91,8 @@ plantilla/                la estructura vacía de un experimento
    entre hipótesis.
    Si el brazo es de un `(método, tasa)` nuevo, `nombre()` tiene que saber nombrarlo, y un método nuevo además va en
    `comun/metodos.py` (`METODOS`, `FUNCIONES`, `validar`).
-5. `python -m comun.brazos --verificar`: tiene que decir que no hay problemas. Falla si falta la sección
+5. `python -m comun.brazos --verificar`: pasa si sale con código 0 y no imprime ninguna línea `PROBLEMA` (lo que sí
+   imprime siempre son las líneas "si falta experimentos/X/ se rompen: …"). Falla si falta la sección
    `## Dependencias`, si no coincide con lo que implica el registro, si hay un ciclo o si falta una carpeta; también
    lista qué se rompe si falta cada carpeta.
 6. Correr: `python -m comun.correr --metodo M --tasa R --semilla S --etapa optimizar|final` (primero con `--filas 20000`
@@ -96,7 +103,8 @@ plantilla/                la estructura vacía de un experimento
 8. Escribir el `informe/informe.md` de `hN` con su veredicto y sus limitaciones. No hace falta tocar `h1`–`h3`:
    `python -m comun.reporte --experimento sampling_1` toma las hipótesis del registro, así que `hN` aparece sola en la
    comparación conjunta (hay que regenerar ese reporte, no editarlo a mano). Para probar sin pisar el reporte versionado,
-   `python -m comun.reporte --experimento sampling_1 --salida /tmp/reporte.html`.
+   `python -m comun.reporte --experimento sampling_1 --salida /tmp/reporte.html` (fuera de `informe/` los enlaces
+   relativos a los otros reportes no abren; para revisar el contenido alcanza).
 
 ### 3. Usar un estudio de otra hipótesis
 
