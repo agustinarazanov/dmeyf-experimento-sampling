@@ -1,25 +1,45 @@
-"""Consolida el ledger del experimento.
+"""Consolida el ledger de un experimento (o de todos).
 
-    python -m src.consolidar
+    python -m comun.consolidar --experimento h1     # un experimento
+    python -m comun.consolidar                      # todos los dueños de brazos, en orden de dependencias
+    python -m comun.consolidar --ledger DIR         # un ledger suelto que tiene todo adentro (control incluido)
 
-Lee `ledger/corridas/*.csv` y escribe `ledger/resultados.csv` (corridas válidas, sin duplicados por clave),
-`ledger/reemplazadas.csv`, `ledger/estudios.csv` (hiperparámetros y tiempo de cada estudio) y `ledger/apareado.csv`
-(Δ contra el control por semilla, con N*, δ y veredicto). Todo sale de acá; nada se calcula a mano.
+Lee `<ledger>/corridas/*.csv` y escribe `resultados.csv` (corridas válidas, sin duplicados por clave),
+`reemplazadas.csv`, `estudios.csv` (hiperparámetros y tiempo de cada estudio) y `apareado.csv` (Δ contra el control
+por semilla, con N*, δ y veredicto). Todo sale de acá; nada se calcula a mano.
+
+Con `--experimento X` las filas son las de X; los finales de `C` y N* salen de `control`, y el tiempo del estudio de
+cada brazo, del ledger del dueño del estudio (H3 lee los de h1). Por eso se consolida primero a quien se depende.
 """
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Sequence
 
 import pandas as pd
 
+from comun import brazos, rutas
 from comun import ledger as lg
 
-LEDGER = Path(__file__).resolve().parents[1] / "ledger"
+
+def _absolutas(finales: pd.DataFrame, base: Path) -> pd.DataFrame:
+    """Rutas de curvas absolutas, para mezclar finales de dos ledgers y leerlas igual."""
+    f = finales.copy()
+    for col in ("curva_201908", "curva_201910"):
+        f[col] = f[col].map(lambda r: str(base / r))
+    return f
 
 
-def consolidar(ledger: Path = LEDGER) -> dict[str, pd.DataFrame]:
+def _leer_estudios(ledgers: Sequence[Path]) -> pd.DataFrame:
+    tablas = [pd.read_csv(l / "estudios.csv") for l in ledgers if (l / "estudios.csv").exists()]
+    return pd.concat(tablas, ignore_index=True) if tablas else pd.DataFrame(columns=lg.COLUMNAS)
+
+
+def consolidar(ledger: Path, control: Path | None = None, ledgers_estudios: Sequence[Path] = ()) -> dict[str, pd.DataFrame]:
+    """Consolida `ledger`. Los finales de `C` y N* salen de `control` (por defecto, del propio ledger) y los tiempos de
+    estudio, de `estudios.csv` de `ledgers_estudios` además del propio."""
     corridas = lg.leer_corridas(ledger / "corridas")
     resultados, reemplazadas = lg.consolidar_corridas(corridas)
     resultados.to_csv(ledger / "resultados.csv", index=False)
@@ -28,8 +48,20 @@ def consolidar(ledger: Path = LEDGER) -> dict[str, pd.DataFrame]:
     finales = resultados[resultados["etapa"] == "final"]
     estudios = resultados[resultados["etapa"] == "optimizar"]
     estudios.to_csv(ledger / "estudios.csv", index=False)
-    if finales["brazo"].eq(lg.CONTROL).any():
-        leer = lambda ruta: lg.leer_curva(ledger, ruta)
+    leer = lambda ruta: lg.leer_curva(ledger, ruta)
+    if control is not None and control != ledger:
+        res_c = control / "resultados.csv"
+        if not res_c.exists():
+            raise FileNotFoundError(f"falta {res_c}: consolidar primero el control")
+        r = pd.read_csv(res_c)
+        fin_c = r[(r["etapa"] == "final") & (r["brazo"] == lg.CONTROL)]
+        finales = pd.concat([_absolutas(finales, ledger), _absolutas(fin_c, control)], ignore_index=True)
+        leer = lambda ruta: pd.read_csv(ruta)
+        estudios = pd.concat([estudios, _leer_estudios([control, *ledgers_estudios])], ignore_index=True)
+    elif ledgers_estudios:
+        estudios = pd.concat([estudios, _leer_estudios(ledgers_estudios)], ignore_index=True)
+    estudios = estudios.drop_duplicates("id")
+    if finales["brazo"].eq(lg.CONTROL).any() and (~finales["brazo"].isin(lg.SIN_DELTA)).any():
         n_estrella = lg.corte_control(finales, leer)
         con_g = lg.agregar_ganancia(finales, leer, n_estrella)
         tabla = lg.apareado(con_g, estudios)
@@ -37,6 +69,30 @@ def consolidar(ledger: Path = LEDGER) -> dict[str, pd.DataFrame]:
         tabla.to_csv(ledger / "apareado.csv", index=False)
         salida["apareado"] = tabla
     return salida
+
+
+def consolidar_experimento(exp: str) -> dict[str, pd.DataFrame]:
+    """Consolida `experimentos/<exp>/ledger` con el control y los dueños de sus estudios según `comun/brazos.py`."""
+    control = None if exp == brazos.CONTROL else rutas.ledger(brazos.CONTROL)
+    estudios = {rutas.ledger(brazos.dueno_estudio(b.estudio)) for b in brazos.brazos_de(exp)} - {rutas.ledger(exp)}
+    return consolidar(rutas.ledger(exp), control, sorted(estudios))
+
+
+def orden() -> list[str]:
+    """Dueños de brazos con las dependencias primero (el control, luego quien lee de otros)."""
+    dep = brazos.implicitas()
+    hecho: list[str] = []
+
+    def visitar(e: str) -> None:
+        if e in hecho or e not in brazos.duenos():
+            return
+        for d in sorted(dep[e]):
+            visitar(d)
+        hecho.append(e)
+
+    for e in brazos.duenos():
+        visitar(e)
+    return hecho
 
 
 def sanity(r: dict[str, pd.DataFrame]) -> list[tuple[str, bool, str]]:
@@ -83,17 +139,29 @@ def sanity(r: dict[str, pd.DataFrame]) -> list[tuple[str, bool, str]]:
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    p.add_argument("--ledger", type=Path, default=LEDGER)
+    p.add_argument("--experimento", help="consolidar solo este experimento (por defecto, todos los dueños de brazos)")
+    p.add_argument("--ledger", type=Path, help="consolidar un ledger suelto que tiene el control adentro")
     p.add_argument("--sanity", action="store_true", help="chequeos de la etapa corridas (tareas 5.1 a 5.4)")
     a = p.parse_args()
-    r = consolidar(a.ledger)
+    if a.ledger:
+        resultados = {"(ledger)": consolidar(a.ledger)}
+    else:
+        exps = [a.experimento] if a.experimento else orden()
+        resultados = {}
+        for e in exps:
+            if not (rutas.ledger(e) / "corridas").is_dir():
+                print(f"{e}: sin ledger/corridas, se saltea")
+                continue
+            resultados[e] = consolidar_experimento(e)
+    for e, r in resultados.items():
+        print(f"{e}: {len(r['resultados'])} corridas válidas, {len(r['reemplazadas'])} reemplazadas, "
+              f"{len(r['apareado']) if 'apareado' in r else 0} brazos apareados")
     if a.sanity:
-        res = sanity(r)
+        union = {"resultados": pd.concat([r["resultados"] for r in resultados.values()], ignore_index=True)}
+        res = sanity(union)
         for nombre, ok, det in res:
             print("OK   " if ok else "FALLA", nombre, det)
         raise SystemExit(0 if all(ok for _, ok, _ in res) else 1)
-    print(f"{len(r['resultados'])} corridas válidas, {len(r['reemplazadas'])} reemplazadas, "
-          f"{len(r['apareado']) if 'apareado' in r else 0} brazos apareados")
 
 
 if __name__ == "__main__":
