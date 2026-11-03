@@ -70,7 +70,8 @@ plantilla/                la estructura vacía de un experimento
 
 1. Tomar el siguiente `hN` libre (`ls experimentos/`). El nombre tiene que ser un identificador válido: letras
    minúsculas, dígitos y `_`, sin guiones ni espacios (`h4`, no `h-4`).
-2. `cp -r plantilla experimentos/hN` y completar `docs/hipotesis.md`: variable, métrica que decide, predicción y reglas
+2. `cp -r plantilla experimentos/hN`, reemplazar `<experimento>` por `hN` en los títulos de `docs/` y completar
+   `docs/hipotesis.md`: variable, métrica que decide, predicción y reglas
    de confirmación y refutación. Las definiciones de G, Δ, δ, T, A, N* y los veredictos se **citan** de
    [`control/docs/hipotesis.md`](../experimentos/control/docs/hipotesis.md), no se copian. Abrir `docs/bitacora.md`.
 3. En `docs/diseno.md` completar los brazos, la grilla y el resto, y declarar `## Dependencias`: la plantilla ya trae
@@ -78,6 +79,10 @@ plantilla/                la estructura vacía de un experimento
 4. Registrar en `comun/brazos.py`, y anunciarlo en el commit:
    - cada brazo en `BRAZOS`: `Brazo(nombre, "hN", método, tasa, estudio)`;
    - cada estudio de Optuna propio en `ESTUDIOS`: `"nombre": "hN"`.
+   Por ejemplo, un brazo ficticio de `h9` con la tasa 0,02: `Brazo("U0.02", "h9", "uniforme", 0.02, "U0.02")` dentro de
+   la lista de `BRAZOS` y `"U0.02": "h9"` en `ESTUDIOS` (`Brazo` es la `NamedTuple` de ese mismo archivo; `nombre("uniforme",
+   0.02)` ya devuelve `U0.02`, así que no hace falta tocar nada más). Los nombres de brazo y de estudio no se repiten
+   entre hipótesis.
    Si el brazo es de un `(método, tasa)` nuevo, `nombre()` tiene que saber nombrarlo, y un método nuevo además va en
    `comun/metodos.py` (`METODOS`, `FUNCIONES`, `validar`).
 5. `python -m comun.brazos --verificar`: tiene que decir que no hay problemas. Falla si falta la sección
@@ -85,11 +90,13 @@ plantilla/                la estructura vacía de un experimento
    lista qué se rompe si falta cada carpeta.
 6. Correr: `python -m comun.correr --metodo M --tasa R --semilla S --etapa optimizar|final` (primero con `--filas 20000`
    en la Mac; en la VM, `scripts/vm.sh`). La fila va al ledger del dueño del brazo.
-7. `python -m comun.consolidar --experimento hN` arma `resultados.csv`, `estudios.csv` y `apareado.csv` de `hN`, y
+7. `python -m comun.consolidar --experimento hN` arma `resultados.csv`, `estudios.csv` y `apareado.csv` de `hN` (las filas
+   salen de `ledger/corridas/`, así que hace falta haber corrido al menos el control y un brazo), y
    `python -m comun.reporte --experimento hN` su `informe/reporte.html`.
 8. Escribir el `informe/informe.md` de `hN` con su veredicto y sus limitaciones. No hace falta tocar `h1`–`h3`:
    `python -m comun.reporte --experimento sampling_1` toma las hipótesis del registro, así que `hN` aparece sola en la
-   comparación conjunta (hay que regenerar ese reporte, no editarlo a mano).
+   comparación conjunta (hay que regenerar ese reporte, no editarlo a mano). Para probar sin pisar el reporte versionado,
+   `python -m comun.reporte --experimento sampling_1 --salida /tmp/reporte.html`.
 
 ### 3. Usar un estudio de otra hipótesis
 
