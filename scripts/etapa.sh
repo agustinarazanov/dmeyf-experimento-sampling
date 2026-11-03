@@ -22,7 +22,6 @@ LOG="$DIR/ledger/sesiones"
 BLOQUEO="$LOG/bloqueo.txt"
 EN_CURSO="$LOG/en_curso.txt"
 mkdir -p "$LOG"; rm -f "$EN_CURSO"          # es una señal por sesión, no un mensaje para una persona
-mkdir -p "$LOG"
 
 if [ -f "$BLOQUEO" ]; then
     echo "== hay un bloqueo previo sin resolver ($BLOQUEO). Resolvelo y borrá el archivo:"; cat "$BLOQUEO"; exit 2
@@ -86,7 +85,7 @@ correr_claude "$MODELO" "$PRESUPUESTO_APLICAR" "$J_APLICAR" \
 El experimento es experimentos/$EXP; leé CLAUDE.md y docs/metodo.md antes de empezar. \
 PROYECTO y BUCKET ya están definidos: los carga .env (en la raíz del repo, ignorado por git) y los lee vm.sh; \
 no los busques en los documentos ni pidas que los definan. \
-Corré python y pytest a secas desde la raíz del repo (python -m experimentos.$EXP.src.X): el entorno ya está resuelto; \
+Corré python y pytest a secas desde la raíz del repo (python -m comun.X, o python -m experimentos.$EXP.src.X para lo que todavía no pasó a comun/): el entorno ya está resuelto; \
 no antepongas variables de entorno (PYENV_VERSION=..., PYTHONPATH=...) ni export, porque esa forma no está en la lista de comandos permitidos y te la van a negar. \
 Marcá cada tarea al terminarla, solo con la evidencia que pide su texto. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
 no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con $DIR/scripts/lanzar_fase.sh <1|2|3> (una por fase, pueden ir las tres a la vez), \

@@ -17,8 +17,8 @@ while :; do
     if [ -z "$GRUPO" ]; then echo "== no quedan tareas pendientes"; exit 0; fi
     ENCABEZADO=$(grep -m1 -E "^## $GRUPO\. " "$TAREAS" || echo "## $GRUPO.")
     case "$ENCABEZADO" in
-        *Opus*)   MODELO=opus ;;
-        *Sonnet*) MODELO=sonnet ;;
+        *"sesión: Opus"*)   MODELO=opus ;;
+        *"sesión: Sonnet"*) MODELO=sonnet ;;
         *)        MODELO=sonnet ;;
     esac
     ANTES=$(pendientes_de "$GRUPO")
