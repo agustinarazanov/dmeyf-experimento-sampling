@@ -23,7 +23,7 @@ leerse del ledger de su experimento, y las del control del ledger de `control`. 
 Al repartir el ledger de `sampling-velocidad` entre experimentos, cada fila de `resultados.csv`, `estudios.csv`,
 `reemplazadas.csv` y cada archivo de `curvas/`, `corridas/`, `hp/` y `predicciones/` SHALL ir al experimento dueño de su
 brazo o estudio. Ninguna fila SHALL perderse ni duplicarse. Lo que no tiene brazo (exploración, sesiones, tokens)
-SHALL quedar en `conjunto`.
+SHALL quedar en `sampling_1`.
 
 #### Scenario: Conteo después de separar
 - **WHEN** se termina de separar el ledger

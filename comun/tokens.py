@@ -1,6 +1,6 @@
 """Registro de tokens de Claude Code por sesión y etapa, desde los transcripts locales (nada sale de la máquina).
 
-    python -m comun.tokens [--experimento sampling-velocidad]
+    python -m comun.tokens [--experimento sampling_1]
 
 Lee `~/.claude/projects/<repo>/*.jsonl`, clasifica cada sesión por la etapa que declara `docs/bitacora.md` del
 experimento y escribe `experimentos/<experimento>/ledger/tokens.csv`, ordenado y sin datos volátiles: correrlo dos veces
@@ -116,7 +116,7 @@ def costos_csv(ruta: Path) -> dict[str, tuple[str, float]]:
     return salida
 
 
-def registrar(experimento: str = "sampling-velocidad", raiz: Path = RAIZ, proyectos: Path = PROYECTOS) -> list[dict]:
+def registrar(experimento: str = "sampling_1", raiz: Path = RAIZ, proyectos: Path = PROYECTOS) -> list[dict]:
     exp = raiz / "experimentos" / experimento
     declaradas = etapas_de_la_bitacora((exp / "docs" / "bitacora.md").read_text())
     headless = costos_csv(exp / "ledger" / "sesiones" / "costos.csv")
@@ -151,7 +151,7 @@ def resumen(filas: list[dict]) -> str:
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    p.add_argument("--experimento", default="sampling-velocidad")
+    p.add_argument("--experimento", default="sampling_1")
     a = p.parse_args()
     print(resumen(registrar(a.experimento)))
 

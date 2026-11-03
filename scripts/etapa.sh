@@ -12,8 +12,8 @@ cd "$(dirname "$0")/.."
 [ -f .env ] && { set -a; . ./.env; set +a; }
 GRUPO=$1
 MODELO=$2
-EXP=${3:-sampling-velocidad}
-CAMBIO=${4:-experimento-sampling-velocidad}
+EXP=${3:-sampling_1}
+CAMBIO=${4:-separar-hipotesis}
 MODELO_REV=${5:-opus}
 PRESUPUESTO_APLICAR=${PRESUPUESTO_APLICAR:-3}
 PRESUPUESTO_REVISAR=${PRESUPUESTO_REVISAR:-2}
@@ -86,7 +86,7 @@ correr_claude "$MODELO" "$PRESUPUESTO_APLICAR" "$J_APLICAR" \
 El experimento es experimentos/$EXP; leé CLAUDE.md y docs/metodo.md antes de empezar. \
 PROYECTO y BUCKET ya están definidos: los carga .env (en la raíz del repo, ignorado por git) y los lee vm.sh; \
 no los busques en los documentos ni pidas que los definan. \
-Corré python y pytest a secas desde la raíz del repo (python -m experimentos.sampling-velocidad.src.X): el entorno ya está resuelto; \
+Corré python y pytest a secas desde la raíz del repo (python -m experimentos.$EXP.src.X): el entorno ya está resuelto; \
 no antepongas variables de entorno (PYENV_VERSION=..., PYTHONPATH=...) ni export, porque esa forma no está en la lista de comandos permitidos y te la van a negar. \
 Marcá cada tarea al terminarla, solo con la evidencia que pide su texto. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
 no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con $DIR/scripts/lanzar_fase.sh <1|2|3> (una por fase, pueden ir las tres a la vez), \

@@ -11,11 +11,11 @@ declara, y SHALL aparecer en un solo `tokens.csv`.
 
 #### Scenario: Sesión sin etapa
 - **WHEN** el registro encuentra una sesión del repo que no declara la bitácora de ningún experimento
-- **THEN** la lista como `sin-etapa` en el `tokens.csv` de `conjunto` para que se clasifique a mano
+- **THEN** la lista como `sin-etapa` en el `tokens.csv` de `sampling_1` para que se clasifique a mano
 
 #### Scenario: Sesiones anteriores a la separación
 - **WHEN** se corre el registro después de separar `sampling-velocidad`
-- **THEN** las sesiones ya registradas quedan en `experimentos/conjunto/ledger/tokens.csv` con la misma etapa y el
+- **THEN** las sesiones ya registradas quedan en `experimentos/sampling_1/ledger/tokens.csv` con la misma etapa y el
   mismo costo que tenían
 
 #### Scenario: Sesión declarada en dos bitácoras

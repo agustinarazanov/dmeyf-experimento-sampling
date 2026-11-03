@@ -5,7 +5,7 @@ import pandas as pd
 
 from comun import ledger as lg
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experimentos" / "sampling-velocidad"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experimentos" / "sampling_1"))
 from src import consolidar  # noqa: E402
 
 
@@ -37,7 +37,7 @@ def test_consolidar_de_punta_a_punta(tmp_path):
 
 def test_graficar_banda(tmp_path):
     import importlib.util
-    ruta = Path(__file__).resolve().parents[1] / "experimentos" / "sampling-velocidad" / "scripts" / "graficar.py"
+    ruta = Path(__file__).resolve().parents[1] / "experimentos" / "sampling_1" / "scripts" / "graficar.py"
     spec = importlib.util.spec_from_file_location("graficar", ruta)
     g = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(g)

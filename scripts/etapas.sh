@@ -5,8 +5,8 @@
 # uso:  scripts/etapas.sh [experimento] [cambio]
 set -euo pipefail
 cd "$(dirname "$0")/.."
-EXP=${1:-sampling-velocidad}
-CAMBIO=${2:-experimento-sampling-velocidad}
+EXP=${1:-sampling_1}
+CAMBIO=${2:-separar-hipotesis}
 TAREAS="openspec/changes/$CAMBIO/tasks.md"
 [ -f "$TAREAS" ] || { echo "no existe $TAREAS"; exit 1; }
 

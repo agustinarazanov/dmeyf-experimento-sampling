@@ -33,10 +33,10 @@ Cambiar una regla común SHALL anotarse en la bitácora de `control` y en la de 
 
 ### Requirement: Una hipótesis, una carpeta
 Cada hipótesis con brazos propios SHALL tener su experimento (`h1`, `h2`, `h3`, …). La comparación entre hipótesis, la
-respuesta a la pregunta del tutor y el guion del video SHALL vivir en `experimentos/conjunto/`, que depende de todos los
+respuesta a la pregunta del tutor y el guion del video SHALL vivir en `experimentos/sampling_1/`, que depende de todos los
 demás y del que no depende ninguno.
 
 #### Scenario: Agregar H4
 - **WHEN** el integrante que lleva H4 la incorpora
-- **THEN** crea `experimentos/h4/` declarando `control` como dependencia, y `conjunto` la suma a su comparación sin
+- **THEN** crea `experimentos/h4/` declarando `control` como dependencia, y `sampling_1` la suma a su comparación sin
   que cambie ninguna carpeta `h1`–`h3`

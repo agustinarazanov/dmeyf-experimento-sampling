@@ -42,7 +42,7 @@ bitácora antes de regenerar su informe.
 
 #### Scenario: Borrar h1
 - **WHEN** se borra `experimentos/h1/`
-- **THEN** `control` y `h2` siguen generando su reporte, y la verificación indica que `h3` y `conjunto` quedan rotos
+- **THEN** `control` y `h2` siguen generando su reporte, y la verificación indica que `h3` y `sampling_1` quedan rotos
 
 #### Scenario: Se repite el estudio del control
 - **WHEN** el ledger de `control` reemplaza su estudio o sus finales

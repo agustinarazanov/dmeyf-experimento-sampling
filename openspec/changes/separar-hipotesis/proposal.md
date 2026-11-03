@@ -16,7 +16,7 @@ comparten: el control, los estudios de Optuna que H3 toma de H1 y el corredor.
   - `experimentos/h1/`: `U0.5`, `U0.25`, `U0.1`, `U0.05`. Es dueña de los estudios `U*`.
   - `experimentos/h2/`: `B0.5`, `B0.25`, `B0.1` y `GOSS`.
   - `experimentos/h3/`: `H3-0.25` y `H3-0.1`. Lee los estudios `U0.25` y `U0.1` de `h1`.
-  - `experimentos/conjunto/`: la carpeta actual renombrada con `git mv`. Guarda la comparación entre hipótesis (curva
+  - `experimentos/sampling_1/`: la carpeta actual renombrada con `git mv`. Guarda la comparación entre hipótesis (curva
     tiempo-ganancia, tiempo igual, "vale la pena"), la pregunta, la respuesta al tutor, el guion del video, la bitácora,
     el registro de tokens, las sesiones y la exploración.
 - **BREAKING** Un experimento puede depender de otros siempre que lo declare y que no haya ciclos. Se reemplaza la regla
@@ -45,7 +45,7 @@ comparten: el control, los estudios de Optuna que H3 toma de H1 y el corredor.
 - `ledger-resultados`: la tabla apareada de cada experimento se arma contra el ledger de `control`.
 - `reporte-visual`: un reporte por experimento (su hipótesis, sus brazos contra el control) más el reporte conjunto con
   la comparación entre todos los brazos y a tiempo igual.
-- `registro-tokens`: las sesiones previas quedan en `conjunto`; las nuevas se registran en el experimento de la etapa.
+- `registro-tokens`: las sesiones previas quedan en `sampling_1`; las nuevas se registran en el experimento de la etapa.
 
 ## Impact
 
@@ -54,4 +54,4 @@ comparten: el control, los estudios de Optuna que H3 toma de H1 y el corredor.
 - Datos: `ledger/predicciones/` (241 MB, fuera de git) se reparte en disco y en el bucket con el mismo filtro.
 - Documentos: `README.md`, `CLAUDE.md`, `docs/metodo.md` y `plantilla/` (sección de dependencias).
 - Lo histórico no se reescribe: el cambio archivado, los tags y los commits siguen nombrando `sampling-velocidad`. En
-  `conjunto/` queda una nota con la correspondencia de rutas.
+  `sampling_1/` queda una nota con la correspondencia de rutas.
