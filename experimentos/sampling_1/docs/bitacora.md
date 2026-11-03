@@ -400,3 +400,34 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `control/docs/hipotesis.md`; 17 pasajes de D5, cada uno en un solo documento de `docs/`. `informe/informe.md` y
   `informe/reporte.html` de `sampling_1` todavía repiten textos (el reporte se genera de `hipotesis.md`): grupo 5.
 - Revisión del grupo 4: pendiente, en sesión limpia.
+
+### 2026-11-03 — cierre revisión del grupo 4 de `separar-hipotesis` (documentos por experimento)
+- Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (grupo 4, tareas 4.1–4.4).
+- Revisor: sesión limpia (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 1 (hipótesis) y § 2 (diseño), aplicadas a los documentos de `control`, `h1`–`h3` y
+  `sampling_1`; ningún ✗. Base de comparación: `hipotesis.md` y `diseno.md` de `sampling_1` en `dc6d9ce~1`.
+  - ✓ Texto conservado: cada sección de la versión previa está, palabra por palabra, en un solo documento nuevo; lo
+    que cambia son las referencias cruzadas, los pasos 3 y 6 de § Métricas que se calculan (remiten a `hipotesis.md`
+    en vez de repetir δ y T) y los totales de `sampling_1/docs/diseno.md` (once brazos + `C-rep`, 9 estudios, 9 filas
+    `optimizar` y 120 `final`), que suman igual que las grillas de `control` (1 + 10 + 10), `h1` (4 + 40), `h2`
+    (4 + 40) y `h3` (0 + 20).
+  - ✓ Definiciones una sola vez: `grep` de G, Δ, δ, veredictos, T, A y N* en `experimentos/`, `docs/`, `plantilla/`,
+    `comun/`, `openspec/specs/`, `README.md` y `CLAUDE.md`: solo `control/docs/hipotesis.md` (y
+    `sampling_1/informe/reporte.html`, grupo 5).
+  - ✓ § 1: pregunta del tutor con Zulip 208986 y baseline 208135 en `sampling_1`; control completo en `control`; cada
+    H con una variable, una métrica, umbral, confirma/refuta/ninguna; adaptaciones declaradas (parámetros de ejecución
+    en `control`, `bagging_fraction` en `h2`); H1–H3 no tocan la proporción de clases; regla de "vale la pena" en
+    `sampling_1`; 201910 no elige nada.
+  - ✓ § 2: cada brazo de una `hipotesis.md` está en la tabla de brazos de su `diseno.md` y viceversa; semillas,
+    parámetros fijos, máquina (`n2-highmem-8`) en `control`; estimación, reparto y fases, y devolución del tutor (sin
+    devolución) en `sampling_1`.
+  - ✓ `python -m comun.brazos --verificar`: sin problemas; lista lo que se rompe si falta cada carpeta (`control` →
+    todos; `h1` → `h3`, `sampling_1`).
+  - ✓ Bitácoras de `control`, `h1`, `h2`, `h3`: puntero a `sampling_1`, hipótesis **revisada** el 1-nov (existe el
+    cierre de hipótesis del 1-nov en esta bitácora) y commits de la separación (fd53165, dc6d9ce, 7c34254, ffc2e26
+    existen y corresponden).
+- Hallazgos: `sampling_1/docs/diseno.md` § Fase 4 nombraba `src/correr.py`, que desde el grupo 2 es
+  `comun/correr.py`. La sesión del grupo 4 costó US$ 2,06 (`costos.csv`), por encima del presupuesto de US$ 2.
+- Correcciones: ruta anotada como "`src/correr.py` (hoy `comun/correr.py`)". `tasks.md` no tenía tarea de revisión
+  del grupo 4; se agregó la 4.5 y se marcó.
+- Tokens: ~25 turnos · ≈ US$ 1,1 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.

@@ -28,6 +28,7 @@
 - [x] 4.2 Crear `h1/`, `h2/` y `h3/` con `docs/hipotesis.md` (la sección de su H, con referencia a `control` para las reglas) y `docs/diseno.md` (sus brazos, su grilla, estudios compartidos en `h1` y `h3`, `## Dependencias`); verificar que `python -m comun.brazos --verificar` pasa
 - [x] 4.3 Dejar en `sampling_1/docs/hipotesis.md` y `sampling_1/docs/diseno.md` solo pregunta, H4 pendiente, respuesta al tutor, limitaciones comunes, reparto, fases, estimación y devolución del tutor, con enlaces a cada experimento; verificar que ningún texto de D5 quedó en dos lugares
 - [x] 4.4 Abrir `docs/bitacora.md` de `control`, `h1`, `h2` y `h3` con la entrada de D5 (puntero a `sampling_1`, hipótesis revisada el 1-nov, commit de la separación); anotar la separación en `sampling_1/docs/bitacora.md` con esta sesión como etapa `diseno`; verificar que cada bitácora declara la etapa hipótesis como revisada
+- [x] 4.5 Revisión en sesión limpia del grupo 4 con las listas de hipótesis y diseño de `docs/revision.md` y cierre en `sampling_1/docs/bitacora.md`
 
 ## 5. Reportes e informes (sesión: Sonnet)
 

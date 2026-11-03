@@ -74,7 +74,7 @@ entre VMs. H4 queda fuera de esta tabla: la corre quien la lleva, cuando esté d
 
 **Fase 4 (agregada el 2-nov).** Las fases 1 a 3 no guardaron predicciones, solo curvas, y la comparación a tiempo igual
 necesita promediar probabilidades. La fase 4 repite únicamente los finales (sin estudios) de los 12 brazos en una sola
-VM, con `src/correr.py` ya guardando `ledger/predicciones/<id>.parquet`. Por la clave del ledger (sin commit) esas filas
+VM, con `src/correr.py` (hoy `comun/correr.py`) ya guardando `ledger/predicciones/<id>.parquet`. Por la clave del ledger (sin commit) esas filas
 reemplazan a las anteriores: las ganancias son las mismas (determinismo, como mostró `C-rep`) y los tiempos finales
 quedan todos medidos en la misma máquina. Los tiempos de optimización siguen siendo los de las fases 1 a 3.
 
