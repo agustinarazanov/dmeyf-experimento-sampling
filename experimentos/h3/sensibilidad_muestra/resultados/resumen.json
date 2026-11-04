@@ -1,0 +1,177 @@
+{
+ "descripcion": "Agregados de reporte.json de 07 (20261103T191818_13788) y 08 (20261103T213646_2332) que no están en los CSV. Sin rutas ni claves de clientes.",
+ "07": {
+  "ajustes": {
+   "control": 20,
+   "h3": 200
+  },
+  "control": {
+   "ganadora": 6,
+   "auc_seleccion_ganadora": 0.9296026193312079,
+   "auc_evaluacion_ganadora": 0.927378618819294,
+   "reproduce_06": true
+  },
+  "delta_auc": {
+   "mediana": 0.0,
+   "min": -8.050974314433024e-05,
+   "max": 0.002226582451623327
+  },
+  "spearman_seleccion": {
+   "mediana": 0.7751879699248119,
+   "min": 0.6646616541353383,
+   "max": 0.8165413533834586
+  },
+  "veces_que_h3_elige_la_ganadora_de_control": 7,
+  "frecuencia_por_configuracion": {
+   "3": 1,
+   "6": 7,
+   "13": 1,
+   "16": 1
+  },
+  "tiempo_control_20_ajustes_s": 1580.1,
+  "tiempo_busqueda_h3_s": {
+   "mediana": 486.65,
+   "min": 378.2,
+   "max": 1064.4
+  },
+  "ahorro_mediano_busqueda": 0.692,
+  "ahorro_por_semilla_rango": [
+   0.3264,
+   0.7606
+  ],
+  "pared_total_s": 7229.6,
+  "sesiones": 1,
+  "versiones": {
+   "python": "3.12.0",
+   "plataforma": "Windows-11-10.0.26300-SP0",
+   "procesador": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+   "nucleos_logicos": 8,
+   "ram_gb": 15.7,
+   "lightgbm": "4.7.0",
+   "sklearn": "1.9.0",
+   "numpy": "2.5.2",
+   "pandas": "3.0.5",
+   "duckdb": "1.5.5"
+  }
+ },
+ "08": {
+  "elecciones": {
+   "control": 6,
+   "h3_por_semilla": {
+    "20261102": 16,
+    "20261103": 3,
+    "20261104": 6,
+    "20261105": 6,
+    "20261106": 6,
+    "20261107": 6,
+    "20261108": 6,
+    "20261109": 6,
+    "20261110": 6,
+    "20261111": 13
+   },
+   "configuraciones_a_predecir": [
+    3,
+    6,
+    13,
+    16
+   ],
+   "modelos_distintos": 4
+  },
+  "corte": {
+   "envios": 3300,
+   "origen": "N* del control del grupo en 201908 (informe de h3); no se ajusta con octubre",
+   "importes": {
+    "BAJA+2": 1072500,
+    "BAJA+1": -27500,
+    "CONTINUA": -27500
+   },
+   "desempate": "a igual probabilidad, menor numero_de_cliente"
+  },
+  "octubre_clases": {
+   "BAJA+2": 632,
+   "BAJA+1": 621,
+   "CONTINUA": 134380
+  },
+  "etiquetas_grupo_discrepancias": 0,
+  "delta_ganancia": {
+   "mediana": 0.0,
+   "min": -9900000.0,
+   "max": 8800000.0
+  },
+  "delta_ganancia_pct": {
+   "mediana": 0.0,
+   "min": -3.6217303822937628,
+   "max": 3.2193158953722336
+  },
+  "semillas_con_la_ganadora_de_control": 7,
+  "pruebas_sinteticas": {
+   "test_10_scores_del_grupo": true,
+   "baja1_cuesta": true,
+   "desempate_menor_cliente": true,
+   "propia_igual_al_grupo_con_empates": true,
+   "sin_ordenar_el_grupo_cambia": true,
+   "etiqueta_sql_grupo_igual_a_03": true
+  },
+  "referencia_grupo": {
+   "commit": "4a42bc64612184783d004f1f1eea40bee76f3c40",
+   "head": "54bd6fcf0a3c2c9e7d391ead54015125515ec826",
+   "archivos_sin_cambios_hasta_head": {
+    "comun/ganancia.py": true,
+    "comun/datos.py": true,
+    "comun/baseline.py": true,
+    "tests/test_ganancia.py": true
+   },
+   "sha256_fuentes": {
+    "comun/ganancia.py": "95f61b1687f48bafee4551c6d13ee243bea0b57470417ec4fddc1415bda7a210",
+    "comun/datos.py": "c9dccb075e2cf15ae1b4977b1e6357e366a14f1472c5e569594473fa44866776",
+    "comun/baseline.py": "ec59f097727d5789223980a9d7b5d7709478ed3901583e1be121250dcd1bb4cf",
+    "tests/test_ganancia.py": "f964229ad51ba12a7c635df99f71e8e31581d7e583865d66fccbe2780a6ac815"
+   },
+   "checks": {
+    "importe_baja2": true,
+    "costo_estimulo": true,
+    "aporte_solo_baja2_suma": true,
+    "desempate_argsort_estable": true,
+    "sql_macros_igual": true,
+    "sql_etiqueta_igual": true,
+    "sql_crudo_igual": true,
+    "baja2_es_la_de_ganancia": true,
+    "panel_ordenado_por_mes_y_cliente": true,
+    "constantes_esperadas": true
+   }
+  },
+  "modelos_verificados": {
+   "3": {
+    "sha256_modelo": "aeb5ea48b5a06f30105ec7f9986cb5ba71e40f42755a2726b6c721d7296444d2",
+    "parametros_efectivos_iguales_a_07": true,
+    "prediccion_agosto_identica": true
+   },
+   "6": {
+    "sha256_modelo": "d83a7c00f5909514e18a524d0ef2b6e61faaf98ed50a4affb603c0c120a5954b",
+    "parametros_efectivos_iguales_a_07": true,
+    "prediccion_agosto_identica": true
+   },
+   "13": {
+    "sha256_modelo": "7ab0eb6a4de04e38fbbdca5a629dc3af8af1ddd60fd516ec587a26058571ed8f",
+    "parametros_efectivos_iguales_a_07": true,
+    "prediccion_agosto_identica": true
+   },
+   "16": {
+    "sha256_modelo": "60faa4c7cf416d49b6601d68ee6cd61f802ba51814aafc7e609a042a0f780504",
+    "parametros_efectivos_iguales_a_07": true,
+    "prediccion_agosto_identica": true
+   }
+  },
+  "versiones": {
+   "python": "3.12.0",
+   "plataforma": "Windows-11-10.0.26300-SP0",
+   "procesador": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+   "nucleos_logicos": 8,
+   "lightgbm": "4.7.0",
+   "sklearn": "1.9.0",
+   "numpy": "2.5.2",
+   "pandas": "3.0.5",
+   "duckdb": "1.5.5"
+  }
+ }
+}

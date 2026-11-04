@@ -1,0 +1,11 @@
+# Versiones con las que se hicieron las corridas reportadas (07 20261103T191818_13788, 08 20261103T213646_2332),
+# sobre Python 3.12.0 en Windows 11. Se fijan porque el protocolo compara huellas sha256 de matrices float64,
+# probabilidades y parámetros efectivos de LightGBM: con otras versiones los AUC y las ganancias pueden cambiar.
+# Se instala además del requirements.txt de la raíz (pytest, optuna, etc.).
+lightgbm==4.7.0
+numpy==2.5.2
+pandas==3.0.5
+duckdb==1.5.5
+scikit-learn==1.9.0
+scipy==1.18.1
+psutil==7.2.2

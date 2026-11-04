@@ -1,0 +1,219 @@
+{
+ "descripcion": "Huellas de los datos con los que se hicieron las corridas reportadas (07 20261103T191818_13788 y 08 20261103T213646_2332). sha256 de claves (numero_de_cliente, foto_mes en int64), de y (int8) y de X (float64, 760 columnas en el orden del manifiesto, por bloques de 16384 filas, con la forma como prefijo), en el orden de carga. Las calculan sensibilidad_07 y ganancia_08 y se detienen si no coinciden.",
+ "predictores": {
+  "cantidad": 760,
+  "sha256": "57eb82bb809f7bd4ff6162c44ad26157ebfeb5829cd80444847af6f136ea105f"
+ },
+ "train": {
+  "filas": 506871,
+  "positivos": 5313,
+  "sha256_claves": "d09a907b258d426ca4c2fa6b7c7da884f07ca518deb93309d8f723230e5260b9",
+  "sha256_y": "194ae8174681acc26b9915be7a1067894207b1774db530ed0b6a6e8d6c65ce9f",
+  "sha256_X": "473d505851cd0241a0bf6bd4d7c67abbe48d3b78948c1dcab723d01f11f923e6"
+ },
+ "validacion": {
+  "filas": 131775,
+  "positivos": 1202,
+  "sha256_claves": "87de134c5944df4dd22a2da9a4a3fc323ef574109b650e911ba9654277461770",
+  "sha256_y": "d59e801296c16d88be09911074283738b4409de324ed51ac9f66a141f7d79d84",
+  "sha256_X": "96ebfd08ee4bb12056228f7f2dd30d8f17186427a17c6b755681dfc74d4572e9"
+ },
+ "octubre": {
+  "filas": 135633,
+  "sha256_claves": "007d7b1084e00f819378949bc171c9685ae293d397db46a728807965aa71e981",
+  "sha256_X": "4507df7a0f223fe5d8de6bf96d0587ef61d70ce322d35c9a93d41006ea435f83",
+  "clases": {
+   "BAJA+2": 632,
+   "BAJA+1": 621,
+   "CONTINUA": 134380
+  }
+ },
+ "particion_201908": {
+  "semilla": 20261102,
+  "conteos": {
+   "seleccion": {
+    "filas": 65887,
+    "positivos": 601,
+    "negativos": 65286
+   },
+   "evaluacion": {
+    "filas": 65888,
+    "positivos": 601,
+    "negativos": 65287
+   }
+  },
+  "sha256": "130029c9f601a8f584c39657f58a2a919b5e2f4684cb3babd38500f193a6b9e8"
+ },
+ "muestras": {
+  "20261102": {
+   "filas": 126718,
+   "positivos": 1339,
+   "filas_por_mes": {
+    "201903": 31376,
+    "201904": 31730,
+    "201905": 31873,
+    "201906": 31739
+   },
+   "sha256_indices": "0bef8bd88a60cd62b03c8956c7b251410a4196a30c3dd2ae21ce0b6ab6b18333",
+   "sha256_claves": "edf25c1cf8073138ba80b4a1c923c5686a7ea0330bb4bdf008f48d24c0cc5746"
+  },
+  "20261103": {
+   "filas": 126718,
+   "positivos": 1300,
+   "filas_por_mes": {
+    "201903": 31685,
+    "201904": 31415,
+    "201905": 31754,
+    "201906": 31864
+   },
+   "sha256_indices": "32af12c6a39bb6b0dc194b16121a49c0095ab710b7e5b3e508c1a595dcaf1bc6",
+   "sha256_claves": "fcbcd10365bc9aa5bbdc49af9585e8b513ace624787fa1d37a5f4ee22113024c"
+  },
+  "20261104": {
+   "filas": 126718,
+   "positivos": 1322,
+   "filas_por_mes": {
+    "201903": 31245,
+    "201904": 31592,
+    "201905": 31691,
+    "201906": 32190
+   },
+   "sha256_indices": "f3c8332ca1407e6be929eeeb1bfa61bdbdfb69233cc87e90df6ec2d2ac10e1da",
+   "sha256_claves": "6e370315faf2e3c46755530726f3a60d07d7b20e79f136265d5d07ec0e134a60"
+  },
+  "20261105": {
+   "filas": 126718,
+   "positivos": 1313,
+   "filas_por_mes": {
+    "201903": 31541,
+    "201904": 31670,
+    "201905": 31692,
+    "201906": 31815
+   },
+   "sha256_indices": "c9ccf9c30faf644953a1f98105439ed33ffd4a447875bbf3288f732da286a31e",
+   "sha256_claves": "29e1c1338199f061a2ad9f0709cfe80b116954cf3b1613b1a076d4ac4057741d"
+  },
+  "20261106": {
+   "filas": 126718,
+   "positivos": 1324,
+   "filas_por_mes": {
+    "201903": 31644,
+    "201904": 31408,
+    "201905": 31529,
+    "201906": 32137
+   },
+   "sha256_indices": "308a9b982bccc8413c0c0ec19bf663d32b554c224cd8149ae4a94b4f4b7102ac",
+   "sha256_claves": "5288c318c2b2d6c8284419061dd9d7c1299e7c3aabb77efcfc7189c0d0fe4b8a"
+  },
+  "20261107": {
+   "filas": 126718,
+   "positivos": 1322,
+   "filas_por_mes": {
+    "201903": 31385,
+    "201904": 31612,
+    "201905": 31566,
+    "201906": 32155
+   },
+   "sha256_indices": "a89c570406630396ad11ae3afa52cc1c1efec3143f1b5b5677e33884ec7f95f7",
+   "sha256_claves": "c1ccf9740eb104137a650186cafb3c785e4ac94974534002c24a23608a016a4e"
+  },
+  "20261108": {
+   "filas": 126718,
+   "positivos": 1362,
+   "filas_por_mes": {
+    "201903": 31354,
+    "201904": 31462,
+    "201905": 31804,
+    "201906": 32098
+   },
+   "sha256_indices": "1307874fa7b23017109c58435addb833604baac7565999d44617935c85bab08d",
+   "sha256_claves": "51e58fc6f42991470f5e19ee554a02c948b2831c6b2f55e31c1818b06905c323"
+  },
+  "20261109": {
+   "filas": 126718,
+   "positivos": 1329,
+   "filas_por_mes": {
+    "201903": 31331,
+    "201904": 31749,
+    "201905": 31502,
+    "201906": 32136
+   },
+   "sha256_indices": "980eb9e6148bbf9e98e2b8b79516667ec131adccbcaf72f3b7757725fd066136",
+   "sha256_claves": "61bcbaf058e78efd9cc7e1bc3a4012a7322b6d2ab29376b9fb0ce8f594d2ec07"
+  },
+  "20261110": {
+   "filas": 126718,
+   "positivos": 1367,
+   "filas_por_mes": {
+    "201903": 31327,
+    "201904": 31422,
+    "201905": 31753,
+    "201906": 32216
+   },
+   "sha256_indices": "db5615ded28e5a37564c89f3d0e764476f88782cc06a1b403a339b34e79bba92",
+   "sha256_claves": "90189b4e213c5a0901e2110e7064cef70e6d4d638c46046f32e93597cea0d827"
+  },
+  "20261111": {
+   "filas": 126718,
+   "positivos": 1377,
+   "filas_por_mes": {
+    "201903": 31590,
+    "201904": 31512,
+    "201905": 31665,
+    "201906": 31951
+   },
+   "sha256_indices": "053be57902e8158c5a6cc3a1de3223a5502a975d844638afdd1f6c4681d03f8b",
+   "sha256_claves": "a97a36d9ee98401946e4d4262d1b819eb0e5e90ff1fee2a88e5ee52ac1e6b35b"
+  }
+ },
+ "etiquetas_grupo_vs_03": {
+  "201903": {
+   "ambos": 125622,
+   "solo_grupo": 0,
+   "solo_03": 0,
+   "distintas": 0,
+   "baja2_grupo": 774,
+   "baja2_03": 774
+  },
+  "201904": {
+   "ambos": 126116,
+   "solo_grupo": 0,
+   "solo_03": 0,
+   "distintas": 0,
+   "baja2_grupo": 575,
+   "baja2_03": 575
+  },
+  "201905": {
+   "ambos": 126763,
+   "solo_grupo": 0,
+   "solo_03": 0,
+   "distintas": 0,
+   "baja2_grupo": 658,
+   "baja2_03": 658
+  },
+  "201906": {
+   "ambos": 128370,
+   "solo_grupo": 0,
+   "solo_03": 0,
+   "distintas": 0,
+   "baja2_grupo": 589,
+   "baja2_03": 589
+  },
+  "201908": {
+   "ambos": 131775,
+   "solo_grupo": 0,
+   "solo_03": 0,
+   "distintas": 0,
+   "baja2_grupo": 543,
+   "baja2_03": 543
+  },
+  "201910": {
+   "ambos": 135633,
+   "solo_grupo": 0,
+   "solo_03": 0,
+   "distintas": 0,
+   "baja2_grupo": 632,
+   "baja2_03": 632
+  }
+ }
+}
