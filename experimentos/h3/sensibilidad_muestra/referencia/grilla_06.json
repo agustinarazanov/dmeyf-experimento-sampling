@@ -1,0 +1,204 @@
+{
+ "descripcion": "Las 20 configuraciones de 06, en su orden (id 0..19). Copia exacta de configuraciones.json de la corrida 06 20261102T215551_12584; sensibilidad_07 las regenera con busqueda.generar_configuraciones y se detiene si no son idénticas a esta lista o a su sha256.",
+ "tipo": "búsqueda aleatoria emparejada (no bayesiana): mismas configuraciones en ambos brazos",
+ "semilla": 20261102,
+ "generador": "SeedSequence(semilla).spawn(2)[1]",
+ "fijos": {
+  "objective": "binary",
+  "metric": "auc",
+  "bagging_freq": 1,
+  "num_threads": 4,
+  "seed": 20261102,
+  "verbosity": -1
+ },
+ "arboles": 100,
+ "configuraciones": [
+  {
+   "id": 0,
+   "num_leaves": 18,
+   "learning_rate": 0.0107948,
+   "min_data_in_leaf": 559,
+   "feature_fraction": 0.879296,
+   "bagging_fraction": 0.983206
+  },
+  {
+   "id": 1,
+   "num_leaves": 58,
+   "learning_rate": 0.0186185,
+   "min_data_in_leaf": 170,
+   "feature_fraction": 0.854212,
+   "bagging_fraction": 0.853596
+  },
+  {
+   "id": 2,
+   "num_leaves": 12,
+   "learning_rate": 0.0118946,
+   "min_data_in_leaf": 963,
+   "feature_fraction": 0.666744,
+   "bagging_fraction": 0.678187
+  },
+  {
+   "id": 3,
+   "num_leaves": 49,
+   "learning_rate": 0.0333317,
+   "min_data_in_leaf": 172,
+   "feature_fraction": 0.633772,
+   "bagging_fraction": 0.732763
+  },
+  {
+   "id": 4,
+   "num_leaves": 61,
+   "learning_rate": 0.0338669,
+   "min_data_in_leaf": 203,
+   "feature_fraction": 0.811255,
+   "bagging_fraction": 0.786152
+  },
+  {
+   "id": 5,
+   "num_leaves": 61,
+   "learning_rate": 0.031328,
+   "min_data_in_leaf": 106,
+   "feature_fraction": 0.94841,
+   "bagging_fraction": 0.887143
+  },
+  {
+   "id": 6,
+   "num_leaves": 47,
+   "learning_rate": 0.0329875,
+   "min_data_in_leaf": 784,
+   "feature_fraction": 0.642466,
+   "bagging_fraction": 0.641699
+  },
+  {
+   "id": 7,
+   "num_leaves": 29,
+   "learning_rate": 0.0141444,
+   "min_data_in_leaf": 1146,
+   "feature_fraction": 0.999845,
+   "bagging_fraction": 0.598257
+  },
+  {
+   "id": 8,
+   "num_leaves": 10,
+   "learning_rate": 0.0233209,
+   "min_data_in_leaf": 1270,
+   "feature_fraction": 0.535528,
+   "bagging_fraction": 0.73711
+  },
+  {
+   "id": 9,
+   "num_leaves": 18,
+   "learning_rate": 0.0947903,
+   "min_data_in_leaf": 397,
+   "feature_fraction": 0.673917,
+   "bagging_fraction": 0.720578
+  },
+  {
+   "id": 10,
+   "num_leaves": 40,
+   "learning_rate": 0.0184744,
+   "min_data_in_leaf": 237,
+   "feature_fraction": 0.817575,
+   "bagging_fraction": 0.885754
+  },
+  {
+   "id": 11,
+   "num_leaves": 53,
+   "learning_rate": 0.0185833,
+   "min_data_in_leaf": 423,
+   "feature_fraction": 0.747979,
+   "bagging_fraction": 0.847842
+  },
+  {
+   "id": 12,
+   "num_leaves": 9,
+   "learning_rate": 0.046257,
+   "min_data_in_leaf": 1961,
+   "feature_fraction": 0.771283,
+   "bagging_fraction": 0.684349
+  },
+  {
+   "id": 13,
+   "num_leaves": 34,
+   "learning_rate": 0.0526891,
+   "min_data_in_leaf": 272,
+   "feature_fraction": 0.541522,
+   "bagging_fraction": 0.693221
+  },
+  {
+   "id": 14,
+   "num_leaves": 34,
+   "learning_rate": 0.0192536,
+   "min_data_in_leaf": 1279,
+   "feature_fraction": 0.541425,
+   "bagging_fraction": 0.660538
+  },
+  {
+   "id": 15,
+   "num_leaves": 52,
+   "learning_rate": 0.0218649,
+   "min_data_in_leaf": 1231,
+   "feature_fraction": 0.636465,
+   "bagging_fraction": 0.768978
+  },
+  {
+   "id": 16,
+   "num_leaves": 47,
+   "learning_rate": 0.0535958,
+   "min_data_in_leaf": 535,
+   "feature_fraction": 0.994501,
+   "bagging_fraction": 0.807907
+  },
+  {
+   "id": 17,
+   "num_leaves": 47,
+   "learning_rate": 0.0268391,
+   "min_data_in_leaf": 231,
+   "feature_fraction": 0.934141,
+   "bagging_fraction": 0.964836
+  },
+  {
+   "id": 18,
+   "num_leaves": 10,
+   "learning_rate": 0.0319202,
+   "min_data_in_leaf": 334,
+   "feature_fraction": 0.908649,
+   "bagging_fraction": 0.819185
+  },
+  {
+   "id": 19,
+   "num_leaves": 51,
+   "learning_rate": 0.0155083,
+   "min_data_in_leaf": 611,
+   "feature_fraction": 0.635322,
+   "bagging_fraction": 0.946061
+  }
+ ],
+ "sha256": "7ecaa079c78cfd99347113ba7020008256c6a78d7f04ce7b41e83b8c88ede899",
+ "espacio": {
+  "num_leaves": "entero uniforme en [8, 64]",
+  "learning_rate": "log-uniforme en [0.01, 0.10]",
+  "min_data_in_leaf": "entero log-uniforme en [100, 2000]",
+  "feature_fraction": "uniforme en [0.5, 1.0]",
+  "bagging_fraction": "uniforme en [0.5, 1.0]",
+  "redondeo": "reales a 6 cifras significativas"
+ },
+ "semillas": {
+  "configuraciones": "SeedSequence(20261102).spawn(2)[1]",
+  "modelo": 20261102,
+  "particion_201908": 20261102,
+  "muestreo_h3": [
+   20261102,
+   20261103,
+   20261104,
+   20261105,
+   20261106,
+   20261107,
+   20261108,
+   20261109,
+   20261110,
+   20261111
+  ]
+ },
+ "regla_seleccion": "en cada brazo (Control y cada muestra de H3) gana la configuración de mayor AUC en la mitad de selección de 201908; a igual AUC, la de menor id. El final de H3 es el ajuste completo de Control de la configuración elegida."
+}

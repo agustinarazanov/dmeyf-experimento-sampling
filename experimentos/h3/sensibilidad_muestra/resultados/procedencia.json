@@ -1,0 +1,46 @@
+{
+ "descripcion": "Procedencia de los CSV de resultados/: copias byte a byte de las salidas de las corridas.",
+ "archivos": {
+  "07_resumen_por_semilla.csv": {
+   "script": "07_sensibilidad_muestra_h3",
+   "corrida": "20261103T191818_13788",
+   "archivo": "resumen_por_semilla.csv",
+   "sha256": "09f8d945b410af9c98ce413fbd6b9276a56e2f27c025fa81810966d402e8622c",
+   "sha256_lf": "e26ca490f226c2f4809e9031389bcb6b1156ba96bc00de76367ba9c0f7f87b08",
+   "fin_de_linea_original": "CRLF"
+  },
+  "08_ganancia_por_semilla.csv": {
+   "script": "08_evaluar_ganancia_h3",
+   "corrida": "20261103T213646_2332",
+   "archivo": "ganancia_por_semilla.csv",
+   "sha256": "cd84c2183df5127ca02e0d158ff38355baad1589f8bbba49afed1f3ac0269e9b",
+   "sha256_lf": "dbd15dd193c5c006abe2edad5ed8133cf1f9ce32e17aea629b8214c030542e6a",
+   "fin_de_linea_original": "CRLF"
+  },
+  "08_ganancia_por_configuracion.csv": {
+   "script": "08_evaluar_ganancia_h3",
+   "corrida": "20261103T213646_2332",
+   "archivo": "ganancia_por_configuracion.csv",
+   "sha256": "d580c0b17a7524e281311799e44a3b9c1911db3316ece414d8126836498adb39",
+   "sha256_lf": "77400fb7859337ccb4df14022c97e2118b5a27940f7db58e331795f55b66a3f1",
+   "fin_de_linea_original": "CRLF"
+  }
+ },
+ "versiones": {
+  "python": "3.12.0",
+  "plataforma": "Windows-11-10.0.26300-SP0",
+  "procesador": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+  "nucleos_logicos": 8,
+  "ram_gb": 15.7,
+  "lightgbm": "4.7.0",
+  "sklearn": "1.9.0",
+  "numpy": "2.5.2",
+  "pandas": "3.0.5",
+  "duckdb": "1.5.5"
+ },
+ "sha256_scripts_originales": {
+  "07": "374b6c1c7ba60a59b73aa5197c012d08cab0ebcb24951c95c7c555045f06128d",
+  "08": "3dbb6a56dba9836294e87352f7d822b3939fed79dde5c2f336812d0472a3d4f5"
+ },
+ "nota": "sha256 es el del archivo original byte a byte; sha256_lf, el del mismo contenido con fin de línea LF (independiente del checkout de git)."
+}

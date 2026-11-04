@@ -1,0 +1,5 @@
+# Salidas de corridas: por defecto van a DATOS_DIR, fuera del repo. Si se usa --salida dentro del repo, no se versionan
+# (tienen modelos, predicciones por cliente y temporales).
+ejecuciones/
+matrices_tmp/
+*.npy
