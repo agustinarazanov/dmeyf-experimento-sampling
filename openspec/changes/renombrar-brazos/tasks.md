@@ -12,7 +12,7 @@
 - [x] 2.2 `git mv comun/brazos.py comun/variantes.py` y `tests/test_brazos.py tests/test_variantes.py`; renombrar según D1 en `comun/`, `scripts/`, `sampling_1/scripts/` y `tests/`; en `comun/ledger.py`, rechazar una cabecera `brazo` nombrando el archivo, con test; verificar que `python -m pytest` pasa
 - [x] 2.3 Renombrar el paquete de Martín según D4 y recalcular las huellas que dependan de archivos modificados; verificar que sus 13 tests pasan y que `python -m experimentos.h3.sensibilidad_muestra.busqueda` (o el generador que use 07) produce un JSON idéntico a `referencia/grilla_06.json`
 - [x] 2.4 Smoke test en la Mac: una optimización de `U0.25` y un final de `H3-0.25` con `--filas 20000`; verificar que las filas tienen columna `variante` y que `python -m comun.variantes --verificar` pasa
-- [ ] 2.5 Subir el bucket renombrado con `gsutil rsync`, volver a bajarlo y correr `scripts/renombrar_columna.py --verificar` sobre esa copia; verificar que sale con 0
+- [x] 2.5 Subir el bucket renombrado con `gsutil rsync`, volver a bajarlo y correr `scripts/renombrar_columna.py --verificar` sobre esa copia; verificar que sale con 0
 - [ ] 2.6 Revisión en sesión limpia del grupo 2 con la lista de código de `docs/revision.md` y cierre en `sampling_1/docs/bitacora.md`
 
 ## 3. Texto y specs (sesión: Sonnet)
