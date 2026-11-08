@@ -21,6 +21,7 @@ DIR="experimentos/$EXP"
 LOG="$DIR/ledger/sesiones"
 BLOQUEO="$LOG/bloqueo.txt"
 EN_CURSO="$LOG/en_curso.txt"
+DATOS=${DATOS_DIR:-$HOME/datos/experimentos-dmeyf}   # fuera del repo: las sesiones escriben ahí fotos, copias del bucket y salidas
 mkdir -p "$LOG"; rm -f "$EN_CURSO"          # es una señal por sesión, no un mensaje para una persona
 
 if [ -f "$BLOQUEO" ]; then
@@ -40,7 +41,7 @@ Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
     claude -p "$4" --model "$1" --permission-mode acceptEdits --max-budget-usd "$2" \
-        --allowedTools "$PERMITIDOS" --output-format stream-json --verbose \
+        --add-dir "$DATOS" --allowedTools "$PERMITIDOS" --output-format stream-json --verbose \
         | python3 scripts/_stream.py "$3"
 }
 
