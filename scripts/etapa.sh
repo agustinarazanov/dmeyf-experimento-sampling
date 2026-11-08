@@ -34,7 +34,9 @@ Bash(head:*),Bash(tail:*),Bash(wc:*),Bash(grep:*),Bash(rg:*),Bash(find:*),Bash(m
 Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git tag:*),Bash(git rev-parse:*),Bash(git describe:*),Bash(git mv:*),Bash(git rm:*),\
 Bash($DIR/scripts/vm.sh:*),Bash(sh $DIR/scripts/vm.sh:*),Bash(bash $DIR/scripts/vm.sh:*),\
 Bash($DIR/scripts/lanzar_fase.sh:*),Bash(bash $DIR/scripts/lanzar_fase.sh:*),Bash(pgrep:*),Bash(tail:*),\
-Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*)"
+Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*),\
+Bash(git grep:*),Bash(shasum:*),Bash(sha256sum:*),Bash(gsutil rsync:*),Bash(gsutil cp:*),Bash(gcloud compute regions describe:*),\
+Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/vm.sh:*)"
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
     claude -p "$4" --model "$1" --permission-mode acceptEdits --max-budget-usd "$2" \
@@ -88,13 +90,13 @@ no los busques en los documentos ni pidas que los definan. \
 Corré python y pytest a secas desde la raíz del repo (python -m comun.X, o python -m experimentos.$EXP.src.X para lo que todavía no pasó a comun/): el entorno ya está resuelto; \
 no antepongas variables de entorno (PYENV_VERSION=..., PYTHONPATH=...) ni export, porque esa forma no está en la lista de comandos permitidos y te la van a negar. \
 Marcá cada tarea al terminarla, solo con la evidencia que pide su texto. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
-no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con $DIR/scripts/lanzar_fase.sh <1|2|3> (una por fase, pueden ir las tres a la vez), \
-que vuelve enseguida y deja la VM trabajando horas; nunca gcloud ni vm.sh directamente. Si lanzaste fases y las \
+no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con el lanzador y las listas que definen las tareas del cambio \
+(scripts/lanzar_fase.sh <lista>), que vuelve enseguida y deja las VMs trabajando; nunca gcloud, ni vm.sh sin --en-seco. Si lanzaste fases y las \
 tareas dependen de sus resultados, no bloquees ni marques: escribí EN_CURSO y qué esperás en $EN_CURSO y terminá; \
 el loop espera a que las VMs terminen y vuelve a correr este grupo, y entonces consolidás, verificás y marcás. \
 Si los resultados ya están (ledger/corridas con filas, sin vm.sh corriendo: pgrep -f vm.sh), consolidá y marcá. Commiteá al cerrar cada tarea (sin Co-Authored-By). No hagas push y no cambies el diseño. \
-Si una tarea necesita algo que no podés hacer (una respuesta del tutor, una decisión de diseño, un reparto entre \
-personas), escribí BLOQUEADO y el motivo en $BLOQUEO y terminá." || RC=$?
+No publiques en Zulip ni mandes mensajes fuera del repo. \
+Si una tarea necesita algo que no podés hacer (una decisión de diseño), escribí BLOQUEADO y el motivo en $BLOQUEO y terminá." || RC=$?
 registrar "$J_APLICAR" "$GRUPO" aplicar "$RC"
 if [ -f "$BLOQUEO" ]; then echo "== BLOQUEADO:"; cat "$BLOQUEO"; exit 2; fi
 if [ "$RC" -ne 0 ] || ! exitoso "$J_APLICAR"; then echo "== la sesión de aplicar no terminó bien (rc $RC)"; exit 1; fi
@@ -109,7 +111,8 @@ experimento experimentos/$EXP. No conocés la sesión que lo implementó. \
 Usá la lista correspondiente de docs/revision.md: verificá cada ítem corriendo lo que haga falta, \
 corregí lo que no pase y anotalo, cerrá la etapa en $DIR/docs/bitacora.md con el formato de cierre \
 (fecha, sesión, revisor, hallazgos, correcciones, tokens), marcá como hecha la tarea de revisión del grupo en tasks.md \
-y commiteá (sin Co-Authored-By). Si algo no se puede cerrar sin un humano, \
+y commiteá (sin Co-Authored-By). No publiques en Zulip ni mandes mensajes fuera del repo. \
+Si algo no se puede cerrar sin un humano, \
 escribilo en $BLOQUEO." || RC=$?
 registrar "$J_REVISAR" "$GRUPO" revisar "$RC"
 if [ -f "$BLOQUEO" ]; then echo "== BLOQUEADO en la revisión:"; cat "$BLOQUEO"; exit 2; fi
