@@ -2,7 +2,7 @@
 
 ## 1. Foto previa (sesión: Sonnet)
 
-- [ ] 1.1 Guardar la foto de D6 en `DATOS_DIR/renombre/antes/` (consolidar, reporte `--todos`, cada `apareado.csv` y la tabla de resultados de cada `reporte.html` extraída a CSV) y bajar el bucket a `DATOS_DIR/renombre/bucket/`; verificar que hay un archivo por experimento y que `git status` sigue limpio salvo la fecha de los reportes
+- [x] 1.1 Guardar la foto de D6 en `DATOS_DIR/renombre/antes/` (consolidar, reporte `--todos`, cada `apareado.csv` y la tabla de resultados de cada `reporte.html` extraída a CSV) y bajar el bucket a `DATOS_DIR/renombre/bucket/`; verificar que hay un archivo por experimento y que `git status` sigue limpio salvo la fecha de los reportes
 - [x] 1.2 Comprobar que `comun/tokens.py` no lee "brazo" del contenido de `ledger/sesiones/`; verificar regenerando `tokens.csv` en una copia con "brazo" reemplazado y comparando con el original (sin diferencias)
 
 ## 2. Ledgers y código (sesión: Sonnet)
