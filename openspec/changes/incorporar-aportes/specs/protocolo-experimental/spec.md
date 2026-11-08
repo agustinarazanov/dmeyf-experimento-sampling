@@ -38,3 +38,27 @@ escriben igual que las demás, antes de correr.
 - **WHEN** se lee `experimentos/h4/docs/hipotesis.md`
 - **THEN** dice que las variantes salieron de estrategias que Luis eligió mirando 201910, y que el resultado de H4 no
   cuenta con un mes de test que no se haya mirado
+
+### Requirement: 201910 solo para la comparación
+Como pide la consigna (Zulip 208135), toda elección SHALL hacerse con 201908. Esto vale para las variantes del registro
+y para los estudios exploratorios. Una elección es:
+- un orden entre estrategias;
+- un descarte;
+- un corte de envíos;
+- una cantidad de semillas para ensamblar;
+- un factor de reescalado;
+- un "campeón".
+
+201910 SHALL usarse solo para comparar, en una tabla que incluye todas las variantes o estrategias del estudio, y
+ningún resultado en 201910 SHALL decidir qué se corre, qué se descarta ni con qué parámetros. 201909, 201911 y 201912 no
+SHALL usarse.
+
+#### Scenario: Exploratorio que eligió en test
+- **WHEN** se porta un aporte que eligió o descartó estrategias por su resultado en 201910
+- **THEN** el paquete portado ordena y clasifica con 201908, muestra 201910 solo en la tabla de comparación con todas las
+  estrategias y deja los números originales en una sección de reproducción, separada de sus conclusiones
+
+#### Scenario: Máximo de la curva
+- **WHEN** un reporte muestra la ganancia máxima de una curva
+- **THEN** la de 201908 puede orientar, y la de 201910 se informa como referencia pero ninguna conclusión se apoya en
+  ella; la métrica que decide sigue siendo G al corte N\* fijado en 201908

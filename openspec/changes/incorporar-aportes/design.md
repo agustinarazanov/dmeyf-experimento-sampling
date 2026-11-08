@@ -49,6 +49,7 @@ salidas. Hay que volver a correrlo en la VM.
 **Goals:**
 - Que ambos aportes se puedan reproducir desde el repo y que cada número reportado tenga su par reproducido.
 - Que el trabajo de Luis quede con las convenciones del repo, sin perder su protocolo propio (50 semillas, 900 s).
+- Que el trabajo de Luis cumpla la consigna de meses: elegir en 201908 y comparar en 201910 (D9).
 - Que cada idea de Luis se pruebe como variante con el protocolo: réplicas, reglas pre-registradas, ledger.
 - Cuatro hipótesis en `sampling_1`.
 
@@ -86,6 +87,7 @@ Reglas del paquete:
   - Para `C` y `U*` los dos modos coinciden. El test lo verifica.
 - **Tiempos.** Se miden en la VM sin `FACTOR_VM`. El factor se registra aparte para explicar la diferencia con el
   resumen.
+- **Meses.** Cada semilla predice 201908 y 201910. Todo lo que ordena o decide sale de 201908 (D9).
 - **Paralelismo.** `--estrategia` permite una VM por estrategia. `validacion.py --agregar` junta los CSV y arma el
   HTML y los agregados: ensambles de 10 y 50 semillas y ganancia según K.
 
@@ -209,12 +211,36 @@ Una sola vez, en la VM de Martín mientras corre 07, se arma el panel con el SQL
 - **`guion.md`:** cuatro hipótesis; los aportes de Martín y Luis como "lo que motivó la segunda ronda".
 - **README:** resultados, mapa con `h4` y estado de los aportes como "replicado".
 
+### D9. Consigna de meses en el trabajo de Luis
+
+La consigna dice: Optuna se ordena por AUC en 201908, y 201910 se usa para la comparación "y no debe ser usado para más
+que eso". 201911 y 201912 no se usan, y 201909 tampoco: no tiene rol en la consigna y no le damos uno.
+
+| uso en el script de Luis | en el paquete portado |
+|---|---|
+| "Campeón" y "descartes" por ganancia media en 201910 | ranking por G en **201908** al corte N\* = 3.300; el README clasifica las estrategias con ese ranking y 201910 aparece en una tabla final con todas, sin elegir |
+| `gan_max`: máximo de la curva de 201910, que es elegir el corte en test | se calcula en 201908 y se informa como referencia; en 201910 solo G al corte fijo |
+| Ganancia según K (1…50) en 201910 | la curva según K se calcula en 201908; en 201910 se informa el ensamble del K que fija el presupuesto (D2) o el K = 10 y 50 del script, sin elegir K mirando el test |
+| Presupuesto de 900 s | K sale de los tiempos y la ganancia del ensamble se reporta en 201908 y en 201910; no hay elección en test |
+| Raíz contra lineal y H4 difícil contra uniforme | no se eligen: son variantes de D3, todas comparadas en 201910 con las reglas comunes |
+| Hard negatives, 35 % del pozo y 10 % de CONTINUA | se mantienen como los fijó Luis; el README dice que no sabemos con qué mes los eligió |
+
+Sus números originales en 201910 se reproducen igual, porque la tabla reportado/reproducido los necesita, pero en una
+sección aparte: "Reproducción del resumen original". Las conclusiones del paquete salen solo del ranking en 201908.
+
+En el bloque A no cambia nada: las variantes se comparan con el control en 201910 y no hay selección entre ellas. La
+declaración de origen se mantiene: las variantes salen de un análisis que miró 201910. Lo que cambia es que en el repo
+ninguna se elige ni se descarta con 201910.
+
 ## Risks / Trade-offs
 
 - **[La reconstrucción no es lo que hizo Luis]** Cada interpretación queda escrita (D2). Si una cifra reconstruida no
   se parece a la de su resumen, la tabla lo muestra; no se ajusta la reconstrucción para que coincida.
-- **[Test ya mirado]** H4 y los reescalados vienen de resultados en 201910, y no hay un mes virgen (201911–201912 no se
-  usan, por el baseline) → limitación declarada (spec) y contrastes principales fijados de antemano.
+- **[Test ya mirado]** H4 y los reescalados vienen de resultados de Luis en 201910. No usamos otro mes: seguimos la
+  consigna → todas las variantes entran sin selección, los contrastes principales se fijan de antemano y la limitación
+  queda declarada (spec).
+- **[El ranking en 201908 contradice a Luis]** Puede que en 201908 su "campeón" no sea el primero → el README lo
+  muestra tal cual. Las conclusiones del exploratorio son las de 201908, y las suyas quedan en `resumen_original.md`.
 - **[Martín no reproduce byte a byte]** Si LightGBM o numpy difieren de su versión, sus CSV pueden cambiar en
   decimales → se registran las versiones; la tabla separa "idéntico", "igual salvo redondeo" y "distinto".
 - **[Costo y cuota]** Unas 12 h de VM y 144 vCPU simultáneas. Si el trial no alcanza o la cuota baja, se lanzan en

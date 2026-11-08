@@ -12,7 +12,11 @@ Martín y Luis sumaron trabajo que hoy no se puede reproducir desde el repo.
 - rutas de Drive;
 - hiperparámetros escritos a mano;
 - tiempos escalados con un factor de calibración en lugar de medidos en la VM;
-- sin ledger.
+- sin ledger;
+- **usa 201910 para elegir**, y la consigna (Bolaños, 28-oct, Zulip 208135) dice que 201910 "no debe ser usado para
+  más que" la comparación. Elige un "campeón" y descarta estrategias por su ganancia en 201910, reporta el máximo de la
+  curva de 201910 (o sea, el corte elegido en test), muestra la ganancia según K en 201910 y prefiere el reescalado √
+  al lineal mirando 201910.
 
 Además, la mitad de lo que su resumen reporta no tiene código:
 - la búsqueda de Optuna con hard negatives (sus hiperparámetros están hardcodeados);
@@ -39,6 +43,8 @@ Reconstruimos nosotros lo que falta, sin esperar el código de Luis.
   - importa solo de `comun/` y de su carpeta;
   - usa el panel de `comun.datos` y `DATOS_DIR`;
   - lee los hiperparámetros de los ledgers, con un modo `--hp-original` que usa los que él tenía escritos;
+  - **cumple la consigna de meses**: todo lo que elige, ordena o descarta (estrategias, corte, K, reescalado) se decide
+    en 201908, y 201910 queda solo para la tabla final de comparación, con todas las estrategias y sin "campeón";
   - mide los tiempos en la VM;
   - escribe sus CSV en `resultados/`, con procedencia;
   - tiene tests sin datos, `README.md` y `exploratorio.json`.
@@ -50,6 +56,8 @@ Reconstruimos nosotros lo que falta, sin esperar el código de Luis.
   - el estudio de Optuna con hard negatives.
 - **Replicación de lo reportado.**
   - Se corre el paquete de Luis completo (9 estrategias × 50 semillas) y se compara con cada número de su resumen.
+    Sus números de 201910 se reproducen para la tabla reportado/reproducido. Sus conclusiones (qué funcionó y qué no)
+    se rehacen con el ranking en 201908, y donde no coincidan con las suyas el README lo dice.
   - Se corren de nuevo 07 y 08 de Martín y se comparan con sus CSV por sha256.
   - Cada README suma una tabla de tres columnas: reportado, reproducido y diferencia.
 - **Variantes nuevas, pre-registradas y con 8 réplicas de optimización** (reusan los estudios `@k` de
@@ -68,8 +76,8 @@ Reconstruimos nosotros lo que falta, sin esperar el código de Luis.
 - **Informes.**
   - `sampling_1/informe/informe.md`, `guion.md` y el README de la raíz pasan a cuatro hipótesis, con los dos
     exploratorios replicados en el bloque B.
-  - El informe declara que las ideas de H4 y de los reescalados surgieron mirando 201910, el mismo mes con el que se
-    evalúan.
+  - El informe declara que las ideas de H4 y de los reescalados surgieron de un análisis que miró 201910. En el repo
+    ninguna de ellas se elige ni se descarta por 201910: entran todas como variantes y se comparan todas.
 
 ## Capabilities
 
@@ -81,6 +89,8 @@ Ninguna.
 
 - `protocolo-experimental`:
   - un aporte se incorpora replicándolo, con la tabla reportado/reproducido;
+  - 201910 solo para la comparación: ninguna elección (estrategia, corte, K, factor) usa 201910, tampoco en un
+    exploratorio;
   - lo que no tiene código se reconstruye y se marca como reconstruido;
   - una idea que viene de mirar el test lo declara.
 - `corrida-reproducible`: métodos de muestra por cliente, muestra de búsqueda informada por clase (con la sonda que
