@@ -1,10 +1,10 @@
-"""El reporte se regenera igual salvo la fecha, y con un ledger vacío deja los brazos pendientes sin fallar."""
+"""El reporte se regenera igual salvo la fecha, y con un ledger vacío deja las variantes pendientes sin fallar."""
 
 import re
 
 import pytest
 
-from comun import brazos as reg
+from comun import variantes as reg
 from comun import reporte, rutas
 
 EXPERIMENTOS = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR]
@@ -19,16 +19,16 @@ def test_dos_veces_da_lo_mismo(exp):
     assert sin_fecha(reporte.generar(exp)) == sin_fecha(reporte.generar(exp))
 
 
-def test_agregador_lista_todos_los_brazos_de_las_hipotesis():
+def test_agregador_lista_todos_los_variantes_de_las_hipotesis():
     ctx = reporte.Contexto(reg.AGREGADOR)
-    esperados = {b.nombre for b in reg.BRAZOS.values() if b.dueno != reg.CONTROL}
-    assert set(ctx.brazos) == esperados
+    esperados = {b.nombre for b in reg.VARIANTES.values() if b.dueno != reg.CONTROL}
+    assert set(ctx.variantes) == esperados
 
 
 def test_hipotesis_nueva_aparece_sin_tocar_el_generador(monkeypatch):
-    nuevo = reg.Brazo("X1", "h1", "uniforme", 0.7, "U0.5")
-    monkeypatch.setitem(reg.BRAZOS, "X1", nuevo)
-    assert "X1" in reporte.Contexto(reg.AGREGADOR).brazos
+    nuevo = reg.Variante("X1", "h1", "uniforme", 0.7, "U0.5")
+    monkeypatch.setitem(reg.VARIANTES, "X1", nuevo)
+    assert "X1" in reporte.Contexto(reg.AGREGADOR).variantes
     assert "X1" in reporte.generar(reg.AGREGADOR)
 
 

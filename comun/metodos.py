@@ -1,7 +1,7 @@
 """Los cuatro métodos como funciones `(datos, params)`.
 
-Cada una recibe el train completo y devuelve las filas con las que se entrena y los parámetros de LightGBM que el brazo
-fija encima del baseline. Valen igual en los trials de Optuna y en el final. `docs/diseno.md` § Brazos.
+Cada una recibe el train completo y devuelve las filas con las que se entrena y los parámetros de LightGBM que la variante
+fija encima del baseline. Valen igual en los trials de Optuna y en el final. `docs/diseno.md` § Variantes.
 """
 
 from __future__ import annotations
@@ -9,7 +9,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from comun import brazos, muestreo
+from comun import variantes, muestreo
 
 METODOS = ("uniforme", "bagging", "goss", "opt-muestra")
 
@@ -54,10 +54,10 @@ def sin_bagging_fraction(metodo: str) -> bool:
 
 
 def estudio(metodo: str, tasa: float) -> str:
-    """Nombre del estudio de Optuna, del registro de brazos. `opt-muestra` usa el de `uniforme` con la misma tasa."""
-    return brazos.brazo(brazos.nombre(metodo, tasa)).estudio
+    """Nombre del estudio de Optuna, del registro de variantes. `opt-muestra` usa el de `uniforme` con la misma tasa."""
+    return variantes.variante(variantes.nombre(metodo, tasa)).estudio
 
 
-def brazo(metodo: str, tasa: float) -> str:
-    """Nombre del brazo de la grilla (`C-rep` se pide con `--brazo`). Falla nombrándolo si no está en el registro."""
-    return brazos.brazo(brazos.nombre(metodo, tasa)).nombre
+def variante(metodo: str, tasa: float) -> str:
+    """Nombre de la variante de la grilla (`C-rep` se pide con `--variante`). Falla nombrándolo si no está en el registro."""
+    return variantes.variante(variantes.nombre(metodo, tasa)).nombre

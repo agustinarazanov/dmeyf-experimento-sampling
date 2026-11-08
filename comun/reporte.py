@@ -4,10 +4,10 @@
     python -m comun.reporte --todos
 
 Un reporte por experimento. Para `control`: su sección de `docs/hipotesis.md` y el estado de C. Para cada `hN`: su
-hipótesis, la tabla de sus brazos contra el control y las bandas de curvas. Para `sampling_1`: todos los brazos de
-todas las hipótesis registradas en `comun/brazos.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.
+hipótesis, la tabla de sus variantes contra el control y las bandas de curvas. Para `sampling_1`: todos las variantes de
+todas las hipótesis registradas en `comun/variantes.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.
 Lee `resultados.csv`, `apareado.csv` y las curvas de los ledgers de `experimentos/*/` (los finales de C salen de
-`control`). Un único HTML con las figuras embebidas (PNG en base64), sin servidor. Los brazos sin datos salen como
+`control`). Un único HTML con las figuras embebidas (PNG en base64), sin servidor. Las variantes sin datos salen como
 pendientes; ningún número se escribe a mano. Con `--figuras` además guarda cada figura como PNG (para el video).
 """
 
@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from comun import brazos as reg
+from comun import variantes as reg
 from comun import ledger as lg
 from comun import rutas
 from comun.baseline import SEMILLAS_FINALES
@@ -38,29 +38,29 @@ from comun.ganancia import ganancia
 
 N_SEMILLAS = 10
 MES = 201910
-SIN_REPORTE = {"C", "C-rep"}  # brazos del control: no tienen Δ, van en la fila C
+SIN_REPORTE = {"C", "C-rep"}  # variantes del control: no tienen Δ, van en la fila C
 PALETA = ["#2a6fb0", "#c4501b", "#2e8b57", "#8e5ea2", "#b8860b", "#c0392b"]
 COLOR_C = "#555555"
 A_VALE = 2.0  # hipotesis.md § Respuesta: vale la pena si no pierde y A ≥ 2
 
 
 class Contexto:
-    """Qué hipótesis y brazos entran en un reporte, salido del registro de `comun/brazos.py` (no de listas a mano)."""
+    """Qué hipótesis y variantes entran en un reporte, salido del registro de `comun/variantes.py` (no de listas a mano)."""
 
     def __init__(self, exp: str):
         self.exp = exp
         self.agregador = exp == reg.AGREGADOR
         self.exps = [e for e in reg.duenos() if e != reg.CONTROL] if self.agregador else \
             ([] if exp == reg.CONTROL else [exp])
-        self.hipotesis: dict[str, tuple[str, list[str]]] = {}  # "H1" -> (título, brazos)
+        self.hipotesis: dict[str, tuple[str, list[str]]] = {}  # "H1" -> (título, variantes)
         for e in self.exps:
             md = rutas.docs(e) / "hipotesis.md"
             sec = secciones(md.read_text()) if md.exists() else {}
             clave = next((k for k in sec if re.match(r"^H\d+\b", k)), e.upper())
             nombre, titulo = re.match(r"^(\S+)\s*(?:—\s*)?(.*)$", clave).groups()
             self.hipotesis[nombre] = (titulo or nombre,
-                                      [b.nombre for b in reg.brazos_de(e) if b.nombre not in SIN_REPORTE])
-        self.brazos = [b for _, bs in self.hipotesis.values() for b in bs]
+                                      [b.nombre for b in reg.variantes_de(e) if b.nombre not in SIN_REPORTE])
+        self.variantes = [b for _, bs in self.hipotesis.values() for b in bs]
         self.hip_de = {b: h for h, (_, bs) in self.hipotesis.items() for b in bs}
         self.color = {h: PALETA[i % len(PALETA)] for i, h in enumerate(self.hipotesis)}
 
@@ -138,33 +138,33 @@ def _absolutas(fin: pd.DataFrame, base: Path) -> pd.DataFrame:
 
 
 def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """(finales de los ledgers `exps`, apareado de todos los dueños de brazos). Las rutas de curvas y predicciones
+    """(finales de los ledgers `exps`, apareado de todos los dueños de variantes). Las rutas de curvas y predicciones
     salen absolutas."""
     finales = []
     for e in exps:
         f = rutas.ledger(e) / "resultados.csv"
         if f.exists():
-            r = pd.read_csv(f)
+            r = lg.leer_csv(f)
             finales.append(_absolutas(r[r["etapa"] == "final"], rutas.ledger(e)))
-    fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=["brazo"])
-    aps = [pd.read_csv(rutas.ledger(e) / "apareado.csv") for e in reg.duenos()
+    fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=["variante"])
+    aps = [lg.leer_csv(rutas.ledger(e) / "apareado.csv") for e in reg.duenos()
            if (rutas.ledger(e) / "apareado.csv").exists()]
-    ap = pd.concat(aps, ignore_index=True).drop_duplicates("brazo") if aps else pd.DataFrame()
-    return fin, ap.set_index("brazo") if not ap.empty else ap
+    ap = pd.concat(aps, ignore_index=True).drop_duplicates("variante") if aps else pd.DataFrame()
+    return fin, ap.set_index("variante") if not ap.empty else ap
 
 
-def estado(brazo: str, fin: pd.DataFrame) -> tuple[int, bool]:
-    n = int((fin["brazo"] == brazo).sum())
+def estado(variante: str, fin: pd.DataFrame) -> tuple[int, bool]:
+    n = int((fin["variante"] == variante).sum())
     return n, n >= N_SEMILLAS
 
 
-def fila(ap: pd.DataFrame, brazo: str) -> pd.Series | None:
-    return ap.loc[brazo] if not ap.empty and brazo in ap.index else None
+def fila(ap: pd.DataFrame, variante: str) -> pd.Series | None:
+    return ap.loc[variante] if not ap.empty and variante in ap.index else None
 
 
-def veredicto(ap: pd.DataFrame, fin: pd.DataFrame, brazo: str) -> str:
-    n, completo = estado(brazo, fin)
-    r = fila(ap, brazo)
+def veredicto(ap: pd.DataFrame, fin: pd.DataFrame, variante: str) -> str:
+    n, completo = estado(variante, fin)
+    r = fila(ap, variante)
     if r is None:
         return "pendiente"
     return r["veredicto"] if completo else f"pendiente ({n}/{N_SEMILLAS} semillas; parcial: {r['veredicto']})"
@@ -213,10 +213,10 @@ def fig_tiempo_ganancia(ctx: Contexto, ap: pd.DataFrame, figuras: Path | None) -
     return png(fig, "tiempo_vs_ganancia", figuras)
 
 
-def banda(fin: pd.DataFrame, brazo: str) -> pd.DataFrame | None:
+def banda(fin: pd.DataFrame, variante: str) -> pd.DataFrame | None:
     if f"curva_{MES}" not in fin:
         return None
-    rutas = fin.loc[fin["brazo"] == brazo, f"curva_{MES}"]
+    rutas = fin.loc[fin["variante"] == variante, f"curva_{MES}"]
     if rutas.empty:
         return None
     m = pd.concat([lg.leer_curva(Path(), r).set_index("envios")["ganancia"] for r in rutas], axis=1)
@@ -224,14 +224,14 @@ def banda(fin: pd.DataFrame, brazo: str) -> pd.DataFrame | None:
 
 
 def fig_bandas(ctx: Contexto, h: str, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:
-    brazos = [b for b in ctx.hipotesis[h][1] if estado(b, fin)[0]]
+    variantes = [b for b in ctx.hipotesis[h][1] if estado(b, fin)[0]]
     bc = banda(fin, lg.CONTROL)
-    if bc is None or not brazos:
-        return "<p class='pend'>pendiente: faltan curvas del control o de los brazos</p>"
-    n = len(brazos)
+    if bc is None or not variantes:
+        return "<p class='pend'>pendiente: faltan curvas del control o de las variantes</p>"
+    n = len(variantes)
     fig, axs = plt.subplots(1, n, figsize=(3.6 * n, 3.4), sharey=True, squeeze=False)
     n_est = int(ap["n_estrella"].iloc[0]) if not ap.empty else None
-    for ax, b in zip(axs[0], brazos):
+    for ax, b in zip(axs[0], variantes):
         for nombre, color, bd in (("C", COLOR_C, bc), (b, ctx.color[h], banda(fin, b))):
             ax.fill_between(bd.index, bd["min"] / 1e6, bd["max"] / 1e6, color=color, alpha=0.2, lw=0)
             ax.plot(bd.index, bd["mediana"] / 1e6, color=color, lw=1.4, label=nombre)
@@ -253,14 +253,14 @@ def _m(x: float) -> str:
     return f"{x / 1e6:,.2f}"
 
 
-def tabla_brazos(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
-    cab = ("brazo", "hipótesis", "semillas", "G media (M$)", "Δ media (M$)", "IC 95% de Δ (M$)", "semillas ganadas",
+def tabla_variantes(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
+    cab = ("variante", "hipótesis", "semillas", "G media (M$)", "Δ media (M$)", "IC 95% de Δ (M$)", "semillas ganadas",
            "T (s)", "A", "veredicto", "vale la pena")
     filas = []
     if not ap.empty:
         filas.append(["C", "control", estado("C", fin)[0], _m(ap["g_control"].iloc[0]), "—", "—", "—",
                       f"{ap['tiempo_total_control_s'].iloc[0]:,.0f}", "1,00", "—", "—"])
-    for b in ctx.brazos:
+    for b in ctx.variantes:
         r, n = fila(ap, b), estado(b, fin)[0]
         if r is None:
             filas.append([b, ctx.hip_de[b], n] + ["pendiente"] * 8)
@@ -284,12 +284,12 @@ def html_tabla(cab, filas) -> str:
             + "".join("<tr>" + "".join(td(c) for c in f) + "</tr>" for f in filas) + "</table>")
 
 
-def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int) -> float | None:
+def ensamble(fin: pd.DataFrame, variante: str, k: int, n_est: int) -> float | None:
     """Ganancia al corte N* del promedio de `prob` de las primeras k semillas (orden de `semillas_pedidas`).
 
     None si falta alguna de esas semillas o su parquet de predicciones.
     """
-    sub = fin[fin["brazo"] == brazo].set_index("semilla")
+    sub = fin[fin["variante"] == variante].set_index("semilla")
     probs, es_baja2, clientes = [], None, None
     for s in SEMILLAS_FINALES[:k]:
         ruta = sub["predicciones_201910"].get(s) if "predicciones_201910" in sub else None
@@ -299,22 +299,22 @@ def ensamble(fin: pd.DataFrame, brazo: str, k: int, n_est: int) -> float | None:
         if clientes is None:
             clientes, es_baja2 = p["numero_de_cliente"].to_numpy(), p["es_baja2"].to_numpy()
         elif not np.array_equal(clientes, p["numero_de_cliente"].to_numpy()):
-            raise ValueError(f"{brazo} semilla {s}: las predicciones no están en el mismo orden de clientes")
+            raise ValueError(f"{variante} semilla {s}: las predicciones no están en el mismo orden de clientes")
         probs.append(p["prob"].to_numpy(dtype="float64"))
     return ganancia(np.mean(probs, axis=0), es_baja2, n_est)
 
 
 def calcular_tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> tuple[float | None, dict]:
-    """(G del ensamble de las 10 semillas del control, {brazo: (T_opt, T_final, K, G del ensamble de K) o None})."""
+    """(G del ensamble de las 10 semillas del control, {variante: (T_opt, T_final, K, G del ensamble de K) o None})."""
     n_est, tc = int(ap["n_estrella"].iloc[0]), ap["tiempo_total_control_s"].iloc[0]
     g_c10 = ensamble(fin, lg.CONTROL, N_SEMILLAS, n_est)
     datos = {}
-    for b in ctx.brazos:
+    for b in ctx.variantes:
         r = fila(ap, b)
         if r is None or not estado(b, fin)[1]:
             datos[b] = None
             continue
-        t_fin = fin.loc[fin["brazo"] == b, "tiempo_entrenamiento_s"].mean()
+        t_fin = fin.loc[fin["variante"] == b, "tiempo_entrenamiento_s"].mean()
         t_opt = r["tiempo_total_s"] - t_fin
         k = max(0, math.floor((tc - t_opt) / t_fin))
         g = ensamble(fin, b, min(k, N_SEMILLAS), n_est) if k >= 2 else None
@@ -323,10 +323,10 @@ def calcular_tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) ->
 
 
 def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:
-    """K = semillas del brazo que entran en T(control): (T_C − T_opt) / T_final, con T_final medio del brazo."""
-    intro = ("<p>Se le da a cada brazo el tiempo del control: después de su optimización, el sobrante se gasta en K "
+    """K = semillas de la variante que entran en T(control): (T_C − T_opt) / T_final, con T_final medio de la variante."""
+    intro = ("<p>Se le da a cada variante el tiempo del control: después de su optimización, el sobrante se gasta en K "
              "modelos finales con semillas distintas, K = ⌊(T(C) − T_opt) / T_final⌋, acotado a las "
-             f"{N_SEMILLAS} semillas que hay. T_final es la media de <code>tiempo_entrenamiento_s</code> del brazo y "
+             f"{N_SEMILLAS} semillas que hay. T_final es la media de <code>tiempo_entrenamiento_s</code> de la variante y "
              "T_opt = T − T_final. Para K ≥ 2 se promedia fila a fila <code>prob</code> de las primeras K semillas "
              f"(en el orden de <code>semillas_pedidas</code>) y se mide la ganancia en {MES} al corte N*. Se compara "
              "con Ḡ_C (un modelo del control, media de sus 10 semillas) y, como referencia, con el ensamble de las "
@@ -338,7 +338,7 @@ def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Pa
     ref = f"Ḡ_C = {_m(g_c1)} M$; ensamble de {N_SEMILLAS} semillas del control = " + (
         f"{_m(g_c10)} M$" if g_c10 is not None else "pendiente (faltan predicciones del control)")
     filas = []
-    for b in ctx.brazos:
+    for b in ctx.variantes:
         d = datos[b]
         if d is None:
             filas.append([b] + ["pendiente"] * 6)
@@ -353,7 +353,7 @@ def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Pa
             filas.append([b, f"{t_opt:,.0f}", f"{t_fin:,.1f}", k_txt, _m(g), _m(g - g_c1),
                           _m(g - g_c10) if g_c10 is not None else "pendiente"])
     return (intro + f"<p>{html.escape(ref)}.</p>"
-            + html_tabla(("brazo", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)",
+            + html_tabla(("variante", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)",
                           "G − Ḡ_C (M$)", f"G − ensamble {N_SEMILLAS} de C (M$)"), filas)
             + fig_tiempo_igual(ctx, g_c1, g_c10, datos, figuras))
 
@@ -361,7 +361,7 @@ def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Pa
 def fig_tiempo_igual(ctx: Contexto, g_c1: float, g_c10: float | None, datos: dict, figuras: Path | None) -> str:
     pts = [(b, d[3]) for b, d in datos.items() if d is not None and d[3] is not None]
     if not pts:
-        return "<p class='pend'>pendiente: ningún brazo tiene su ensamble</p>"
+        return "<p class='pend'>pendiente: ningún variante tiene su ensamble</p>"
     fig, ax = plt.subplots(figsize=(7.5, 0.35 * len(pts) + 1.6))
     for i, (b, g) in enumerate(pts):
         ax.scatter([g / 1e6], [i], color=ctx.color[ctx.hip_de[b]], zorder=3)
@@ -373,7 +373,7 @@ def fig_tiempo_igual(ctx: Contexto, g_c1: float, g_c10: float | None, datos: dic
     ax.set_yticks(range(len(pts)), [b for b, _ in pts], fontsize=8)
     ax.invert_yaxis()
     ax.set_xlabel(f"ganancia en {MES} al corte N* (M$)")
-    ax.set_title("A tiempo igual: ensamble de K semillas de cada brazo", fontsize=10)
+    ax.set_title("A tiempo igual: ensamble de K semillas de cada variante", fontsize=10)
     ax.spines[["top", "right"]].set_visible(False)
     ax.legend(frameon=False, fontsize=8)
     return png(fig, "tiempo_igual", figuras)
@@ -381,9 +381,9 @@ def fig_tiempo_igual(ctx: Contexto, g_c1: float, g_c10: float | None, datos: dic
 
 def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame,
                       figuras: Path | None) -> str:
-    titulo, brazos = ctx.hipotesis[h]
+    titulo, variantes = ctx.hipotesis[h]
     filas = []
-    for b in brazos:
+    for b in variantes:
         r = fila(ap, b)
         filas.append([b, veredicto(ap, fin, b)] + ([f"{_m(r['delta_g_media'])}",
                       f"[{_m(r['delta_g_ic_inf'])}, {_m(r['delta_g_ic_sup'])}]", f"{r['aceleracion']:.2f}"]
@@ -391,7 +391,7 @@ def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: p
     return (f"<section><h2>{h} — {html.escape(titulo)}</h2>"
             f"<details open><summary>Predicción y regla (de <code>docs/hipotesis.md</code>)</summary>"
             f"{markdown(md_h, 1)}</details>"
-            + html_tabla(("brazo", "veredicto", "Δ media (M$)", "IC 95% (M$)", "A"), filas)
+            + html_tabla(("variante", "veredicto", "Δ media (M$)", "IC 95% (M$)", "A"), filas)
             + fig_bandas(ctx, h, fin, ap, figuras) + "</section>")
 
 
@@ -432,16 +432,16 @@ def generar(exp: str, figuras: Path | None = None) -> str:
     elif ctx.agregador:
         intro = markdown("## Pregunta\n" + seccion(hip, "Pregunta"))
     else:
-        intro = (markdown("## Brazos\n" + seccion(dis, "Brazos"))
+        intro = (markdown("## Variantes\n" + seccion(dis, "Variantes"))
                  + "<p>Las reglas, G, Δ, δ, T, A y N* están en <code>control/docs/hipotesis.md</code> "
                    "(<a href='../../control/informe/reporte.html'>reporte del control</a>).</p>")
     n_est = f"N* = {int(ap['n_estrella'].iloc[0]):,} envíos (de 201908); δ = {_m(ap['delta_g_margen'].iloc[0])} M$" \
         if not ap.empty else "N* pendiente"
-    completos = sum(estado(b, fin)[1] for b in ["C", *ctx.brazos])
+    completos = sum(estado(b, fin)[1] for b in ["C", *ctx.variantes])
     titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)
     cuerpo = (f"<h1>{html.escape(titulo)}</h1><section>{intro}</section>"
-              f"<section><h2>{'Todos los brazos' if ctx.agregador else 'Brazos'} contra el control</h2><p>"
-              f"{html.escape(n_est)}. Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_brazos(ctx, fin, ap)}"
+              f"<section><h2>{'Todos las variantes' if ctx.agregador else 'Variantes'} contra el control</h2><p>"
+              f"{html.escape(n_est)}. Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_variantes(ctx, fin, ap)}"
               + (fig_tiempo_ganancia(ctx, ap, figuras) if ctx.agregador else "") + "</section>")
     if ctx.agregador:
         cuerpo += f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(ctx, fin, ap, figuras)}</section>"
@@ -451,7 +451,7 @@ def generar(exp: str, figuras: Path | None = None) -> str:
     cuerpo += markdown("## Limitaciones previstas\n" + seccion(hip, "Limitaciones"))
     cuerpo += enlaces(exp, [e for e in reg.duenos() if e != reg.CONTROL])
     cuerpo += (f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
-               f"finales, {completos}/{len(ctx.brazos) + 1} brazos con {N_SEMILLAS} semillas</footer>")
+               f"finales, {completos}/{len(ctx.variantes) + 1} variantes con {N_SEMILLAS} semillas</footer>")
     return (f"<!doctype html><html lang='es'><head><meta charset='utf-8'><title>{html.escape(titulo)} — reporte"
             f"</title><style>{CSS}</style></head><body>{cuerpo}</body></html>\n")
 

@@ -6,7 +6,7 @@ import pytest
 from comun import ledger as lg
 from scripts import separar_ledger as sep
 
-BRAZOS = [("C", "uniforme", 1.0, "C"), ("U0.25", "uniforme", 0.25, "U0.25"), ("H3-0.25", "opt-muestra", 0.25, "U0.25")]
+VARIANTES = [("C", "uniforme", 1.0, "C"), ("U0.25", "uniforme", 0.25, "U0.25"), ("H3-0.25", "opt-muestra", 0.25, "U0.25")]
 
 
 def armar_origen(raiz):
@@ -14,13 +14,13 @@ def armar_origen(raiz):
     for sub in ("hp", "corridas", "curvas", "predicciones", "exploracion", "sesiones"):
         (origen / sub).mkdir(parents=True)
     filas = []
-    for brazo, metodo, tasa, estudio in BRAZOS:
+    for variante, metodo, tasa, estudio in VARIANTES:
         for semilla, etapa in [(0, "optimizar"), (1, "final"), (2, "final")]:
-            if etapa == "optimizar" and brazo.startswith("H3"):
+            if etapa == "optimizar" and variante.startswith("H3"):
                 continue
-            id_ = f"{brazo}_{metodo}_{tasa:g}_{semilla}_{etapa}_abc"
+            id_ = f"{variante}_{metodo}_{tasa:g}_{semilla}_{etapa}_abc"
             f = {c: "" for c in lg.COLUMNAS}
-            f.update(id=id_, brazo=brazo, metodo=metodo, tasa=tasa, semilla=semilla, etapa=etapa, estudio=estudio, valida=True)
+            f.update(id=id_, variante=variante, metodo=metodo, tasa=tasa, semilla=semilla, etapa=etapa, estudio=estudio, valida=True)
             filas.append(f)
             (origen / "corridas" / f"{id_}.csv").write_text("x\n")
             if etapa == "final":
@@ -47,12 +47,12 @@ def test_reparte_sin_perder_ni_duplicar_ningun_id(tmp_path):
         partes = [list(pd.read_csv(led(e) / f"{t}.csv")["id"]) for e in ("control", "h1", "h3") if (led(e) / f"{t}.csv").exists()]
         union = [i for p in partes for i in p]
         assert len(union) == len(set(union)) and set(union) == antes[t]
-    assert list(pd.read_csv(led("h3") / "resultados.csv")["brazo"].unique()) == ["H3-0.25"]
+    assert list(pd.read_csv(led("h3") / "resultados.csv")["variante"].unique()) == ["H3-0.25"]
     # hp por dueño del estudio; H3 no tiene hp propio (lee el de h1)
     assert [p.name for p in (led("h1") / "hp").iterdir()] == ["U0.25.json"]
     assert not (led("h3") / "hp").exists()
     assert (led("control") / "hp" / "C.json").exists()
-    # lo que no tiene brazo queda
+    # lo que no tiene variante queda
     assert (origen / "exploracion" / "log.txt").exists() and (origen / "tokens.csv").exists()
     assert not list((origen / "corridas").iterdir())
 
@@ -65,10 +65,10 @@ def test_verificar_detecta_un_id_perdido(tmp_path):
     assert any("resultados.csv" in p for p in sep.verificar(origen, raiz=tmp_path))
 
 
-def test_brazo_desconocido_falla_nombrandolo_y_no_mueve(tmp_path):
+def test_variante_desconocido_falla_nombrandolo_y_no_mueve(tmp_path):
     origen = armar_origen(tmp_path)
     (origen / "corridas" / "ZZ_uniforme_0.5_1_final_abc.csv").write_text("x\n")
     with pytest.raises(ValueError, match="ZZ"):
         sep.separar(origen, raiz=tmp_path)
-    assert len(list((origen / "corridas").iterdir())) == 9  # 8 de los tres brazos + la desconocida, ninguna movida
+    assert len(list((origen / "corridas").iterdir())) == 9  # 8 de los tres variantes + la desconocida, ninguna movida
     assert not (tmp_path / "experimentos" / "h1" / "ledger" / "corridas").exists()

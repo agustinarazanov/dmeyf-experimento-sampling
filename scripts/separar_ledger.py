@@ -1,11 +1,11 @@
-"""Reparte el ledger de `sampling_1` entre los dueños de cada brazo (cambio `separar-hipotesis`, D4). Se corre una vez.
+"""Reparte el ledger de `sampling_1` entre los dueños de cada variante (cambio `separar-hipotesis`, D4). Se corre una vez.
 
     python -m scripts.separar_ledger --origen experimentos/sampling_1/ledger            # separa
     python -m scripts.separar_ledger --origen experimentos/sampling_1/ledger --verificar  # comprueba contra el manifiesto
 
-`resultados.csv`, `estudios.csv` y `reemplazadas.csv` se filtran por `brazo`; `hp/` va al dueño del estudio; `corridas/`,
-`curvas/` y `predicciones/` van por el prefijo del `id` (el nombre del brazo). Se mueve, no se copia: una sola fuente de
-verdad. Lo que no tiene brazo (`exploracion/`, `sesiones/`, `tokens.csv`, `apareado*.csv`) queda en el origen.
+`resultados.csv`, `estudios.csv` y `reemplazadas.csv` se filtran por `variante`; `hp/` va al dueño del estudio; `corridas/`,
+`curvas/` y `predicciones/` van por el prefijo del `id` (el nombre de la variante). Se mueve, no se copia: una sola fuente de
+verdad. Lo que no tiene variante (`exploracion/`, `sesiones/`, `tokens.csv`, `apareado*.csv`) queda en el origen.
 Antes de mover se escribe `separacion_manifiesto.json` en el origen con los `id` y los archivos de cada tabla; `--verificar`
 comprueba que ningún `id` ni archivo se perdió ni se duplicó. Queda en el repo como registro de cómo se hizo.
 """
@@ -19,15 +19,15 @@ from pathlib import Path
 
 import pandas as pd
 
-from comun import brazos, rutas
+from comun import variantes, rutas
 
 TABLAS = ("resultados", "estudios", "reemplazadas")
 CARPETAS = ("corridas", "curvas", "predicciones")  # por prefijo del id
 MANIFIESTO = "separacion_manifiesto.json"
 
 
-def _brazo_de_archivo(nombre: str) -> str:
-    """El brazo es lo que va antes del primer `_` del nombre (los ids son `<brazo>_<método>_<tasa>_...`)."""
+def _variante_de_archivo(nombre: str) -> str:
+    """La variante es lo que va antes del primer `_` del nombre (los ids son `<variante>_<método>_<tasa>_...`)."""
     return nombre.split("_", 1)[0]
 
 
@@ -51,22 +51,22 @@ def leer_origen(origen: Path) -> dict:
 
 
 def planificar(datos: dict) -> dict:
-    """Reparto: `{dueño: {tabla: DataFrame, 'hp': [archivos], carpeta: [archivos]}}`. Un brazo o estudio que no está en el
-    registro falla nombrándolo (`comun/brazos.py`)."""
+    """Reparto: `{dueño: {tabla: DataFrame, 'hp': [archivos], carpeta: [archivos]}}`. Una variante o estudio que no está en el
+    registro falla nombrándolo (`comun/variantes.py`)."""
     plan: dict[str, dict] = {}
 
     def de(exp: str) -> dict:
         return plan.setdefault(exp, {**{t: None for t in TABLAS}, "hp": [], **{c: [] for c in CARPETAS}})
 
     for t, tabla in datos["tablas"].items():
-        duenos = tabla["brazo"].map(brazos.dueno_brazo)
+        duenos = tabla["variante"].map(variantes.dueno_variante)
         for exp, parte in tabla.groupby(duenos, sort=True):
             de(exp)[t] = parte.reset_index(drop=True)
     for nombre in datos["hp"]:
-        de(brazos.dueno_estudio(Path(nombre).stem))["hp"].append(nombre)
+        de(variantes.dueno_estudio(Path(nombre).stem))["hp"].append(nombre)
     for c, nombres in datos["archivos"].items():
         for nombre in nombres:
-            de(brazos.dueno_brazo(_brazo_de_archivo(nombre)))[c].append(nombre)
+            de(variantes.dueno_variante(_variante_de_archivo(nombre)))[c].append(nombre)
     return plan
 
 
@@ -129,7 +129,7 @@ def separar(origen: Path, raiz: Path | None = None) -> dict:
                 if (d / sub / n).exists():
                     raise FileExistsError(f"{d / sub / n} ya existe: no se pisa")
                 shutil.move(origen / sub / n, d / sub / n)
-    # El origen ya no tiene brazos: sus tablas se quitan (la fuente de verdad es el dueño).
+    # El origen ya no tiene variantes: sus tablas se quitan (la fuente de verdad es el dueño).
     if not any(destino(e).resolve() == origen.resolve() for e in plan):
         for t in datos["tablas"]:
             (origen / f"{t}.csv").unlink()
@@ -165,9 +165,9 @@ def verificar(origen: Path, raiz: Path | None = None) -> list[str]:
         for t, ids in d["tablas"].items():
             f = destino(exp) / f"{t}.csv"
             tabla = pd.read_csv(f, dtype=str, keep_default_na=False)
-            ajenos = [b for b in tabla["brazo"].unique() if brazos.dueno_brazo(b) != exp]
+            ajenos = [b for b in tabla["variante"].unique() if variantes.dueno_variante(b) != exp]
             if ajenos:
-                problemas.append(f"{exp}/{t}.csv tiene brazos de otro dueño: {ajenos}")
+                problemas.append(f"{exp}/{t}.csv tiene variantes de otro dueño: {ajenos}")
     for clave in ("hp", *CARPETAS):
         quedan = [p.name for p in (origen / clave).iterdir()] if (origen / clave).is_dir() else []
         if quedan:

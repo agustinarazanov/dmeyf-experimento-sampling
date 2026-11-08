@@ -6,14 +6,14 @@ from comun import consolidar
 from comun import ledger as lg
 
 
-def corrida(led, brazo, semilla, escala, etapa="final", estudio=None):
-    id_ = f"{brazo}_{semilla}"
+def corrida(led, variante, semilla, escala, etapa="final", estudio=None):
+    id_ = f"{variante}_{semilla}"
     envios = list(range(50, 301, 50))
     for mes in (201908, 201910):
         pd.DataFrame({"envios": envios, "ganancia": [escala * e for e in envios]}).to_csv(led / "curvas" / f"{id_}_{mes}.csv", index=False)
     f = {c: "" for c in lg.COLUMNAS}
-    f.update(id=id_, fecha="2026-11-01T10:00:00", brazo=brazo, metodo="uniforme", tasa=1 if brazo == "C" else 0.5,
-             semilla=semilla, etapa=etapa, etapa_corrida=etapa, estudio=estudio or brazo, valida=True,
+    f.update(id=id_, fecha="2026-11-01T10:00:00", variante=variante, metodo="uniforme", tasa=1 if variante == "C" else 0.5,
+             semilla=semilla, etapa=etapa, etapa_corrida=etapa, estudio=estudio or variante, valida=True,
              tiempo_optimizacion_s=50.0 if etapa == "optimizar" else 0.0, commit="abc",
              auc_test=0.9, tiempo_entrenamiento_s=10.0, maquina="n2", cpu="ice", hilos=8,
              curva_201908=f"curvas/{id_}_201908.csv", curva_201910=f"curvas/{id_}_201910.csv")
@@ -46,12 +46,12 @@ def test_consolidar_con_dos_ledgers(tmp_path):
         corrida(h1, "U0.5", s, 101.0)
     corrida(h1, "U0.5", 0, 101.0, etapa="optimizar")
     consolidar.consolidar(ctrl)
-    assert not (ctrl / "apareado.csv").exists()  # el control solo no tiene brazos que comparar
+    assert not (ctrl / "apareado.csv").exists()  # el control solo no tiene variantes que comparar
     r = consolidar.consolidar(h1, control=ctrl)
     ap = r["apareado"].iloc[0]
-    assert ap["brazo"] == "U0.5" and ap["n_estrella"] == 300 and ap["n_semillas"] == 2
+    assert ap["variante"] == "U0.5" and ap["n_estrella"] == 300 and ap["n_semillas"] == 2
     assert ap["delta_g_media"] == 300.0
-    assert set(r["resultados"]["brazo"]) == {"U0.5"}  # las filas del control no se copian al ledger de h1
+    assert set(r["resultados"]["variante"]) == {"U0.5"}  # las filas del control no se copian al ledger de h1
     assert not (h1 / "curvas" / "C_1_201908.csv").exists()
     # H3 usa el estudio U0.5 de h1: el tiempo de su estudio sale de h1/estudios.csv
     h3 = tmp_path / "h3"

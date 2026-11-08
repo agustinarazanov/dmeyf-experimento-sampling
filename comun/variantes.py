@@ -1,8 +1,8 @@
-"""Registro único de brazos y estudios: quién es dueño de qué, y de quién depende cada experimento.
+"""Registro único de variantes y estudios: quién es dueño de qué, y de quién depende cada experimento.
 
-    python -m comun.brazos --verificar
+    python -m comun.variantes --verificar
 
-De acá salen el nombre del brazo y del estudio de cada `(método, tasa)`, el ledger al que va cada fila y las
+De acá salen el nombre de la variante y del estudio de cada `(método, tasa)`, el ledger al que va cada fila y las
 dependencias implícitas entre experimentos. `## Dependencias` de cada `docs/diseno.md` las escribe una persona y
 `--verificar` las compara con lo que implica el registro (`openspec/specs/dependencias-entre-experimentos`).
 """
@@ -17,10 +17,10 @@ from typing import Iterable, NamedTuple
 from comun import rutas
 
 CONTROL = "control"
-AGREGADOR = "sampling_1"  # no es dueño de brazos: compara y lee de todos los demás
+AGREGADOR = "sampling_1"  # no es dueño de variantes: compara y lee de todos los demás
 
 
-class Brazo(NamedTuple):
+class Variante(NamedTuple):
     nombre: str
     dueno: str
     metodo: str
@@ -32,15 +32,15 @@ def _t(tasa: float) -> str:
     return f"{tasa:g}"
 
 
-BRAZOS: dict[str, Brazo] = {
+VARIANTES: dict[str, Variante] = {
     b.nombre: b
     for b in [
-        Brazo("C", CONTROL, "uniforme", 1.0, "C"),
-        Brazo("C-rep", CONTROL, "uniforme", 1.0, "C"),
-        *[Brazo(f"U{_t(r)}", "h1", "uniforme", r, f"U{_t(r)}") for r in (0.5, 0.25, 0.1, 0.05)],
-        *[Brazo(f"B{_t(f)}", "h2", "bagging", f, f"B{_t(f)}") for f in (0.5, 0.25, 0.1)],
-        Brazo("GOSS", "h2", "goss", 1.0, "GOSS"),
-        *[Brazo(f"H3-{_t(r)}", "h3", "opt-muestra", r, f"U{_t(r)}") for r in (0.25, 0.1)],
+        Variante("C", CONTROL, "uniforme", 1.0, "C"),
+        Variante("C-rep", CONTROL, "uniforme", 1.0, "C"),
+        *[Variante(f"U{_t(r)}", "h1", "uniforme", r, f"U{_t(r)}") for r in (0.5, 0.25, 0.1, 0.05)],
+        *[Variante(f"B{_t(f)}", "h2", "bagging", f, f"B{_t(f)}") for f in (0.5, 0.25, 0.1)],
+        Variante("GOSS", "h2", "goss", 1.0, "GOSS"),
+        *[Variante(f"H3-{_t(r)}", "h3", "opt-muestra", r, f"U{_t(r)}") for r in (0.25, 0.1)],
     ]
 }
 
@@ -53,7 +53,7 @@ ESTUDIOS: dict[str, str] = {
 
 
 def nombre(metodo: str, tasa: float) -> str:
-    """Nombre del brazo de la grilla para `(método, tasa)`; no dice si está en el registro."""
+    """Nombre de la variante de la grilla para `(método, tasa)`; no dice si está en el registro."""
     if metodo == "opt-muestra":
         return f"H3-{_t(tasa)}"
     if metodo == "uniforme":
@@ -65,47 +65,47 @@ def nombre(metodo: str, tasa: float) -> str:
     raise ValueError(f"método desconocido: {metodo!r}")
 
 
-def brazo(nombre_brazo: str) -> Brazo:
-    """El brazo del registro; falla nombrándolo si no está."""
+def variante(nombre_variante: str) -> Variante:
+    """La variante del registro; falla nombrándolo si no está."""
     try:
-        return BRAZOS[nombre_brazo]
+        return VARIANTES[nombre_variante]
     except KeyError:
-        raise ValueError(f"brazo {nombre_brazo!r} no está en el registro de comun/brazos.py "
-                         f"(brazos: {', '.join(BRAZOS)})") from None
+        raise ValueError(f"variante {nombre_variante!r} no está en el registro de comun/variantes.py "
+                         f"(variantes: {', '.join(VARIANTES)})") from None
 
 
-def dueno_brazo(nombre_brazo: str) -> str:
-    return brazo(nombre_brazo).dueno
+def dueno_variante(nombre_variante: str) -> str:
+    return variante(nombre_variante).dueno
 
 
 def dueno_estudio(estudio: str) -> str:
     try:
         return ESTUDIOS[estudio]
     except KeyError:
-        raise ValueError(f"estudio {estudio!r} no está en el registro de comun/brazos.py "
+        raise ValueError(f"estudio {estudio!r} no está en el registro de comun/variantes.py "
                          f"(estudios: {', '.join(ESTUDIOS)})") from None
 
 
-def brazos_de(exp: str) -> list[Brazo]:
-    return [b for b in BRAZOS.values() if b.dueno == exp]
+def variantes_de(exp: str) -> list[Variante]:
+    return [b for b in VARIANTES.values() if b.dueno == exp]
 
 
 def duenos() -> list[str]:
-    """Experimentos dueños de algún brazo, el control primero."""
-    return sorted({b.dueno for b in BRAZOS.values()}, key=lambda e: (e != CONTROL, e))
+    """Experimentos dueños de algún variante, el control primero."""
+    return sorted({b.dueno for b in VARIANTES.values()}, key=lambda e: (e != CONTROL, e))
 
 
 # --- dependencias -----------------------------------------------------------------------------
 
 
-def implicitas(brazos: dict[str, Brazo] | None = None, estudios: dict[str, str] | None = None) -> dict[str, set[str]]:
+def implicitas(variantes: dict[str, Variante] | None = None, estudios: dict[str, str] | None = None) -> dict[str, set[str]]:
     """De quién depende cada experimento según el registro: del control (finales de C, N*, δ), del dueño de cada
     estudio que usa y, el agregador, de todos."""
-    brazos = BRAZOS if brazos is None else brazos
+    variantes = VARIANTES if variantes is None else variantes
     estudios = ESTUDIOS if estudios is None else estudios
-    dueños = {b.dueno for b in brazos.values()}
+    dueños = {b.dueno for b in variantes.values()}
     dep: dict[str, set[str]] = {e: set() for e in dueños}
-    for b in brazos.values():
+    for b in variantes.values():
         if b.dueno != CONTROL:
             dep[b.dueno].add(CONTROL)
         dueno_est = estudios[b.estudio]
@@ -163,16 +163,16 @@ def rotos_si_falta(grafo: dict[str, set[str]], exp: str) -> list[str]:
     return sorted(rotos)
 
 
-def verificar(raiz: Path = rutas.RAIZ, brazos: dict[str, Brazo] | None = None,
+def verificar(raiz: Path = rutas.RAIZ, variantes: dict[str, Variante] | None = None,
               estudios: dict[str, str] | None = None) -> tuple[list[str], list[str]]:
     """(problemas, informe). Problemas: carpeta o sección que falta, declaración distinta de la implícita, ciclos."""
-    implicito = implicitas(brazos, estudios)
+    implicito = implicitas(variantes, estudios)
     conocidos = set(implicito) | {p.name for p in (raiz / "experimentos").glob("*") if p.is_dir()}
     declarado = declaradas(raiz, conocidos)
     problemas: list[str] = []
     for exp in sorted(implicito):
         if not (raiz / "experimentos" / exp).is_dir():
-            problemas.append(f"falta la carpeta experimentos/{exp}/ (la usa el registro de brazos)")
+            problemas.append(f"falta la carpeta experimentos/{exp}/ (la usa el registro de variantes)")
         elif declarado.get(exp) is None:
             problemas.append(f"{exp}: falta la sección `## Dependencias` en docs/diseno.md")
         elif declarado[exp] != implicito[exp]:
@@ -196,7 +196,7 @@ def main() -> None:
     p.add_argument("--verificar", action="store_true", help="compara `## Dependencias`, busca ciclos y lista qué se rompe")
     a = p.parse_args()
     if not a.verificar:
-        for b in BRAZOS.values():
+        for b in VARIANTES.values():
             print(f"{b.nombre:8} dueño={b.dueno:8} método={b.metodo:11} tasa={b.tasa:g} estudio={b.estudio} "
                   f"(de {ESTUDIOS[b.estudio]})")
         return

@@ -17,16 +17,16 @@ from scipy import stats
 #: Columnas obligatorias de cada fila (`specs/ledger-resultados`). Sin valor se escribe vacío, pero la columna tiene que
 #: estar: una fila a la que le falta una no se escribe.
 COLUMNAS: list[str] = [
-    "id", "fecha", "brazo", "metodo", "tasa", "semilla", "etapa", "etapa_corrida", "estudio", "hp",
+    "id", "fecha", "variante", "metodo", "tasa", "semilla", "etapa", "etapa_corrida", "estudio", "hp",
     "filas_train", "hash_muestra", "auc_val", "auc_test", "ganancia_max_201910", "envios_max_201910",
     "curva_201908", "curva_201910", "predicciones_201910",
     "tiempo_preparacion_s", "tiempo_optimizacion_s", "tiempo_entrenamiento_s", "tiempo_lgbtrain_s",
     "memoria_max_mb", "maquina", "cpu", "hilos", "load_avg", "commit", "codigo_sucio", "persona", "valida",
 ]
 #: Sin `commit`: la misma semilla no puede contar dos veces; una repetición con código más nuevo reemplaza a la anterior.
-CLAVE: list[str] = ["brazo", "metodo", "tasa", "semilla", "etapa"]
+CLAVE: list[str] = ["variante", "metodo", "tasa", "semilla", "etapa"]
 CONTROL = "C"
-#: Brazos que no entran en Δ: el control y su réplica (`docs/diseno.md` § Grilla).
+#: Variantes que no entran en Δ: el control y su réplica (`docs/diseno.md` § Grilla).
 SIN_DELTA = {"C", "C-rep"}
 DELTA_REL = 0.02  # δ = 2% de la ganancia media del control
 
@@ -51,12 +51,22 @@ def existe_fila(directorio: Path, id_corrida: str) -> bool:
     return (directorio / f"{id_corrida}.csv").exists()
 
 
+def leer_csv(ruta: Path) -> pd.DataFrame:
+    """Lee un CSV de ledger. Una cabecera `brazo` (nombre anterior de `variante`, `renombrar-brazos` D2) no se traduce:
+    falla nombrando el archivo, para que un ledger viejo no entre en silencio a una consolidación nueva."""
+    tabla = pd.read_csv(ruta)
+    if "brazo" in tabla.columns:
+        raise ValueError(f"{ruta}: la columna 'brazo' se llama 'variante' desde renombrar-brazos; "
+                         "migrar con scripts/renombrar_columna.py")
+    return tabla
+
+
 def leer_corridas(directorio: Path) -> pd.DataFrame:
     archivos = sorted(directorio.glob("*.csv"))
     if not archivos:
         return pd.DataFrame(columns=COLUMNAS)
     # Las filas anteriores a D12 no tienen `predicciones_201910`: se leen con la columna vacía.
-    corridas = pd.concat([pd.read_csv(a) for a in archivos], ignore_index=True)
+    corridas = pd.concat([leer_csv(a) for a in archivos], ignore_index=True)
     return corridas.reindex(columns=list(dict.fromkeys([*COLUMNAS, *corridas.columns])))
 
 
@@ -75,7 +85,7 @@ def consolidar_corridas(corridas: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFr
     ultima = c.groupby(CLAVE, dropna=False)["id"].transform("last")
     quedan = c["id"] == ultima
     reemplazadas = c[~quedan].assign(reemplazada_por=ultima[~quedan])
-    resultados = c[quedan].sort_values(["etapa", "brazo", "semilla", "commit"]).reset_index(drop=True)
+    resultados = c[quedan].sort_values(["etapa", "variante", "semilla", "commit"]).reset_index(drop=True)
     return resultados, reemplazadas.reset_index(drop=True)
 
 
@@ -88,9 +98,9 @@ def leer_curva(base: Path, ruta: str) -> pd.DataFrame:
 
 def corte_control(finales: pd.DataFrame, leer) -> int:
     """N*: el N que maximiza la ganancia media de las curvas de `C` en 201908 (`leer(ruta)` devuelve la curva)."""
-    curvas = [leer(r).set_index("envios")["ganancia"] for r in finales.loc[finales["brazo"] == CONTROL, "curva_201908"]]
+    curvas = [leer(r).set_index("envios")["ganancia"] for r in finales.loc[finales["variante"] == CONTROL, "curva_201908"]]
     if not curvas:
-        raise ValueError("no hay corridas finales del control (brazo C): no se puede fijar N*")
+        raise ValueError("no hay corridas finales del control (variante C): no se puede fijar N*")
     media = pd.concat(curvas, axis=1).mean(axis=1)
     return int(media.idxmax())
 
@@ -128,37 +138,37 @@ def _ic(dif: np.ndarray) -> tuple[float, float, float, float]:
 
 
 def apareado(finales: pd.DataFrame, estudios: pd.DataFrame | None = None) -> pd.DataFrame:
-    """Tabla apareada por semilla de cada brazo contra `C`. `finales` ya trae `g`.
+    """Tabla apareada por semilla de cada variante contra `C`. `finales` ya trae `g`.
 
-    Usa solo las semillas que tienen el brazo y el control, e informa cuántas. El tiempo T de un brazo es el tiempo del
+    Usa solo las semillas que tienen la variante y el control, e informa cuántas. El tiempo T de una variante es el tiempo del
     estudio (fila `optimizar` cuyo id de estudio es `estudio`) más la media del tiempo final; solo se compara si el
-    brazo corrió en la misma máquina, CPU e hilos que el control.
+    variante corrió en la misma máquina, CPU e hilos que el control.
     """
-    ctrl = finales[finales["brazo"] == CONTROL].set_index("semilla")
+    ctrl = finales[finales["variante"] == CONTROL].set_index("semilla")
     if ctrl.empty:
-        raise ValueError("no hay corridas finales del control (brazo C)")
+        raise ValueError("no hay corridas finales del control (variante C)")
     g_c = float(ctrl["g"].mean())
     delta = DELTA_REL * g_c
     estudios = estudios if estudios is not None else pd.DataFrame(columns=COLUMNAS)
     t_estudio = estudios.set_index("estudio")["tiempo_optimizacion_s"] if len(estudios) else pd.Series(dtype=float)
 
-    def tiempo(brazo_df: pd.DataFrame) -> float:
-        est = brazo_df["estudio"].iloc[0]
+    def tiempo(variante_df: pd.DataFrame) -> float:
+        est = variante_df["estudio"].iloc[0]
         if est not in t_estudio.index:
             return float("nan")
-        return float(t_estudio[est]) + float(brazo_df["tiempo_entrenamiento_s"].mean())
+        return float(t_estudio[est]) + float(variante_df["tiempo_entrenamiento_s"].mean())
 
     maquina_c = tuple(ctrl[["maquina", "cpu", "hilos"]].iloc[0])
     t_c = tiempo(ctrl.reset_index())
     filas = []
-    for brazo, df in finales[~finales["brazo"].isin(SIN_DELTA)].groupby("brazo", sort=True):
+    for variante, df in finales[~finales["variante"].isin(SIN_DELTA)].groupby("variante", sort=True):
         b = df.set_index("semilla")
         comunes = sorted(set(b.index) & set(ctrl.index))
         nota = ""
         if len(comunes) < len(ctrl):
             nota = f"{len(comunes)} semillas en común de {len(ctrl)} del control"
         if not comunes:
-            filas.append({"brazo": brazo, "n_semillas": 0, "veredicto": "indeterminado", "nota": "sin semillas en común"})
+            filas.append({"variante": variante, "n_semillas": 0, "veredicto": "indeterminado", "nota": "sin semillas en común"})
             continue
         dg = (b.loc[comunes, "g"] - ctrl.loc[comunes, "g"]).to_numpy(dtype=float)
         media, sd, lo, hi = _ic(dg)
@@ -169,7 +179,7 @@ def apareado(finales: pd.DataFrame, estudios: pd.DataFrame | None = None) -> pd.
         if not misma:
             nota = (nota + "; " if nota else "") + "tiempo excluido: otra máquina, CPU o hilos que el control"
         filas.append({
-            "brazo": brazo,
+            "variante": variante,
             "metodo": b["metodo"].iloc[0],
             "tasa": b["tasa"].iloc[0],
             "n_semillas": len(comunes),

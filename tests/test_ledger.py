@@ -25,6 +25,16 @@ def test_fila_completa_se_escribe(tmp_path):
     assert list(lg.leer_corridas(tmp_path).columns) == lg.COLUMNAS
 
 
+def test_cabecera_brazo_se_rechaza_nombrando_el_archivo(tmp_path):
+    lg.escribir_fila(tmp_path, fila())
+    viejo = tmp_path / "x.csv"
+    viejo.write_text(viejo.read_text().replace("variante", "brazo", 1))
+    with pytest.raises(ValueError, match="x.csv"):
+        lg.leer_corridas(tmp_path)
+    with pytest.raises(ValueError, match="brazo"):
+        lg.leer_csv(viejo)
+
+
 def test_fila_nueva_exige_predicciones(tmp_path):
     f = fila()
     del f["predicciones_201910"]
@@ -33,20 +43,20 @@ def test_fila_nueva_exige_predicciones(tmp_path):
 
 
 def test_fila_vieja_sin_predicciones_se_consolida(tmp_path):
-    vieja = {c: v for c, v in fila(id="vieja", brazo="C", metodo="uniforme", tasa=1.0, semilla=1).items()
+    vieja = {c: v for c, v in fila(id="vieja", variante="C", metodo="uniforme", tasa=1.0, semilla=1).items()
              if c != "predicciones_201910"}
     pd.DataFrame([vieja]).to_csv(tmp_path / "vieja.csv", index=False)
-    lg.escribir_fila(tmp_path, fila(id="nueva", brazo="C", metodo="uniforme", tasa=1.0, semilla=2,
+    lg.escribir_fila(tmp_path, fila(id="nueva", variante="C", metodo="uniforme", tasa=1.0, semilla=2,
                                     predicciones_201910="predicciones/nueva.parquet"))
     resultados, _ = lg.consolidar_corridas(lg.leer_corridas(tmp_path))
     assert sorted(resultados["id"]) == ["nueva", "vieja"]
     assert resultados.set_index("id")["predicciones_201910"].isna().to_dict() == {"nueva": False, "vieja": True}
 
 
-def sintetica(brazo, semillas, gs, **kw):
+def sintetica(variante, semillas, gs, **kw):
     return pd.DataFrame({
-        "brazo": brazo, "metodo": "uniforme", "tasa": 0.5, "semilla": semillas, "g": gs, "auc_test": 0.9,
-        "tiempo_entrenamiento_s": 10.0, "estudio": brazo, "maquina": "n2", "cpu": "ice", "hilos": 8, **kw,
+        "variante": variante, "metodo": "uniforme", "tasa": 0.5, "semilla": semillas, "g": gs, "auc_test": 0.9,
+        "tiempo_entrenamiento_s": 10.0, "estudio": variante, "maquina": "n2", "cpu": "ice", "hilos": 8, **kw,
     })
 
 
@@ -70,9 +80,9 @@ def test_veredictos_cubren_todo():
 
 
 def test_consolidar_conserva_la_mas_reciente_y_marca_la_anterior():
-    a = fila(id="a", fecha="2026-11-01T10:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=1, commit="abc")
-    b = fila(id="b", fecha="2026-11-01T11:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=1, commit="def")
-    sucia = fila(id="c", fecha="2026-11-01T12:00:00", brazo="C", metodo="uniforme", tasa=1, semilla=2, commit="abc", valida=False)
+    a = fila(id="a", fecha="2026-11-01T10:00:00", variante="C", metodo="uniforme", tasa=1, semilla=1, commit="abc")
+    b = fila(id="b", fecha="2026-11-01T11:00:00", variante="C", metodo="uniforme", tasa=1, semilla=1, commit="def")
+    sucia = fila(id="c", fecha="2026-11-01T12:00:00", variante="C", metodo="uniforme", tasa=1, semilla=2, commit="abc", valida=False)
     res, rem = lg.consolidar_corridas(pd.DataFrame([a, b, sucia]))
     assert list(res["id"]) == ["b"]
     assert list(rem["id"]) == ["a"] and list(rem["reemplazada_por"]) == ["b"]

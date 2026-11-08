@@ -5,14 +5,14 @@
 #
 #   PROYECTO=proj-uba-... BUCKET=gs://mi-bucket scripts/vm.sh configuraciones.txt [--filas 20000] [--en-seco]
 #
-# `configuraciones.txt`: una por línea, `metodo tasa semilla etapa [brazo]`; `#` comenta. Ej.:
+# `configuraciones.txt`: una por línea, `metodo tasa semilla etapa [variante]`; `#` comenta. Ej.:
 #   uniforme 0.25 0 optimizar
 #   uniforme 0.25 todas final
 #   opt-muestra 0.25 todas final
 #   uniforme 1 todas final C-rep
 # Variables: PROYECTO (obligatoria), BUCKET (obligatoria), ZONA (northamerica-northeast2-b), NOMBRE (sampling-<usuario>),
 # TEMPLATE (to-064ram-08vcpu), PERSONA (usuario de git). Cada línea es `python -m comun.correr`, desde la raíz del repo.
-# Cada corrida escribe en el ledger de quien es dueño del brazo (`comun/brazos.py`), así que se sincroniza cada
+# Cada corrida escribe en el ledger de quien es dueño de la variante (`comun/variantes.py`), así que se sincroniza cada
 # `experimentos/<exp>/ledger/` contra `$BUCKET/experimentos/<exp>/ledger/` (el `$BUCKET/ledger/` anterior a la separación
 # no se toca). Una VM nueva baja del bucket el panel, los SQLite de Optuna y los ledgers si existen, así que relanzar la
 # misma lista retoma.
@@ -58,9 +58,9 @@ subir() {
     gsutil -q -m rsync -r -x '^exploracion/' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
   done
 }
-while read -r metodo tasa semilla etapa brazo; do
+while read -r metodo tasa semilla etapa variante; do
   [ -z "\$metodo" ] && continue; case "\$metodo" in \#*) continue;; esac
-  B=""; [ -n "\${brazo:-}" ] && B="--brazo \$brazo"
+  B=""; [ -n "\${variante:-}" ] && B="--variante \$variante"
   python -m comun.correr --metodo \$metodo --tasa \$tasa --semilla \$semilla --etapa \$etapa \$B $EXTRA \
     --tras-trial 'gsutil -q cp {db} $BUCKET/optuna/' >> ~/corrida.log 2>&1 || echo "FALLO: \$metodo \$tasa \$semilla \$etapa" >> ~/corrida.log
   subir
@@ -75,8 +75,8 @@ if [ -n "$EN_SECO" ]; then
   echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM"
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
   echo "corridas (una por línea de la lista):"
-  grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa brazo; do
-    echo "  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${brazo:+ --brazo $brazo}$EXTRA"
+  grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante; do
+    echo "  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${variante:+ --variante $variante}$EXTRA"
   done
   echo "destinos de los ledgers (VM -> bucket -> acá):"
   for e in $EXPERIMENTOS; do
