@@ -503,3 +503,38 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   del cambio) siguen `sin-etapa` en `tokens.csv`; clasificarlas no es del grupo 6.
 - Correcciones: ninguna.
 - Tokens: ~20 turnos · ≈ US$ 0,6 (presupuesto US$ 2). `comun/tokens.py` corrido en esta sesión.
+
+### 2026-11-08 — cierre revisión del grupo 1 de `renombrar-brazos` (foto previa)
+- Sesión: `ec6b3064-be95-4958-8c6c-abbc3cfb580f` · modelo: Opus · etapa: **revision** (grupo 1, tareas 1.1–1.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código, aplicada a `scripts/foto_renombre.py` y `scripts/verificar_tokens_renombre.py`)
+  y la verificación escrita en cada tarea; el grupo no tiene lista propia ni tarea de revisión en `tasks.md` (se agregó
+  la 1.3). Ningún ✗ abierto.
+  - ✓ 1.1 foto: en `DATOS_DIR/renombre/antes/` hay un `reporte.html` y sus tablas en CSV por cada uno de los cinco
+    experimentos, y un `apareado.csv` por cada experimento que lo tiene en el repo (h1, h2, h3; control y sampling_1 no
+    tienen). Los tres `apareado.csv` son idénticos byte a byte a los del repo (`cmp`); cada `reporte.html` difiere del
+    del repo solo en el pie (fecha y commit de generación), una línea por archivo.
+  - ✓ 1.1 bucket: `DATOS_DIR/renombre/bucket/` tiene `ledger/` y `optuna/`, 969 archivos como dice el commit `c61483c`;
+    293 archivos de `ledger/` todavía dicen "brazo", o sea que es la copia previa al renombre que necesita la 2.1. No se
+    recontó contra el bucket remoto (el nombre no está en el entorno de esta sesión); lo cubre la 2.5.
+  - ✓ 1.1 `git status`: solo `costos.csv` y el JSON de la última sesión headless del grupo 1 (lo que deja
+    `scripts/etapa.sh`); los `reporte.html` del repo siguen con la fecha del 3-nov.
+  - ✓ 1.2: `comun/tokens.py` solo lee bitácoras, `costos.csv` y transcripts, y no busca "brazo" en ninguno. Se volvió a
+    correr `scripts/verificar_tokens_renombre.py`: código 0, los cinco `tokens.csv` idénticos (sampling_1: 47 filas).
+  - ✓ `pytest` completo: 61 pasan. Ningún archivo del dataset en el repo (la foto y la copia están en `DATOS_DIR`).
+  - n/a resto de § 3 (smoke, determinismo, meses leídos, columnas, `codigo_sucio`, filas de train, `consolidar.py`,
+    `vm.sh`): el grupo 1 no toca ese código.
+- Hallazgos:
+  1. `ETAPA_DE_GRUPO_POR_CAMBIO` en `comun/tokens.py` no tenía `renombrar-brazos`, así que las sesiones headless de
+     este cambio (`c4ff6b18…`, `571ade1e…`) salían `sin-etapa` en `tokens.csv`. La 1.2 pasaba igual porque comparaba
+     `sin-etapa` con `sin-etapa`.
+  2. Al agregar la clave, la verificación de 1.2 falla: su reemplazo ciego convertía la columna `cambio` de
+     `costos.csv` en `renombrar-variantes`, cosa que el renombre real no hace (D8 deja el nombre del cambio).
+- Correcciones (cambio en `comun/`):
+  1. `comun/tokens.py`: `"renombrar-brazos": {"1": "codigo", "2": "codigo", "3": "informe", "4": "informe"}`; ahora
+     las dos sesiones del grupo 1 salen `codigo`.
+  2. `scripts/verificar_tokens_renombre.py`: el reemplazo saltea `renombrar-brazos` (`(?<!renombrar-)brazo`), igual
+     que D8; vuelve a dar código 0 con tokens idénticos. Ojo para la 3.1: el reemplazo de D3 tiene que respetar
+     `renombrar-brazos` en `costos.csv`, o esas filas vuelven a `sin-etapa`.
+- Tokens: ~35 turnos · ≈ US$ 1,1 (presupuesto US$ 4). `comun/tokens.py` lo corre la verificación de 1.2 sobre una copia;
+  el `tokens.csv` del repo se regenera al cierre del cambio.

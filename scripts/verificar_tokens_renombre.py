@@ -65,7 +65,7 @@ def main() -> int:
                 t = f.read_text()
             except UnicodeDecodeError:
                 continue
-            nuevo = re.sub(r"brazo", variante, t, flags=re.I)
+            nuevo = re.sub(r"(?<!renombrar-)brazo", variante, t, flags=re.I)  # D8: el nombre del cambio queda
             if nuevo != t:
                 f.write_text(nuevo)
                 cambiados += 1

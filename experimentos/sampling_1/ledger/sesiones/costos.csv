@@ -30,3 +30,4 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-03T02:08,6,aplicar,claude-sonnet-5-5,80,1.5976,c2a8734f-4b0e-402d-a63a-cf460432d55c,success,0
 2026-11-03T02:27,6,revisar,claude-opus-5-5,31,0.7108,069aa733-ba79-4b18-8633-133355d4836b,success,0,separar-hipotesis
 2026-11-08T16:14,1,aplicar,claude-sonnet-5-5,44,0.5378,c4ff6b18-da8b-4a17-a2fa-558ca5ad5f23,success,0,renombrar-brazos
+2026-11-08T16:47,1,aplicar,claude-sonnet-5-5,13,0.1969,571ade1e-f042-433e-ba8b-111836cb5931,success,0,renombrar-brazos

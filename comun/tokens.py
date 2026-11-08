@@ -35,6 +35,7 @@ ETAPA_DE_GRUPO = {"1": "hipotesis", "2": "diseno", "3": "codigo", "4": "codigo",
 ETAPA_DE_GRUPO_POR_CAMBIO = {
     "experimento-sampling-velocidad": ETAPA_DE_GRUPO,
     "separar-hipotesis": {"1": "codigo", "2": "codigo", "3": "codigo", "4": "diseno", "5": "informe", "6": "codigo"},
+    "renombrar-brazos": {"1": "codigo", "2": "codigo", "3": "informe", "4": "informe"},
 }
 DUENO_SIN_DECLARAR = "sampling_1"
 COLUMNAS = [
