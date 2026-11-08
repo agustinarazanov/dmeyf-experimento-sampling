@@ -1,6 +1,6 @@
 {
   "estudio": "B0.25",
-  "brazo": "B0.25",
+  "variante": "B0.25",
   "metodo": "bagging",
   "tasa": 0.25,
   "hp": {

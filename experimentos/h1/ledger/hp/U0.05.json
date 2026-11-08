@@ -1,6 +1,6 @@
 {
   "estudio": "U0.05",
-  "brazo": "U0.05",
+  "variante": "U0.05",
   "metodo": "uniforme",
   "tasa": 0.05,
   "hp": {
