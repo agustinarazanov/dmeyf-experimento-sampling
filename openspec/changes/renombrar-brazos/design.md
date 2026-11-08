@@ -2,85 +2,95 @@
 
 ## Context
 
-"Brazo" aparece en unos 350 archivos y 760 líneas. Casi todo son ledgers: cada `corridas/*.csv` y cada
-`resultados.csv`, `reemplazadas.csv`, `estudios.csv` y `apareado.csv` tiene una columna `brazo`, y cada `hp/*.json` una
-clave `brazo`. El resto es código de `comun/` (`brazos.py` es el registro, y `correr`, `consolidar`, `ledger`,
-`metodos` y `reporte` lo usan), los scripts, los tests, los docs y los informes de cada experimento, los `reporte.html`
-generados, las specs y el material histórico (bitácoras, `ledger/sesiones/`, cambios archivados).
+"Brazo" aparece en unos 350 archivos y 760 líneas:
 
-Hay dos aportes nuevos fuera del registro:
-- `experimentos/h3/sensibilidad_muestra/` (Martín): usa `brazo` como campo de sus propios archivos de corrida, y
-  `referencia/` y `resultados/` tienen sha256 en `procedencia.json`.
-- `experimentos/Experimentos h3 y h4/` (Luis): un script de Colab y un resumen, en una carpeta con espacios. El nombre
-  del archivo quedó mal (`script_de_validaci_n_50_semillas.py`) y el resumen apunta a `validacion_50_semillas.py`.
+- **Ledgers**, que son la mayoría: cada `corridas/*.csv`, `resultados.csv`, `reemplazadas.csv`, `estudios.csv`,
+  `apareado.csv` y `apareado_previo.csv` tiene una columna `brazo`, y cada `hp/*.json` una clave `brazo`.
+- **Código de `comun/`**: `brazos.py` es el registro, y `correr`, `consolidar`, `ledger`, `metodos` y `reporte` lo usan.
+- **Scripts y tests.**
+- **Texto**: docs e informes de cada experimento, `reporte.html` generados, specs vigentes, bitácoras,
+  `ledger/sesiones/` (19 archivos) y cambios archivados (14 archivos).
+- **El paquete de Martín**, `h3/sensibilidad_muestra/`:
+  - usa `brazo` como campo de sus archivos de corrida (`sensibilidad_07.py`, `ganancia_08.py`) y en
+    `referencia/grilla_06.json`;
+  - 07 regenera la grilla y se detiene si no es idéntica a ese JSON;
+  - `resultados/procedencia.json` tiene sha256 de los CSV de `resultados/`, que no dicen "brazo".
+
+El aporte de Luis (`experimentos/Experimentos h3 y h4/`) no menciona "brazo". Lo mueve y lo porta
+`incorporar-aportes`.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Que todo lo que se lee hoy (código, docs, informes, reportes, README, specs) diga "variante".
-- Que ningún número cambie y que eso se pueda comprobar.
-- Un README que sirva de puerta de entrada: qué preguntamos, qué encontramos, dónde está cada cosa y qué sigue.
+- Que ningún archivo del repo ni del bucket diga "brazo", salvo las excepciones de D8.
+- Que ningún número cambie, y que eso se pueda comprobar.
+- Un README que sirva de puerta de entrada.
 
 **Non-Goals:**
-- Reescribir lo histórico.
-- Tocar el código o los archivos con huella de Martín.
-- Integrar los números de Luis a la comparación. Eso es de `h3-semillas-optuna`, que define el bloque de estudios
-  exploratorios.
+- Reescribir la historia de git o el tag `corridas-v1`.
+- Correr nada nuevo.
+- Incorporar el aporte de Luis.
 
 ## Decisions
 
-### D1. Nombre: variante
-
-Se descartaron:
-- "configuración": choca con el uso de Martín (un juego de hiperparámetros).
-- "estrategia": suena a recomendación final.
-- "tratamiento": "el tratamiento C" es raro.
-- "condición": se confunde en el código.
-
-Formas:
+### D1. Nombre y formas
 
 | antes | después |
 |---|---|
 | `Brazo`, `BRAZOS` | `Variante`, `VARIANTES` |
-| `brazo()`, `dueno_brazo()`, `nombre()` | `variante()`, `dueno_variante()`, `nombre()` |
+| `brazo()`, `dueno_brazo()` | `variante()`, `dueno_variante()` |
 | `comun/brazos.py`, `python -m comun.brazos --verificar` | `comun/variantes.py`, `python -m comun.variantes --verificar` |
 | `tests/test_brazos.py` | `tests/test_variantes.py` |
 | columna y clave `brazo` | `variante` |
-| "el brazo", "los brazos" | "la variante", "las variantes" (cuidar el género de artículos y adjetivos) |
+| variables `brazo`, `params_brazo` | `variante`, `params_variante` |
+| "el brazo", "los brazos", "brazos propios" | "la variante", "las variantes", "variantes propias" |
 
-### D2. Ledgers: reescribir la cabecera y leer también la vieja
+Hay que cuidar el género de artículos y adjetivos.
 
-Se reescribe la primera línea de cada CSV de ledger y la clave de cada `hp/*.json` con un script de un solo uso,
-`scripts/renombrar_columna.py`. Tiene `--verificar`, que para cada archivo comprueba tres cosas:
-- las líneas 2..n son idénticas byte a byte;
-- la cabecera difiere solo en `brazo` → `variante`;
-- en los JSON, el resto de las claves y los valores es igual.
+### D2. Ledgers: reescribir todo, sin alias
 
-`comun/ledger.py` traduce `brazo` → `variante` al leer, porque el bucket, el tag `corridas-v1` y cualquier clon viejo
-siguen teniendo la cabecera anterior. Siempre escribe `variante`.
+`scripts/renombrar_columna.py` reescribe la cabecera de cada CSV de ledger y la clave de cada `hp/*.json`, en el repo
+y en una copia local del bucket que después se sube con `gsutil rsync`.
 
-Alternativas:
-- **Solo el alias, sin reescribir:** deja dos nombres para siempre en el repo.
-- **Solo reescribir, sin alias:** rompe consolidar contra el bucket hasta resincronizarlo.
+Su `--verificar` comprueba, para cada archivo:
+- que las líneas 2..n son idénticas byte a byte;
+- que la cabecera difiere solo en `brazo` → `variante`;
+- en los JSON, que el resto de las claves y los valores es igual.
 
-`apareado_previo.csv` no se reescribe: es la foto de antes de separar. Su test lo lee con el alias.
+`comun/ledger.py` no traduce: si una cabecera dice `brazo`, falla nombrando el archivo. Así un ledger viejo no entra en
+silencio a una consolidación nueva.
 
-### D3. Qué es histórico y no se toca
+El script queda en `scripts/` como registro de la migración.
 
-No se tocan:
-- `*/docs/bitacora.md`, salvo una entrada nueva por experimento que anota el renombre y el commit;
-- `ledger/sesiones/`;
-- `openspec/changes/archive/`;
-- `apareado_previo.csv`;
-- `experimentos/h3/sensibilidad_muestra/` completo.
+### D3. Texto: reemplazo en todo el repo, con revisión
 
-Sí se toca `sampling_1/README.md` § Correspondencia de rutas: describe rutas vigentes, así que se suma
-`comun/brazos.py` → `comun/variantes.py`.
+1. Un script reemplaza con las reglas de D1, ordenadas de lo específico a lo general, sobre todo `git ls-files`
+   excepto binarios.
+2. Después se buscan problemas de concordancia: `\b(los|el|un|del|al|este|ese) variantes?\b`, y participios o
+   adjetivos masculinos a menos de 30 caracteres de "variante".
+3. Esos resultados se corrigen a mano.
 
-### D4. Specs: tres requisitos cambian de nombre
+Los archivos de `ledger/sesiones/` y de `openspec/changes/archive/` entran igual que el resto. Son texto, y ningún
+proceso los lee buscando "brazo". Antes de correrlo se comprueba que `comun/tokens.py` no dependa de su contenido
+literal.
 
-MODIFIED no permite cambiar el nombre de un escenario, así que los requisitos que tienen "Brazo" en un escenario van
-como REMOVED + ADDED con nombre nuevo:
+### D4. El paquete de Martín
+
+Se renombra:
+- el campo `brazo` en `sensibilidad_07.py` y `ganancia_08.py`;
+- su clave en `referencia/grilla_06.json`;
+- su generador en `busqueda.py`, para que 07 siga regenerando una grilla idéntica.
+
+Después se recalculan las huellas de `referencia/` y `procedencia.json` que dependan de archivos modificados, si las
+hay.
+
+Los 13 tests de Martín (`tests/test_h3sm_*.py`) deben pasar. Sus corridas viejas en `DATOS_DIR` dejan de leerse, pero
+`incorporar-aportes` corre 07 y 08 de nuevo.
+
+### D5. Specs: tres requisitos cambian de nombre
+
+MODIFIED no permite cambiar el nombre de un escenario, así que los requisitos con "Brazo" en un escenario van como
+REMOVED + ADDED con nombre nuevo:
 
 | antes | después |
 |---|---|
@@ -88,61 +98,52 @@ como REMOVED + ADDED con nombre nuevo:
 | "Curvas de ganancia por brazo" | "Curvas de ganancia por variante" |
 | "Se lee del dueño, no se copia" | "Se lee del dueño de la variante o del estudio, no se copia" |
 
-El contenido es el mismo. `h3-semillas-optuna` se escribe sobre estos nombres nuevos.
+`h3-semillas-optuna` e `incorporar-aportes` se escriben sobre estos nombres.
 
-### D5. Comprobar que no cambia ningún número
+### D6. Comprobar que no cambia ningún número
 
-Antes de tocar nada, se guarda una foto:
-- `python -m comun.consolidar` y `python -m comun.reporte --todos` en la rama actual;
-- copia de cada `apareado.csv` y de la tabla de resultados de cada `reporte.html`, extraída con un script a CSV.
+**Antes del renombre** se guarda una foto en `DATOS_DIR/renombre/antes/`:
+- se corren `python -m comun.consolidar` y `python -m comun.reporte --todos`;
+- se copia cada `apareado.csv` y la tabla de resultados de cada `reporte.html`, extraída a CSV.
 
-Después del renombre se repite y se compara:
-- **Valores:** iguales salvo el nombre de la columna.
-- **HTML:** las diferencias se limitan a "brazo"/"variante" y a la fecha de generación.
-- **Informes:** `git diff --word-diff` sobre los `informe.md` no muestra cambios en ningún número.
-
-### D6. El aporte de Luis
-
-`git mv` a `experimentos/sampling_1/exploratorios/validacion_50_semillas/`:
-- `validacion_50_semillas.py`: el script, sin cambiar el contenido;
-- `resumen.md`: el resumen que escribió;
-- `README.md` (nuevo).
-
-El `README.md` cuenta:
-- quién lo hizo y cuándo (6-nov);
-- qué corre: 9 estrategias × 50 semillas finales, con los hiperparámetros fijos de nuestros estudios más uno de H4
-  hard negatives;
-- en qué se aparta del protocolo:
-  1. las 50 semillas varían solo la semilla final, así que su IC no mide la suerte de Optuna;
-  2. las variantes se eligieron mirando 201910;
-  3. fast-retrain y hard negatives cambian la proporción de clases;
-  4. no hay ledger;
-  5. corre en Colab;
-- que falta subir su CSV de resultados.
-
-Va en `sampling_1` porque cruza H3, H4 y fast-retrain, y `sampling_1` es el que compara. Que la carpeta de Martín se
-quede en `h3` es coherente: su estudio es solo de H3.
+**Después** se repite y se compara:
+- **Valores:** iguales.
+- **HTML:** solo cambian "brazo"/"variante" y la fecha.
+- **Informes:** `git diff --word-diff` sobre los `informe.md` no muestra números.
 
 ### D7. README
 
 Secciones, en orden:
-1. La pregunta, en dos líneas, y la respuesta corta.
-2. Resultados hasta ahora: la tabla de `sampling_1/informe/informe.md` § Resultados, con la columna "variante", y la
-   comparación a tiempo igual en una línea. Se copia y se cita: el README no recalcula.
-3. Mapa de experimentos: la tabla actual, más `sampling_1/exploratorios/` y `h3/sensibilidad_muestra/`.
-4. Estudios exploratorios: qué preguntó cada uno, el número clave y la advertencia en una línea.
-5. Qué sigue: `h3-semillas-optuna` (¿la suerte de Optuna explica la ventaja de H3?) y H4.
-6. Estructura, cómo correr en la Mac y en la VM: lo de hoy, con `comun.variantes`.
+1. La pregunta y la respuesta corta.
+2. Resultados hasta ahora: la tabla de `sampling_1/informe/informe.md` § Resultados y la comparación a tiempo igual en
+   una línea, copiadas con la fuente citada.
+3. Mapa de experimentos.
+4. Aportes de Martín y Luis: qué preguntó cada uno, su estado y en qué cambio se incorporan.
+5. Qué sigue: `h3-semillas-optuna` e `incorporar-aportes` (H4).
+6. Estructura y cómo correr.
 
-Después de `h3-semillas-optuna`, la sección 2 apunta a la comparación nueva.
+Los cambios siguientes actualizan las secciones 2 a 5.
+
+### D8. Excepciones: lo que tiene que nombrar "brazo"
+
+Un renombre que se documenta y se protege no puede borrar la palabra vieja de todos lados. Quedan:
+- la historia de git y el tag `corridas-v1`;
+- `openspec/changes/renombrar-brazos/`, también una vez archivado;
+- `scripts/renombrar_columna.py`;
+- el rechazo de la cabecera vieja en `comun/ledger.py` y su test;
+- el escenario "Ledger con la columna vieja" de `ledger-resultados`;
+- la entrada de cada bitácora que registra el renombre;
+- las menciones del nombre de este cambio, `renombrar-brazos`, en otros cambios y documentos.
+
+La verificación final es `git grep -n -i brazo | grep -v renombrar-brazos`. Tiene que devolver solo líneas de los
+archivos de esta lista.
 
 ## Risks / Trade-offs
 
-- **[Concordancia gramatical]** Un reemplazo mecánico deja "los variantes" o "registrados" donde va femenino → grep de
-  `\b(los|el|un|del|al) variante`, de `variante[s]? .{0,30}(registrados|propios|nuevos)` y lectura de los informes.
-- **[Bucket desincronizado]** Las corridas viejas del bucket tienen `brazo` → alias de lectura (D2) y test que consolida
-  un ledger con cabecera vieja.
-- **[Diff enorme]** Unos 300 ledgers cambian una línea → un commit solo para las cabeceras, separado del código, para
-  que la revisión pueda mirar el resto aparte.
-- **[Huellas de Martín]** Si un reemplazo global entra en su carpeta, se rompe `procedencia.json` → el script y el
-  `sed` excluyen `h3/sensibilidad_muestra/`; la verificación corre `sha256sum` contra `procedencia.json`.
+- **[Concordancia gramatical]** Un reemplazo mecánico deja "los variantes" → grep de D3 y lectura de los informes en
+  la revisión.
+- **[Diff enorme]** → tres commits: cabeceras de ledgers, código y tests, y texto. Así cada uno se revisa por separado.
+- **[Bucket a medias]** Si el `rsync` falla a mitad, el bucket queda mezclado y la consolidación falla por D2 →
+  verificar el bucket con `--verificar` sobre una copia bajada después de subir.
+- **[Clones viejos]** Un clon anterior al renombre consolida con `brazo` y el código nuevo lo rechaza → aviso en la
+  bitácora de `sampling_1` y en el commit.

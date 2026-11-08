@@ -17,9 +17,8 @@ consolidación SHALL producir el `ledger/resultados.csv` de ese experimento orde
 - **THEN** en `resultados.csv` queda una sola fila por variante y semilla (la más reciente) y la otra va a `reemplazadas.csv`
 
 #### Scenario: Ledger con la columna vieja
-- **WHEN** se consolida o se reporta un ledger cuya cabecera dice `brazo` (el bucket, el tag `corridas-v1`)
-- **THEN** la columna se lee como `variante`, el resultado es el mismo que con la cabecera nueva y lo que se escribe
-  usa siempre `variante`
+- **WHEN** se consolida o se reporta un ledger cuya cabecera dice `brazo` (por ejemplo, un clon del tag `corridas-v1`)
+- **THEN** el comando falla antes de escribir nada, nombrando el archivo y la columna, y no hay alias de lectura
 
 ### Requirement: Predicciones de cada corrida final
 Cada corrida final SHALL guardar sus predicciones del mes de test en `ledger/predicciones/<id>.parquet` con las columnas

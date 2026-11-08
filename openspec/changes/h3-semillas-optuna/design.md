@@ -17,7 +17,7 @@ Lo que hay al cerrar `renombrar-brazos`:
   - H3-0.25: Δ = +4,18, IC [−0,60; 8,96], A = 4,48.
   - Las dos "no pierden".
 - **Tiempos del control:** 748 s de Optuna, unos 35 s por final. Optuna en U0.25 / U0.1 / U0.05: 153 / 77 / 67 s.
-- **Exploratorios:**
+- **Exploratorios** (los porta y los replica `incorporar-aportes`; acá solo entra el manifiesto de Martín):
   - Martín: 20 configuraciones al azar y 10 muestras del 25 %. La elección de H3 varía con la muestra (−9,9 a
     +8,8 M$), y en 7 de 10 coincide con la del control.
   - Luis: 50 semillas finales con hiperparámetros fijos. Propone `H3-0.05`, el reescalado √(1/r), H4 hard negatives
@@ -28,12 +28,13 @@ Lo que hay al cerrar `renombrar-brazos`:
 **Goals:**
 - Medir la suerte de Optuna y meterla en el IC de H3.
 - Separar dos explicaciones: (A) la muestra regulariza; (B) el control tuvo mala suerte.
-- Probar `H3-0.05` y el reescalado como variantes pre-registradas.
+- Probar `H3-0.05` y el reescalado √(1/r) como variantes pre-registradas, con réplicas.
 - Dejar una comparación final con dos bloques, A (mismo protocolo) y B (exploratorios), sin números a mano.
 
 **Non-Goals:**
 - Réplicas de `U*`, `B*` y `GOSS`: pierden o no aceleran, y las réplicas no cambian eso.
-- H4 y fast-retrain.
+- H4, fast-retrain y el resto de las ideas de Luis: son de `incorporar-aportes`, que usa las réplicas de este
+  cambio.
 - Otro mes de test.
 - Cambiar δ, N\* o el espacio de Optuna.
 
@@ -75,7 +76,7 @@ muestra es justamente lo que H3 agrega.
 - **Registro.** `comun/variantes.py` marca qué variantes admiten réplicas: `C`, `H3-0.25`, `H3-0.1`, `H3-0.05` y
   `H3R-0.1`.
 
-### D3. Grilla, costo y reparto
+### D3. Grilla, costo y ejecución
 
 Se corren 8 réplicas (k = 0…7) × 10 semillas finales × 5 variantes. Ya hay 3 de las 40 celdas (k = 0 de `C`, `H3-0.25`
 y `H3-0.1`).
@@ -92,15 +93,15 @@ IC de Welch tiene una semiamplitud cercana a ±4,3 M$. Alcanza para decidir "no 
 está cerca de 0, y para "gana" si el Δ real pasa los 4,5 M$. Con 5 réplicas la semiamplitud sube a unos ±5,8 y "no
 pierde" deja de ser decidible. Con 10 réplicas el costo crece un 30 % para ganar poco.
 
-**Reparto propuesto**, por réplica, una VM por persona, todo en `n2-highmem-8` con el tag `corridas-v2`:
+**Ejecución.** Agustina corre todo, sin repartir entre integrantes:
+- una VM `n2-highmem-8` spot por réplica k = 1…7, cada una con las 5 variantes de su réplica;
+- una VM más para los finales de `H3-0.05` y `H3R-0.1` en k = 0.
 
-| persona | réplicas | además | tiempo aprox. |
-|---|---|---|---|
-| Agustina | k = 1, 2, 3 | — | ~2,3 h |
-| Martín | k = 4, 5 | finales de `H3-0.05` y `H3R-0.1` en k = 0 | ~1,8 h |
-| Luis | k = 6, 7 | — | ~1,6 h |
+Son 8 VMs (64 vCPU), dentro de la cuota de 200 vCPU N2 de `us-central1`, todas desde el tag `corridas-v2`. Cada VM
+tarda unos 47 min y el total de pared queda en ~50 min.
 
-Cada persona corre las 5 variantes de sus réplicas.
+Antes de lanzar se verifican la cuota y el crédito del trial (`CLAUDE.md` § Cómputo). Si la cuota no alcanzara, se
+lanzan en tandas.
 
 ### D4. Hipótesis pre-registradas (van a `h3/docs/hipotesis.md` antes de correr)
 
@@ -174,12 +175,7 @@ que genera el mismo comando (`informe/tabla_resultados.md`), así el texto no re
 }
 ```
 
-Para Luis, la advertencia dice:
-- las 50 semillas son solo semillas finales;
-- las variantes se eligieron mirando 201910;
-- fast-retrain y hard negatives cambian la proporción de clases.
-
-Mientras no suba su CSV, su fila sale como pendiente.
+El manifiesto de Luis lo escribe `incorporar-aportes`, cuando porte y corra su script.
 
 `comun.variantes --verificar` valida los campos obligatorios de cada manifiesto.
 
@@ -190,16 +186,10 @@ Mientras no suba su CSV, su fila sale como pendiente.
   así. No se agregan réplicas después de mirar los resultados.
 - **[Mirar y volver a elegir]** δ, N\*, R y las reglas quedan escritos en `h3/docs/hipotesis.md` y revisados en sesión
   limpia antes de la primera corrida. El análisis corre una vez sobre el ledger completo.
-- **[Tiempos de VMs distintas]** Las tres VMs son `n2-highmem-8`, pero no la misma máquina física. Se registran `cpu` y
+- **[Tiempos de VMs distintas]** Todas las VMs son `n2-highmem-8`, pero no la misma máquina física. Se registran `cpu` y
   `load_avg`, como ya se hace, y T se informa como mediana entre réplicas. `C-rep` ya mostró que la variación entre
   VMs de la misma familia es chica.
 - **[Spot que se cae]** Optuna retoma el estudio desde el SQLite, y los finales saltean las semillas que ya tienen fila.
   Es el mecanismo actual.
 - **[Ownership raro de `U{r}@k`]** Que la réplica 0 sea de `h1` y las demás de `h3` es una excepción → regla
   explícita en el registro, test que la cubre y nota en `h3/docs/diseno.md` § Dependencias.
-- **[CSV de Luis]** Si no llega, el bloque B lo muestra como pendiente y nada se bloquea.
-
-## Open Questions
-
-- **Reparto D3:** confirmarlo con Martín y Luis en el tópico `sampling_1`. No cambia qué se construye, solo quién lanza
-  cada VM.

@@ -10,7 +10,7 @@ limitación pese más:
 - **Martín** (`h3/sensibilidad_muestra`) repitió la búsqueda de H3 con 10 muestras distintas. Solo por la muestra, la
   ganancia del modelo elegido va de −9,9 a +8,8 M$ respecto del control, un rango mayor que nuestro Δ. Además, en 7 de
   10 muestras eligió la misma configuración que el control.
-- **Luis** (`sampling_1/exploratorios/validacion_50_semillas`, después de `renombrar-brazos`) corrió 50 semillas finales
+- **Luis** (`experimentos/Experimentos h3 y h4/`, que `incorporar-aportes` porta al repo) corrió 50 semillas finales
   y concluye que todas las H3 "le ganan" al control. Sin embargo, sus 50 semillas varían solo la semilla final con
   hiperparámetros fijos: el intervalo no incluye la suerte de Optuna. Además eligió variantes mirando 201910.
 
@@ -20,7 +20,7 @@ Hay dos explicaciones de la ventaja de H3 que hoy no podemos separar:
   0,985 del control), y eso generaliza mejor.
 - **(B)** La única optimización del control cayó en una configuración mala, y H3 parece mejor por eso.
 
-Contestarlo es la respuesta honesta a la pregunta del tutor, y es barato: unas 5,6 horas de VM repartidas entre los tres.
+Contestarlo es la respuesta honesta a la pregunta del tutor, y es barato: unas 5,6 horas de VM, que corremos nosotros en VMs paralelas.
 También queremos terminar con **una comparación limpia de todos los resultados**, con los exploratorios a la vista pero
 separados de lo que se corrió con el protocolo.
 
@@ -47,11 +47,10 @@ separados de lo que se corrió con el protocolo.
 - **Comparación limpia en `sampling_1/informe/reporte.html` e `informe.md`**, en dos bloques:
   - **A. Mismo protocolo:** todas las variantes del registro, con Δ, Δ con réplicas cuando existe, A, tiempo igual con
     intervalo y veredicto.
-  - **B. Exploratorios:** Martín y Luis, cada uno con su protocolo y su advertencia, leídos de sus CSV mediante un
-    manifiesto. No hay números escritos a mano.
+  - **B. Exploratorios:** cada estudio exploratorio con su protocolo y su advertencia, leído de sus CSV mediante un
+    manifiesto. No hay números escritos a mano. Este cambio suma el de Martín, e `incorporar-aportes` suma el de Luis.
 - **Estudios exploratorios como figura del método.** Son una carpeta con `README.md` y `exploratorio.json`, no entran
-  al registro de variantes y no cambian veredictos. Se suman los manifiestos de Martín y de Luis. Si falta el CSV de
-  Luis, su bloque sale como pendiente.
+  al registro de variantes y no cambian veredictos. Este cambio agrega el manifiesto de Martín.
 - **Informes.** `h3/informe/informe.md` y `sampling_1/informe/informe.md` se actualizan con el veredicto con réplicas
   y la respuesta A/B. El README apunta a la comparación nueva.
 
@@ -77,10 +76,10 @@ Ninguna.
   - `ledger.py` y `consolidar.py`: la columna y la clave;
   - `reporte.py`: los bloques A y B y el tiempo igual con IC.
 - Ledgers: estudios `C@k` en `control`, estudios `U{r}@k` y finales en `h3`. `h1` no cambia.
-- Cómputo: ~2 h de Optuna y ~3,6 h de finales en `n2-highmem-8` spot, en tres VMs.
+- Cómputo: ~2 h de Optuna y ~3,6 h de finales en `n2-highmem-8` spot. Agustina lanza todas las VMs en paralelo, una por
+  réplica: con la cuota de 200 vCPU N2 en `us-central1` entran 7 a la vez, y el total de pared queda en ~50 min.
 - Depende de `renombrar-brazos` archivado: usa "variante" y los nombres nuevos de los requisitos.
 - Fuera de alcance:
-  - H4, que va en un cambio aparte cuando haya resultado acá;
-  - fast-retrain, que cambia la proporción de clases y es terreno de Sampling_2;
+  - H4 (hard negatives, fast-retrain) y el resto de los aportes de Luis y Martín, que son de `incorporar-aportes`;
   - réplicas para `U*`, `B*` y `GOSS`, que ya pierden o no aceleran;
   - meses de test fuera de 201910.

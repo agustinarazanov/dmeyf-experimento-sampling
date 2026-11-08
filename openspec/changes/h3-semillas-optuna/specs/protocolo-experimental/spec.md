@@ -18,10 +18,10 @@ Un exploratorio SHALL quedar fuera del registro de variantes, SHALL NOT escribir
 NOT cambiar ningún veredicto. Una idea que surja de un exploratorio y se quiera confirmar SHALL volver a correrse como
 variante, con hipótesis escrita antes.
 
-#### Scenario: Aporte de Luis
-- **WHEN** se lee `experimentos/sampling_1/exploratorios/validacion_50_semillas/exploratorio.json`
-- **THEN** su advertencia dice que las 50 semillas varían solo la semilla final y que las variantes se eligieron mirando
-  201910, y el reporte de `sampling_1` lo muestra en el bloque B
+#### Scenario: Aporte de Martín
+- **WHEN** se lee `experimentos/h3/sensibilidad_muestra/exploratorio.json`
+- **THEN** su advertencia dice que las 10 muestras dan solo 4 modelos distintos y que hay un solo 201910, y el reporte
+  de `sampling_1` lo muestra en el bloque B
 
 #### Scenario: Idea de un exploratorio que se confirma
 - **WHEN** el grupo quiere confirmar el reescalado √(1/r) que propuso un exploratorio
