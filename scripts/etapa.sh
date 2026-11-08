@@ -36,7 +36,7 @@ Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git com
 Bash($DIR/scripts/vm.sh:*),Bash(sh $DIR/scripts/vm.sh:*),Bash(bash $DIR/scripts/vm.sh:*),\
 Bash($DIR/scripts/lanzar_fase.sh:*),Bash(bash $DIR/scripts/lanzar_fase.sh:*),Bash(pgrep:*),Bash(tail:*),\
 Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*),\
-Bash(git grep:*),Bash(shasum:*),Bash(sha256sum:*),Bash(gsutil rsync:*),Bash(gsutil cp:*),Bash(gcloud compute regions describe:*),\
+Bash(git grep:*),Bash(shasum:*),Bash(sha256sum:*),Bash(gsutil rsync:*),Bash(gsutil cp:*),Bash(gsutil -m rsync:*),Bash(gsutil -m cp:*),Bash(gsutil -q -m rsync:*),Bash(gsutil -q cp:*),Bash(gcloud compute regions describe:*),\
 Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/vm.sh:*)"
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
