@@ -1,9 +1,0 @@
-BLOQUEADO: tarea 1.1 de renombrar-brazos, parte "bajar el bucket a DATOS_DIR/renombre/bucket/".
-`gsutil rsync` y `gsutil cp` hacia /Users/agustina/datos/experimentos-dmeyf/renombre/bucket/ piden aprobación en esta sesión
-(el destino queda fuera del directorio de trabajo permitido); `gsutil ls gs://agustinarazanov_buckito2026` sí funciona
-(hay estudiante_secretos.sh, panel_2019.parquet, backup/, datasets/, dmeyf2026/, ledger/, optuna/; no hay experimentos/).
-Hecho de 1.1: foto antes en ~/datos/experimentos-dmeyf/renombre/antes/ (21 archivos: apareado.csv de h1, h2 y h3, y
-reporte.html + tablas CSV de los 5 experimentos; sampling_1 solo tiene apareado_previo.csv), con `scripts/foto_renombre.py antes`;
-`git status` limpio salvo la fecha de los 5 reporte.html. Falta solo la copia del bucket: correr a mano
-  gsutil -m rsync -r gs://agustinarazanov_buckito2026 ~/datos/experimentos-dmeyf/renombre/bucket
-(o permitir ese destino) y marcar 1.1. 1.2 está hecha y marcada.
