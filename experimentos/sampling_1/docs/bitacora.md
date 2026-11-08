@@ -538,3 +538,48 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
      `renombrar-brazos` en `costos.csv`, o esas filas vuelven a `sin-etapa`.
 - Tokens: ~35 turnos · ≈ US$ 1,1 (presupuesto US$ 4). `comun/tokens.py` lo corre la verificación de 1.2 sobre una copia;
   el `tokens.csv` del repo se regenera al cierre del cambio.
+
+### 2026-11-08 — cierre revisión del grupo 2 de `renombrar-brazos` (ledgers y código)
+- Sesión: `c13ad09a-de57-413c-a76c-29813c1344c4` · modelo: Opus · etapa: **revision** (grupo 2, tareas 2.1–2.5).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código) y la verificación escrita en cada tarea. Ningún ✗ abierto.
+  - ✓ 2.1 repo: no quedó respaldo del repo en `DATOS_DIR` (solo `renombre/original/bucket/`), así que se reconstruyó
+    desde `b9f6b43^` en `DATOS_DIR/renombre/rev_g2/original_repo/`; `renombrar_columna.py --verificar experimentos`
+    contra eso: 296 archivos, 0 errores. `git diff --numstat` del commit: 296 archivos de ledger (287 CSV, 9 `hp/*.json`),
+    todos `1 1`. Ningún CSV ni `hp/*.json` de ledger conserva `brazo`.
+  - ✓ 2.1/2.5 bucket: `--verificar` sobre `renombre/bucket/` y sobre la copia vuelta a bajar `renombre/bucket_verif/`
+    contra `original/bucket/`: 288 archivos, 0 errores en las dos; 959 archivos en cada `ledger/`. Lo único con "brazo"
+    en la copia bajada son 5 archivos de `ledger/sesiones/` (texto, fuera de D2; los toca la 3.1).
+  - ✓ 2.2: `pytest` completo 75 pasan; `python -m comun.variantes --verificar` sin problemas. `git grep -i brazo` en todo
+    lo que no es `.md`, `.html`, `openspec/` ni `ledger/sesiones/` solo da el rechazo de `comun/ledger.py` y su test, la
+    clave del cambio en `comun/tokens.py` y los scripts de la migración. `consolidar.py` y `reporte.py` leen los ledgers
+    con `lg.leer_csv` (el que rechaza la cabecera vieja). `vm.sh --en-seco` con `sampling_1/scripts/fase4.txt` emite
+    `--variante C-rep`.
+  - ✓ 2.3: los 13 tests de `h3/sensibilidad_muestra` pasan; `busqueda.cargar_grilla()` regenera las 20 configuraciones
+    con el sha256 de `grilla_06.json` (`7ecaa079…`). En `grilla_06.json` "brazo" solo estaba en texto, no como clave.
+    Las huellas de `resumen.json` (`comun/ganancia.py`, `datos.py`, `baseline.py`, `tests/test_ganancia.py`) coinciden
+    con `shasum` de hoy; `sha256_scripts_originales` de `procedencia.json` son de los scripts originales de Martín.
+  - ✓ Smoke `--filas 20000 --trials 3` en la Mac, los cuatro métodos, una fila cada uno en el ledger del dueño con
+    columna `variante` y todas las columnas: U0.25 → h1, B0.5 y GOSS → h2, final H3-0.25 (semilla 100003) → h3.
+  - ✓ Determinismo: el final de H3-0.25 corrido dos veces da hash `b063898d…`, AUC 201910 0,832417 y ganancia
+    3.850.000 iguales.
+  - ✓ Meses leídos: `optimizar` lee 201903–201906 y 201908; solo el final lee 201910.
+  - ✓ Filas de train: U0.25 2463 = 0,25 × 9852.
+  - ✓ `codigo_sucio`: `commit_y_sucio()` sin cambios en el grupo (ignora `/ledger/`, por eso las filas salen `False` con
+    `costos.csv` modificado); `consolidar` (`test_apareado_usa_solo_semillas_en_comun`) y la columna faltante
+    (`test_falta_una_columna_y_se_nombra`) siguen cubiertos por tests.
+  - ✓ `vm.sh`: el grupo solo renombra la quinta columna de la lista y comentarios; el borrado de la VM no cambia.
+  - ✓ Ningún archivo del dataset en `git ls-files`.
+- Hallazgos:
+  1. `README.md:43`: el comando de smoke pasaba `--semilla 100003` a `--etapa optimizar`, que el corredor rechaza
+     (la semilla de Optuna es 0). Anterior al cambio.
+  2. D8 nombra solo `scripts/renombrar_columna.py`, pero `reemplazar_d1.py`, `foto_renombre.py` y
+     `verificar_tokens_renombre.py` también nombran "brazo"; la verificación final de la 3.1 los habría marcado.
+  3. El mensaje de `b9f6b43` dice 339 archivos; el commit tiene 296 de ledger (más el script). Los números del bucket
+     (288) coinciden.
+  4. Los smoke de esta revisión dejaron filas y `hp/*.json` en `exploracion/` (ignorado por git), como los de la 2.4.
+- Correcciones:
+  1. `README.md:43`: se saca `--semilla 100003` (la 4.1 reescribe el README igual).
+  2. `design.md` D8: suma los demás scripts de la migración a las excepciones.
+- Tokens: ~40 turnos · ≈ US$ 1,6 (presupuesto US$ 4). `comun/tokens.py` no se corrió: el `tokens.csv` se regenera al
+  cierre del cambio (4.2).

@@ -40,7 +40,7 @@ Necesita Python 3.14 (pyenv `facultad`) y `libomp` para LightGBM. Todo se corre 
 brew install libomp
 pip install -r requirements.txt
 python -m comun.datos --filas 20000
-python -m comun.correr --metodo uniforme --tasa 0.25 --semilla 100003 --etapa optimizar --filas 20000
+python -m comun.correr --metodo uniforme --tasa 0.25 --etapa optimizar --filas 20000
 python -m comun.consolidar --experimento h1       # o sin argumento, para todos
 python -m comun.reporte --experimento h1          # o --todos
 python -m comun.brazos --verificar                # dependencias, ciclos y qué se rompe si falta una carpeta
