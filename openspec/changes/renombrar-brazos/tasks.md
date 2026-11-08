@@ -28,5 +28,3 @@
 ## Workflow follow-up
 
 - Archivar con `/opsx:archive renombrar-brazos` antes de aplicar `h3-semillas-optuna`.
-- Avisar en el tópico `sampling_1` de Zulip: el comando pasa a `python -m comun.variantes --verificar`, y un clon anterior
-  al renombre tiene que hacer pull antes de consolidar.

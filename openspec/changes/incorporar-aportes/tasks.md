@@ -6,8 +6,7 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 
 - [ ] 1.1 Crear `experimentos/h4/` desde `plantilla/`, con `docs/hipotesis.md` (H4, predicciones y reglas de D4, la declaración de que las ideas vienen de mirar 201910, los contrastes principales y la nota de comparaciones múltiples) y `docs/diseno.md` (variantes y estudios de D3, sonda, grilla, `## Dependencias`: control, h1, h3); verificar con un grep que cada regla tiene umbral numérico y métrica
 - [ ] 1.2 Sumar a `h3/docs/hipotesis.md` y `h3/docs/diseno.md` las extensiones de D4 y las variantes `H3R-0.25`, `H3L-0.25`, `H3L-0.1` y `H3K-0.1` con su estudio `K0.1`, declarando que vienen del aporte de Luis; actualizar `sampling_1/docs/hipotesis.md` y `diseno.md` a cuatro hipótesis; verificar que los enlaces existen
-- [ ] 1.3 Postear en el tópico `sampling_1` de Zulip la hipótesis H4 y las extensiones de H3, derivadas de los documentos (aviso, no bloquea); anotar el id del mensaje en las bitácoras de `h4` y `sampling_1`
-- [ ] 1.4 Revisión en sesión limpia de la etapa hipótesis y diseño con la lista de `docs/revision.md`, cierre en las bitácoras de `h3` y `h4`. Ninguna corrida real antes de este cierre
+- [ ] 1.3 Revisión en sesión limpia de la etapa hipótesis y diseño con la lista de `docs/revision.md`, cierre en las bitácoras de `h3` y `h4`. Ninguna corrida real antes de este cierre
 
 ## 2. Métodos y variantes (sesión: Sonnet)
 
@@ -47,4 +46,3 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 ## Workflow follow-up
 
 - Archivar con `/opsx:archive incorporar-aportes`.
-- Avisar a Martín y a Luis en Zulip con la tabla reportado/reproducido de cada uno.
