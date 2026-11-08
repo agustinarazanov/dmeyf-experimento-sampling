@@ -583,3 +583,14 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   2. `design.md` D8: suma los demás scripts de la migración a las excepciones.
 - Tokens: ~40 turnos · ≈ US$ 1,6 (presupuesto US$ 4). `comun/tokens.py` no se corrió: el `tokens.csv` se regenera al
   cierre del cambio (4.2).
+
+### 2026-11-08 — renombre de «brazo» a «variante» (`renombrar-brazos`)
+
+- Qué cambió: la columna y la clave `brazo` de los ledgers pasaron a `variante`, `comun/brazos.py` a `comun/variantes.py`
+  y el texto del repo dice «variante» donde decía «brazo». Los números no cambian: `apareado.csv` y las tablas de cada
+  `reporte.html` coinciden con la foto previa (diferencia 0).
+- Commits: ledgers y bucket `b9f6b43` (2.1) y `7b0545c` (2.5, bucket subido con `gsutil rsync`); código y tests `6ea0074`
+  (2.2); paquete de Martín `f4566a3` (2.3); texto `4a456c8` (3.1); reportes regenerados `611bb2f` (3.2).
+- Lo que sigue diciendo «brazo»: la historia de git (los commits anteriores) y el tag `corridas-v1`.
+- Un clon anterior al renombre no consolida: `comun/ledger.py` rechaza una cabecera `brazo` nombrando el archivo. Hay que
+  actualizar el clon y volver a bajar el ledger del bucket renombrado.
