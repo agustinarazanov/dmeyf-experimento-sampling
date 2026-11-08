@@ -8,13 +8,13 @@ Parte de Sampling_1: la comparación entre hipótesis, la respuesta al tutor y l
 ## Hipótesis
 
 H3: optimizar con Optuna sobre una muestra uniforme (r_opt = 0,25 o 0,1) y entrenar el final con todo no pierde. Texto
-completo en `docs/hipotesis.md`, brazos y dependencias en `docs/diseno.md`.
+completo en `docs/hipotesis.md`, variantes y dependencias en `docs/diseno.md`.
 
 ## Resultados
 
 N* = 3.300 envíos (de 201908), Ḡ_C = 276,10 M$, δ = 5,52 M$, 10 semillas en común.
 
-| brazo | Δ media (M$) | IC 95% (M$) | A | veredicto | vale la pena |
+| variante | Δ media (M$) | IC 95% (M$) | A | veredicto | vale la pena |
 |---|---|---|---|---|---|
 | H3-0.1 | 4,07 | [−0,27; 8,41] | 8,41 | no pierde | sí |
 | H3-0.25 | 4,18 | [−0,60; 8,96] | 4,48 | no pierde | sí |

@@ -16,7 +16,7 @@ antes de cualquier corrida real. Los cambios posteriores se anotan en `docs/bita
 - **Se refuta** si con r_opt = 0,25 *pierde*.
 - **Ninguna de las dos** si con r_opt = 0,25 sale *indeterminado*.
 - **Riesgo conocido**: el `min_data_in_leaf` que se elige sobre la muestra queda chico para el train completo. Si eso
-  hace perder a r_opt = 0,1, el reescalado se propone como trabajo futuro y no como un brazo nuevo.
+  hace perder a r_opt = 0,1, el reescalado se propone como trabajo futuro y no como una variante nueva.
 
 ## Limitaciones previstas
 

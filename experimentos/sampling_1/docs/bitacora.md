@@ -45,8 +45,8 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Corregido, con decisiones del equipo:
   - no inferioridad con δ = 2% de Ḡ_C (cota inferior del IC ≥ −δ) y un veredicto *indeterminado* con nombre;
   - corte N* elegido en 201908;
-  - H2 decidida contra el control, la comparación con `uniforme` como descriptiva y `goss` como brazo descriptivo;
-  - T como pipeline completo en todos los brazos;
+  - H2 decidida contra el control, la comparación con `uniforme` como descriptiva y `goss` como variante descriptiva;
+  - T como pipeline completo en todas las variantes;
   - rangos de Optuna propios;
   - D1 y D2 de `design.md` actualizados para coincidir.
   
@@ -65,7 +65,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 
 ### 2026-11-01 — apertura: etapa diseño
 - Sesión: `a5afcd58-12ea-4332-9ab8-49822bca2e03` · modelo: Opus · etapa: **diseno**.
-- Tarea 2.1: `docs/diseno.md` con 11 brazos, 9 estudios de Optuna (H3 comparte los suyos con `U0.25` y `U0.1`), 110
+- Tarea 2.1: `docs/diseno.md` con 11 variantes, 9 estudios de Optuna (H3 comparte los suyos con `U0.25` y `U0.1`), 110
   finales más 10 de réplica del control, ≈ 6 h de VM (≈ 15 h en el peor caso, ≈ US$ 9) y el reparto por persona.
   D7 de `design.md` se actualizó para que coincida.
 - Revisión preliminar con la lista § 2, a cargo de un subagente `general-purpose` sin contexto: ✓ 7/8, con el ítem de
@@ -115,7 +115,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - **menores**: el proyecto del template y de las cuotas no estaba nombrado; faltaba la verificación de Ice Lake en
     las zonas `-a` y `-c`; quedaban pendientes de Martín y Luis sin listar; la bitácora decía US$ 8 y el diseño US$ 9.
 - Corregido:
-  - la réplica pasa a ser un brazo propio, `C-rep`;
+  - la réplica pasa a ser una variante propio, `C-rep`;
   - el SQLite es local y se copia al bucket después de cada trial; el panel y las filas del ledger también se suben,
     y una VM nueva los baja;
   - quedaron nombrados el proyecto y las zonas, con la lista de pendientes de Martín y Luis antes de la fase 1;
@@ -206,7 +206,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 
 ## 2026-11-02 · cierre del grupo 5 (sanity de resultados, tarea 5.4)
 
-- `consolidar.py --sanity`: todo OK. 30 finales de la fase 1 en una máquina y un commit; los 8 brazos de H1/H2 con 10
+- `consolidar.py --sanity`: todo OK. 30 finales de la fase 1 en una máquina y un commit; las 8 variantes de H1/H2 con 10
   finales; filas de train dentro de ±0,1% de la tasa; sin `codigo_sucio`; `bagging_fraction` fijo en las 44 filas de H2;
   ninguna corrida exploratoria en `resultados.csv`; un solo tipo de máquina (`n2-highmem-8`); `C-rep` reproduce al
   control exacto (ΔAUC = 0, Δganancia = 0).
@@ -229,10 +229,10 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - ✗ El control "entre dos personas": `C-rep` corrió en otra VM (fase 2), pero `persona = agustina` en C y C-rep.
     Reproduce exacto (ΔAUC = 0, Δganancia = 0), lo que prueba el determinismo entre VMs, no entre personas.
     Tiempo de entrenamiento: C 33,7 s (sd 1,4) y C-rep 31,6 s (sd 0,3), un 6% de diferencia entre VMs del mismo tipo.
-    Hay que tenerlo en cuenta al comparar tiempos de brazos que vienen de VMs distintas.
+    Hay que tenerlo en cuenta al comparar tiempos de variantes que vienen de VMs distintas.
   - ✓ `bagging_fraction` fijo en las 44 filas de H2 (`--sanity`).
-  - ✓ 10 semillas en los 12 brazos (incluye C-rep), las mismas 10 que el control.
-  - ✓ `apareado.csv`: 10 brazos con media, sd, IC 95% de Δganancia y ΔAUC, semillas ganadas y veredicto.
+  - ✓ 10 semillas en las 12 variantes (incluye C-rep), las mismas 10 que el control.
+  - ✓ `apareado.csv`: 10 variantes con media, sd, IC 95% de Δganancia y ΔAUC, semillas ganadas y veredicto.
   - ✗ VMs borradas: sí (`vm_f{1,2,3}.log`). Gasto: **no anotado**, falta leerlo en Billing.
 - Hallazgos: los dos ✗ y el desvío de commits de arriba. `consolidar.py --sanity` da OK en todo; su chequeo de
   "un commit" solo mira la fase 1.
@@ -254,7 +254,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 
 - Etapa: análisis e informe, sesión headless (Opus). Revisor: pendiente (6.3, sesión limpia).
 - 6.0: `src/reporte.py` escribe `informe/reporte.html`. Probado con el ledger completo y con uno parcial de la fase 1
-  (`scripts/ledger_parcial.py`), que muestra los brazos que faltan como pendientes. Dos corridas seguidas dan el mismo
+  (`scripts/ledger_parcial.py`), que muestra las variantes que faltan como pendientes. Dos corridas seguidas dan el mismo
   archivo y no tiene recursos externos. **Queda sin marcar** porque la comparación a tiempo igual calcula K pero no el
   ensamble: el ledger guarda curvas de ganancia y no predicciones. Ver `ledger/sesiones/bloqueo.txt`.
 - 6.1: figuras en `informe/figuras/`, decisiones en `informe/decisiones.md`: H1 ninguna de las dos, H2 refutada, H3
@@ -281,15 +281,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - VM `sampling-f4` (n2-highmem-8 spot, northamerica-northeast2-b, commit `4a42bc6`), creada 17:02 y **borrada**
   ≈ 18:02 según `ledger/sesiones/vm_f4.log` (`== borrando sampling-f4` / `Deleted`). Tiempo de la fase ≈ 1 h de VM; los
   120 finales corrieron entre 17:05 y 17:49 (≈ 44 min, 0,68 h de entrenamiento sumado). ≈ US$ 0,2.
-- `consolidar.py --sanity`: todas las verificaciones OK. 120 finales en `resultados.csv` (12 brazos × 10 semillas),
+- `consolidar.py --sanity`: todas las verificaciones OK. 120 finales en `resultados.csv` (12 variantes × 10 semillas),
   un commit (`4a42bc6`), una máquina (`n2-highmem-8`, mismo CPU); 120 parquet en `ledger/predicciones/`, uno por fila.
 - Las 120 finales anteriores están en `reemplazadas.csv` (110 de `2bd8a63`, 30 de `79039c9`; algunas semillas tienen
   dos filas viejas por el relanzamiento de C-rep). **Determinismo**: `ganancia_max_201910` y `auc_test` idénticos a
-  los reemplazados en los 140 pares brazo-semilla; ninguna diferencia que anotar.
+  los reemplazados en los 140 pares variante-semilla; ninguna diferencia que anotar.
 
 ### 2026-11-02 — tarea 6.7 (comparación a tiempo igual) y cierre de 6.0
 
-- `src/reporte.py` arma, para cada brazo con K ≥ 2, el ensamble de las primeras K semillas (orden de
+- `src/reporte.py` arma, para cada variante con K ≥ 2, el ensamble de las primeras K semillas (orden de
   `SEMILLAS_FINALES`, K acotado a 10), promediando `prob` fila a fila desde `ledger/predicciones/`. Mide la ganancia al
   corte N* con `comun/ganancia.py` y la compara con Ḡ_C y con el ensamble de las 10 semillas de C. Agrega la figura
   `tiempo_igual.png`. Regenerados `informe/reporte.html`, `informe/figuras/`, `informe/decisiones.md` (A con los
@@ -324,7 +324,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Tokens: ~20 turnos · ≈ US$ 0,8 (presupuesto US$ 2). `comun/tokens.py` no se corrió en esta sesión.
 - Tutor: sin devolución nueva.
 
-### 2026-11-02 — cierre revisión del grupo 2 de `separar-hipotesis` (registro de brazos y código en `comun/`)
+### 2026-11-02 — cierre revisión del grupo 2 de `separar-hipotesis` (registro de variantes y código en `comun/`)
 - Sesión: revisión headless en sesión limpia · modelo: Opus · etapa: **revision** (grupo 2, tareas 2.1–2.5).
 - Revisor: sesión limpia (Opus, sin contexto de la sesión que implementó el grupo).
 - Lista: docs/revision.md § 3 (código); 7 ✓, 2 n/a, ningún ✗.
@@ -342,7 +342,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - n/a `vm.sh` borra la VM: los scripts de VM se tocan en la tarea 3.4.
   - ✓ Sin datos en el repo: ningún parquet, csv.gz, sqlite ni `predicciones/` versionado; `exploracion/` ignorado.
   - n/a sin cambios en `informe/`.
-- Además: `python -m pytest` 46 passed. `python -m comun.brazos --verificar` sale con código 1 porque faltan
+- Además: `python -m pytest` 46 passed. `python -m comun.variantes --verificar` sale con código 1 porque faltan
   `control/`, `h2/` y la sección `## Dependencias` de los `diseno.md`: es lo esperado hasta el grupo 4 (4.1, 4.2), y
   muestra que el verificador detecta carpetas y declaraciones faltantes y lista qué se rompe.
 - Hallazgos menores (sin corrección, no bloquean): con `--trials 2` el estudio exploratorio de U0.25 retoma un
@@ -368,9 +368,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     `exploracion/` de `control`, `h1`–`h3` y `sampling_1` aparecen como ignorados.
   - ✓ Conservación: `python -m scripts.separar_ledger --origen experimentos/sampling_1/ledger --verificar` → OK.
     La unión de los `resultados.csv` de `control`, `h1`, `h2`, `h3` tiene 129 `id` únicos, iguales a los del
-    manifiesto; cada dueño tiene solo sus brazos (control: C, C-rep; h1: U*; h2: B*, GOSS; h3: H3-*).
+    manifiesto; cada dueño tiene solo sus variantes (control: C, C-rep; h1: U*; h2: B*, GOSS; h3: H3-*).
   - ✓ 3.3 repetida: `python -m comun.consolidar` no cambia ningún archivo versionado; la unión de los `apareado.csv`
-    de `h1`–`h3` contra `apareado_previo.csv`: 10 brazos en ambos, diferencia máxima 0 en todas las columnas
+    de `h1`–`h3` contra `apareado_previo.csv`: 10 variantes en ambos, diferencia máxima 0 en todas las columnas
     numéricas (Δ, IC, A, n, tiempos) y mismos veredicto, nota y semillas.
   - ✓ Sin `codigo_sucio` (129 False) ni `etapa = exploracion` (120 final, 9 optimizar) en los ledgers repartidos.
   - n/a máquina y commit por fase, réplica del control, H2 con `bagging_fraction` fijo, 10 semillas, VMs borradas y
@@ -385,10 +385,10 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 ### 2026-11-03 — grupo 4 de `separar-hipotesis` (documentos por experimento)
 - Sesión: `eccad74f-e7e0-4f11-b5b6-110f0c62bcf1` (headless) · modelo: Opus · etapa: **diseno**.
 - Separación de los documentos según D5, moviendo los textos tal cual y ajustando solo referencias cruzadas:
-  - `control/docs/`: § Control y § Métricas y reglas comunes (`hipotesis.md`); brazo `C`, `C-rep`, semillas,
+  - `control/docs/`: § Control y § Métricas y reglas comunes (`hipotesis.md`); variante `C`, `C-rep`, semillas,
     parámetros fijos, métricas que se calculan, máquina y `## Dependencias` vacía (`diseno.md`). En § Métricas que se
     calculan, los pasos 3 y 6 remiten a `hipotesis.md` en vez de repetir las fórmulas de δ y A (dc6d9ce).
-  - `h1/`, `h2/`, `h3/docs/`: la sección de su H, sus brazos y su grilla, y `## Dependencias` (`control`; `h3` además
+  - `h1/`, `h2/`, `h3/docs/`: la sección de su H, sus variantes y su grilla, y `## Dependencias` (`control`; `h3` además
     `h1`). Estudios compartidos completos en `h1` y con remisión en `h3`. Las limitaciones propias pasaron a su
     `hipotesis.md` (GOSS a `h2`, estudio compartido a `h3`), y lo que quedaba fuera de la grilla de cada H a su
     `diseno.md` (7c34254).
@@ -396,7 +396,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     devolución del tutor, enlaces y `## Dependencias` (`control`, `h1`, `h2`, `h3`) (ffc2e26).
   - Bitácoras de `control`, `h1`, `h2` y `h3` abiertas con puntero a esta, hipótesis revisada el 1-nov y los commits
     de la separación.
-- Verificado: `python -m comun.brazos --verificar` sin problemas; `grep` de G, Δ, δ, T, A, N* y veredictos: solo en
+- Verificado: `python -m comun.variantes --verificar` sin problemas; `grep` de G, Δ, δ, T, A, N* y veredictos: solo en
   `control/docs/hipotesis.md`; 17 pasajes de D5, cada uno en un solo documento de `docs/`. `informe/informe.md` y
   `informe/reporte.html` de `sampling_1` todavía repiten textos (el reporte se genera de `hipotesis.md`): grupo 5.
 - Revisión del grupo 4: pendiente, en sesión limpia.
@@ -408,7 +408,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `sampling_1`; ningún ✗. Base de comparación: `hipotesis.md` y `diseno.md` de `sampling_1` en `dc6d9ce~1`.
   - ✓ Texto conservado: cada sección de la versión previa está, palabra por palabra, en un solo documento nuevo; lo
     que cambia son las referencias cruzadas, los pasos 3 y 6 de § Métricas que se calculan (remiten a `hipotesis.md`
-    en vez de repetir δ y T) y los totales de `sampling_1/docs/diseno.md` (once brazos + `C-rep`, 9 estudios, 9 filas
+    en vez de repetir δ y T) y los totales de `sampling_1/docs/diseno.md` (once variantes + `C-rep`, 9 estudios, 9 filas
     `optimizar` y 120 `final`), que suman igual que las grillas de `control` (1 + 10 + 10), `h1` (4 + 40), `h2`
     (4 + 40) y `h3` (0 + 20).
   - ✓ Definiciones una sola vez: `grep` de G, Δ, δ, veredictos, T, A y N* en `experimentos/`, `docs/`, `plantilla/`,
@@ -418,10 +418,10 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     H con una variable, una métrica, umbral, confirma/refuta/ninguna; adaptaciones declaradas (parámetros de ejecución
     en `control`, `bagging_fraction` en `h2`); H1–H3 no tocan la proporción de clases; regla de "vale la pena" en
     `sampling_1`; 201910 no elige nada.
-  - ✓ § 2: cada brazo de una `hipotesis.md` está en la tabla de brazos de su `diseno.md` y viceversa; semillas,
+  - ✓ § 2: cada variante de una `hipotesis.md` está en la tabla de variantes de su `diseno.md` y viceversa; semillas,
     parámetros fijos, máquina (`n2-highmem-8`) en `control`; estimación, reparto y fases, y devolución del tutor (sin
     devolución) en `sampling_1`.
-  - ✓ `python -m comun.brazos --verificar`: sin problemas; lista lo que se rompe si falta cada carpeta (`control` →
+  - ✓ `python -m comun.variantes --verificar`: sin problemas; lista lo que se rompe si falta cada carpeta (`control` →
     todos; `h1` → `h3`, `sampling_1`).
   - ✓ Bitácoras de `control`, `h1`, `h2`, `h3`: puntero a `sampling_1`, hipótesis **revisada** el 1-nov (existe el
     cierre de hipótesis del 1-nov en esta bitácora) y commits de la separación (fd53165, dc6d9ce, 7c34254, ffc2e26
@@ -440,7 +440,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - ✓ `pytest` completo: 57 pasan (8 de `tests/test_reporte.py`: idempotencia, hipótesis nueva, ledger vacío).
   - ✓ Determinismo del reporte: `python -m comun.reporte --todos` regenera los cinco `reporte.html`; el `diff` por
     palabra contra HEAD solo cambia el pie (fecha y commit). Se descartó la regeneración.
-  - ✓ `python -m comun.brazos --verificar` sin problemas.
+  - ✓ `python -m comun.variantes --verificar` sin problemas.
   - ✓ No hay datos del dataset en el repo (`git ls-files`). Smoke test, `optimizar` sin 201910, columnas del ledger,
     `codigo_sucio`, filas de train, `consolidar.py` y `vm.sh`: n/a (el grupo no toca el corredor).
   - ✓ Cada veredicto de `h1`–`h3/informe/informe.md` sigue la regla de su `docs/hipotesis.md` (H1 ninguna de las dos
@@ -463,12 +463,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Sesión: interactiva (la del cambio) · modelo: Opus · etapa: **revision**. El loop headless se bloqueó en 6.3 y 6.5
   porque `git worktree add` y `git clone` fuera de la raíz no están en su lista de permitidos; se hicieron desde acá.
 - 6.5, clon limpio en una carpeta temporal con `DATOS_DIR` en `~/datos/experimentos-dmeyf` (panel de 20000 filas):
-  `python -m pytest` 61 pasan; `comun.brazos --verificar` sin `PROBLEMA`; `comun.reporte --todos` regenera los cinco;
+  `python -m pytest` 61 pasan; `comun.variantes --verificar` sin `PROBLEMA`; `comun.reporte --todos` regenera los cinco;
   smoke `--filas 20000 --trials 2` de `C`, `U0.25`, `B0.5` (optimizar) y `H3-0.25` (final, hp de `h1`), los cuatro rc 0
   y cada fila en `exploracion/` de su dueño. En el repo, los cinco `reporte.html` regenerados solo cambiaban el pie: se
   descartaron.
 - 6.3, revisor: subagente `general-purpose` sin contexto en un `git worktree` temporal, siguiendo solo
-  `docs/metodo.md` § Agregar una hipótesis: creó `h9` con el brazo `U0.02`; `--verificar` pasa, el reporte de
+  `docs/metodo.md` § Agregar una hipótesis: creó `h9` con la variante `U0.02`; `--verificar` pasa, el reporte de
   `sampling_1` (con `--salida`) lista `h9`, y `git diff --stat` no toca `control` ni `h1`–`h3`. Worktree descartado.
 - Pasos donde la guía no alcanzó, corregidos en `docs/metodo.md`:
   1. `--verificar` exige `h9` en `## Dependencias` de `sampling_1/docs/diseno.md`, pero la guía decía que `sampling_1`
@@ -485,7 +485,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Lista: docs/revision.md § 3 (código, aplicada a `comun/tokens.py` y a la integración) y § 5 (informe); ningún ✗.
   - ✓ `pytest` completo: 61 pasan, incluidos los cuatro de `tests/test_tokens.py` (cada experimento registra lo que
     declara, sin dueño va a `sampling_1`, doble declaración falla, etapa headless por cambio y grupo).
-  - ✓ `python -m comun.brazos --verificar`: código 0, ninguna línea `PROBLEMA`.
+  - ✓ `python -m comun.variantes --verificar`: código 0, ninguna línea `PROBLEMA`.
   - ✓ `python -m comun.tokens` sin `--experimento` regenera los cinco; en `sampling_1/ledger/tokens.csv` solo cambian
     filas del 3-nov (sesiones posteriores a la separación); las anteriores quedan idénticas.
   - ✓ `git grep sampling-velocidad` fuera de lo histórico (archivo de openspec, bitácora, `ledger/sesiones/`, este
@@ -493,7 +493,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     y su test (clave del cambio archivado en `ETAPA_DE_GRUPO_POR_CAMBIO`): todo legítimo.
   - ✓ Guía § Agregar una hipótesis enlazada desde `README.md` y `CLAUDE.md`; la plantilla trae `## Dependencias` y la
     referencia a las reglas de `control` en `hipotesis.md`. La prueba con `h9` en worktree y el clon limpio con el smoke
-    de un brazo por experimento (6.3 y 6.5) están en la entrada anterior; no se repitieron.
+    de una variante por experimento (6.3 y 6.5) están en la entrada anterior; no se repitieron.
   - ✓ Ningún archivo del dataset en `git ls-files`.
   - n/a resto de § 3 (smoke de los cuatro métodos, determinismo, meses leídos, columnas, `codigo_sucio`, filas de train,
     `consolidar.py`, `vm.sh`): el grupo 6 no toca ese código; lo cubren los tests y la revisión del grupo 2.

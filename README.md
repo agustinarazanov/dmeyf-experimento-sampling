@@ -20,7 +20,7 @@ están en `experimentos/sampling_1/README.md` § Correspondencia de rutas.
 
 ## Estructura
 
-- `comun/`: datos (panel con lags y deltas), baseline, ganancia, ledger, registro de brazos (`brazos.py`), muestreo,
+- `comun/`: datos (panel con lags y deltas), baseline, ganancia, ledger, registro de variantes (`variantes.py`), muestreo,
   métodos, `correr.py`, `consolidar.py`, `reporte.py` y registro de tokens. Lo usan todos los experimentos; un cambio
   acá se anuncia en el commit.
 - `experimentos/<nombre>/`: `docs/` (hipótesis, diseño, bitácora), `ledger/` e `informe/`; `sampling_1` además tiene
@@ -43,11 +43,11 @@ python -m comun.datos --filas 20000
 python -m comun.correr --metodo uniforme --tasa 0.25 --etapa optimizar --filas 20000
 python -m comun.consolidar --experimento h1       # o sin argumento, para todos
 python -m comun.reporte --experimento h1          # o --todos
-python -m comun.brazos --verificar                # dependencias, ciclos y qué se rompe si falta una carpeta
+python -m comun.variantes --verificar                # dependencias, ciclos y qué se rompe si falta una carpeta
 python -m pytest
 ```
 
-`comun.correr` escribe la fila en el ledger del dueño del brazo (`comun/brazos.py`) y lee y escribe los hiperparámetros
+`comun.correr` escribe la fila en el ledger del dueño de la variante (`comun/variantes.py`) y lee y escribe los hiperparámetros
 en el del dueño del estudio. Las corridas en la Mac son exploratorias (`etapa = exploracion`) y no entran en los
 resultados.
 

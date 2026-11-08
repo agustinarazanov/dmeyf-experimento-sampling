@@ -32,7 +32,7 @@ archivo bajan ese número sin perder calidad.
 - Un **registro de tokens** por sesión de Claude Code, calculado desde los transcripts locales, comparado contra la
   línea de base de octubre.
 - Un **reporte visual** regenerable desde el ledger (`informe/reporte.html`): introducción de qué se está probando,
-  tabla de todos los brazos contra el control, gráfico tiempo contra ganancia y una sección por hipótesis con su
+  tabla de todas las variantes contra el control, gráfico tiempo contra ganancia y una sección por hipótesis con su
   veredicto. Es la vista que comparte el grupo y la que sostiene el video.
 - Documentos del experimento en `experimentos/sampling-velocidad/docs/`: hipótesis, diseño experimental, bitácora,
   informe final y guion del video. La lista de revisión por etapa y el método son del repo (`docs/`), no del

@@ -31,7 +31,7 @@ mismo modelo y las mismas métricas, con el tiempo de pared como única diferenc
 
 ### Requirement: El baseline es el control
 La configuración método `uniforme`, tasa 1, con hiperparámetros optimizados sobre el 100% de las filas SHALL ser
-idéntica al baseline del 28-oct y SHALL correrse con las mismas semillas que los brazos experimentales.
+idéntica al baseline del 28-oct y SHALL correrse con las mismas semillas que las variantes experimentales.
 
 #### Scenario: Comparación apareada posible
 - **WHEN** se consulta el ledger para una semilla cualquiera de la grilla

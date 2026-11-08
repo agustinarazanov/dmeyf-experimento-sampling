@@ -7,13 +7,13 @@ quedan marcadas como de la versión anterior.
 
 Desde el 2-nov el resto del diseño está en cada experimento:
 
-- [`control/docs/diseno.md`](../../control/docs/diseno.md): brazo `C`, réplica `C-rep`, semillas finales, parámetros
+- [`control/docs/diseno.md`](../../control/docs/diseno.md): variante `C`, réplica `C-rep`, semillas finales, parámetros
   fijos de LightGBM, métricas que se calculan y máquina.
-- [`h1/docs/diseno.md`](../../h1/docs/diseno.md): brazos `U*`, su grilla y los estudios compartidos con H3.
-- [`h2/docs/diseno.md`](../../h2/docs/diseno.md): brazos `B*` y `GOSS` y su grilla.
-- [`h3/docs/diseno.md`](../../h3/docs/diseno.md): brazos `H3-*`, que usan los estudios de `h1`.
+- [`h1/docs/diseno.md`](../../h1/docs/diseno.md): variantes `U*`, su grilla y los estudios compartidos con H3.
+- [`h2/docs/diseno.md`](../../h2/docs/diseno.md): variantes `B*` y `GOSS` y su grilla.
+- [`h3/docs/diseno.md`](../../h3/docs/diseno.md): variantes `H3-*`, que usan los estudios de `h1`.
 
-En total: once brazos (el control y los diez de H1–H3) más `C-rep`; 9 estudios × 40 trials y 12 brazos × 10 semillas,
+En total: once variantes (el control y las diez de H1–H3) más `C-rep`; 9 estudios × 40 trials y 12 variantes × 10 semillas,
 así que 9 filas `optimizar` y 120 filas `final` en los ledgers.
 
 ## Estimación de horas y costo
@@ -25,7 +25,7 @@ predicción. Supuesto: u ≈ 1 min en `n2-highmem-8`. Factores de costo relativo
 - `bagging` con fracción f: 0,4 + 0,6 f. El `Dataset` completo y la búsqueda de cortes no se achican.
 - `GOSS`: 0,7.
 
-| brazo | estudio (u·min) | 10 finales (u·min) | T estimado (min) | A estimado |
+| variante | estudio (u·min) | 10 finales (u·min) | T estimado (min) | A estimado |
 |---|---:|---:|---:|---:|
 | `C` | 40,0 | 10,0 | 41,0 | 1,0 |
 | `U0.5` | 23,0 | 5,8 | 23,6 | 1,7 |
@@ -66,14 +66,14 @@ vez, así que las fases 2 y 3 pueden correr en paralelo con la 1 en VMs distinta
 | 1 | A | estudios `C`, `U0.25`, `U0.1` (en ese orden); finales `C`, `H3-0.25`, `H3-0.1`, `U0.25`, `U0.1` | 99,9 |
 | 2 | B | estudios y finales de `U0.5` y `U0.05`; después `C-rep` (con el JSON de `C` de la fase 1) | 48,4 |
 | 3 | C | estudios y finales de `B0.5`, `B0.25`, `B0.1` y `GOSS` | 120,5 |
-| 4 | D | solo finales de los 12 brazos (11 + `C-rep`) con los JSON ya guardados, guardando predicciones (agregada el 2-nov, D12) | ≈ 60 |
+| 4 | D | solo finales de las 12 variantes (11 + `C-rep`) con los JSON ya guardados, guardando predicciones (agregada el 2-nov, D12) | ≈ 60 |
 
-Total 268,8 u·min. Cada estudio y cada corrida final aparece una sola vez. Cada brazo tiene su estudio y sus finales
-en la misma VM; T(brazo) y T(C) vienen de VMs distintas, y la réplica `C-rep` en la VM B mide cuánto varía el tiempo
+Total 268,8 u·min. Cada estudio y cada corrida final aparece una sola vez. Cada variante tiene su estudio y sus finales
+en la misma VM; T(variante) y T(C) vienen de VMs distintas, y la réplica `C-rep` en la VM B mide cuánto varía el tiempo
 entre VMs. H4 queda fuera de esta tabla: la corre quien la lleva, cuando esté definida.
 
 **Fase 4 (agregada el 2-nov).** Las fases 1 a 3 no guardaron predicciones, solo curvas, y la comparación a tiempo igual
-necesita promediar probabilidades. La fase 4 repite únicamente los finales (sin estudios) de los 12 brazos en una sola
+necesita promediar probabilidades. La fase 4 repite únicamente los finales (sin estudios) de las 12 variantes en una sola
 VM, con `src/correr.py` (hoy `comun/correr.py`) ya guardando `ledger/predicciones/<id>.parquet`. Por la clave del ledger (sin commit) esas filas
 reemplazan a las anteriores: las ganancias son las mismas (determinismo, como mostró `C-rep`) y los tiempos finales
 quedan todos medidos en la misma máquina. Los tiempos de optimización siguen siendo los de las fases 1 a 3.
@@ -86,7 +86,7 @@ quedan todos medidos en la misma máquina. Los tiempos de optimización siguen s
 - N\* y δ salen del control, así que los veredictos esperan a que esté la fase 1 completa, pero las corridas no.
 
 **Corridas perdidas.** Si una VM spot muere, se crea otra, baja el panel y el SQLite del bucket, retoma el estudio y
-relanza las finales con la lista de configuraciones. El corredor saltea las que ya tienen fila en `ledger/corridas/`. Si un brazo termina con menos
+relanza las finales con la lista de configuraciones. El corredor saltea las que ya tienen fila en `ledger/corridas/`. Si una variante termina con menos
 de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
 
 ## Fuera de la grilla

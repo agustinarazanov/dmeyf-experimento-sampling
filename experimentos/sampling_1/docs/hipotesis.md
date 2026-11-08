@@ -18,7 +18,7 @@ Pregunta del tutor (Zulip 208986, 1-nov): **¿vale la pena el tradeoff entre vel
 
 Para el baseline de Bolaños (28-oct, Zulip 208135), ¿cuánto tiempo se ahorra y cuánta ganancia se pierde en 201910 si se
 usan menos filas para entrenar u optimizar? En H1, H2 y H3 la proporción de BAJA+1 ∪ BAJA+2 queda igual, en
-esperanza, en todos los brazos; H4 la cambia a propósito y la lleva un integrante por separado.
+esperanza, en todas las variantes; H4 la cambia a propósito y la lleva un integrante por separado.
 
 ## H4 — Submuestreo informado de CONTINUA y pesos por fila (a cargo de un integrante, fuera de la grilla nuestra)
 
@@ -45,13 +45,13 @@ La pregunta no es velocidad contra ganancia sino qué se hace con el tiempo ahor
 perder ni un 1%. Por eso, además de la comparación a datos iguales, hay una **comparación a tiempo igual**: el control
 completo contra la variante rápida con el tiempo sobrante gastado en más semillas (ensamble de K modelos de la variante,
 con K tal que el tiempo total iguale al del control). Sale del mismo ledger, sin corridas nuevas, porque las 10 semillas
-de cada brazo ya están. Predicción: a tiempo igual la variante rápida gana, y H3 es la que más rinde.
+de cada variante ya están. Predicción: a tiempo igual la variante rápida gana, y H3 es la que más rinde.
 *Nota del 2-nov (después de las fases 1 a 3, antes de ver ningún ensamble):* el ledger guardaba curvas y no predicciones,
 así que el ensamble no salía "sin corridas nuevas". Se agrega una fase 4 que repite solo los finales guardando
 predicciones (`diseno.md` § Fases, D12). La predicción no cambia.
 
-Un brazo **vale la pena** si *no pierde* contra el control y además A ≥ 2, con la definición común de T. La respuesta
-del video es la lista de brazos que valen la pena, con su A y su Δ, más la curva tiempo-ganancia de todos los brazos.
+Una variante **vale la pena** si *no pierde* contra el control y además A ≥ 2, con la definición común de T. La respuesta
+del video es la lista de variantes que valen la pena, con su A y su Δ, más la curva tiempo-ganancia de todas las variantes.
 Predicción: valen la pena H3 con ambas tasas y H1 con r = 0,25. Para un pipeline acotado en tiempo, como el de 15
 minutos de la segunda entrega, lo que más sirve es H3 con r_opt = 0,1, porque la optimización domina el tiempo total.
 
@@ -61,10 +61,10 @@ Las comunes a todas las hipótesis. Las propias de una hipótesis están en su `
 compartido entre H1 y H3 en `h3`).
 
 - Con 10 semillas no se separan diferencias menores que δ; esos casos salen como *indeterminado* y se informan.
-- Aparear por semilla ayuda poco entre brazos con datos e hiperparámetros distintos, porque la misma semilla no produce
+- Aparear por semilla ayuda poco entre variantes con datos e hiperparámetros distintos, porque la misma semilla no produce
   modelos correlacionados. El IC apareado es honesto, pero no es mucho más angosto que uno no apareado.
-- Optuna corre con una sola semilla por brazo, así que Δ incluye la suerte de la optimización, que el IC no mide.
-- El corte N* sale de 201908, así que si la tasa de bajas de 201910 es distinta, todos los brazos pagan igual.
+- Optuna corre con una sola semilla por variante, así que Δ incluye la suerte de la optimización, que el IC no mide.
+- El corte N* sale de 201908, así que si la tasa de bajas de 201910 es distinta, todas las variantes pagan igual.
 - Hay un solo mes de test (201910) y un solo año (2019), así que la conclusión vale para este baseline.
 - Los tiempos se miden en `n2-highmem-8`. Si el pipeline de la segunda entrega corre en otra máquina, por ejemplo con
   la predicción en la laptop, las aceleraciones relativas se pueden trasladar, pero los segundos absolutos no.

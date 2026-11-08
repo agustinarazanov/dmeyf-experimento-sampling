@@ -28,18 +28,18 @@ quedan marcadas como de la versión anterior.
   | `bagging_fraction` | 0,1 – 1,0, con `bagging_freq = 1` | lineal |
 
   Los 40 trials y la semilla única de Optuna son una elección nuestra, porque 208135 no los fija.
-- **Semillas finales**: 10 semillas fijas, las mismas en todos los brazos. Cada una fija el `seed` de LightGBM, de donde
-  salen el bagging y el `feature_fraction`. En los brazos con muestreo previo, la semilla final también vuelve a sortear
+- **Semillas finales**: 10 semillas fijas, las mismas en todas las variantes. Cada una fija el `seed` de LightGBM, de donde
+  salen el bagging y el `feature_fraction`. En las variantes con muestreo previo, la semilla final también vuelve a sortear
   la muestra, así que el IC incluye la variabilidad de la muestra.
 - **Corte**: la cantidad de envíos N* que maximiza la ganancia media del control en **201908**. Ese mismo N* se aplica
-  en 201910 a todos los brazos.
+  en 201910 a todas las variantes.
 
 ## Métricas y reglas comunes
 
 - **Métrica que decide (G)**: ganancia en 201910 al corte fijo N*, calculada contra BAJA+2 con los valores de la
   cátedra. La ganancia máxima de la curva se reporta pero no decide.
-- **Δ**: G(brazo) − G(control), apareada por la semilla final. Se reportan la media, el desvío, el IC 95% (t de Student,
-  9 g.l., o n − 1 si un brazo termina con n < 10 semillas en común) y en cuántas semillas gana el brazo.
+- **Δ**: G(variante) − G(control), apareada por la semilla final. Se reportan la media, el desvío, el IC 95% (t de Student,
+  9 g.l., o n − 1 si una variante termina con n < 10 semillas en común) y en cuántas semillas gana la variante.
 - **Margen δ**: δ = 0,02 · Ḡ_C, donde Ḡ_C es la ganancia media del control en 201910 al corte N*. Lo que se fija antes
   de correr es la regla; el valor de δ sale del control.
 - **Veredicto**. Los cuatro casos cubren todo:
@@ -48,10 +48,10 @@ quedan marcadas como de la versión anterior.
   - *pierde*: la media de Δ es menor que −δ;
   - *indeterminado*: el resto, cuando la cota inferior es menor que −δ y la media es mayor o igual que −δ. Faltan
     semillas para decidir y se informa así.
-- **Tiempo (T)**: tiempo de pared del pipeline del brazo, medido solo en `n2-highmem-8`. Es la optimización (suma de
+- **Tiempo (T)**: tiempo de pared del pipeline de la variante, medido solo en `n2-highmem-8`. Es la optimización (suma de
   la duración de los 40 trials, incluida la predicción en 201908, más un armado del `lgb.Dataset`) más la media del
   modelo final entre semillas (`Dataset`, entrenamiento y predicción en 201910). Sumar trials, y no medir el proceso
   entero, hace que T no dependa de si la VM spot se cayó y el estudio se retomó.
-  No incluye leer los datos ni generar los lags, que son iguales en todos los brazos. El tiempo de `lgb.train` del
+  No incluye leer los datos ni generar los lags, que son iguales en todas las variantes. El tiempo de `lgb.train` del
   modelo final se reporta aparte.
-- **Aceleración**: A = T(control) / T(brazo), con la misma definición de T en todos los brazos.
+- **Aceleración**: A = T(control) / T(variante), con la misma definición de T en todas las variantes.

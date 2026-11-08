@@ -2,39 +2,39 @@
 
 Traduce `docs/hipotesis.md` a corridas concretas para el control, y fija la máquina, los parámetros y las métricas que
 usan todas las hipótesis. Las definiciones de G, Δ, δ, T, A, N* y los veredictos están en `docs/hipotesis.md` y no se
-repiten. Los brazos de cada hipótesis están en su propio `docs/diseno.md`; el reparto en fases, la estimación y la
+repiten. Las variantes de cada hipótesis están en su propio `docs/diseno.md`; el reparto en fases, la estimación y la
 devolución del tutor, en [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md). Si este documento cambia
 después de abrir la etapa de corridas, el cambio va a `docs/bitacora.md` y las corridas previas quedan marcadas como de
 la versión anterior.
 
-## Brazos
+## Variantes
 
-| brazo | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
+| variante | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
 |---|---|---|---|---|---|
 | `C` | control | r = 1 | 5 hp | r = 1 | — |
 
 "5 hp" es el espacio del control (`hipotesis.md` § Control). `C-rep` (§ Grilla) es una réplica del control para la
-compuerta de resultados, no un brazo.
+compuerta de resultados, no una variante.
 
 ## Grilla
 
 - **Optimización**: el estudio `C`, 40 trials, 100 iteraciones cada uno, sin early stopping.
 - **Finales**: `C` × 10 semillas. Cada corrida predice 201908 y 201910 y guarda las dos curvas.
-- **Réplica del control**: brazo propio, **`C-rep`**: 10 corridas finales con el JSON de `C` y las mismas 10 semillas,
+- **Réplica del control**: variante propio, **`C-rep`**: 10 corridas finales con el JSON de `C` y las mismas 10 semillas,
   en otra VM. El diseño original la ponía en la VM de otra persona; con la decisión del 1-nov (todas las fases en la
   cuenta de Agustina) la réplica es entre VMs de la misma persona, y eso queda como limitación declarada en el informe:
-  prueba el determinismo entre máquinas, no la reproducción entre integrantes. Tiene su propio nombre de brazo para que
-  el id de la corrida (que incluye el brazo) no choque con las de `C` y el corredor no las saltee. No entran en Δ:
+  prueba el determinismo entre máquinas, no la reproducción entre integrantes. Tiene su propio nombre de variante para que
+  el id de la corrida (que incluye la variante) no choque con las de `C` y el corredor no las saltee. No entran en Δ:
   sirven para la compuerta de resultados (el control se repite) y para medir cuánto varía el tiempo entre VMs del
   mismo tipo.
 
-**Semillas finales**, iguales en todos los brazos y en este orden: 100003, 200003, 300007, 400009, 500009, 600011,
+**Semillas finales**, iguales en todas las variantes y en este orden: 100003, 200003, 300007, 400009, 500009, 600011,
 700001, 800011, 900001, 999983. La semilla 0 queda reservada para Optuna y para las muestras de optimización, y no
 coincide con ninguna final.
 
 ## Parámetros fijos de LightGBM
 
-En todos los brazos, además de los defaults:
+En todas las variantes, además de los defaults:
 
 - `objective = binary`, `num_iterations = 100`, `num_threads = 8`, `verbosity = -1`, `seed` = la semilla final en
   las corridas finales y 0 en los trials de Optuna.
@@ -55,7 +55,7 @@ Al consolidar, en este orden:
 1. **N\***: con las 10 curvas de `C` en 201908, el N que maximiza la ganancia media.
 2. **G**: ganancia en 201910 al corte N\* para cada corrida final.
 3. **Ḡ_C y δ**, como en `hipotesis.md` § Métricas y reglas comunes.
-4. **Δ por brazo**, apareada por semilla contra `C` y solo sobre las semillas que tienen los dos. Media, desvío s,
+4. **Δ por variante**, apareada por semilla contra `C` y solo sobre las semillas que tienen los dos. Media, desvío s,
    IC 95% = media ± 2,262 · s / √n (t de Student con n − 1 g.l.; 2,262 es el valor para n = 10) y semillas ganadas.
 5. **Veredicto** con las cuatro reglas de `hipotesis.md`.
 6. **T**, como en `hipotesis.md`. El del estudio es la suma de las duraciones de los 40 trials (guardadas en el SQLite

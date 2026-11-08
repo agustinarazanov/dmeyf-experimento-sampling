@@ -109,7 +109,7 @@ def sanity(r: dict[str, pd.DataFrame]) -> list[tuple[str, bool, str]]:
         len(f1) == 30 and f1["maquina"].nunique() == 1 and f1["commit"].nunique() == 1,
         f"{len(f1)} filas, {f1['maquina'].nunique()} máquinas, {f1['commit'].nunique()} commits")
     variantes = ["U0.5", "U0.25", "U0.1", "U0.05", "B0.5", "B0.25", "B0.1", "GOSS"]
-    chk("5.2-5.3 los 8 variantes de H1/H2 tienen 10 finales",
+    chk("5.2-5.3 las 8 variantes de H1/H2 tienen 10 finales",
         all(len(fin[fin["variante"] == b]) == 10 for b in variantes), "")
     full = fin["filas_train"].max()
     malas = [b for b, g in fin[fin["variante"].str.startswith("U")].groupby("variante")

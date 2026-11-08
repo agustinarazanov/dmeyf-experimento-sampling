@@ -91,7 +91,7 @@ def variantes_de(exp: str) -> list[Variante]:
 
 
 def duenos() -> list[str]:
-    """Experimentos dueños de algún variante, el control primero."""
+    """Experimentos dueños de alguna variante, el control primero."""
     return sorted({b.dueno for b in VARIANTES.values()}, key=lambda e: (e != CONTROL, e))
 
 

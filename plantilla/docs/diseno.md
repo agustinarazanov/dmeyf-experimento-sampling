@@ -5,12 +5,12 @@ Traduce `docs/hipotesis.md` a corridas concretas. Las definiciones de G, Δ, δ,
 
 ## Dependencias
 
-De qué experimentos lee este (un ledger por línea). `python -m comun.brazos --verificar` lo compara con el registro de
-brazos y estudios de `comun/brazos.py`.
+De qué experimentos lee este (un ledger por línea). `python -m comun.variantes --verificar` lo compara con el registro de
+variantes y estudios de `comun/variantes.py`.
 
 - `control`: finales de `C`, N\* y δ.
 
-## Brazos
+## Variantes
 
 ## Grilla
 

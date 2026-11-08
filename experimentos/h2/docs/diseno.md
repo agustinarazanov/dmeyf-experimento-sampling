@@ -6,9 +6,9 @@ estimación, los de [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.m
 abrir la etapa de corridas, el cambio va a `docs/bitacora.md` y las corridas previas quedan marcadas como de la versión
 anterior.
 
-## Brazos
+## Variantes
 
-| brazo | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
+| variante | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
 |---|---|---|---|---|---|
 | `B0.5`, `B0.25`, `B0.1` | H2 | r = 1 | 4 hp (sin `bagging_fraction`) | r = 1 | `bagging_fraction = f`, `bagging_freq = 1` |
 | `GOSS` | H2, descriptivo | r = 1 | 4 hp (sin `bagging_fraction`) | r = 1 | `data_sample_strategy = goss`, `top_rate = 0,2`, `other_rate = 0,1` |
@@ -19,7 +19,7 @@ anterior.
 ## Grilla
 
 - **Optimización**: 4 estudios (`B0.5`, `B0.25`, `B0.1`, `GOSS`) × 40 trials.
-- **Finales**: 4 brazos × 10 semillas = 40 corridas.
+- **Finales**: 4 variantes × 10 semillas = 40 corridas.
 
 ## Fuera de la grilla
 

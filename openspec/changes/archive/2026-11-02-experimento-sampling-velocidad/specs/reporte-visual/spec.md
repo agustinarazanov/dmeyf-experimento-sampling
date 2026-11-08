@@ -13,8 +13,8 @@ El experimento SHALL tener un comando que genere `informe/reporte.html` a partir
 cualquier momento con los resultados que haya.
 
 #### Scenario: Regenerar con resultados parciales
-- **WHEN** se genera el reporte y a un brazo le faltan semillas o no tiene corridas
-- **THEN** el brazo aparece como pendiente con lo que tiene, y ninguna sección falla ni muestra un número inventado
+- **WHEN** se genera el reporte y a una variante le faltan semillas o no tiene corridas
+- **THEN** la variante aparece como pendiente con lo que tiene, y ninguna sección falla ni muestra un número inventado
 
 #### Scenario: Regenerar dos veces
 - **WHEN** se genera el reporte dos veces sin corridas nuevas
@@ -29,19 +29,19 @@ de ver un número.
 - **WHEN** se edita `docs/hipotesis.md` y se regenera el reporte
 - **THEN** la introducción refleja el cambio sin tocar el generador
 
-### Requirement: Comparación de todos los brazos en una vista
-El reporte SHALL mostrar una tabla con todos los brazos contra el control (ganancia media, diferencia apareada con su
-intervalo, tiempo, aceleración, veredicto) y un gráfico de tiempo contra ganancia con un punto por brazo y el control
-marcado, más una sección por hipótesis con las curvas de ganancia (banda entre semillas) de sus brazos junto al control.
+### Requirement: Comparación de todas las variantes en una vista
+El reporte SHALL mostrar una tabla con todas las variantes contra el control (ganancia media, diferencia apareada con su
+intervalo, tiempo, aceleración, veredicto) y un gráfico de tiempo contra ganancia con un punto por variante y el control
+marcado, más una sección por hipótesis con las curvas de ganancia (banda entre semillas) de sus variantes junto al control.
 
 #### Scenario: Leer el veredicto de una hipótesis
 - **WHEN** se abre la sección de una hipótesis
-- **THEN** se ve su predicción, la regla, el resultado de cada brazo y el veredicto (no pierde, pierde, indeterminado,
+- **THEN** se ve su predicción, la regla, el resultado de cada variante y el veredicto (no pierde, pierde, indeterminado,
   pendiente), con la tabla y la figura que lo sostienen
 
 #### Scenario: Comparación a tiempo igual
-- **WHEN** el control y al menos un brazo tienen sus 10 semillas
-- **THEN** el reporte incluye la comparación a tiempo igual (ensamble de K semillas del brazo contra el control) con el
+- **WHEN** el control y al menos una variante tienen sus 10 semillas
+- **THEN** el reporte incluye la comparación a tiempo igual (ensamble de K semillas de la variante contra el control) con el
   K usado
 
 ### Requirement: Legible sin servidor y compartible

@@ -10,7 +10,7 @@
 16:51:35  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
 16:51:36  Bash       head -c 1500 experimentos/sampling-velocidad/ledger/resultados.csv
 16:51:37  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
-16:51:41  texto      Resultados de las fases ya consolidados (10 brazos completos); ahora escribo `reporte.py` para la ta
+16:51:41  texto      Resultados de las fases ya consolidados (10 variantes completos); ahora escribo `reporte.py` para la ta
 16:51:42  Bash       grep -rn -i "tiempo igual\|ensamble\|predicc.*guard\|n_estrella\|def apare" openspec/changes/experim
 16:51:45  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
 16:51:45  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
@@ -39,12 +39,12 @@
 16:53:54  Bash       python -m experimentos.sampling-velocidad.src.reporte --ledger experimentos/sampling-velocidad/infor
 16:53:59  Bash       diff experimentos/sampling-velocidad/informe/reporte.html experimentos/sampling-velocidad/informe/_p
 16:54:00  Bash       grep -o -E "<td class='pend'>[^<]*|<p class='pend'>[^<]*|<script|<link|src=.http" experimentos/sampl
-16:54:04  texto      Las dos generaciones dan el mismo archivo, el parcial muestra los brazos pendientes y no hay referen
+16:54:04  texto      Las dos generaciones dan el mismo archivo, el parcial muestra las variantes pendientes y no hay referen
 16:54:04  Bash       rm -r experimentos/sampling-velocidad/informe/_prueba
 16:54:05  Bash       ls experimentos/sampling-velocidad/informe/figuras
 16:54:07  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
 16:54:17  Bash       git add experimentos/sampling-velocidad/src/reporte.py experimentos/sampling-velocidad/scripts/ledge
-16:54:18  Bash       git commit -q -m "6.0: src/reporte.py genera informe/reporte.html desde el ledger (tabla de brazos, 
+16:54:18  Bash       git commit -q -m "6.0: src/reporte.py genera informe/reporte.html desde el ledger (tabla de variantes, 
 16:54:20  texto      Ahora 6.1: decisiones por hipótesis citando `apareado.csv`.
 16:54:34  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
 16:54:37  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/experimento-sam
@@ -82,16 +82,16 @@ aplicar g6: claude-opus-5-5 67 turnos US$ 2.0511 (success, rc 0)
 == BLOQUEADO:
 BLOQUEADO (2026-11-02, grupo 6, tarea 6.0)
 
-La tarea 6.0 pide la comparación a tiempo igual: un ensamble de K semillas del brazo contra el control (spec reporte-visual,
+La tarea 6.0 pide la comparación a tiempo igual: un ensamble de K semillas de la variante contra el control (spec reporte-visual,
 "Comparación a tiempo igual"; hipotesis.md § Respuesta dice que sale "del mismo ledger, sin corridas nuevas"). No se
 puede armar: correr.py guarda las curvas de ganancia de cada final y no las predicciones, y sin predicciones no hay
-ensamble. Hoy reporte.py calcula K por brazo, K = ⌊(T(C) − T_opt) / T_final⌋ acotado a 10, y muestra la G del ensamble
+ensamble. Hoy reporte.py calcula K por variante, K = ⌊(T(C) − T_opt) / T_final⌋ acotado a 10, y muestra la G del ensamble
 como "pendiente". Todo lo demás de 6.0 está hecho y verificado: ledger parcial con pendientes, mismo HTML dos veces,
 sin servidor.
 
 Es una decisión de diseño. Opciones:
   1. Agregar a correr.py que guarde las predicciones de 201910 (ledger/predicciones/<id>.parquet) y volver a correr solo
-     las etapas `final` de los 11 brazos. Con los JSON de hp ya guardados, es ≈ 1 h de VM.
+     las etapas `final` de las 11 variantes. Con los JSON de hp ya guardados, es ≈ 1 h de VM.
   2. Aceptarlo como limitación: la comparación a tiempo igual queda fuera y se marca 6.0 con esa salvedad, que ya está
      en informe.md § Limitaciones.
   3. Usar un proxy sin ensamble, por ejemplo el máximo de G entre K semillas. Cambia la definición, así que también es

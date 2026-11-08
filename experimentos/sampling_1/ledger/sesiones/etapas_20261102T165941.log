@@ -35,7 +35,7 @@
 17:00:56  Bash       pytest -q
 17:01:00  Bash       python -m pytest -q tests/test_ledger.py tests/test_consolidar.py
 17:01:04  texto      Tests pasan. Ahora la corrida local de `C` con 20000 filas.
-17:01:05  Bash       grep -n -e "brazo" -e "--filas" /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/
+17:01:05  Bash       grep -n -e "variante" -e "--filas" /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/
 17:01:09  Bash       python -m experimentos.sampling-velocidad.src.correr --metodo uniforme --tasa 1 --semilla 0 --etapa 
 17:01:13  Bash       python -m experimentos.sampling-velocidad.src.correr --metodo uniforme --tasa 1 --semilla 0 --etapa 
 17:01:18  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
@@ -61,7 +61,7 @@ b='experimentos/sampling-velocidad/ledger/exploracion/'
 17:02:17  Bash       experimentos/sampling-velocidad/scripts/lanzar_fase.sh 4
 17:02:23  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
 17:02:26  Bash       git add experimentos/sampling-velocidad/ledger/sesiones/en_curso.txt experimentos/sampling-velocidad
-17:02:29  Bash       git commit -q -m "6.6: fase 4 lanzada en sampling-f4 (finales de los 12 brazos con predicciones); en
+17:02:29  Bash       git commit -q -m "6.6: fase 4 lanzada en sampling-f4 (finales de las 12 variantes con predicciones); en
 17:02:37  texto      Hice la 6.5 y dejé la fase 4 corriendo. La 6.6 y la 6.7 todavía no están: dependen de los resultados
 17:02:37  fin        success · 52 turnos · US$ 1.034
 aplicar g6: claude-opus-5-5 52 turnos US$ 1.034 (success, rc 0)
@@ -69,15 +69,15 @@ aplicar g6: claude-opus-5-5 52 turnos US$ 1.034 (success, rc 0)
 EN_CURSO
 
 Fase 4 lanzada el 2026-11-02 ~17:05 con `scripts/lanzar_fase.sh 4` (VM sampling-f4, commit de la tarea 6.5,
-log en ledger/sesiones/vm_f4.log). Corre scripts/fase4.txt: finales de los 12 brazos × 10 semillas, ahora con
+log en ledger/sesiones/vm_f4.log). Corre scripts/fase4.txt: finales de las 12 variantes × 10 semillas, ahora con
 predicciones de test.
 
 Qué espero al volver la VM (tarea 6.6):
 - `consolidar.py --sanity` sin errores; 120 finales en resultados.csv, todos del mismo commit y la misma máquina.
 - 120 parquet en ledger/predicciones/.
 - Las 120 filas finales anteriores en reemplazadas.csv.
-- ganancia_max_201910 y auc_test idénticos a los de las filas reemplazadas por brazo y semilla (determinismo);
-  diferencias, si las hay, a la bitácora con brazo y semilla.
+- ganancia_max_201910 y auc_test idénticos a los de las filas reemplazadas por variante y semilla (determinismo);
+  diferencias, si las hay, a la bitácora con variante y semilla.
 - Anotar en la bitácora la VM borrada y el tiempo de la fase.
 
 Después sigue 6.7 (comparación a tiempo igual en src/reporte.py), que depende de esos parquet; 6.0 se marca al cerrar 6.7.
@@ -169,7 +169,7 @@ aplicar g6: claude-opus-5-5 45 turnos US$ 1.6013 (success, rc 0)
 18:09:16  texto      Reviso el grupo 6 contra la lista de informe: ya leí informe y guion, ahora verifico las reglas de `
 18:09:17  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocidad/
 18:09:26  Bash       grep -n "^#\|^|" informe/decisiones.md | cut -c1-220; grep -n -i "domina\|t_opt\|fracci" informe/dec
-18:09:30  Bash       head -1 ledger/resultados.csv | tr ',' '\n' | grep -n -i "tiempo\|seg\|brazo\|etapa" ; head -1 ledge
+18:09:30  Bash       head -1 ledger/resultados.csv | tr ',' '\n' | grep -n -i "tiempo\|seg\|variante\|etapa" ; head -1 ledge
 18:09:33  Bash       python -c "
 import pandas as pd
 e=pd.read_csv('ledger/estudios.csv');r=pd.read_csv('ledger/resultado

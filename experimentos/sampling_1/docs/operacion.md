@@ -1,19 +1,19 @@
 # Operación — Sampling_1
 
 Cómo correr, retomar y consolidar. Todos los comandos se corren desde la **raíz del repo** (sin `PYTHONPATH`); las rutas
-`ledger/…` son las del dueño de cada brazo (`experimentos/<dueño>/ledger/`, ver `comun/brazos.py`: `control`, `h1`, `h2`,
+`ledger/…` son las del dueño de cada variante (`experimentos/<dueño>/ledger/`, ver `comun/variantes.py`: `control`, `h1`, `h2`,
 `h3`). El diseño y el reparto por persona están en `docs/diseno.md`.
 
 ## Una configuración
 
 ```bash
 python -m comun.correr --metodo uniforme --tasa 0.25 --semilla 0 --etapa optimizar        # estudio U0.25 (h1/ledger)
-python -m comun.correr --metodo uniforme --tasa 0.25 --semilla todas --etapa final        # brazo U0.25, 10 semillas
-python -m comun.correr --metodo opt-muestra --tasa 0.25 --semilla todas --etapa final     # brazo H3-0.25 (h3/ledger)
-python -m comun.correr --metodo uniforme --tasa 1 --semilla todas --etapa final --brazo C-rep --hp experimentos/control/ledger/hp/C.json
+python -m comun.correr --metodo uniforme --tasa 0.25 --semilla todas --etapa final        # variante U0.25, 10 semillas
+python -m comun.correr --metodo opt-muestra --tasa 0.25 --semilla todas --etapa final     # variante H3-0.25 (h3/ledger)
+python -m comun.correr --metodo uniforme --tasa 1 --semilla todas --etapa final --variante C-rep --hp experimentos/control/ledger/hp/C.json
 ```
 
-| método | `--tasa` | estudio | brazo |
+| método | `--tasa` | estudio | variante |
 |---|---|---|---|
 | `uniforme` | r | `C` (r = 1) o `U<r>` | igual al estudio |
 | `bagging` | f | `B<f>` | igual al estudio |
@@ -41,11 +41,11 @@ En una fila `optimizar`, `tiempo_optimizacion_s` es la suma de la duración de l
 
 ```bash
 python -m comun.consolidar --experimento h1   # resultados.csv, reemplazadas.csv, estudios.csv y apareado.csv de h1
-python -m comun.consolidar                    # los de todos los dueños de brazos
+python -m comun.consolidar                    # los de todos los dueños de variantes
 python -m comun.reporte --todos               # informe/reporte.html de cada experimento (--figuras DIR guarda los PNG)
 ```
 
-`apareado.csv` trae N* (elegido con el control en 201908), δ, Δ de ganancia por brazo (media, desvío, IC 95%, semillas
+`apareado.csv` trae N* (elegido con el control en 201908), δ, Δ de ganancia por variante (media, desvío, IC 95%, semillas
 ganadas, veredicto), Δ de AUC, T y la aceleración A. Los tiempos solo se comparan con el control si la máquina, la CPU y
 los hilos coinciden; si no, la columna `nota` lo dice.
 

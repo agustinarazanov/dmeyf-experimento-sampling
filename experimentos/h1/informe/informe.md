@@ -8,13 +8,13 @@ Parte de Sampling_1: la comparación entre hipótesis, la respuesta al tutor y l
 ## Hipótesis
 
 H1: submuestrear el train al azar (r = 0,5 a 0,05) no pierde con r ≥ 0,25 y pierde con r = 0,05. Texto completo en
-`docs/hipotesis.md`, brazos y grilla en `docs/diseno.md`.
+`docs/hipotesis.md`, variantes y grilla en `docs/diseno.md`.
 
 ## Resultados
 
 N* = 3.300 envíos (de 201908), Ḡ_C = 276,10 M$, δ = 5,52 M$, 10 semillas en común.
 
-| brazo | Δ media (M$) | IC 95% (M$) | A | veredicto | vale la pena |
+| variante | Δ media (M$) | IC 95% (M$) | A | veredicto | vale la pena |
 |---|---|---|---|---|---|
 | U0.5 | −1,32 | [−6,77; 4,13] | 2,28 | indeterminado | no |
 | U0.25 | −6,38 | [−11,21; −1,55] | 4,89 | pierde | no |
@@ -27,7 +27,7 @@ N* = 3.300 envíos (de 201908), Ḡ_C = 276,10 M$, δ = 5,52 M$, 10 semillas en 
 
 ## Limitaciones
 
-- Una sola semilla de Optuna por brazo: Δ incluye la suerte de la optimización y el IC no la mide.
+- Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
 - Los estudios de U0.25 y U0.1 los usa también H3 (`h3`): Δ(U0.25) y Δ(H3-0.25) no son evidencia independiente entre sí.
 - Un solo año (2019), un solo mes de test (201910) y un solo tipo de máquina; el resto en el informe conjunto.
 

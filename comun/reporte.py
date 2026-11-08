@@ -4,7 +4,7 @@
     python -m comun.reporte --todos
 
 Un reporte por experimento. Para `control`: su sección de `docs/hipotesis.md` y el estado de C. Para cada `hN`: su
-hipótesis, la tabla de sus variantes contra el control y las bandas de curvas. Para `sampling_1`: todos las variantes de
+hipótesis, la tabla de sus variantes contra el control y las bandas de curvas. Para `sampling_1`: todas las variantes de
 todas las hipótesis registradas en `comun/variantes.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.
 Lee `resultados.csv`, `apareado.csv` y las curvas de los ledgers de `experimentos/*/` (los finales de C salen de
 `control`). Un único HTML con las figuras embebidas (PNG en base64), sin servidor. Las variantes sin datos salen como
@@ -361,7 +361,7 @@ def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Pa
 def fig_tiempo_igual(ctx: Contexto, g_c1: float, g_c10: float | None, datos: dict, figuras: Path | None) -> str:
     pts = [(b, d[3]) for b, d in datos.items() if d is not None and d[3] is not None]
     if not pts:
-        return "<p class='pend'>pendiente: ningún variante tiene su ensamble</p>"
+        return "<p class='pend'>pendiente: ninguna variante tiene su ensamble</p>"
     fig, ax = plt.subplots(figsize=(7.5, 0.35 * len(pts) + 1.6))
     for i, (b, g) in enumerate(pts):
         ax.scatter([g / 1e6], [i], color=ctx.color[ctx.hip_de[b]], zorder=3)
@@ -440,7 +440,7 @@ def generar(exp: str, figuras: Path | None = None) -> str:
     completos = sum(estado(b, fin)[1] for b in ["C", *ctx.variantes])
     titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)
     cuerpo = (f"<h1>{html.escape(titulo)}</h1><section>{intro}</section>"
-              f"<section><h2>{'Todos las variantes' if ctx.agregador else 'Variantes'} contra el control</h2><p>"
+              f"<section><h2>{'Todas las variantes' if ctx.agregador else 'Variantes'} contra el control</h2><p>"
               f"{html.escape(n_est)}. Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_variantes(ctx, fin, ap)}"
               + (fig_tiempo_ganancia(ctx, ap, figuras) if ctx.agregador else "") + "</section>")
     if ctx.agregador:

@@ -24,9 +24,9 @@ Las listas son las mismas para todos los experimentos. Las rutas son relativas a
 ## 2. Diseño (`docs/diseno.md`)
 
 - [ ] La grilla está completa: método × tasa × semilla × etapa, con el total de corridas calculado.
-- [ ] Cada brazo de `hipotesis.md` aparece en la grilla y no hay brazos que no estén en `hipotesis.md`.
-- [ ] El control está apareado por semilla con cada brazo (mismas 10 semillas finales).
-- [ ] Los trials de Optuna, la semilla de optimización y el espacio de búsqueda son iguales en todos los brazos, salvo
+- [ ] Cada variante de `hipotesis.md` aparece en la grilla y no hay variantes que no estén en `hipotesis.md`.
+- [ ] El control está apareado por semilla con cada variante (mismas 10 semillas finales).
+- [ ] Los trials de Optuna, la semilla de optimización y el espacio de búsqueda son iguales en todas las variantes, salvo
       la adaptación declarada de H2.
 - [ ] Los tiempos se miden en un solo tipo de máquina y está nombrado.
 - [ ] Las horas de VM y el costo están estimados y entran en el trial.
@@ -52,9 +52,9 @@ Las listas son las mismas para todos los experimentos. Las rutas son relativas a
 - [ ] No hay `codigo_sucio` ni `etapa = exploracion` en `resultados.csv`.
 - [ ] Las filas de train de cada corrida coinciden con su tasa.
 - [ ] El control da AUC y ganancia que se repiten, dentro del ruido, en una segunda corrida independiente (otra persona si la hay; si no, otra VM, y queda anotado como limitación).
-- [ ] En los brazos de H2, `bagging_fraction` quedó fijo y no optimizado.
-- [ ] Cada brazo tiene sus 10 semillas, y si no, está anotado por qué.
-- [ ] `apareado.csv` tiene media, desvío, IC 95% y semillas ganadas para cada brazo contra su referencia.
+- [ ] En las variantes de H2, `bagging_fraction` quedó fijo y no optimizado.
+- [ ] Cada variante tiene sus 10 semillas, y si no, está anotado por qué.
+- [ ] `apareado.csv` tiene media, desvío, IC 95% y semillas ganadas para cada variante contra su referencia.
 - [ ] Las VMs están borradas y el gasto quedó anotado.
 
 ## 5. Informe (`informe/`)

@@ -6,9 +6,9 @@ estimación, los de [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.m
 abrir la etapa de corridas, el cambio va a `docs/bitacora.md` y las corridas previas quedan marcadas como de la versión
 anterior.
 
-## Brazos
+## Variantes
 
-| brazo | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
+| variante | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
 |---|---|---|---|---|---|
 | `U0.5`, `U0.25`, `U0.1`, `U0.05` | H1 | muestra r, semilla 0 | 5 hp | muestra r, sorteada con la semilla final | — |
 
@@ -18,16 +18,16 @@ anterior.
 
 Un estudio queda definido por (datos de optimización, espacio). `H3-0.25` optimiza exactamente lo mismo que `U0.25`
 (muestra uniforme r = 0,25 con semilla 0, 5 hp, 40 trials, TPE con semilla 0), y `H3-0.1` lo mismo que `U0.1`. Se corre
-**un** estudio y lo usan los dos brazos: H1 entrena el final con la muestra y H3 con todo. Los dos brazos se comparan
+**un** estudio y lo usan las dos variantes: H1 entrena el final con la muestra y H3 con todo. Las dos variantes se comparan
 contra el control y no entre sí, así que compartir el estudio no acopla ninguna decisión. El tiempo de ese estudio entra
-en T de los dos brazos.
+en T de las dos variantes.
 
 Los estudios `U0.25` y `U0.1` son de `h1` (su `ledger/hp/`); `h3` los lee de acá.
 
 ## Grilla
 
 - **Optimización**: 4 estudios (`U0.5`, `U0.25`, `U0.1`, `U0.05`) × 40 trials.
-- **Finales**: 4 brazos × 10 semillas = 40 corridas.
+- **Finales**: 4 variantes × 10 semillas = 40 corridas.
 
 ## Dependencias
 

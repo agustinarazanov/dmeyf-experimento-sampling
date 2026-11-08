@@ -10,8 +10,8 @@ aislamos la velocidad sin tocar la proporción de clases**.
 **El cambio `experimento-sampling-velocidad` está cerrado y archivado** (2-nov-2026) en
 `openspec/changes/archive/2026-11-02-experimento-sampling-velocidad/` (proposal, design, tasks); las specs vigentes
 quedaron consolidadas en `openspec/specs/`. Los entregables están en `experimentos/sampling_1/informe/` y en el
-`informe/` de cada hipótesis. Agregar una hipótesis: `docs/metodo.md` § Agregar una hipótesis (brazos y estudios se
-registran en `comun/brazos.py`; `python -m comun.brazos --verificar` antes de commitear). Todo se corre desde la raíz del repo.
+`informe/` de cada hipótesis. Agregar una hipótesis: `docs/metodo.md` § Agregar una hipótesis (variantes y estudios se
+registran en `comun/variantes.py`; `python -m comun.variantes --verificar` antes de commitear). Todo se corre desde la raíz del repo.
 Un experimento nuevo (propio o de otro integrante) se propone con `openspec new change` siguiendo `plantilla/` y
 `docs/metodo.md`; los scripts headless `scripts/etapas.sh <exp> <cambio>` sirven para cualquier cambio. Cada experimento importa solo de `comun/` y de su carpeta; un cambio en `comun/` se anuncia en el
 commit.

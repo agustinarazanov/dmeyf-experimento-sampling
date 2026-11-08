@@ -14,15 +14,15 @@ viejo usa esta tabla.
 | ruta vieja (`experimentos/sampling-velocidad/…`) | ruta nueva |
 |---|---|
 | `docs/hipotesis.md` | `experimentos/sampling_1/docs/hipotesis.md` (pregunta y comparación); G, Δ, δ, T, A, N\*, veredictos y control en `experimentos/control/docs/hipotesis.md`; cada H en `experimentos/h1`, `h2`, `h3` `/docs/hipotesis.md` |
-| `docs/diseno.md` | `experimentos/sampling_1/docs/diseno.md` (fases, reparto, estimación, tutor); control, máquina y parámetros en `experimentos/control/docs/diseno.md`; brazos de cada H en su `docs/diseno.md` |
+| `docs/diseno.md` | `experimentos/sampling_1/docs/diseno.md` (fases, reparto, estimación, tutor); control, máquina y parámetros en `experimentos/control/docs/diseno.md`; variantes de cada H en su `docs/diseno.md` |
 | `docs/bitacora.md`, `docs/operacion.md`, `docs/zulip/` | `experimentos/sampling_1/docs/` (la de cada hipótesis, en la suya) |
 | `src/correr.py`, `src/metodos.py`, `src/muestreo.py` | `comun/correr.py`, `comun/metodos.py`, `comun/muestreo.py` |
 | `src/consolidar.py` | `comun/consolidar.py` (`--experimento X`; sin argumento, todos) |
 | `scripts/vm.sh` | `scripts/vm.sh` en la raíz del repo (`lanzar_fase.sh` es nuevo, en la raíz y con un atajo en `experimentos/sampling_1/scripts/`) |
 | `scripts/graficar.py` | `experimentos/sampling_1/scripts/graficar.py` (junto a `fase*.txt` y `ledger_parcial.py`, posteriores al renombre) |
-| `ledger/resultados.csv`, `estudios.csv`, `reemplazadas.csv`, `corridas/`, `curvas/`, `hp/`, `predicciones/` | repartidos por dueño del brazo o del estudio (`comun/brazos.py`): `experimentos/control/ledger/`, `h1/ledger/`, `h2/ledger/`, `h3/ledger/` (manifiesto en `experimentos/sampling_1/ledger/separacion_manifiesto.json`) |
+| `ledger/resultados.csv`, `estudios.csv`, `reemplazadas.csv`, `corridas/`, `curvas/`, `hp/`, `predicciones/` | repartidos por dueño de la variante o del estudio (`comun/variantes.py`): `experimentos/control/ledger/`, `h1/ledger/`, `h2/ledger/`, `h3/ledger/` (manifiesto en `experimentos/sampling_1/ledger/separacion_manifiesto.json`) |
 | `ledger/apareado.csv` | `experimentos/sampling_1/ledger/apareado_previo.csv` (copia de lo que había) y un `apareado.csv` por hipótesis, regenerado por `python -m comun.consolidar` |
-| `ledger/exploracion/`, `ledger/sesiones/`, `ledger/tokens.csv` | `experimentos/sampling_1/ledger/` (lo que no tiene brazo); `tokens.csv` de cada experimento con lo que declara |
+| `ledger/exploracion/`, `ledger/sesiones/`, `ledger/tokens.csv` | `experimentos/sampling_1/ledger/` (lo que no tiene variante); `tokens.csv` de cada experimento con lo que declara |
 | `informe/` (informe, decisiones, guion, figuras, reporte) | `experimentos/sampling_1/informe/` (conjunto) y `informe/` de cada hipótesis |
 | `$BUCKET/ledger/` | sigue sin tocarse; los ledgers nuevos van a `$BUCKET/experimentos/<exp>/ledger/` |
 

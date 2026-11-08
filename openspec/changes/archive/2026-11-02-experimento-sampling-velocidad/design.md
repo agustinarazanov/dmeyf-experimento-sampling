@@ -53,12 +53,12 @@ experimento; duplica datos, baseline y ganancia, y la comparación entre experim
 
 **D1. Tres hipótesis, una variable cada una, mismo control.**
 - H1 `uniforme`: tasa r ∈ {1, 0,5, 0,25, 0,1, 0,05} sobre todas las filas de train, sin estratificar. Optimización por
-  tasa (la grilla de hiperparámetros se reoptimiza en cada brazo, regla de "familia primaria" de los jueves) y 10
+  tasa (la grilla de hiperparámetros se reoptimiza en cada variante, regla de "familia primaria" de los jueves) y 10
   semillas finales.
 - H2 `bagging` y `goss`: `bagging_fraction` fijo en {0,5, 0,25, 0,1} con `bagging_freq = 1`, y `boosting = goss` con
   `top_rate/other_rate` por defecto. **Adaptación del baseline**: `bagging_fraction` sale del conjunto optimizado en
-  este brazo porque es la variable experimental; se avisa al tutor. Cada `bagging` se decide contra el control. La
-  comparación con `uniforme` es descriptiva, en la curva tiempo-ganancia. `goss` es un brazo descriptivo y no decide
+  esta variante porque es la variable experimental; se avisa al tutor. Cada `bagging` se decide contra el control. La
+  comparación con `uniforme` es descriptiva, en la curva tiempo-ganancia. `goss` es una variante descriptiva y no decide
   H2. (Revisión de hipótesis, 1-nov.)
 - H3 `opt-muestra`: Optuna sobre una muestra uniforme con r ∈ {0,1, 0,25}; con los mejores hiperparámetros se entrena
   el final con r = 1. Se compara con el control (optimizado sobre r = 1) en ganancia y en tiempo total (optimización
@@ -70,9 +70,9 @@ experimento; duplica datos, baseline y ganancia, y la comparación entre experim
 ganancia a envíos fijos (decide) y ganancia máxima de la curva (se reporta). El corte N* lo elige el control en
 **201908**, para no usar el test al elegir. Ganancia calculada contra BAJA+2 con los valores de la cátedra. Diferencia
 apareada por semilla con media, desvío e intervalo del 95% (t de Student, 10 semillas) y conteo de semillas en que gana
-el brazo. Regla de no inferioridad con δ = 2% de la ganancia media del control: *no pierde* si la cota inferior del IC
+la variante. Regla de no inferioridad con δ = 2% de la ganancia media del control: *no pierde* si la cota inferior del IC
 es ≥ −δ, *pierde* si la media es < −δ, *indeterminado* en el resto. El tiempo es el del pipeline completo
-(optimización y final) en todos los brazos. Rangos de Optuna y definiciones exactas en `docs/hipotesis.md`.
+(optimización y final) en todas las variantes. Rangos de Optuna y definiciones exactas en `docs/hipotesis.md`.
 (Revisión de hipótesis, 1-nov: reemplaza la regla de "un desvío" y el corte en 201910.)
 
 **D3. Un solo punto de entrada por experimento.** Desde la carpeta del experimento, `python -m src.correr --metodo
@@ -129,9 +129,9 @@ en tokens). El script de shell es gratis de coordinar, corre desde cualquier ter
 **D11. Reporte visual: un HTML estático generado desde el ledger.** `src/reporte.py` lee `resultados.csv`,
 `apareado.csv`, las curvas y los documentos de hipótesis y diseño, y escribe `informe/reporte.html` con las figuras
 embebidas (SVG o PNG en base64, matplotlib con la paleta de `v_estilo` de `competencia-2`, validada con la skill
-`dataviz`). Secciones: introducción (pregunta, hipótesis, control, regla), tabla de todos los brazos, gráfico tiempo
+`dataviz`). Secciones: introducción (pregunta, hipótesis, control, regla), tabla de todas las variantes, gráfico tiempo
 contra ganancia, una sección por hipótesis con bandas de curvas y veredicto, comparación a tiempo igual, y al pie la
-fecha, el commit y el estado del ledger. Los brazos sin datos se muestran como pendientes. Alternativas descartadas: un
+fecha, el commit y el estado del ledger. Las variantes sin datos se muestran como pendientes. Alternativas descartadas: un
 notebook (no se abre sin entorno y mezcla código con lectura) y un dashboard con servidor (nada que operar). Se puede
 publicar tal cual como artefacto para el tutor; el markdown de `docs/hipotesis.md` se convierte con una función mínima,
 sin dependencia nueva.
@@ -141,7 +141,7 @@ La hipótesis decía que el ensamble de K semillas salía "del mismo ledger, sin
 curvas de ganancia y no predicciones, y una curva no se promedia con otra. Decisión (2-nov): `src/correr.py` escribe por
 cada final `ledger/predicciones/<id>.parquet` (`numero_de_cliente`, `prob` float32, `es_baja2` int8, en el orden del mes
 de test) y la fila lo referencia en `predicciones_201910`; los parquet no van a git (ya los excluye `.gitignore`), viven
-en el bucket y `vm.sh` los trae con el resto del ledger. Una fase 4 vuelve a correr solo los finales de los 12 brazos
+en el bucket y `vm.sh` los trae con el resto del ledger. Una fase 4 vuelve a correr solo los finales de las 12 variantes
 (11 + `C-rep`) con los JSON de hiperparámetros ya guardados, en una sola VM; por la clave sin commit (spec
 `ledger-resultados`) esas filas reemplazan a las de las fases 1 a 3, así que además todos los tiempos finales quedan
 medidos en la misma máquina. Las ganancias no cambian (LightGBM es determinista con la misma semilla, hilos y tipo de
@@ -177,7 +177,7 @@ Repo nuevo: no hay migración. Publicación en GitHub al cerrar la compuerta de 
 
 ## Open Questions
 
-- Si el tutor prefiere que H2 mantenga `bagging_fraction` optimizado y compare solo GOSS, se reduce ese brazo sin
+- Si el tutor prefiere que H2 mantenga `bagging_fraction` optimizado y compare solo GOSS, se reduce esa variante sin
   tocar H1 ni H3.
 - Valores exactos de ganancia por acierto y por error para 2019: se toman los de la cátedra del año; si cambian, el
   análisis se recalcula desde las curvas guardadas.

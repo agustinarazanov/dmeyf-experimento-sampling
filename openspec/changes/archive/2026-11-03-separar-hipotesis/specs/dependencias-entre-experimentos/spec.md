@@ -22,8 +22,8 @@ declara la sección vacía. Las dependencias SHALL formar un grafo sin ciclos.
 - **THEN** la verificación de dependencias falla y nombra el ciclo
 
 ### Requirement: Se lee del dueño, no se copia
-Un resultado que pertenece a otro experimento SHALL leerse de su ledger, a través del registro de brazos y estudios. No
-SHALL copiarse al ledger propio. Cada brazo y cada estudio SHALL tener un único experimento dueño, que es el que lo
+Un resultado que pertenece a otro experimento SHALL leerse de su ledger, a través del registro de variantes y estudios. No
+SHALL copiarse al ledger propio. Cada variante y cada estudio SHALL tener un único experimento dueño, que es el que lo
 corre y lo guarda.
 
 #### Scenario: Final de H3
@@ -31,9 +31,9 @@ corre y lo guarda.
 - **THEN** los hiperparámetros se leen de `experimentos/h1/ledger/hp/U0.25.json` y la fila se escribe en
   `experimentos/h3/ledger/`
 
-#### Scenario: Brazo sin dueño
-- **WHEN** se pide correr o reportar un brazo que no está en el registro
-- **THEN** el comando falla antes de cargar datos y nombra el brazo
+#### Scenario: Variante sin dueño
+- **WHEN** se pide correr o reportar una variante que no está en el registro
+- **THEN** el comando falla antes de cargar datos y nombra la variante
 
 ### Requirement: Borrar o cambiar un experimento del que otros dependen
 Borrar un experimento SHALL romper solo a los que lo declaran como dependencia, y la verificación de dependencias SHALL

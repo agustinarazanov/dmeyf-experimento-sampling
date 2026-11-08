@@ -19,7 +19,7 @@ def estudio_viejo(metodo, tasa):  # la regla de src/metodos.py antes de pasar al
     return f"B{_t(tasa)}" if metodo == "bagging" else "GOSS"
 
 
-def variante_viejo(metodo, tasa):
+def variante_vieja(metodo, tasa):
     return f"H3-{_t(tasa)}" if metodo == "opt-muestra" else estudio_viejo(metodo, tasa)
 
 
@@ -52,7 +52,7 @@ def test_variante_desconocido_falla_nombrandolo():
 @pytest.mark.parametrize("metodo,tasa", GRILLA)
 def test_nombres_de_la_grilla_iguales_a_los_de_antes(metodo, tasa):
     assert metodos.estudio(metodo, tasa) == estudio_viejo(metodo, tasa)
-    assert metodos.variante(metodo, tasa) == variante_viejo(metodo, tasa)
+    assert metodos.variante(metodo, tasa) == variante_vieja(metodo, tasa)
 
 
 @pytest.mark.parametrize("nombre", list(variantes.VARIANTES))

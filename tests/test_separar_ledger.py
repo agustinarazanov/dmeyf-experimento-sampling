@@ -70,5 +70,5 @@ def test_variante_desconocido_falla_nombrandolo_y_no_mueve(tmp_path):
     (origen / "corridas" / "ZZ_uniforme_0.5_1_final_abc.csv").write_text("x\n")
     with pytest.raises(ValueError, match="ZZ"):
         sep.separar(origen, raiz=tmp_path)
-    assert len(list((origen / "corridas").iterdir())) == 9  # 8 de los tres variantes + la desconocida, ninguna movida
+    assert len(list((origen / "corridas").iterdir())) == 9  # 8 de las tres variantes + la desconocida, ninguna movida
     assert not (tmp_path / "experimentos" / "h1" / "ledger" / "corridas").exists()

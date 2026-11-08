@@ -17,7 +17,7 @@
 
 ## 3. Texto y specs (sesión: Sonnet)
 
-- [ ] 3.1 Reemplazo de D3 en todo `git ls-files` (bitácoras, `ledger/sesiones/`, `openspec/changes/archive/`, docs, informes, README de cada experimento, `CLAUDE.md`, `plantilla/`); corregir a mano lo que marquen los grep de concordancia; verificar que `git grep -n -i brazo | grep -v renombrar-brazos` solo devuelve líneas de los archivos de D8 y que los grep de concordancia no dan resultados
+- [x] 3.1 Reemplazo de D3 en todo `git ls-files` (bitácoras, `ledger/sesiones/`, `openspec/changes/archive/`, docs, informes, README de cada experimento, `CLAUDE.md`, `plantilla/`); corregir a mano lo que marquen los grep de concordancia; verificar que `git grep -n -i brazo | grep -v renombrar-brazos` solo devuelve líneas de los archivos de D8 y que los grep de concordancia no dan resultados
 - [ ] 3.2 Regenerar con `python -m comun.consolidar` y `python -m comun.reporte --todos` y comparar con la foto de 1.1; verificar que los valores de cada `apareado.csv` y de cada tabla coinciden (diferencia 0), que el diff de cada `reporte.html` solo tiene "variante" y la fecha, y que `git diff --word-diff` de los `informe.md` no toca números
 - [ ] 3.3 Anotar el renombre (fecha, commits, que la historia de git y `corridas-v1` siguen con "brazo", que un clon viejo no consolida) en la bitácora de cada experimento
 

@@ -34,7 +34,7 @@ aplicar g5: claude-sonnet-5-5 15 turnos US$ 0.2285 (success, rc 0)
 16:48:42  Bash       PYENV_VERSION=facultad python /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/ex
 16:48:44  Bash       python /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-vel
 16:48:46  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && python -m experimentos.sam
-16:48:51  texto      Sanity del script OK. Ahora chequeos independientes del ledger (commit por fase, semillas por brazo,
+16:48:51  texto      Sanity del script OK. Ahora chequeos independientes del ledger (commit por fase, semillas por variante,
 16:48:55  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling-velocid
 16:49:03  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && git diff --stat 2bd8a63 79
 16:49:05  Bash       git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling diff --stat 2bd8a63 79039
@@ -65,5 +65,5 @@ revisar g5: claude-opus-5-5 25 turnos US$ 0.8689 (success, rc 0)
 2. Reproducción del control "entre dos personas" (docs/revision.md § 4): C-rep corrió en otra VM, pero de la misma
    persona (persona = agustina) y reprodujo exacto. Decidir una de dos:
    (a) aceptarlo como réplica entre VMs y anotarlo como limitación en el informe, o
-   (b) que Martín o Luis corran las 10 finales de C (JSON ledger/hp/C.json) en su cuenta, como brazo C-rep2.
+   (b) que Martín o Luis corran las 10 finales de C (JSON ledger/hp/C.json) en su cuenta, como variante C-rep2.
 == detenido en el grupo 5 (código 2)

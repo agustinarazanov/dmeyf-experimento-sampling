@@ -6,9 +6,9 @@ estimación, los de [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.m
 abrir la etapa de corridas, el cambio va a `docs/bitacora.md` y las corridas previas quedan marcadas como de la versión
 anterior.
 
-## Brazos
+## Variantes
 
-| brazo | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
+| variante | hipótesis | Optuna: datos | Optuna: espacio | final: datos | final: params fijos |
 |---|---|---|---|---|---|
 | `H3-0.25`, `H3-0.1` | H3 | muestra r_opt, semilla 0 | 5 hp | r = 1 | — |
 
@@ -24,7 +24,7 @@ de su `ledger/hp/`. Por qué se comparten y qué implica está en
 ## Grilla
 
 - **Optimización**: ninguna propia (los estudios `U0.25` y `U0.1` de `h1`).
-- **Finales**: 2 brazos × 10 semillas = 20 corridas, con r = 1.
+- **Finales**: 2 variantes × 10 semillas = 20 corridas, con r = 1.
 
 ## Fuera de la grilla
 

@@ -74,7 +74,7 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_015wDcArxw2PHUyxPJEaJAKz",
    "tool_input": {
-    "command": "cd experimentos; for f in $(git ls-files '*/ledger/*.csv' '*/ledger/*/*.csv' | grep -v sesiones); do h=$(head -1 \"$f\"); case \"$h\" in *brazo*) echo \"BRAZO\";; *) echo \"NO $(dirname $f)\";; esac; done | sort | uniq -c; git ls-files '*/ledger/*' | grep -v sesiones | sed 's#[^/]*/ledger/##; s#/.*##' | sort | uniq -c; ls ~/datos/experimentos-dmeyf/renombre/bucket | head; git ls-files 'experimentos/*/ledger/*.json' | head -3; git ls-files | grep -E 'hp/.*json' | head -3"
+    "command": "cd experimentos; for f in $(git ls-files '*/ledger/*.csv' '*/ledger/*/*.csv' | grep -v sesiones); do h=$(head -1 \"$f\"); case \"$h\" in *variante*) echo \"VARIANTE\";; *) echo \"NO $(dirname $f)\";; esac; done | sort | uniq -c; git ls-files '*/ledger/*' | grep -v sesiones | sed 's#[^/]*/ledger/##; s#/.*##' | sort | uniq -c; ls ~/datos/experimentos-dmeyf/renombre/bucket | head; git ls-files 'experimentos/*/ledger/*.json' | head -3; git ls-files | grep -E 'hp/.*json' | head -3"
    }
   },
   {
@@ -95,35 +95,35 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_018S4Nevdi88qFrDe7oBr2va",
    "tool_input": {
-    "command": "git grep -l -i brazo -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' | sed -E 's#/[^/]*$##' | sort | uniq -c"
+    "command": "git grep -l -i variante -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' | sed -E 's#/[^/]*$##' | sort | uniq -c"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_014RncdbGVGAadg6z1pAoAcx",
    "tool_input": {
-    "command": "cd ~/datos/experimentos-dmeyf/renombre/bucket && grep -rl -i brazo . | sed -E 's#/[^/]*$##' | sort | uniq -c; ls ledger/hp | head -3; cat ledger/hp/$(ls ledger/hp | head -1) | head -c 600"
+    "command": "cd ~/datos/experimentos-dmeyf/renombre/bucket && grep -rl -i variante . | sed -E 's#/[^/]*$##' | sort | uniq -c; ls ledger/hp | head -3; cat ledger/hp/$(ls ledger/hp | head -1) | head -c 600"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_017eE6Xgo2JCwuq7qpmEyJav",
    "tool_input": {
-    "command": "git grep -l -i brazo -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' > /tmp/x 2>/dev/null; git grep -l -i brazo -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' | cut -d/ -f1-4 | sort | uniq -c"
+    "command": "git grep -l -i variante -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' > /tmp/x 2>/dev/null; git grep -l -i variante -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' | cut -d/ -f1-4 | sort | uniq -c"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_01A9XYN34i1QSdTunJfMcoGg",
    "tool_input": {
-    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && head -c 400 ~/datos/experimentos-dmeyf/renombre/bucket/ledger/hp/C.json; echo; grep -c brazo ~/datos/experimentos-dmeyf/renombre/bucket/ledger/hp/C.json; head -c 300 experimentos/sampling_1/ledger/sesiones/costos.csv; echo; git status --short | head"
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && head -c 400 ~/datos/experimentos-dmeyf/renombre/bucket/ledger/hp/C.json; echo; grep -c variante ~/datos/experimentos-dmeyf/renombre/bucket/ledger/hp/C.json; head -c 300 experimentos/sampling_1/ledger/sesiones/costos.csv; echo; git status --short | head"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_015MprFnDqyAuv4FGcA2NZnU",
    "tool_input": {
-    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && git grep -l -i brazo -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' ':!experimentos/*/ledger/corridas' | head -40"
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && git grep -l -i variante -- 'experimentos/*/ledger' ':!experimentos/*/ledger/sesiones' ':!experimentos/*/ledger/corridas' | head -40"
    }
   },
   {
@@ -151,7 +151,7 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_014iHdeS3AXff8JbCiW7Tugd",
    "tool_input": {
-    "command": "git mv comun/brazos.py comun/variantes.py && git mv tests/test_brazos.py tests/test_variantes.py && cat > scripts/_reemplazo_d1.pl <<'EOF'\ns/\\bdel brazo\\b/de la variante/g; s/\\bal brazo\\b/a la variante/g;\ns/\\b([Ee])l brazo\\b/$1 eq \"E\" ? \"La variante\" : \"la variante\"/ge;\ns/\\b([Uu])n brazo\\b/$1 eq \"U\" ? \"Una variante\" : \"una variante\"/ge;\ns/\\bdel brazo\\b/de la variante/g;\ns/\\blos brazos\\b/las variantes/g; s/\\bLos brazos\\b/Las variantes/g;\ns/\\bde brazos\\b/de variantes/g; s/\\bdelos\\b/delos/g;\ns/BRAZOS/VARIANTES/g; s/Brazos/Variantes/g; s/Brazo/Variante/g;\ns/brazos/variantes/g; s/brazo/variante/g;\nEOF\nfor f in comun/*.py tests/*.py scripts/separar_ledger.py scripts/vm.sh experimentos/sampling_1/scripts/graficar.py experimentos/sampling_1/scripts/ledger_parcial.py; do case $f in comun/tokens.py) continue;; esac; perl -pi scripts/_reemplazo_d1.pl $f; done; rm scripts/_reemplazo_d1.pl; git grep -n -i brazo -- comun scripts tests experimentos/sampling_1/scripts"
+    "command": "git mv comun/variantes.py comun/variantes.py && git mv tests/test_variantes.py tests/test_variantes.py && cat > scripts/_reemplazo_d1.pl <<'EOF'\ns/\\bdel variante\\b/de la variante/g; s/\\bal variante\\b/a la variante/g;\ns/\\b([Ee])l variante\\b/$1 eq \"E\" ? \"La variante\" : \"la variante\"/ge;\ns/\\b([Uu])n variante\\b/$1 eq \"U\" ? \"Una variante\" : \"una variante\"/ge;\ns/\\bdel variante\\b/de la variante/g;\ns/\\blos variantes\\b/las variantes/g; s/\\bLos variantes\\b/Las variantes/g;\ns/\\bde variantes\\b/de variantes/g; s/\\bdelos\\b/delos/g;\ns/VARIANTES/VARIANTES/g; s/Variantes/Variantes/g; s/Variante/Variante/g;\ns/variantes/variantes/g; s/variante/variante/g;\nEOF\nfor f in comun/*.py tests/*.py scripts/separar_ledger.py scripts/vm.sh experimentos/sampling_1/scripts/graficar.py experimentos/sampling_1/scripts/ledger_parcial.py; do case $f in comun/tokens.py) continue;; esac; perl -pi scripts/_reemplazo_d1.pl $f; done; rm scripts/_reemplazo_d1.pl; git grep -n -i variante -- comun scripts tests experimentos/sampling_1/scripts"
    }
   },
   {
@@ -165,7 +165,7 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_01S8DCCAvWbLHaCQgdeS9JvP",
    "tool_input": {
-    "command": "git commit -q -m \"renombrar-brazos: marca 2.2\" openspec/changes/renombrar-brazos/tasks.md; cd experimentos/h3/sensibilidad_muestra; grep -n -i brazo README.md ganancia_08.py sensibilidad_07.py busqueda.py | head -60; grep -c -i brazo referencia/grilla_06.json; grep -rn -i \"sha256\\|huella\" --include=*.py . | head -20"
+    "command": "git commit -q -m \"renombrar-brazos: marca 2.2\" openspec/changes/renombrar-brazos/tasks.md; cd experimentos/h3/sensibilidad_muestra; grep -n -i variante README.md ganancia_08.py sensibilidad_07.py busqueda.py | head -60; grep -c -i variante referencia/grilla_06.json; grep -rn -i \"sha256\\|huella\" --include=*.py . | head -20"
    }
   },
   {
@@ -232,7 +232,7 @@
  "num_turns": 94,
  "subtype": "success",
  "api_error_status": null,
- "result": "Terminé 2.1 a 2.4, pero 2.5 quedó bloqueada y no la marqué. Para subir el bucket hace falta `gsutil rsync`, que el entorno no me dejó correr, ni siquiera con `-n`. El motivo y los comandos exactos están en `experimentos/sampling_1/ledger/sesiones/bloqueo.txt`.\n\n- **2.1:** escribí `scripts/renombrar_columna.py` con `--aplicar` y `--verificar`. Reescribió 339 archivos de ledger del repo y 288 de la copia del bucket, y guardó los originales en `DATOS_DIR/renombre/original/`. `--verificar` da 0 errores en ambos y `git diff --numstat` marca una línea cambiada por archivo.\n- **2.2:**\n  - `comun/brazos.py` pasó a `comun/variantes.py` y `tests/test_brazos.py` a `tests/test_variantes.py`.\n  - Reemplacé `brazo` por `variante` en `comun/`, `scripts/`, `sampling_1/scripts/` y `tests/`, con el nuevo `scripts/reemplazar_d1.py`.\n  - La opción `--brazo` de `comun.correr` pasó a `--variante`.\n  - `comun/ledger.py` ahora rechaza una cabecera `brazo` nombrando el archivo (`leer_csv`, con test).\n  - Pytest pasa (75 tests).\n- **2.3:** el paquete de Martín pasó a `variante` en `sensibilidad_07.py`, `ganancia_08.py`, su README y el texto de `grilla_06.json`. Sus 13 tests pasan y `busqueda.regenerar()` da configuraciones y sha256 idénticos a `grilla_06.json`. No recalculé huellas, porque las de `procedencia.json` y `huellas_datos.json` no dependen de archivos que toqué.\n- **2.4:** corrí una optimización de `U0.25` y un final de `H3-0.25` con `--filas 20000`. Las filas salen con columna `variante` y `python -m comun.variantes --verificar` pasa.\n\nDejé sin tocar `scripts/verificar_tokens_renombre.py`, `scripts/foto_renombre.py` y `comun/tokens.py`, porque nombran el cambio `renombrar-brazos`. Los reemplazos de texto en bitácoras, docs e informes son de la tarea 3.1. No hice 2.6, que es la revisión. Cada tarea tiene su commit, sin push.\n\nLo que falta para 2.5: el bucket solo tiene `ledger/` y `optuna/`, sin `experimentos/`, y la copia local de `ledger/` ya está lista. Alguien con permiso tiene que correr los cuatro comandos de `bloqueo.txt`. Después de subir, hay que volver a bajar el bucket y correr `--verificar` sobre esa copia. Si sale con 0, se marca 2.5.",
+ "result": "Terminé 2.1 a 2.4, pero 2.5 quedó bloqueada y no la marqué. Para subir el bucket hace falta `gsutil rsync`, que el entorno no me dejó correr, ni siquiera con `-n`. El motivo y los comandos exactos están en `experimentos/sampling_1/ledger/sesiones/bloqueo.txt`.\n\n- **2.1:** escribí `scripts/renombrar_columna.py` con `--aplicar` y `--verificar`. Reescribió 339 archivos de ledger del repo y 288 de la copia del bucket, y guardó los originales en `DATOS_DIR/renombre/original/`. `--verificar` da 0 errores en ambos y `git diff --numstat` marca una línea cambiada por archivo.\n- **2.2:**\n  - `comun/variantes.py` pasó a `comun/variantes.py` y `tests/test_variantes.py` a `tests/test_variantes.py`.\n  - Reemplacé `variante` por `variante` en `comun/`, `scripts/`, `sampling_1/scripts/` y `tests/`, con el nuevo `scripts/reemplazar_d1.py`.\n  - La opción `--variante` de `comun.correr` pasó a `--variante`.\n  - `comun/ledger.py` ahora rechaza una cabecera `variante` nombrando el archivo (`leer_csv`, con test).\n  - Pytest pasa (75 tests).\n- **2.3:** el paquete de Martín pasó a `variante` en `sensibilidad_07.py`, `ganancia_08.py`, su README y el texto de `grilla_06.json`. Sus 13 tests pasan y `busqueda.regenerar()` da configuraciones y sha256 idénticos a `grilla_06.json`. No recalculé huellas, porque las de `procedencia.json` y `huellas_datos.json` no dependen de archivos que toqué.\n- **2.4:** corrí una optimización de `U0.25` y un final de `H3-0.25` con `--filas 20000`. Las filas salen con columna `variante` y `python -m comun.variantes --verificar` pasa.\n\nDejé sin tocar `scripts/verificar_tokens_renombre.py`, `scripts/foto_renombre.py` y `comun/tokens.py`, porque nombran el cambio `renombrar-brazos`. Los reemplazos de texto en bitácoras, docs e informes son de la tarea 3.1. No hice 2.6, que es la revisión. Cada tarea tiene su commit, sin push.\n\nLo que falta para 2.5: el bucket solo tiene `ledger/` y `optuna/`, sin `experimentos/`, y la copia local de `ledger/` ya está lista. Alguien con permiso tiene que correr los cuatro comandos de `bloqueo.txt`. Después de subir, hay que volver a bajar el bucket y correr `--verificar` sobre esa copia. Si sale con 0, se marca 2.5.",
  "ttft_ms": 1590,
  "type": "result",
  "duration_ms": 2543784,

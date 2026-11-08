@@ -14,8 +14,8 @@ antes de cualquier corrida real. Los cambios posteriores se anotan en `docs/bita
 - **Predicción**: *no pierde* con r = 0,5 y 0,25; *pierde* con r = 0,05. Como predicciones secundarias, que no deciden:
   *pierde* con r = 0,1, y A ≥ 2 con r = 0,25. La predicción en 201908 tiene un costo fijo, por eso la aceleración no es
   4×.
-- **Se confirma** si con r = 0,5 y 0,25 el brazo *no pierde* y con r = 0,05 *pierde*: hay margen y después hay caída.
-- **Se refuta** si con r = 0,5 el brazo *pierde* (no hay margen) o si con r = 0,05 *no pierde* (no hay caída dentro de
+- **Se confirma** si con r = 0,5 y 0,25 la variante *no pierde* y con r = 0,05 *pierde*: hay margen y después hay caída.
+- **Se refuta** si con r = 0,5 la variante *pierde* (no hay margen) o si con r = 0,05 *no pierde* (no hay caída dentro de
   la grilla).
 - **Ninguna de las dos** en cualquier otro caso, por ejemplo con r = 0,25 *indeterminado* o con r = 0,25 perdiendo
   mientras r = 0,5 no pierde. Se informa como frontera observada la menor r tal que esa tasa y todas las mayores *no
