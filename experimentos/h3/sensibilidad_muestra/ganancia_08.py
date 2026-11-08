@@ -363,13 +363,13 @@ def elecciones_07(corrida: Path) -> tuple[int, dict[int, int], dict, dict]:
     ids_cfg = diseno["configuraciones"]["ids"]
     semillas = diseno["semillas"]["muestreo"]
     ajustes = [json.loads(l) for l in (corrida / "ajustes.jsonl").read_text(encoding="utf-8").splitlines()]
-    ctrl = {r["id"]: r for r in ajustes if r["brazo"] == "control"}
+    ctrl = {r["id"]: r for r in ajustes if r["variante"] == "control"}
     sel = B07.leer_json(corrida / "control_seleccion.json")
     resumen = pd.read_csv(corrida / "resumen_por_semilla.csv")
     ganadora = B07.ranking(list(ctrl.values()))[0]["id"]
     elegidas = {}
     for s in semillas:
-        h = [r for r in ajustes if r["brazo"] == "h3" and r["semilla_muestra"] == s]
+        h = [r for r in ajustes if r["variante"] == "h3" and r["semilla_muestra"] == s]
         if len(h) != len(ids_cfg):
             raise RuntimeError(f"semilla {s}: {len(h)} ajustes de H3, se esperaban {len(ids_cfg)}")
         elegidas[s] = B07.ranking(h)[0]["id"]

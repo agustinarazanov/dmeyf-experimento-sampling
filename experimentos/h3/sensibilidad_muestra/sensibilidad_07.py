@@ -287,7 +287,7 @@ def preparar(mats: Path, proc) -> tuple[dict, dict]:
 
 
 def leer_ajustes(run: Path) -> dict:
-    """Ajustes terminados, con sus predicciones verificadas por huella. Clave: (brazo, semilla de muestra, id)."""
+    """Ajustes terminados, con sus predicciones verificadas por huella. Clave: (variante, semilla de muestra, id)."""
     hechos = {}
     p = run / "ajustes.jsonl"
     if not p.exists():
@@ -296,12 +296,12 @@ def leer_ajustes(run: Path) -> dict:
         r = json.loads(linea)
         archivo = run / r["predicciones"]
         if not archivo.exists() or sha(np.load(archivo)) != r["sha256_predicciones"]:
-            raise RuntimeError(f"el ajuste {r['brazo']} {r['semilla_muestra']} {r['id']} no tiene sus predicciones")
-        hechos[(r["brazo"], r["semilla_muestra"], r["id"])] = r
+            raise RuntimeError(f"el ajuste {r['variante']} {r['semilla_muestra']} {r['id']} no tiene sus predicciones")
+        hechos[(r["variante"], r["semilla_muestra"], r["id"])] = r
     return hechos
 
 
-def ajustar(run: Path, brazo: str, semilla: int | None, cfg: dict, X, y, datos: dict, sel: np.ndarray) -> dict:
+def ajustar(run: Path, variante: str, semilla: int | None, cfg: dict, X, y, datos: dict, sel: np.ndarray) -> dict:
     """Un ajuste: entrena, verifica parámetros, predice agosto y guarda su checkpoint."""
     params = B06.params_de(cfg)
     booster, tiempos = B06.ajustar(X, y, datos["pred"], params)
@@ -314,7 +314,7 @@ def ajustar(run: Path, brazo: str, semilla: int | None, cfg: dict, X, y, datos: 
     if not (np.isfinite(prob).all() and ((prob >= 0) & (prob <= 1)).all()):
         raise RuntimeError("probabilidades fuera de [0, 1]")
     yv = datos["validacion"]["y"]
-    if brazo == "control":
+    if variante == "control":
         rel = f"control/pred_{cfg['id']:02d}.npy"  # todo agosto, en el orden de carga
         booster.save_model(str(run / "control" / f"modelo_{cfg['id']:02d}.txt"))
         guardar = prob
@@ -322,17 +322,17 @@ def ajustar(run: Path, brazo: str, semilla: int | None, cfg: dict, X, y, datos: 
         rel = f"h3/{semilla}/pred_seleccion_{cfg['id']:02d}.npy"  # sólo la mitad de selección
         guardar = prob[sel]
     np.save(run / rel, guardar)
-    r = {"brazo": brazo, "semilla_muestra": semilla, "id": cfg["id"], "params": params,
+    r = {"variante": variante, "semilla_muestra": semilla, "id": cfg["id"], "params": params,
          "filas_entrenamiento": int(len(y)), "positivos_entrenamiento": int(y.sum()),
          "auc_seleccion": float(roc_auc_score(yv[sel], prob[sel])),
          "predicciones": rel, "sha256_predicciones": sha(guardar), "tiempos": tiempos,
          "memoria": B05.memoria(psutil.Process()), "parametros_verificados": True,
          "hora": time.strftime("%Y-%m-%dT%H:%M:%S")}
-    if brazo == "control":
+    if variante == "control":
         r["parametros_efectivos"] = ef
     with open(run / "ajustes.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(r, ensure_ascii=False) + "\n")
-    log.info("%-7s %-8s cfg %02d | AUC sel %.6f | %s", brazo, semilla or "", cfg["id"], r["auc_seleccion"], tiempos)
+    log.info("%-7s %-8s cfg %02d | AUC sel %.6f | %s", variante, semilla or "", cfg["id"], r["auc_seleccion"], tiempos)
     del booster, prob
     gc.collect()
     return r

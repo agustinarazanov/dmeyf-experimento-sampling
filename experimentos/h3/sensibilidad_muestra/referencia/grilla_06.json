@@ -1,6 +1,6 @@
 {
  "descripcion": "Las 20 configuraciones de 06, en su orden (id 0..19). Copia exacta de configuraciones.json de la corrida 06 20261102T215551_12584; sensibilidad_07 las regenera con busqueda.generar_configuraciones y se detiene si no son idénticas a esta lista o a su sha256.",
- "tipo": "búsqueda aleatoria emparejada (no bayesiana): mismas configuraciones en ambos brazos",
+ "tipo": "búsqueda aleatoria emparejada (no bayesiana): mismas configuraciones en ambas variantes",
  "semilla": 20261102,
  "generador": "SeedSequence(semilla).spawn(2)[1]",
  "fijos": {
@@ -200,5 +200,5 @@
    20261111
   ]
  },
- "regla_seleccion": "en cada brazo (Control y cada muestra de H3) gana la configuración de mayor AUC en la mitad de selección de 201908; a igual AUC, la de menor id. El final de H3 es el ajuste completo de Control de la configuración elegida."
+ "regla_seleccion": "en cada variante (Control y cada muestra de H3) gana la configuración de mayor AUC en la mitad de selección de 201908; a igual AUC, la de menor id. El final de H3 es el ajuste completo de Control de la configuración elegida."
 }

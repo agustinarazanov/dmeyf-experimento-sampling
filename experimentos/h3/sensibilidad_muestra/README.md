@@ -4,9 +4,9 @@ Aporte de Martín López a `h3`. Responde una pregunta que el diseño de `h3` de
 muestra la configuración que elige H3?** Se repite la búsqueda de H3 con diez muestras distintas del 25 % del train y
 las mismas 20 configuraciones. Después se mide en 201910 la ganancia del modelo que eligió cada muestra.
 
-Es **exploratorio y complementario**: no es un brazo de `comun/brazos.py`, no escribe en `h3/ledger/` y no cambia
+Es **exploratorio y complementario**: no es una variante de `comun/variantes.py`, no escribe en `h3/ledger/` y no cambia
 el veredicto de `h3/informe/informe.md`. Usa su propio protocolo (búsqueda aleatoria emparejada, float64, 4 hilos),
-que se describe abajo, y no se puede comparar uno a uno con los brazos `H3-0.25` y `H3-0.1`.
+que se describe abajo, y no se puede comparar uno a uno con las variantes `H3-0.25` y `H3-0.1`.
 
 Todo se corre desde la **raíz del repo**. El paquete importa solo de `comun/` y de esta carpeta.
 
