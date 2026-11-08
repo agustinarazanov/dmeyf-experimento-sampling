@@ -632,3 +632,46 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   2. `design.md` D8 suma esos dos scripts y `openspec/specs/` hasta el archivo.
   3. `tasks.md`: se agrega la 3.4 (esta revisión, hecha); la 4.2 sigue abierta para el grupo 4 y el README.
 - Tokens: ~35 turnos · ≈ US$ 1,3 (presupuesto US$ 4). `comun/tokens.py` no se corrió: se regenera en la 4.2.
+
+### 2026-11-08 — cierre revisión del grupo 4 de `renombrar-brazos` (README)
+- Sesión: `2c594c00-7d10-45a2-9010-963efd4f5495` · modelo: Opus · etapa: **revision** (grupo 4, tarea 4.1, y repaso del
+  grupo 3 en lo que cambia la 4.1).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 5 (informe) aplicada al README, más la verificación escrita en la 4.1 y la lectura del README
+  como alguien que no conoce el repo. Ningún ✗ abierto.
+  - ✓ 4.1 secciones de D7 en orden (pregunta y respuesta corta, resultados, experimentos, aportes, qué sigue, estructura
+    y cómo correr). `python scripts/verificar_readme.py` sale con 0 antes y después de las correcciones: 10 filas
+    idénticas a `sampling_1/informe/informe.md` § Resultados, 11 números del texto presentes, 21 enlaces que existen.
+  - ✗→✓ Cada hipótesis se decide con la regla escrita: la respuesta corta decía que H3-0.1 tiene «la misma» ganancia que
+    el control «dentro de δ = 2%», una equivalencia que no es la regla (*no pierde*: cota inferior ≥ −δ) y que no se
+    cumple (cota superior 8,41 > δ = 5,52). Reescrita como «no pierde ganancia contra el control (la cota inferior del
+    IC queda arriba de −δ)».
+  - ✓ Cada afirmación cita su fuente: resultados y tiempo igual citan `informe.md` § Resultados; aportes, contra
+    `h3/sensibilidad_muestra/README.md` (7 de 10 muestras eligen la configuración del control; las otras tres, ±10 M$
+    de ruido de semilla) y `Experimentos h3 y h4/resumen_completo_de_experimentos.md` (50 semillas, todas las bajas);
+    qué sigue, contra las propuestas de `h3-semillas-optuna` (8 réplicas, `H3-0.05`, `H3R-0.1`) e `incorporar-aportes`
+    (H4, `exploratorios/`, 07 y 08 de Martín).
+  - ✓ Refutaciones y empates con el mismo peso: la tabla tiene las diez variantes; el mapa da H2 refutada y H1 ni una ni
+    otra; la respuesta corta dice qué pierde.
+  - ✓ Limitaciones: la grande (una sola optimización de Optuna) está en la respuesta corta; el resto se remite al
+    informe con enlace.
+  - n/a guion, baseline en el guion y bibliografía: el README no es el guion.
+  - ✓ Lectura de alguien que no conoce el repo: se entiende; Ḡ_C aparecía sin definir y ahora dice «la ganancia media
+    del control». Los comandos de «Cómo correr» usan flags que existen (`comun.datos --filas`, `comun.correr --metodo
+    --tasa --etapa --filas`, `consolidar`/`reporte --experimento`, `variantes --verificar`) y los scripts nombrados
+    están en `scripts/`.
+  - ✗→✓ Repaso del grupo 3: el README nuevo decía «brazo» (§ Estructura), fuera de D8. Ahora nombra el cambio
+    `renombrar-brazos`. `git grep -n -i brazo | grep -v renombrar-brazos` da los archivos de D8 y además
+    `ledger/sesiones/g3_aplicar_20261108T182343.json`, que copia los comandos del renombre.
+  - ✓ `pytest` 75 pasan; `python -m comun.variantes --verificar` sin problemas; `comun/tokens.py --experimento
+    sampling_1` regenerado.
+- Hallazgos:
+  1. Respuesta corta con una equivalencia («la misma ganancia, dentro de δ») que no es la regla y que el IC no cumple.
+  2. «brazo» en § Estructura del README, fuera de las excepciones de D8.
+  3. D8 no nombraba los registros de sesión que copian comandos del renombre.
+  4. Ḡ_C sin definir en el README; una línea de más de 120 caracteres.
+- Correcciones:
+  1. y 4. README reescrito en esas frases; `verificar_readme.py` sigue en 0.
+  2. README nombra el cambio en lugar de la palabra.
+  3. `design.md` D8 suma los registros de `ledger/sesiones/` posteriores al reemplazo de D3 (no se reescriben).
+- Tokens: ~25 turnos · ≈ US$ 1,0 (presupuesto US$ 4). `comun/tokens.py` corrido.

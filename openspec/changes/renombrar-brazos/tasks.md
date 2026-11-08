@@ -25,7 +25,7 @@
 ## 4. README (sesión: Opus)
 
 - [x] 4.1 Reescribir `README.md` con las secciones de D7; los números se copian de `sampling_1/informe/informe.md` citando la fuente; verificar con un script que cada Δ, IC y A del README coincide con `informe.md` y que todos los enlaces relativos existen
-- [ ] 4.2 Revisión en sesión limpia de los grupos 3 (ya revisado en 3.4; repasar solo lo que cambie la 4.1) y 4 con la lista de informe de `docs/revision.md` (incluye leer el README como alguien que no conoce el repo) y cierre en `sampling_1/docs/bitacora.md`; correr `comun/tokens.py`
+- [x] 4.2 Revisión en sesión limpia de los grupos 3 (ya revisado en 3.4; repasar solo lo que cambie la 4.1) y 4 con la lista de informe de `docs/revision.md` (incluye leer el README como alguien que no conoce el repo) y cierre en `sampling_1/docs/bitacora.md`; correr `comun/tokens.py`
 
 ## Workflow follow-up
 

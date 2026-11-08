@@ -10,8 +10,8 @@ baseline oficial de Bolaños (2019, LightGBM con Optuna), medimos cuánto tiempo
 201910 cuando se usan menos filas, sin cambiar la proporción de clases (eso lo estudia Sampling_2).
 
 **Respuesta corta: vale la pena achicar la optimización, no el entrenamiento del modelo final.** Si Optuna busca sobre
-el 10% de las filas y el modelo final se entrena con todas (`H3-0.1`), la ganancia es la misma que la del control (dentro
-de δ = 2%) y el proceso es 8,41 veces más rápido. Entrenar el final con menos filas sí pierde: al azar desde r = 0,25 y
+el 10% de las filas y el modelo final se entrena con todas (`H3-0.1`), no pierde ganancia contra el control (la cota
+inferior del IC queda arriba de −δ, con δ = 2%) y el proceso es 8,41 veces más rápido. Entrenar el final con menos filas sí pierde: al azar desde r = 0,25 y
 dentro de LightGBM con `bagging_fraction` = 0,1.
 
 Por ahora es una respuesta con una salvedad grande: cada variante corrió **una sola optimización de Optuna**, así que
@@ -41,8 +41,9 @@ si la cota inferior del IC es ≥ −δ (δ = 5,52 M$) y *vale la pena* si adem�
 muestra y entrena con todo.
 
 **A tiempo igual** (mismo informe, § Resultados), cada variante gasta el tiempo que le sobra en un ensamble de hasta 10
-semillas: contra Ḡ_C = 276,10 M$ quedan arriba U0.5 (+6,05), H3-0.1 (+3,85), H3-0.25 (+2,75), U0.25 y B0.25 (+0,55), y abajo U0.1 y B0.1
-(−4,95) y U0.05 (−23,65); es un solo número por variante, sin intervalo.
+semillas: contra la ganancia media del control, Ḡ_C = 276,10 M$, quedan arriba U0.5 (+6,05), H3-0.1 (+3,85), H3-0.25
+(+2,75), U0.25 y B0.25 (+0,55), y abajo U0.1 y B0.1 (−4,95) y U0.05 (−23,65); es un solo número por variante, sin
+intervalo.
 
 Las limitaciones, las conclusiones y las figuras están en el mismo informe y en
 [`reporte.html`](experimentos/sampling_1/informe/reporte.html).
@@ -101,8 +102,8 @@ Cada uno actualiza las secciones de resultados, experimentos, aportes y qué sig
   listas de las fases de las VMs).
 - `plantilla/`: la estructura vacía de un experimento.
 - `docs/`: [`metodo.md`](docs/metodo.md) (cómo se trabaja) y [`revision.md`](docs/revision.md) (listas de revisión).
-- `scripts/`: `vm.sh`, `lanzar_fase.sh`, `etapa.sh`, `etapas.sh`, `separar_ledger.py` y los scripts del renombre de
-  "brazo" a "variante" (`renombrar_columna.py` y otros), para cualquier experimento o cambio.
+- `scripts/`: `vm.sh`, `lanzar_fase.sh`, `etapa.sh`, `etapas.sh`, `separar_ledger.py` y los scripts del cambio
+  `renombrar-brazos` (`renombrar_columna.py` y otros), para cualquier experimento o cambio.
 - `openspec/`: planes de cambio (proposal, specs, design, tasks); los cerrados en `openspec/changes/archive/` y las
   specs vigentes en `openspec/specs/`.
 

@@ -136,6 +136,8 @@ Un renombre que se documenta y se protege no puede borrar la palabra vieja de to
 - el rechazo de la cabecera vieja en `comun/ledger.py` y su test;
 - el escenario "Ledger con la columna vieja" de `ledger-resultados`;
 - la entrada de cada bitácora que registra el renombre;
+- los registros de sesión de `ledger/sesiones/` posteriores al reemplazo de D3 que copian los comandos del renombre
+  (son registro y no se reescriben);
 - las menciones del nombre de este cambio, `renombrar-brazos`, en otros cambios y documentos.
 
 La verificación final es `git grep -n -i brazo | grep -v renombrar-brazos`. Tiene que devolver solo líneas de los
