@@ -115,7 +115,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - **menores**: el proyecto del template y de las cuotas no estaba nombrado; faltaba la verificación de Ice Lake en
     las zonas `-a` y `-c`; quedaban pendientes de Martín y Luis sin listar; la bitácora decía US$ 8 y el diseño US$ 9.
 - Corregido:
-  - la réplica pasa a ser una variante propio, `C-rep`;
+  - la réplica pasa a ser una variante propia, `C-rep`;
   - el SQLite es local y se copia al bucket después de cada trial; el panel y las filas del ledger también se suben,
     y una VM nueva los baja;
   - quedaron nombrados el proyecto y las zonas, con la lista de pendientes de Martín y Luis antes de la fase 1;
@@ -594,3 +594,41 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Lo que sigue diciendo «brazo»: la historia de git (los commits anteriores) y el tag `corridas-v1`.
 - Un clon anterior al renombre no consolida: `comun/ledger.py` rechaza una cabecera `brazo` nombrando el archivo. Hay que
   actualizar el clon y volver a bajar el ledger del bucket renombrado.
+
+### 2026-11-08 — cierre revisión del grupo 3 de `renombrar-brazos` (texto y specs)
+- Sesión: `9a0db73f-cd1c-442b-bd24-a418b22396f2` · modelo: Opus · etapa: **revision** (grupo 3, tareas 3.1–3.3).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 5 (informe) en lo que el grupo toca, más la verificación escrita en cada tarea. La lectura
+  del README como alguien que no conoce el repo queda para la 4.2, con el README nuevo. Ningún ✗ abierto.
+  - ✓ 3.1 excepciones: `git grep -n -i brazo | grep -v renombrar-brazos` solo da archivos de D8: el rechazo en
+    `comun/ledger.py` y `tests/test_ledger.py`, los seis scripts de la migración, el escenario «Ledger con la columna
+    vieja» (también en el delta de `h3-semillas-optuna`), las entradas del renombre y de las revisiones del renombre en
+    las bitácoras, y `openspec/specs/` (cambia al archivar). `comun/tokens.py` y los JSON/`costos.csv` de
+    `ledger/sesiones/` solo nombran `renombrar-brazos`.
+  - ✗→✓ 3.1 concordancia: el grep de artículos de D3 no da nada, pero la búsqueda de adjetivos masculinos cerca de
+    «variante» encontró seis: «variantes apareados» (`comun/consolidar.py`, mensaje de consola), «una variante
+    ficticio» (`docs/metodo.md` y `openspec/changes/archive/2026-11-03-separar-hipotesis/tasks.md` 6.3), «variante
+    propio» (`control/docs/diseno.md`, `sampling_1/docs/bitacora.md`), «una variante desconocido falla nombrándolo»
+    (`separar-hipotesis/tasks.md` 2.1). Corregidos. Quedan en transcripts JSON de `ledger/sesiones/` (registro crudo,
+    no se tocan).
+  - ✓ 3.2: `python -m comun.consolidar` (control 21/20/0, h1 44/62/4, h2 44/40/4, h3 20/20/2) y `comun.reporte --todos`
+    regenerados; `foto_renombre.py despues` contra `antes`: los 16 CSV (4 `apareado.csv`, 12 tablas) con mismas
+    columnas tras cambiar brazo→variante y diferencia máxima 0. Los `apareado.csv` del repo no cambian en git; el
+    `--word-diff` de los cinco `reporte.html` solo cambia hora y commit, y ningún PNG cambia.
+    `git diff --word-diff 4a456c8^ HEAD` de los `informe.md` no toca números.
+  - ✓ 3.3: las cinco bitácoras tienen la entrada del renombre con fecha, commits (`b9f6b43`, `7b0545c`, `6ea0074`,
+    `f4566a3`, `4a456c8`, `611bb2f`, todos existen), historia de git y `corridas-v1` (el tag existe), y que un clon viejo
+    no consolida (cubierto por `test_cabecera_brazo_se_rechaza_nombrando_el_archivo`).
+  - ✓ `pytest` 75 pasan; `python -m comun.variantes --verificar` sin problemas.
+  - n/a reglas de decisión, citas, refutaciones, limitaciones, guion y bibliografía: el grupo no cambia contenido del
+    informe (verificado con el `--word-diff` de 3.2).
+- Hallazgos:
+  1. Seis concordancias masculinas que el grep de artículos de D3 no cubre (adjetivo después del sustantivo).
+  2. D8 no nombraba `scripts/reemplazar_d3.py`, `scripts/concordar_d3.py` ni `openspec/specs/` (hasta archivar), que
+     el grep final sí devuelve.
+  3. `tasks.md` no tenía tarea de revisión propia del grupo 3 (la 4.2 revisa los grupos 3 y 4).
+- Correcciones:
+  1. Las seis concordancias, a mano.
+  2. `design.md` D8 suma esos dos scripts y `openspec/specs/` hasta el archivo.
+  3. `tasks.md`: se agrega la 3.4 (esta revisión, hecha); la 4.2 sigue abierta para el grupo 4 y el README.
+- Tokens: ~35 turnos · ≈ US$ 1,3 (presupuesto US$ 4). `comun/tokens.py` no se corrió: se regenera en la 4.2.

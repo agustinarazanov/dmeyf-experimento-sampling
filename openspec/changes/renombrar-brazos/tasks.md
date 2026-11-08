@@ -20,11 +20,12 @@
 - [x] 3.1 Reemplazo de D3 en todo `git ls-files` (bitácoras, `ledger/sesiones/`, `openspec/changes/archive/`, docs, informes, README de cada experimento, `CLAUDE.md`, `plantilla/`); corregir a mano lo que marquen los grep de concordancia; verificar que `git grep -n -i brazo | grep -v renombrar-brazos` solo devuelve líneas de los archivos de D8 y que los grep de concordancia no dan resultados
 - [x] 3.2 Regenerar con `python -m comun.consolidar` y `python -m comun.reporte --todos` y comparar con la foto de 1.1; verificar que los valores de cada `apareado.csv` y de cada tabla coinciden (diferencia 0), que el diff de cada `reporte.html` solo tiene "variante" y la fecha, y que `git diff --word-diff` de los `informe.md` no toca números
 - [x] 3.3 Anotar el renombre (fecha, commits, que la historia de git y `corridas-v1` siguen con "brazo", que un clon viejo no consolida) en la bitácora de cada experimento
+- [x] 3.4 Revisión en sesión limpia del grupo 3 con la lista de informe de `docs/revision.md` (en lo que el grupo toca) y cierre en `sampling_1/docs/bitacora.md`
 
 ## 4. README (sesión: Opus)
 
 - [ ] 4.1 Reescribir `README.md` con las secciones de D7; los números se copian de `sampling_1/informe/informe.md` citando la fuente; verificar con un script que cada Δ, IC y A del README coincide con `informe.md` y que todos los enlaces relativos existen
-- [ ] 4.2 Revisión en sesión limpia de los grupos 3 y 4 con la lista de informe de `docs/revision.md` (incluye leer el README como alguien que no conoce el repo) y cierre en `sampling_1/docs/bitacora.md`; correr `comun/tokens.py`
+- [ ] 4.2 Revisión en sesión limpia de los grupos 3 (ya revisado en 3.4; repasar solo lo que cambie la 4.1) y 4 con la lista de informe de `docs/revision.md` (incluye leer el README como alguien que no conoce el repo) y cierre en `sampling_1/docs/bitacora.md`; correr `comun/tokens.py`
 
 ## Workflow follow-up
 

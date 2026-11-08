@@ -130,7 +130,9 @@ Un renombre que se documenta y se protege no puede borrar la palabra vieja de to
 - la historia de git y el tag `corridas-v1`;
 - `openspec/changes/renombrar-brazos/`, también una vez archivado;
 - `scripts/renombrar_columna.py` y los demás scripts de la migración (`scripts/reemplazar_d1.py`,
-  `scripts/foto_renombre.py`, `scripts/verificar_tokens_renombre.py`), que nombran la palabra vieja para buscarla;
+  `scripts/foto_renombre.py`, `scripts/verificar_tokens_renombre.py`, `scripts/reemplazar_d3.py`,
+  `scripts/concordar_d3.py`), que nombran la palabra vieja para buscarla;
+- `openspec/specs/`, hasta que el archivo de este cambio aplique los deltas;
 - el rechazo de la cabecera vieja en `comun/ledger.py` y su test;
 - el escenario "Ledger con la columna vieja" de `ledger-resultados`;
 - la entrada de cada bitácora que registra el renombre;

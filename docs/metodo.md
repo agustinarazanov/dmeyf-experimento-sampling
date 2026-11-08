@@ -85,7 +85,7 @@ plantilla/                la estructura vacía de un experimento
 4. Registrar en `comun/variantes.py`, y anunciarlo en el commit:
    - cada variante en `VARIANTES`: `Variante(nombre, "hN", método, tasa, estudio)`;
    - cada estudio de Optuna propio en `ESTUDIOS`: `"nombre": "hN"`.
-   Por ejemplo, una variante ficticio de `h9` con la tasa 0,02: `Variante("U0.02", "h9", "uniforme", 0.02, "U0.02")` dentro de
+   Por ejemplo, una variante ficticia de `h9` con la tasa 0,02: `Variante("U0.02", "h9", "uniforme", 0.02, "U0.02")` dentro de
    la lista de `VARIANTES` y `"U0.02": "h9"` en `ESTUDIOS` (`Variante` es la `NamedTuple` de ese mismo archivo; `nombre("uniforme",
    0.02)` ya devuelve `U0.02`, así que no hace falta tocar nada más). Los nombres de variante y de estudio no se repiten
    entre hipótesis.

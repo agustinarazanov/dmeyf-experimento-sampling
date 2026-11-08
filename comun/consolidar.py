@@ -155,7 +155,7 @@ def main() -> None:
             resultados[e] = consolidar_experimento(e)
     for e, r in resultados.items():
         print(f"{e}: {len(r['resultados'])} corridas válidas, {len(r['reemplazadas'])} reemplazadas, "
-              f"{len(r['apareado']) if 'apareado' in r else 0} variantes apareados")
+              f"{len(r['apareado']) if 'apareado' in r else 0} variantes apareadas")
     if a.sanity:
         union = {"resultados": pd.concat([r["resultados"] for r in resultados.values()], ignore_index=True)}
         res = sanity(union)

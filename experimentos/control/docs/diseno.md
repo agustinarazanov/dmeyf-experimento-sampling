@@ -20,7 +20,7 @@ compuerta de resultados, no una variante.
 
 - **Optimización**: el estudio `C`, 40 trials, 100 iteraciones cada uno, sin early stopping.
 - **Finales**: `C` × 10 semillas. Cada corrida predice 201908 y 201910 y guarda las dos curvas.
-- **Réplica del control**: variante propio, **`C-rep`**: 10 corridas finales con el JSON de `C` y las mismas 10 semillas,
+- **Réplica del control**: variante propia, **`C-rep`**: 10 corridas finales con el JSON de `C` y las mismas 10 semillas,
   en otra VM. El diseño original la ponía en la VM de otra persona; con la decisión del 1-nov (todas las fases en la
   cuenta de Agustina) la réplica es entre VMs de la misma persona, y eso queda como limitación declarada en el informe:
   prueba el determinismo entre máquinas, no la reproducción entre integrantes. Tiene su propio nombre de variante para que
