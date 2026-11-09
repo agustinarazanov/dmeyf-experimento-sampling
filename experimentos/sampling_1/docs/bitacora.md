@@ -803,3 +803,48 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   el ledger a US$ 0,19/h); clasificación de `3421053b…` como **corridas** (arriba). Nada en código ni en ledger.
 - Tokens: ~30 turnos · contexto ~55.000 por turno · ≈ US$ 1,1 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — grupo 4 de `h3-semillas-optuna` implementado (código, sesión headless)
+- Sesión: `fb2dbf0b-78c4-43e0-8f9d-1c4b52bbd2f0` · modelo: Sonnet · etapa: **codigo** (tareas 4.1–4.2, commits
+  `343d8f7`, `296865c`). No dejó entrada propia; la clasifica la revisión del grupo. 37 turnos, contexto promedio
+  ~82.000 por turno, US$ 1,13 (`costos.csv`).
+
+### 2026-11-09 — cierre revisión del grupo 4 de `h3-semillas-optuna` (comparación limpia)
+- Sesión: `e042cbd2-25f3-48a3-9fd1-1e9c74d5919f` · modelo: Opus · etapa: **revision** (grupo 4, tareas 4.1–4.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código) sobre `comun/reporte.py`, `comun/variantes.py`, sus tests y el manifiesto
+  `h3/sensibilidad_muestra/exploratorio.json`, más las verificaciones de 4.1 y 4.2. Ningún ✗ abierto.
+  - n/a Smoke de los cuatro métodos, `optimizar` sin 201910, columnas obligatorias del ledger, `codigo_sucio`, filas
+    de train, apareo de `consolidar.py` y `vm.sh`: el grupo no tocó el corredor, el ledger, `consolidar` ni los
+    scripts (`git diff dcd06d6 HEAD` en `comun/`, `scripts/` y `tests/` solo cambia `reporte.py`, `variantes.py` y
+    sus tests). Esos ítems se cerraron en la revisión del grupo 2.
+  - ✓ Determinismo: `python -m comun.reporte --todos` corrido tres veces; `tabla_resultados.md` idéntica y en los
+    HTML solo cambia la hora del pie. El bootstrap con `default_rng(20261108)` tiene su test de dos corridas
+    idénticas.
+  - ✓ No hay datos del dataset en el repo (`git ls-files` sin parquet ni gz); los CSV de Martín son tablas agregadas
+    de 4 a 10 filas.
+  - ✓ 4.1: los `sha256` (LF) de los tres CSV de `h3/sensibilidad_muestra/resultados/` coinciden con `sha256_lf` de
+    `procedencia.json`; las columnas que declara el manifiesto existen en sus CSV; `--verificar` pasa y el test de
+    manifiesto sin advertencia falla nombrando carpeta y campo.
+  - ✓ 4.2: `pytest` 134 verdes (133 + 1 de esta revisión); los tres tests pedidos (exploratorio sin CSV, variante de
+    una réplica, bootstrap idéntico) están y pasan. Revisados a mano `tiempo_igual_replicas` (K_k contra el
+    presupuesto del control de la misma réplica, IC t entre réplicas) y `bootstrap_tiempo_igual` (corte N\*·n_b/n,
+    mismo remuestreo para todas las variantes, Ḡ_C como media de las 10 semillas): coinciden con D6.
+  - ✗→✓ Bloque A coherente: en las filas de H3, Ḡ es la media entre réplicas (`reporte.py`, `fila_bloque_a`) y T y A
+    medianas entre réplicas, pero la cabecera solo daba Ḡ_C de la réplica 0 y nada lo decía: 277,79 − 276,10 no da
+    ni el Δ de réplica 0 (3,74) ni el de réplicas (1,87), y en la figura las H3 se comparaban con el control de la
+    réplica 0.
+- Hallazgos:
+  1. Fuente mezclada en Ḡ, T y A del bloque A (arriba), en la tabla, el HTML y la figura de tiempo contra ganancia.
+  2. Bloque B: las dos columnas `delta` del manifiesto no miden lo mismo (en `08_…` es ganancia en $, en `07_…` es
+     AUC). La tabla nombra el CSV de cada una, pero el informe (5.1–5.2) tiene que decirlo al citarlas.
+  3. El pie de cada HTML cita el commit `HEAD` al generar, que es el anterior al commit que lo guarda; es lo esperable
+     y no se toca.
+  4. La sesión de implementación `fb2dbf0b…` no tenía entrada ni etapa (arriba).
+- Correcciones: `comun/reporte.py` marca con (R=n) la Ḡ de las variantes con réplicas, agrega Ḡ_C con réplicas
+  (275,92 M$, R = 8) a la referencia del control, escribe sobre la tabla del bloque A de dónde salen Ḡ, T y A, y en la
+  figura dibuja el control con réplicas (media, mediana de T y rango) junto al de la réplica 0. Test nuevo en
+  `tests/test_reporte.py`; reportes y `tabla_resultados.md` regenerados (las cifras no cambian). Ninguna cifra del
+  ledger cambió.
+- Tokens: ~47 turnos · contexto ~69.000 por turno · ≈ US$ 1,8 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —

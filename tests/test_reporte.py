@@ -65,6 +65,21 @@ def test_variante_de_una_replica_lleva_la_nota_sin_replicas():
     assert celdas[4] == "—" and celdas[7] == "sin réplicas"
 
 
+def test_variante_con_replicas_marca_su_g_y_la_referencia_del_control():
+    """Ḡ de una variante con réplicas es la media entre réplicas: la celda lo dice y la cabecera da Ḡ_C con réplicas."""
+    import pandas as pd
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    ap = pd.DataFrame(dict(g_control=[1e8], delta_g_media=[3e6], delta_g_ic_inf=[0.0], delta_g_ic_sup=[6e6],
+                           tiempo_total_s=[100.0], aceleracion=[3.0], veredicto=["no pierde"]), index=["H3-0.1"])
+    rep = pd.DataFrame(dict(delta_g_media=[1e6, None], delta_g_ic_inf=[-1e6, None], delta_g_ic_sup=[3e6, None],
+                            n_replicas=[8, 8], g_media_replicas=[1.01e8, 1e8], veredicto=["no pierde", ""]),
+                       index=["H3-0.1", reg.CONTROL])
+    f = reporte.fila_bloque_a(ctx, "H3-0.1", pd.DataFrame(), ap, rep, None, None, None)
+    assert reporte.celdas_bloque_a(f)[2] == "101.00 (R=8)"
+    a = dict(n_est=3300, g_c1=9.9e7, g_c10=None, g_cR=1e8, n_cR=8)
+    assert "Ḡ_C con réplicas = 100.00 M$ (R=8)" in reporte.referencia_control(a)
+
+
 def _predicciones(tmp_path, variante, semilla_azar, k):
     import numpy as np
     import pandas as pd

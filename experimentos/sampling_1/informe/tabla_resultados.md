@@ -2,9 +2,11 @@
 
 Generado por `python -m comun.reporte --experimento sampling_1`; no editar a mano.
 
-N* = 3,300 envíos; Ḡ_C (réplica 0) = 276.10 M$; ensamble de 10 semillas del control = 275.55 M$.
+N* = 3,300 envíos; Ḡ_C (réplica 0) = 276.10 M$; Ḡ_C con réplicas = 275.92 M$ (R=8); ensamble de 10 semillas del control = 275.55 M$.
 
 ## Bloque A: mismo protocolo
+
+Ḡ, T y A salen de la réplica 0 en las variantes sin réplicas; en las marcadas (R=n), Ḡ es la media entre réplicas, T la mediana entre réplicas y A = T_C / T con T_C también mediana entre réplicas, así que se comparan con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0.
 
 | variante | hipótesis | Ḡ (M$) | Δ réplica 0 [IC] (M$) | Δ con réplicas [IC] (M$) | T mediana (s) | A | tiempo igual, réplicas [IC t] (M$) | tiempo igual, bootstrap de clientes [IC] (M$) | veredicto (fuente) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -16,10 +18,10 @@ N* = 3,300 envíos; Ḡ_C (réplica 0) = 276.10 M$; ensamble de 10 semillas del 
 | B0.25 | H2 | 276.76 | 0.66 [-2.86; 4.18] | — | 645 | 1.21 | sin réplicas | 1.16 [-7.49; 10.45] | no pierde (réplica 0) |
 | B0.5 | H2 | 275.99 | -0.11 [-4.46; 4.24] | — | 1,003 | 0.78 | sin réplicas | no aplica (K<2) | no pierde (réplica 0) |
 | GOSS | H2 | 276.65 | 0.55 [-2.60; 3.70] | — | 1,088 | 0.72 | sin réplicas | no aplica (K<2) | no pierde (réplica 0) |
-| H3-0.05 | H3 | 277.79 | 3.74 [1.77; 5.71] | 1.87 [-1.02; 4.76] (R=8) | 83 | 11.82 | 1.97 [-2.83; 6.76] (R=8) | 2.75 [-5.17; 12.54] | no pierde (con réplicas (8)) |
-| H3R-0.1 | H3 | 277.68 | 3.30 [0.65; 5.95] | 1.76 [-1.21; 4.73] (R=8) | 117 | 8.34 | 3.34 [-0.14; 6.82] (R=8) | 8.14 [-1.32; 18.48] | no pierde (con réplicas (8)) |
-| H3-0.1 | H3 | 278.22 | 4.07 [-0.27; 8.41] | 2.30 [-0.88; 5.47] (R=8) | 118 | 8.30 | 4.03 [0.78; 7.27] (R=8) | 4.38 [-3.96; 13.42] | no pierde (con réplicas (8)) |
-| H3-0.25 | H3 | 277.74 | 4.18 [-0.60; 8.96] | 1.81 [-1.78; 5.41] (R=8) | 216 | 4.53 | 1.83 [-1.91; 5.57] (R=8) | 3.46 [-4.29; 11.77] | no pierde (con réplicas (8)) |
+| H3-0.05 | H3 | 277.79 (R=8) | 3.74 [1.77; 5.71] | 1.87 [-1.02; 4.76] (R=8) | 83 | 11.82 | 1.97 [-2.83; 6.76] (R=8) | 2.75 [-5.17; 12.54] | no pierde (con réplicas (8)) |
+| H3R-0.1 | H3 | 277.68 (R=8) | 3.30 [0.65; 5.95] | 1.76 [-1.21; 4.73] (R=8) | 117 | 8.34 | 3.34 [-0.14; 6.82] (R=8) | 8.14 [-1.32; 18.48] | no pierde (con réplicas (8)) |
+| H3-0.1 | H3 | 278.22 (R=8) | 4.07 [-0.27; 8.41] | 2.30 [-0.88; 5.47] (R=8) | 118 | 8.30 | 4.03 [0.78; 7.27] (R=8) | 4.38 [-3.96; 13.42] | no pierde (con réplicas (8)) |
+| H3-0.25 | H3 | 277.74 (R=8) | 4.18 [-0.60; 8.96] | 1.81 [-1.78; 5.41] (R=8) | 216 | 4.53 | 1.83 [-1.91; 5.57] (R=8) | 3.46 [-4.29; 11.77] | no pierde (con réplicas (8)) |
 
 Notas:
 

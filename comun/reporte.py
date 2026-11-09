@@ -543,7 +543,26 @@ def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot
         ti = tiempo_igual_replicas(b, finr, estudios, n_est) if len(finr) else None
         filas.append(fila_bloque_a(ctx, b, fin, ap, rep, ti, boot.get(b), datos.get(b)))
     filas.sort(key=lambda f: (list(ctx.hipotesis).index(f["hipotesis"]), -(f["A"] if f["A"] is not None else -1.0)))
-    return {"filas": filas, "rep": rep, "g_c1": g_c1, "g_c10": g_c10, "n_est": n_est}
+    # referencia de las filas con réplicas: Ḡ_C media entre réplicas y T_C mediana (la misma que usa su A)
+    c_rep = rep.loc[lg.CONTROL] if lg.CONTROL in rep.index and pd.notna(rep.loc[lg.CONTROL].get("g_media_replicas")) else None
+    t_cr = next((f["ti_rep"]["T_c"] for f in filas if f["dR"] and f["ti_rep"]), None)
+    return {"filas": filas, "rep": rep, "g_c1": g_c1, "g_c10": g_c10, "n_est": n_est,
+            "g_cR": None if c_rep is None else float(c_rep["g_media_replicas"]),
+            "n_cR": None if c_rep is None else int(c_rep["n_replicas"]), "t_cR": t_cr}
+
+
+AVISO_A = ("Ḡ, T y A salen de la réplica 0 en las variantes sin réplicas; en las marcadas (R=n), Ḡ es la media entre "
+           "réplicas, T la mediana entre réplicas y A = T_C / T con T_C también mediana entre réplicas, así que se comparan "
+           "con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0.")
+
+
+def referencia_control(a: dict) -> str:
+    txt = f"N* = {a['n_est']:,} envíos; Ḡ_C (réplica 0) = {_m(a['g_c1'])} M$"
+    if a.get("g_cR") is not None:
+        txt += f"; Ḡ_C con réplicas = {_m(a['g_cR'])} M$ (R={a['n_cR']})"
+    if a["g_c10"] is not None:
+        txt += f"; ensamble de {N_SEMILLAS} semillas del control = {_m(a['g_c10'])} M$"
+    return txt + "."
 
 
 def _ic_txt(t: tuple | None) -> str:
@@ -558,7 +577,8 @@ def celdas_bloque_a(f: dict) -> list[str]:
         ti_rep = "sin réplicas" if not tr else f"no aplica (K<2 en {len(tr['filas']) - tr['n']} de {len(tr['filas'])} réplicas)"
     ti_boot = _ic_txt(tb) if tb else ("no aplica (K<2)" if k0 and k0[2] < 2 else "pendiente")
     dR = f"{_ic_txt(f['dR'][:3])} (R={f['dR'][3]})" if f["dR"] else "—"
-    return [f["variante"], f["hipotesis"], _m(f["G"]) if f["G"] is not None else "pendiente", _ic_txt(f["d0"]), dR,
+    g = (_m(f["G"]) + (f" (R={f['dR'][3]})" if f["dR"] else "")) if f["G"] is not None else "pendiente"
+    return [f["variante"], f["hipotesis"], g, _ic_txt(f["d0"]), dR,
             f"{f['T']:,.0f}" if f["T"] is not None else "pendiente", f"{f['A']:.2f}" if f["A"] is not None else "pendiente",
             ti_rep, ti_boot, f"{f['veredicto']} ({f['fuente']})"]
 
@@ -635,9 +655,8 @@ def markdown_resultados(ctx: Contexto, a: dict, b: list[dict]) -> str:
         return "# Resultados\n\npendiente: el control no tiene sus 10 semillas.\n"
     partes = ["# Resultados de sampling_1\n",
               "Generado por `python -m comun.reporte --experimento sampling_1`; no editar a mano.\n",
-              f"N* = {a['n_est']:,} envíos; Ḡ_C (réplica 0) = {_m(a['g_c1'])} M$"
-              + (f"; ensamble de {N_SEMILLAS} semillas del control = {_m(a['g_c10'])} M$" if a["g_c10"] is not None else "") + ".\n",
-              "## Bloque A: mismo protocolo\n", tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
+              referencia_control(a) + "\n",
+              "## Bloque A: mismo protocolo\n", AVISO_A + "\n", tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
     notas = [f"- `{f['variante']}`: {f['nota']}" for f in a["filas"] if f["nota"]]
     if notas:
         partes += ["Notas:\n", "\n".join(notas) + "\n"]
@@ -657,6 +676,10 @@ def fig_tiempo_ganancia_replicas(ctx: Contexto, a: dict, ap: pd.DataFrame, figur
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
     gc, tc = ap["g_control"].iloc[0], ap["tiempo_total_control_s"].iloc[0]
     ax.scatter([tc], [gc / 1e6], s=90, color=COLOR_C, marker="s", zorder=3, label="control (réplica 0)")
+    if a.get("g_cR") is not None and a.get("t_cR") is not None:
+        r, y = rep.loc[lg.CONTROL], a["g_cR"] / 1e6
+        ax.errorbar([a["t_cR"]], [y], yerr=[[y - r["g_min_replicas"] / 1e6], [r["g_max_replicas"] / 1e6 - y]], fmt="D",
+                    ms=7, mfc="white", color=COLOR_C, capsize=3, zorder=3, label=f"control (media de {a['n_cR']} réplicas)")
     for h in ctx.hipotesis:
         for f in [f for f in a["filas"] if f["hipotesis"] == h and f["G"] is not None and f["T"] is not None]:
             y = f["G"] / 1e6
@@ -701,7 +724,8 @@ def fig_varianza(ctx: Contexto, a: dict, figuras: Path | None) -> str:
 def html_resultados(ctx: Contexto, a: dict, b: list[dict], ap: pd.DataFrame, figuras: Path | None) -> str:
     if not a["filas"]:
         return "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
-    out = ["<h3>Bloque A: mismo protocolo</h3>", html_tabla(CAB_A, [celdas_bloque_a(f) for f in a["filas"]]),
+    out = ["<h3>Bloque A: mismo protocolo</h3>", f"<p>{html.escape(referencia_control(a))} {html.escape(AVISO_A)}</p>",
+           html_tabla(CAB_A, [celdas_bloque_a(f) for f in a["filas"]]),
            fig_tiempo_ganancia_replicas(ctx, a, ap, figuras)]
     notas = [f"{f['variante']}: {f['nota']}" for f in a["filas"] if f["nota"]]
     if notas:
