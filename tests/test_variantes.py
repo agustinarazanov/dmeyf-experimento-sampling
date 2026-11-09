@@ -138,3 +138,27 @@ def test_carpeta_faltante_lista_lo_que_se_rompe(tmp_path):
     assert any("falta la carpeta experimentos/h1/" in p for p in problemas)
     assert "si falta experimentos/h1/ se rompen: h3, sampling_1" in informe
     assert "si falta experimentos/h2/ se rompen: sampling_1" in informe
+
+
+def _exploratorio(raiz, **cambios):
+    import json
+    carpeta = raiz / "experimentos" / "h3" / "sensibilidad_muestra"
+    carpeta.mkdir(parents=True)
+    (carpeta / "README.md").write_text("# x\n")
+    datos = dict(autor="A", fecha="2026-11-04", pregunta="p", protocolo="p", advertencia="a",
+                 tablas=[dict(csv="r.csv", columnas=["x"])])
+    datos.update(cambios)
+    (carpeta / "exploratorio.json").write_text(json.dumps(datos))
+
+
+def test_exploratorio_completo_pasa(tmp_path):
+    _arbol_completo(tmp_path)
+    _exploratorio(tmp_path)
+    assert variantes.verificar(tmp_path)[0] == []
+
+
+def test_exploratorio_sin_advertencia_falla_nombrando_carpeta_y_campo(tmp_path):
+    _arbol_completo(tmp_path)
+    _exploratorio(tmp_path, advertencia="")
+    problemas, _ = variantes.verificar(tmp_path)
+    assert any("h3/sensibilidad_muestra" in p and "advertencia" in p for p in problemas)

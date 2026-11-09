@@ -10,6 +10,7 @@ dependencias implícitas entre experimentos. `## Dependencias` de cada `docs/dis
 from __future__ import annotations
 
 import argparse
+import json
 import re
 from pathlib import Path
 from typing import Iterable, NamedTuple
@@ -202,6 +203,35 @@ def rotos_si_falta(grafo: dict[str, set[str]], exp: str) -> list[str]:
     return sorted(rotos)
 
 
+CAMPOS_EXPLORATORIO = ("autor", "fecha", "pregunta", "protocolo", "advertencia", "tablas")
+
+
+def manifiestos(raiz: Path = rutas.RAIZ) -> list[Path]:
+    """Los `exploratorio.json` de `experimentos/*/` (a cualquier profundidad) y de `sampling_1/exploratorios/*/`."""
+    return sorted((raiz / "experimentos").glob("**/exploratorio.json"))
+
+
+def problemas_exploratorios(raiz: Path = rutas.RAIZ) -> list[str]:
+    """Carpeta y campo que faltan o están vacíos en cada manifiesto de exploratorio."""
+    out: list[str] = []
+    for m in manifiestos(raiz):
+        carpeta = m.parent.relative_to(raiz)
+        try:
+            datos = json.loads(m.read_text())
+        except ValueError as e:
+            out.append(f"{carpeta}: exploratorio.json no es JSON válido ({e})")
+            continue
+        for campo in CAMPOS_EXPLORATORIO:
+            if not datos.get(campo):
+                out.append(f"{carpeta}: a exploratorio.json le falta el campo `{campo}`")
+        for t in datos.get("tablas") or []:
+            if not isinstance(t, dict) or not t.get("csv") or not t.get("columnas"):
+                out.append(f"{carpeta}: cada tabla de exploratorio.json necesita `csv` y `columnas`")
+        if not (m.parent / "README.md").is_file():
+            out.append(f"{carpeta}: falta README.md junto al exploratorio.json")
+    return out
+
+
 def verificar(raiz: Path = rutas.RAIZ, variantes: dict[str, Variante] | None = None,
               estudios: dict[str, str] | None = None) -> tuple[list[str], list[str]]:
     """(problemas, informe). Problemas: carpeta o sección que falta, declaración distinta de la implícita, ciclos."""
@@ -223,6 +253,7 @@ def verificar(raiz: Path = rutas.RAIZ, variantes: dict[str, Variante] | None = N
         grafo.setdefault(e, set())
     for ciclo in ciclos(grafo):
         problemas.append("ciclo de dependencias: " + " -> ".join(ciclo))
+    problemas += problemas_exploratorios(raiz)
     informe = []
     for exp in sorted(set(grafo) | set(implicito)):
         rotos = rotos_si_falta({e: (declarado.get(e) or set()) | implicito.get(e, set()) for e in grafo | implicito}, exp)

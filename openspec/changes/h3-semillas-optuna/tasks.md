@@ -25,7 +25,7 @@ Requiere `renombrar-brazos` archivado.
 
 ## 4. Comparación limpia (sesión: Sonnet)
 
-- [ ] 4.1 `exploratorio.json` de `h3/sensibilidad_muestra/` (archivo nuevo, sin tocar los que tienen huella); validación de campos en `comun.variantes --verificar`; verificar que `sha256sum` de los archivos de Martín coincide con su `procedencia.json` y que un manifiesto sin advertencia hace fallar el `--verificar`
+- [x] 4.1 `exploratorio.json` de `h3/sensibilidad_muestra/` (archivo nuevo, sin tocar los que tienen huella); validación de campos en `comun.variantes --verificar`; verificar que `sha256sum` de los archivos de Martín coincide con su `procedencia.json` y que un manifiesto sin advertencia hace fallar el `--verificar`
 - [ ] 4.2 `comun/reporte.py`: bloques A y B, tiempo igual con IC entre réplicas y bootstrap de clientes (D6), figura de tiempo contra ganancia con barras de réplicas, figura de descomposición de varianza y `informe/tabla_resultados.md`; tests de exploratorio sin CSV (pendiente), variante de una réplica (nota) y bootstrap idéntico en dos corridas; verificar que `python -m comun.reporte --todos` corre dos veces con diferencia solo en la fecha
 - [ ] 4.3 Revisión en sesión limpia del grupo 4 con la lista de código y cierre en la bitácora
 

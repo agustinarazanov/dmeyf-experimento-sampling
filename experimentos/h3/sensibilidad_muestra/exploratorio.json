@@ -1,0 +1,11 @@
+{
+  "autor": "Martín López",
+  "fecha": "2026-11-04",
+  "pregunta": "¿Cuánto depende de la muestra la configuración que elige H3?",
+  "protocolo": "20 configuraciones al azar, 10 muestras del 25 %, una semilla final, float64, 4 hilos",
+  "advertencia": "10 muestras pero 4 modelos distintos; un solo 201910; no comparable 1:1 con H3-0.25",
+  "tablas": [
+    {"csv": "resultados/08_ganancia_por_semilla.csv", "columnas": ["delta", "delta_pct"]},
+    {"csv": "resultados/07_resumen_por_semilla.csv", "columnas": ["delta", "spearman_seleccion", "tiempo_busqueda_s"]}
+  ]
+}
