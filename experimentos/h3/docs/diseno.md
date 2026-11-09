@@ -25,6 +25,28 @@ anterior.
 `H3R-0.1` comparte los estudios de `H3-0.1`: la diferencia entre las dos es solo el reescalado, apareada por réplica y
 semilla.
 
+### Extensiones del aporte de Luis (9-nov, cambio `incorporar-aportes`)
+
+Cuatro variantes más, que vienen del aporte de Luis (`docs/hipotesis.md` § Extensiones del aporte de Luis, reglas 5 a
+8). Todas con 8 réplicas (k = 0…7) y las 10 semillas finales.
+
+| variante | estudio (k = 0 / k ≥ 1) | dueño del estudio | final |
+|---|---|---|---|
+| `H3R-0.25` | `U0.25` / `U0.25@k` | `h1` / `h3` | r = 1, `min_data_in_leaf` × √(1/r) = × 2 (reescalado `raiz`) |
+| `H3L-0.25` | `U0.25` / `U0.25@k` | `h1` / `h3` | r = 1, `min_data_in_leaf` × 1/r = × 4 (reescalado `lineal`) |
+| `H3L-0.1` | `U0.1` / `U0.1@k` | `h1` / `h3` | r = 1, `min_data_in_leaf` × 1/r = × 10 (reescalado `lineal`) |
+| `H3K-0.1` | `K0.1` / `K0.1@k` | `h3` | r = 1, sin reescalar |
+
+- **Reescalados**: el `min_data_in_leaf` del estudio se multiplica por el factor, se redondea y se recorta a [1; 8000];
+  los demás hiperparámetros no cambian. Los efectivos quedan en la fila del ledger. `H3R-r` y `H3L-r` leen el mismo
+  estudio que `H3-r`, así que las tres se aparean por réplica y semilla.
+- **Muestra por cliente (`K0.1`)**: en la réplica k se sortea, con semilla k, el 10 % de los `numero_de_cliente` del
+  train 201903–201906, y se toman todas las filas de esos clientes. La cantidad de filas queda cerca del 10 % del train
+  y se registra la exacta. Optuna de 40 trials sobre esa muestra, TPE con semilla k, AUC en 201908. Es reconstrucción
+  nuestra: Luis describe el muestreo por cliente («a igual volumen» que el muestreo por filas) pero no subió el código.
+- `K0.1` y sus `K0.1@k` son de `h3`: sus hiperparámetros van a `experimentos/h3/ledger/hp/`. El registro y los métodos
+  son del grupo 2 del cambio.
+
 ## Estudios de Optuna compartidos
 
 En la réplica 0, H3 no tiene estudios propios: `H3-0.25` usa el estudio `U0.25`, `H3-0.1` y `H3R-0.1` el estudio
@@ -43,7 +65,8 @@ está en [`h1/docs/diseno.md`](../../h1/docs/diseno.md) § Estudios de Optuna co
   `experimentos/h3/ledger/hp/U{r}@k.json`. `C@k` es de `control`. La regla vive en el registro
   (`comun/variantes.py`) y la cubre un test.
 - **Variantes que admiten réplicas**: `C`, `H3-0.25`, `H3-0.1`, `H3-0.05` y `H3R-0.1`. Pedir una réplica k ≥ 1 de otra
-  variante falla antes de cargar datos.
+  variante falla antes de cargar datos. Desde `incorporar-aportes` se suman `H3R-0.25`, `H3L-0.25`, `H3L-0.1` y
+  `H3K-0.1`, y las cuatro de `h4`.
 
 ## Grilla con réplicas
 
@@ -67,6 +90,21 @@ y *no pierde* deja de ser decidible; con 10 el costo crece un 30 % para ganar po
 La ejecución (una VM por réplica, todas desde `corridas-v2`) está en
 [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases.
 
+### Grilla de las extensiones (fase 6)
+
+4 variantes (`H3R-0.25`, `H3L-0.25`, `H3L-0.1`, `H3K-0.1`) × 8 réplicas × 10 semillas = **32 celdas, 320 finales**, y
+**8 estudios** nuevos (`K0.1`, `K0.1@1…7`). Los estudios `U0.25`, `U0.1` y sus `@k` ya existen.
+
+| bloque | corridas | tiempo estimado |
+|---|---|---|
+| Optuna `K0.1` (k = 0…7) | 8 × ~77 s (como `U0.1`) | ~10 min |
+| Finales (32 celdas × 10 semillas) | 320 × ~35 s | ~187 min |
+| **Total** | | **~3,3 h de VM** |
+
+Con las ~2,6 h de `h4` ([`h4/docs/diseno.md`](../../h4/docs/diseno.md) § Grilla) dan las ~5,8 h de la tanda de
+variantes del cambio. R = 8 queda cerrado, como en § Grilla con réplicas. La ejecución (fase 6, una VM por réplica,
+desde `corridas-v3`) está en [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases.
+
 ## Grilla de la réplica 0
 
 - **Optimización**: ninguna propia (los estudios `U0.25`, `U0.1` y `U0.05` de `h1`).
@@ -76,8 +114,9 @@ La ejecución (una VM por réplica, todas desde `corridas-v2`) está en
 ## Fuera de la grilla
 
 - **Réplicas de `U*`, `B*` y `GOSS`**: pierden o no aceleran, y las réplicas no cambian eso.
-- **H4, fast-retrain y el resto de las ideas de Luis**: son del cambio `incorporar-aportes`, que reusa los estudios
-  `@k` de este.
+- **H4 y fast-retrain**: son de [`h4`](../../h4/docs/diseno.md) (cambio `incorporar-aportes`), que reusa los estudios
+  `U0.05@k` y `U0.25@k` de este. Los reescalados lineales, `H3R-0.25` y el muestreo por cliente, también de ese cambio,
+  entraron acá como extensiones (§ Variantes).
 - El reescalado de `min_data_in_leaf`, que estaba acá como trabajo futuro, entró el 8-nov como `H3R-0.1`.
 
 ## Dependencias
@@ -85,4 +124,4 @@ La ejecución (una VM por réplica, todas desde `corridas-v2`) está en
 - `control`: finales de `C` y de sus réplicas `C@1…7` (las corre `control`), N\* y δ.
 - `h1`: los estudios base de la réplica 0, `U0.25`, `U0.1` y `U0.05` (`ledger/hp/U0.25.json`, `ledger/hp/U0.1.json`,
   `ledger/hp/U0.05.json`). Las réplicas `U{r}@k` con k ≥ 1 son de este experimento (§ Réplicas de optimización), así
-  que no agregan dependencias.
+  que no agregan dependencias. Las extensiones (`H3R-0.25`, `H3L-*`, `H3K-0.1` con su estudio propio `K0.1`) tampoco.

@@ -11,9 +11,12 @@ Desde el 2-nov el resto del diseño está en cada experimento:
   fijos de LightGBM, métricas que se calculan y máquina.
 - [`h1/docs/diseno.md`](../../h1/docs/diseno.md): variantes `U*`, su grilla y los estudios compartidos con H3.
 - [`h2/docs/diseno.md`](../../h2/docs/diseno.md): variantes `B*` y `GOSS` y su grilla.
-- [`h3/docs/diseno.md`](../../h3/docs/diseno.md): variantes `H3-*`, que usan los estudios de `h1`.
+- [`h3/docs/diseno.md`](../../h3/docs/diseno.md): variantes `H3-*`, `H3R-*`, `H3L-*` y `H3K-0.1`, que usan los
+  estudios de `h1` (réplica 0), sus réplicas `@k` y el estudio propio `K0.1`.
+- [`h4/docs/diseno.md`](../../h4/docs/diseno.md): variantes `H4H-0.1`, `H4U-0.1`, `H4F-0.05` y `H4F-0.25`, con sus
+  estudios `NH0.1` y `NU0.1` y los de `h1` y `h3` (agregado el 9-nov, cambio `incorporar-aportes`).
 
-En total: once variantes (el control y las diez de H1–H3) más `C-rep`; 9 estudios × 40 trials y 12 variantes × 10 semillas,
+Fases 1 a 4 (lo que sigue, hasta § Reparto y fases): once variantes (el control y las diez de H1–H3) más `C-rep`; 9 estudios × 40 trials y 12 variantes × 10 semillas,
 así que 9 filas `optimizar` y 120 filas `final` en los ledgers.
 
 ## Estimación de horas y costo
@@ -106,6 +109,33 @@ k = 1…7). Qué es una réplica, los nombres `@k` y los dueños están en
 - **Orden**: espera al cierre de la revisión de hipótesis y diseño del cambio y al tag `corridas-v2`; las 8 listas no
   dependen entre sí. Una VM que se cae se retoma con el mecanismo de § Corridas perdidas.
 
+**Fase 6: aportes de Luis y Martín (agregada el 9-nov, cambio `incorporar-aportes`, D6).** Las 8 variantes nuevas
+(`H3R-0.25`, `H3L-0.25`, `H3L-0.1`, `H3K-0.1` de `h3` y `H4H-0.1`, `H4U-0.1`, `H4F-0.05`, `H4F-0.25` de `h4`) con 8
+réplicas × 10 semillas, los 24 estudios nuevos (`K0.1`, `NH0.1`, `NU0.1`, k = 0…7) y la replicación de los dos
+exploratorios.
+
+- **Quién**: todo lo lanza Agustina, desde su cuenta, en paralelo.
+- **Commit**: todas las VMs salen del tag `corridas-v3`, después del cierre de la revisión de hipótesis y diseño y del
+  de código.
+- **VMs `n2-highmem-8` spot**:
+
+  | tanda | listas | VMs | contenido | pared aprox. |
+  |---|---|---|---|---|
+  | Variantes | `fase6_r0` … `fase6_r7` | 8, una por réplica k | estudios `K0.1`, `NH0.1`, `NU0.1` de la réplica k; finales de las 8 variantes en k | ~45 min |
+  | Luis | `fase6_luis_<estrategia>` | 9, una por estrategia | 50 semillas con `--hp original`; semillas extra del presupuesto donde K > 50 | ~30 min |
+  | Luis, agregados | — | local | `validacion.py --agregar`, `presupuesto.py` | minutos |
+  | Martín | una | 1 | `sensibilidad_07` + `ganancia_08` (4 hilos) y la comparación del panel de Luis con `comun.datos` | ~2,1 h |
+  | Luis, `--hp ledger` | una | 1 | estrategia 7 con los hiperparámetros de `NH0.1`, después de la tanda de variantes | ~30 min |
+
+- **Carga**: variantes ~5,8 h de VM (~3,3 h de `h3` y ~2,6 h de `h4`, detalle en el `diseno.md` de cada una); Luis
+  ~3,7 h; Martín ~2,1 h. En total unas 12 h de VM y ~2 h de pared.
+- **Cuota**: 18 VMs × 8 vCPU = 144 vCPU simultáneas, dentro de la cuota de 200 vCPU N2. Antes de lanzar se verifican la
+  cuota y el crédito del trial; si no alcanzan, se lanzan en tandas (ninguna decisión depende del orden).
+- **Costo**: unas 12 h de VM más el arranque de cada una; con el peor caso de § Estimación de horas y costo (US$ 0,52/h
+  a demanda con un 15 % extra) quedan debajo de US$ 15, dentro del crédito del trial.
+- El detalle de los exploratorios (paquete de Luis, replicación de Martín, panel) está en `openspec/changes/
+  incorporar-aportes/design.md` D1, D5 y D7 hasta que se archive el cambio.
+
 **Orden entre fases.**
 
 - Todo espera al cierre de la compuerta de código (`docs/revision.md` § 3) y al tag `corridas-v1`.
@@ -121,7 +151,8 @@ de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
 
 - **Pesos o selección de instancias sobre CONTINUA** (propuestas del grupo al cierre de hipótesis): cambian la
   proporción de clases o su peso, que corresponde a H4 y corre por separado quien la propuso. Solo entran si se reabre la compuerta de hipótesis
-  y se agregan a `hipotesis.md`.
+  y se agregan a `hipotesis.md`. *Entraron el 9-nov* como `h4` (cambio `incorporar-aportes`), con las variantes del
+  aporte de Luis; fase 6.
 - Lo que queda fuera de la grilla de una hipótesis está en su `diseno.md` (réplicas de `U*`, `B*` y `GOSS` en `h3`,
   respuesta del tutor sobre H2 en `h2`). Reescalar `min_data_in_leaf` en `h3`, que estaba acá, entró el 8-nov como
   `H3R-0.1` (fase 5).
@@ -138,3 +169,7 @@ Lee los ledgers de todos los experimentos para la comparación conjunta:
 - `h1`
 - `h2`
 - `h3`
+
+h4 se suma a esta lista en el mismo commit que registra sus variantes en `comun/variantes.py` (grupo 2 de
+`incorporar-aportes`): `--verificar` exige que la lista coincida con el registro, y hasta entonces h4 no tiene
+variantes registradas.

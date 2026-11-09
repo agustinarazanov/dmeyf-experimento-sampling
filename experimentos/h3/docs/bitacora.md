@@ -86,3 +86,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   Ḡ_{C,0} (276,10 M$) queda arriba de la media de `C` con réplicas (275,92 M$): Δ se achica porque la réplica 0 de
   `H3-0.1` quedó arriba de su media (278,22 M$), no porque el control haya salido bajo. `verificar_informe_h3` pasa
   (107 números, 0 sin fuente).
+
+### 2026-11-09 — extensiones del aporte de Luis (`incorporar-aportes` 1.2)
+
+- Sesión headless `f0b04f89-178e-4a6c-80fb-07a78749b44f` · modelo: Opus · etapa `hipotesis`.
+- `docs/hipotesis.md` § Extensiones del aporte de Luis: variantes `H3R-0.25`, `H3L-0.25`, `H3L-0.1` y `H3K-0.1`
+  (estudio propio `K0.1`), declaradas como salidas de un análisis que miró 201910, con las reglas 5 a 8 de D4 (raíz
+  contra lineal, raíz contra nada en r = 0,25, por cliente con Welch, veredicto con réplicas contra `C`) y la nota de
+  comparaciones múltiples con los contrastes principales de `h4`. `docs/diseno.md`: variantes, reescalados, muestra
+  por cliente (reconstrucción), grilla de la fase 6 (32 celdas, 8 estudios, ~3,3 h). Dependencias sin cambio.
+- Pendiente: revisión en sesión limpia de hipótesis y diseño (1.3). Ninguna corrida real antes de ese cierre.

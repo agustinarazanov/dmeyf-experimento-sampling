@@ -79,9 +79,64 @@ entonces. Esta sección suma réplicas de la optimización para medir la suerte 
   *indeterminado*. Eso también es un resultado: la ventaja de H3 no se distingue de la suerte de Optuna.
 - Los tiempos vienen de VMs `n2-highmem-8` distintas; por eso T es la mediana entre réplicas.
 
+## Extensiones del aporte de Luis (cambio `incorporar-aportes`, 9-nov-2026)
+
+Escrito el 9-nov-2026, antes de cualquier corrida de estas variantes, y revisado en sesión limpia antes de la primera.
+Lo de arriba no cambia. Las réplicas, Ḡ_{v,k}, Δ con réplicas, δ = 5,52 M$, N\* = 3.300 y R = 8 son los de § H3 con
+réplicas de optimización.
+
+**Origen: vienen de mirar 201910.** Las cuatro variantes salen del aporte de Luis María Laguinge
+(`experimentos/Experimentos h3 y h4/`, commit `9e1889e`), que eligió el reescalado √(1/r) frente al lineal y descartó
+el muestreo por cliente mirando su ganancia en 201910. Por eso estos contrastes no cuentan con un mes de test que no se
+haya mirado. No usamos otro mes (consigna, Zulip 208135): entran todas, con regla escrita antes de correr, y ninguna se
+elige ni se descarta por 201910. El informe lo lista entre las limitaciones.
+
+### Variantes nuevas
+
+| variante | estudio (k = 0 / k ≥ 1) | final |
+|---|---|---|
+| `H3R-0.25` | `U0.25` / `U0.25@k` | r = 1, `min_data_in_leaf` × √(1/0,25) = × 2 |
+| `H3L-0.25` | `U0.25` / `U0.25@k` | r = 1, `min_data_in_leaf` × 1/0,25 = × 4 |
+| `H3L-0.1` | `U0.1` / `U0.1@k` | r = 1, `min_data_in_leaf` × 1/0,1 = × 10 |
+| `H3K-0.1` | `K0.1` / `K0.1@k` (de `h3`) | r = 1, sin reescalar |
+
+Los reescalados se redondean y se recortan a [1; 8000]. `K0.1` busca sobre el 10 % de los **clientes** del train,
+sorteados con la semilla de la réplica, con todas sus filas. Detalle en [`docs/diseno.md`](diseno.md).
+
+### Predicciones y reglas
+
+Para las diferencias apareadas se usa el esquema de la regla 4 (`H3R-0.1`): D = G(v₁) − G(v₂) por semilla dentro de
+cada réplica (80 pares), media de D por réplica e IC t 95% entre las 8 réplicas (7 g.l.).
+
+5. **Raíz contra lineal** (`H3R-r` − `H3L-r`, r ∈ {0,25, 0,1}, apareada: comparten estudios).
+   - **Gana la raíz** si la cota inferior del IC de D es > 0 M$.
+   - **Gana la lineal** si la cota superior del IC de D es < 0 M$.
+   - **No cambia** en cualquier otro caso.
+   - **Predicción**: gana la raíz con las dos tasas, que es lo que reporta Luis.
+6. **Raíz contra nada en r = 0,25** (`H3R-0.25` − `H3-0.25`, apareada), con la regla de la 4:
+   - **Mejora** si la cota inferior del IC de D es > 0 M$.
+   - **Empeora** si la cota superior del IC de D es < 0 M$.
+   - **No cambia** en cualquier otro caso.
+   - **Predicción**: *mejora*, por el mismo riesgo conocido de § H3.
+7. **Por cliente** (`H3K-0.1` − `H3-0.1`). D_K = media_k Ḡ_{`H3K-0.1`,k} − media_k Ḡ_{`H3-0.1`,k}, con IC 95% de Welch
+   entre las 8 réplicas de cada una (sin aparear: no comparten estudios).
+   - **Empeora** si la cota superior del IC de D_K es < 0 M$.
+   - **Mejora** si la cota inferior del IC de D_K es > 0 M$.
+   - **No cambia** en cualquier otro caso.
+   - **Predicción**: *empeora*, que es lo que reporta Luis.
+8. Cada variante nueva recibe además su veredicto con réplicas contra `C` con la regla 1 (*no pierde* si la cota
+   inferior del IC de Welch de Δ con réplicas ≥ −5,52 M$; *pierde* si la media < −5,52 M$). Se informa; no cambia el
+   veredicto de H3, que es el de la regla 1 sobre `H3-0.1` y `H3-0.25`.
+
+**Comparaciones múltiples.** Con `h4` son más de diez contrastes, sin corrección. La respuesta al tutor se apoya en los
+contrastes principales fijados en [`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md) § Comparaciones múltiples
+(`H3-0.1`, `H4H-0.1`, `H4F-0.05` contra `C`); las reglas 5 a 8 son secundarias.
+
 ## Limitaciones previstas
 
 - H1 y H3 comparten el estudio de Optuna en r = 0,25 y 0,1 (`docs/diseno.md` § Estudios compartidos), así que
   Δ(U0.25) y Δ(H3-0.25) tienen la misma suerte de optimización y no son evidencia independiente entre sí.
 - `H3R-0.1` y `H3-0.1` comparten todos sus estudios; su diferencia aísla el reescalado y no es evidencia independiente
-  sobre H3.
+  sobre H3. Lo mismo vale para `H3R-0.25`, `H3L-0.25` y `H3-0.25`, y para `H3L-0.1`.
+- Las extensiones del aporte de Luis vienen de resultados ya vistos en 201910 y suman contrastes sin corrección por
+  comparaciones múltiples (§ Extensiones del aporte de Luis).

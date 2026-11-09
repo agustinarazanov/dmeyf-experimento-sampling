@@ -903,3 +903,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   probable (estimación del revisor) es la lectura y reescritura de dos informes largos con tablas de 10 columnas.
   Esta revisión: ~20 turnos, ≈ US$ 1 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — cuatro hipótesis (`incorporar-aportes` 1.1 y 1.2)
+
+- Sesión headless `f0b04f89-178e-4a6c-80fb-07a78749b44f` · modelo: Opus · etapa `hipotesis`.
+- `experimentos/h4/` nuevo (1.1). `docs/hipotesis.md` pasa a cuatro hipótesis: la H4 del 1-nov queda como registro
+  («reemplazada el 9-nov») y apunta a `h4`; se suman los contrastes principales (`H3-0.1`, `H4H-0.1`, `H4F-0.05`) y dos
+  limitaciones comunes (test ya mirado, comparaciones múltiples). `docs/diseno.md`: índice con `h4`, fase 6 según D6
+  (listas `fase6_r<k>` y `fase6_luis_<estrategia>`, 18 VMs, `corridas-v3`) y la nota de que h4 entra a
+  `## Dependencias` junto con su registro (grupo 2), para que `--verificar` siga pasando.
+- Verificación: los 36 enlaces relativos de los seis documentos tocados existen; `python -m comun.variantes
+  --verificar` sale con 0 y sin `PROBLEMA`.
+- Pendiente: revisión en sesión limpia (1.3).
