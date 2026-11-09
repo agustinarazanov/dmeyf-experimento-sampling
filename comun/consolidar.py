@@ -5,8 +5,9 @@
     python -m comun.consolidar --ledger DIR         # un ledger suelto que tiene todo adentro (control incluido)
 
 Lee `<ledger>/corridas/*.csv` y escribe `resultados.csv` (corridas válidas, sin duplicados por clave),
-`reemplazadas.csv`, `estudios.csv` (hiperparámetros y tiempo de cada estudio) y `apareado.csv` (Δ contra el control
-por semilla, con N*, δ y veredicto). Todo sale de acá; nada se calcula a mano.
+`reemplazadas.csv`, `estudios.csv` (hiperparámetros y tiempo de cada estudio), `apareado.csv` (Δ contra el control
+por semilla de la réplica 0, con N*, δ y veredicto) y, si hay variantes con al menos dos réplicas de optimización,
+`replicas.csv` (Δ con réplicas, IC de Welch, descomposición de la varianza). Todo sale de acá; nada se calcula a mano.
 
 Con `--experimento X` las filas son las de X; los finales de `C` y N* salen de `control`, y el tiempo del estudio de
 cada variante, del ledger del dueño del estudio (H3 lee los de h1). Por eso se consolida primero a quien se depende.
@@ -49,6 +50,7 @@ def consolidar(ledger: Path, control: Path | None = None, ledgers_estudios: Sequ
     estudios = resultados[resultados["etapa"] == "optimizar"]
     estudios.to_csv(ledger / "estudios.csv", index=False)
     leer = lambda ruta: lg.leer_curva(ledger, ruta)
+    propias = set(finales["variante"])  # `replicas.csv` solo tiene las variantes de este experimento
     if control is not None and control != ledger:
         res_c = control / "resultados.csv"
         if not res_c.exists():
@@ -61,13 +63,23 @@ def consolidar(ledger: Path, control: Path | None = None, ledgers_estudios: Sequ
     elif ledgers_estudios:
         estudios = pd.concat([estudios, _leer_estudios(ledgers_estudios)], ignore_index=True)
     estudios = estudios.drop_duplicates("id")
-    if finales["variante"].eq(lg.CONTROL).any() and (~finales["variante"].isin(lg.SIN_DELTA)).any():
-        n_estrella = lg.corte_control(finales, leer)
+    finales = lg.con_replica(finales)
+    f0 = finales[finales["replica_opt"] == 0]  # N*, δ y el apareado por semilla salen de la réplica 0, como antes
+    if f0["variante"].eq(lg.CONTROL).any():
+        n_estrella = lg.corte_control(f0, leer)
         con_g = lg.agregar_ganancia(finales, leer, n_estrella)
-        tabla = lg.apareado(con_g, estudios)
-        tabla.insert(1, "n_estrella", n_estrella)
-        tabla.to_csv(ledger / "apareado.csv", index=False)
-        salida["apareado"] = tabla
+        g0 = con_g[con_g["replica_opt"] == 0]
+        if (~g0["variante"].isin(lg.SIN_DELTA)).any():
+            tabla = lg.apareado(g0, estudios)
+            tabla.insert(1, "n_estrella", n_estrella)
+            tabla.to_csv(ledger / "apareado.csv", index=False)
+            salida["apareado"] = tabla
+        delta = lg.DELTA_REL * float(g0.loc[g0["variante"] == lg.CONTROL, "g"].mean())
+        tabla_r = lg.replicas(con_g, delta, propias, variantes.PARES_APAREADOS)
+        if len(tabla_r):
+            tabla_r.insert(1, "n_estrella", n_estrella)
+            tabla_r.to_csv(ledger / "replicas.csv", index=False)
+            salida["replicas"] = tabla_r
     return salida
 
 
@@ -98,7 +110,8 @@ def orden() -> list[str]:
 def sanity(r: dict[str, pd.DataFrame]) -> list[tuple[str, bool, str]]:
     """Chequeos de la etapa corridas (tareas 5.1 a 5.4). Devuelve (chequeo, ok, detalle)."""
     res = r["resultados"]
-    fin = res[res["etapa"] == "final"]
+    fin = lg.con_replica(res[res["etapa"] == "final"])
+    fin = fin[fin["replica_opt"] == 0]  # los chequeos de las fases 1 a 4 son de la réplica 0
     out = []
 
     def chk(nombre: str, ok: bool, detalle: str) -> None:

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Sequence
 
 import numpy as np
 import pandas as pd
@@ -203,5 +204,118 @@ def apareado(finales: pd.DataFrame, estudios: pd.DataFrame | None = None) -> pd.
             "tiempo_total_control_s": t_c,
             "aceleracion": t_c / t_b if t_b == t_b and t_b > 0 else float("nan"),
             "nota": nota,
+        })
+    return pd.DataFrame(filas)
+
+
+# --- réplicas de optimización (`h3-semillas-optuna` D5) -------------------------
+
+
+def con_replica(tabla: pd.DataFrame) -> pd.DataFrame:
+    """La tabla con `replica_opt` entera; una tabla anterior a las réplicas (sin la columna o con huecos) es la réplica 0."""
+    t = tabla.copy()
+    t["replica_opt"] = t["replica_opt"].fillna(0).astype(int) if "replica_opt" in t.columns else 0
+    return t
+
+
+def _welch(a: np.ndarray, b: np.ndarray) -> tuple[float, float, float, float]:
+    """(media(a) − media(b), error estándar de la diferencia, ic_inf, ic_sup) con IC 95% de Welch."""
+    dif = float(a.mean() - b.mean())
+    va, vb = a.var(ddof=1) / len(a), b.var(ddof=1) / len(b)
+    se = float(np.sqrt(va + vb))
+    if se == 0:
+        return dif, se, dif, dif
+    gl = (va + vb) ** 2 / (va ** 2 / (len(a) - 1) + vb ** 2 / (len(b) - 1))
+    mitad = float(stats.t.ppf(0.975, gl)) * se
+    return dif, se, dif - mitad, dif + mitad
+
+
+def descomposicion(g: pd.DataFrame) -> dict:
+    """Suma de cuadrados de G entre réplicas y dentro de cada réplica (`g` trae `replica_opt` y `g`).
+
+    SS_total = SS_entre + SS_dentro sin resto. Las varianzas dividen por el total de observaciones, así
+    var_total = var_entre + var_dentro vale también con réplicas incompletas."""
+    x = g["g"].to_numpy(dtype=float)
+    por_replica = g.groupby("replica_opt")["g"]
+    medias, n = por_replica.mean(), por_replica.size()
+    ss_total = float(((x - x.mean()) ** 2).sum())
+    ss_entre = float((n * (medias - x.mean()) ** 2).sum())
+    ss_dentro = float((g["g"] - g["replica_opt"].map(medias)).pow(2).sum())
+    sd_dentro = por_replica.std(ddof=1)
+    return {
+        "ss_total": ss_total, "ss_entre": ss_entre, "ss_dentro": ss_dentro,
+        "var_total": ss_total / len(x), "var_entre": ss_entre / len(x), "var_dentro": ss_dentro / len(x),
+        "frac_entre": ss_entre / ss_total if ss_total > 0 else float("nan"),
+        "sd_entre_replicas": float(medias.std(ddof=1)) if len(medias) > 1 else float("nan"),
+        "sd_dentro_medio": float(sd_dentro.mean()) if sd_dentro.notna().any() else float("nan"),
+    }
+
+
+def _resumen_replicas(g: pd.DataFrame) -> dict:
+    medias = g.groupby("replica_opt")["g"].mean()
+    return {"n_replicas": len(medias), "n_semillas": len(g), "replicas": " ".join(str(k) for k in medias.index),
+            "g_media_replicas": float(medias.mean()), "g_mediana_replicas": float(medias.median()),
+            "g_min_replicas": float(medias.min()), "g_max_replicas": float(medias.max())}
+
+
+def _veredicto_par(lo: float, hi: float) -> str:
+    """Diferencia entre variantes que comparten estudios (`H3R-0.1` − `H3-0.1`): mejora, empeora o no cambia."""
+    if lo > 0:
+        return "mejora"
+    if hi < 0:
+        return "empeora"
+    return "no cambia"
+
+
+def replicas(finales: pd.DataFrame, delta: float, propias: set[str] | None = None,
+             pares: Sequence[tuple[str, str]] = (), semillas_por_replica: int = 10) -> pd.DataFrame:
+    """Tabla de réplicas: una fila por variante con al menos dos réplicas y, salvo el control, su Δ con réplicas.
+
+    `finales` ya trae `g` y `replica_opt`; `delta` es δ de la réplica 0 (no se recalcula). `propias` limita las filas a las
+    variantes del experimento (por defecto, todas). Cada fila trae la descomposición de la varianza de G entre réplicas y
+    entre semillas; Δ con réplicas = media de las medias por réplica menos la del control, con IC de Welch entre réplicas,
+    y solo se calcula si el control también tiene dos réplicas. `pares` (a, b) suma una fila `a - b` apareada por réplica y
+    semilla, con IC t entre réplicas."""
+    finales = con_replica(finales[finales["variante"] != "C-rep"])
+    por_variante = {v: d for v, d in finales.groupby("variante", sort=True) if d["replica_opt"].nunique() >= 2}
+    ctrl = por_variante.get(CONTROL)
+    filas = []
+    for variante, g in por_variante.items():
+        if propias is not None and variante not in propias:
+            continue
+        fila = {"variante": variante, "contra": "", **_resumen_replicas(g), **descomposicion(g)}
+        notas = [f"réplicas con menos de {semillas_por_replica} semillas"] if g.groupby("replica_opt").size().lt(semillas_por_replica).any() else []
+        if variante != CONTROL and ctrl is not None:
+            medias_v = g.groupby("replica_opt")["g"].mean().to_numpy(dtype=float)
+            medias_c = ctrl.groupby("replica_opt")["g"].mean().to_numpy(dtype=float)
+            dif, se, lo, hi = _welch(medias_v, medias_c)
+            fila.update(contra=CONTROL, delta_g_media=dif, delta_g_se=se, delta_g_ic_inf=lo, delta_g_ic_sup=hi,
+                        delta_g_margen=delta, veredicto=veredicto(dif, lo, delta),
+                        n_replicas_control=int(ctrl["replica_opt"].nunique()), n_semillas_control=len(ctrl))
+            if set(g["replica_opt"]) != set(ctrl["replica_opt"]):
+                notas.append("réplicas distintas a las del control")
+            if ctrl.groupby("replica_opt").size().lt(semillas_por_replica).any():
+                notas.append("control con réplicas incompletas")
+        elif variante != CONTROL:
+            notas.append("control con menos de dos réplicas: sin Δ con réplicas")
+        fila["nota"] = "; ".join(notas)
+        filas.append(fila)
+    for a, b in pares:
+        if (propias is not None and a not in propias) or a not in por_variante or b not in por_variante:
+            continue
+        ga = por_variante[a].set_index(["replica_opt", "semilla"])["g"]
+        gb = por_variante[b].set_index(["replica_opt", "semilla"])["g"]
+        comunes = ga.index.intersection(gb.index)
+        dif = (ga.loc[comunes] - gb.loc[comunes]).rename("d").reset_index()
+        por_replica = dif.groupby("replica_opt")["d"].mean().to_numpy(dtype=float)
+        if len(por_replica) < 2:
+            continue
+        media, sd, lo, hi = _ic(por_replica)
+        filas.append({
+            "variante": f"{a} - {b}", "contra": b, "n_replicas": len(por_replica), "n_semillas": len(dif),
+            "replicas": " ".join(str(k) for k in sorted(dif["replica_opt"].unique())),
+            "delta_g_media": media, "delta_g_se": sd / np.sqrt(len(por_replica)), "delta_g_ic_inf": lo, "delta_g_ic_sup": hi,
+            "veredicto": _veredicto_par(lo, hi),
+            "nota": f"apareado por réplica y semilla; IC t entre réplicas ({len(por_replica) - 1} g.l.)",
         })
     return pd.DataFrame(filas)

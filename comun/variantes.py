@@ -29,6 +29,10 @@ class Variante(NamedTuple):
     replicas: bool = False  # admite réplicas de optimización `--replica k ≥ 1` (`h3-semillas-optuna` D2)
 
 
+#: Variantes que comparten estudios y se comparan entre sí, apareadas por réplica y semilla: (a, b) es `a − b`.
+PARES_APAREADOS: list[tuple[str, str]] = [("H3R-0.1", "H3-0.1")]
+
+
 def _t(tasa: float) -> str:
     return f"{tasa:g}"
 
