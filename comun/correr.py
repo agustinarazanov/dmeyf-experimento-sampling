@@ -128,7 +128,7 @@ class Contexto:
         self.etapa = "exploracion" if self.explora else a.etapa
         self.replica = a.replica
         self.semilla_opt = bl.SEMILLA_OPTUNA + self.replica  # sampler TPE y sorteo de la muestra de optimización
-        self.metodo = "uniforme" if (a.metodo in metodos.METODOS_H3 and a.etapa == "optimizar") else a.metodo
+        self.metodo = metodos.metodo_optimizacion(a.metodo) if a.etapa == "optimizar" else a.metodo
         self.estudio = variantes.nombre_estudio(metodos.estudio(a.metodo, a.tasa), self.replica)
         self.variante = a.variante or metodos.variante(self.metodo, a.tasa)
         self.raiz = rutas.ledger(variantes.dueno_variante(self.variante, self.replica))  # ledger del dueño de la variante: filas, curvas, predicciones
@@ -179,7 +179,12 @@ def optimizar(cx: Contexto) -> None:
     if bl.MES_TEST in dt.MESES_LEIDOS:  # el test no se toca al elegir hiperparámetros
         raise RuntimeError(f"la etapa optimizar leyó {bl.MES_TEST}")
     cols = dt.columnas_predictoras(train)
-    datos, params_variante, idx = metodos.FUNCIONES[cx.metodo](train, a.tasa, cx.semilla_opt)
+    t_sonda = 0.0  # H4H: la sonda que arma el pozo de negativos difíciles cuenta como tiempo de optimización
+    if cx.metodo == "clase-dificil":
+        pozo, t_sonda = metodos.sonda_pozo(train, cx.semilla_opt)
+        datos, params_variante, idx = metodos.clase_dificil(train, a.tasa, cx.semilla_opt, pozo)
+    else:
+        datos, params_variante, idx = metodos.FUNCIONES_OPT[cx.metodo](train, a.tasa, cx.semilla_opt)
     hash_ = muestreo.hash_muestra(idx, len(train))
     x_tr, y_tr = dt.matriz(datos, cols), datos[dt.Y].to_numpy()
     x_va, y_va = dt.matriz(val, cols), val[dt.Y].to_numpy()
@@ -199,6 +204,7 @@ def optimizar(cx: Contexto) -> None:
     dtrain.construct()
     t_dataset = time.perf_counter() - t0
     study.set_user_attr("tiempo_dataset_s", study.user_attrs.get("tiempo_dataset_s", t_dataset))
+    study.set_user_attr("tiempo_sonda_s", study.user_attrs.get("tiempo_sonda_s", t_sonda))
 
     def objetivo(trial: optuna.Trial) -> float:
         hp = bl.sugerir(trial, sin_bagging)
@@ -218,11 +224,12 @@ def optimizar(cx: Contexto) -> None:
         study.optimize(objetivo, n_trials=a.trials - hechos, callbacks=[tras_trial])
     completos = [t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE]
     t_trials = sum(t.user_attrs["duracion_s"] for t in completos)
-    t_opt = t_trials + study.user_attrs["tiempo_dataset_s"]
+    t_opt = t_trials + study.user_attrs["tiempo_dataset_s"] + study.user_attrs["tiempo_sonda_s"]
     resumen = {
         "estudio": cx.estudio, "replica_opt": cx.replica, "variante": cx.variante, "metodo": cx.metodo, "tasa": a.tasa, "hp": study.best_params,
         "auc_val": study.best_value, "n_trials": len(completos), "tiempo_trials_s": t_trials,
-        "tiempo_dataset_s": study.user_attrs["tiempo_dataset_s"], "tiempo_optimizacion_s": t_opt,
+        "tiempo_dataset_s": study.user_attrs["tiempo_dataset_s"], "tiempo_sonda_s": study.user_attrs["tiempo_sonda_s"],
+        "tiempo_optimizacion_s": t_opt,
         "filas_train": filas_train, "hash_muestra": hash_, "commit": cx.commit, "codigo_sucio": cx.sucio,
         "fecha": datetime.now().isoformat(timespec="seconds"),
     }
@@ -270,7 +277,8 @@ def final(cx: Contexto) -> None:
         params = {**bl.PARAMS_FIJOS, **params_variante, **hp, "seed": semilla}
 
         t0 = time.perf_counter()
-        dtrain = lgb.Dataset(x_tr, label=y_tr, params=_dataset_params(), free_raw_data=False)
+        dtrain = lgb.Dataset(x_tr, label=y_tr, weight=metodos.pesos(cx.metodo, datos), params=_dataset_params(),
+                             free_raw_data=False)
         dtrain.construct()
         t1 = time.perf_counter()
         modelo = lgb.train(params, dtrain)
@@ -321,7 +329,7 @@ def parsear(argv: list[str] | None = None) -> argparse.Namespace:
     a = p.parse_args(argv)
     try:
         metodos.validar(a.metodo, a.tasa)
-        efectivo = "uniforme" if (a.metodo in metodos.METODOS_H3 and a.etapa == "optimizar") else a.metodo
+        efectivo = metodos.metodo_optimizacion(a.metodo) if a.etapa == "optimizar" else a.metodo
         pedida = a.variante or metodos.variante(a.metodo, a.tasa)
         variantes.validar_replica(pedida, a.replica)  # réplica negativa o no habilitada: falla antes de cargar datos
         variantes.dueno_variante(a.variante or metodos.variante(efectivo, a.tasa), a.replica)  # variante sin dueño: falla antes de cargar datos
@@ -339,8 +347,8 @@ def main(argv: list[str] | None = None) -> None:
     a = parsear(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s", stream=sys.stderr)
     cx = Contexto(a)
-    if a.metodo in metodos.METODOS_H3 and a.etapa == "optimizar":
-        log.info("H3 comparte el estudio de uniforme r=%g: se corre ese estudio (%s)", a.tasa, cx.estudio)
+    if a.etapa == "optimizar" and cx.metodo != a.metodo:
+        log.info("%s comparte el estudio de uniforme r=%g: se corre ese estudio (%s)", a.metodo, a.tasa, cx.estudio)
     (optimizar if a.etapa == "optimizar" else final)(cx)
 
 

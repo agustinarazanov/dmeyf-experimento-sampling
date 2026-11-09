@@ -48,6 +48,15 @@ VARIANTES: dict[str, Variante] = {
         Variante("GOSS", "h2", "goss", 1.0, "GOSS"),
         *[Variante(f"H3-{_t(r)}", "h3", "opt-muestra", r, f"U{_t(r)}", replicas=True) for r in (0.25, 0.1, 0.05)],
         Variante("H3R-0.1", "h3", "opt-muestra-reescalado", 0.1, "U0.1", replicas=True),
+        # `incorporar-aportes` D3: extensiones de H3 (aporte de Luis) y H4, todas con réplicas de optimización
+        Variante("H3R-0.25", "h3", "opt-muestra-reescalado", 0.25, "U0.25", replicas=True),
+        Variante("H3L-0.25", "h3", "opt-muestra-lineal", 0.25, "U0.25", replicas=True),
+        Variante("H3L-0.1", "h3", "opt-muestra-lineal", 0.1, "U0.1", replicas=True),
+        Variante("H3K-0.1", "h3", "opt-muestra-cliente", 0.1, "K0.1", replicas=True),
+        Variante("H4H-0.1", "h4", "clase-dificil", 0.1, "NH0.1", replicas=True),
+        Variante("H4U-0.1", "h4", "clase-uniforme", 0.1, "NU0.1", replicas=True),
+        Variante("H4F-0.05", "h4", "fast-retrain", 0.05, "U0.05", replicas=True),
+        Variante("H4F-0.25", "h4", "fast-retrain", 0.25, "U0.25", replicas=True),
     ]
 }
 
@@ -56,6 +65,9 @@ ESTUDIOS: dict[str, str] = {
     **{f"U{_t(r)}": "h1" for r in (0.5, 0.25, 0.1, 0.05)},
     **{f"B{_t(f)}": "h2" for f in (0.5, 0.25, 0.1)},
     "GOSS": "h2",
+    "K0.1": "h3",
+    "NH0.1": "h4",
+    "NU0.1": "h4",
 }
 
 
@@ -65,6 +77,10 @@ def nombre(metodo: str, tasa: float) -> str:
         return f"H3-{_t(tasa)}"
     if metodo == "opt-muestra-reescalado":
         return f"H3R-{_t(tasa)}"
+    for m, prefijo in (("opt-muestra-lineal", "H3L"), ("opt-muestra-cliente", "H3K"), ("clase-dificil", "H4H"),
+                       ("clase-uniforme", "H4U"), ("fast-retrain", "H4F")):
+        if metodo == m:
+            return f"{prefijo}-{_t(tasa)}"
     if metodo == "uniforme":
         return "C" if tasa == 1 else f"U{_t(tasa)}"
     if metodo == "bagging":
@@ -151,6 +167,10 @@ def implicitas(variantes: dict[str, Variante] | None = None, estudios: dict[str,
         dueno_est = estudios[b.estudio]
         if dueno_est != b.dueno:
             dep[b.dueno].add(dueno_est)
+        # las réplicas k ≥ 1 de los estudios de `h1` son de `h3` (`dueno_estudio`)
+        dueno_replica = "h3" if dueno_est == "h1" else dueno_est
+        if b.replicas and dueno_replica != b.dueno:
+            dep[b.dueno].add(dueno_replica)
     dep[AGREGADOR] = set(dueños)
     return dep
 

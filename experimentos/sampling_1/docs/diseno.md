@@ -169,6 +169,7 @@ Lee los ledgers de todos los experimentos para la comparación conjunta:
 - `h1`
 - `h2`
 - `h3`
+- `h4`
 
 h4 se suma a esta lista en el mismo commit que registra sus variantes en `comun/variantes.py` (grupo 2 de
 `incorporar-aportes`): `--verificar` exige que la lista coincida con el registro, y hasta entonces h4 no tiene

@@ -105,14 +105,15 @@ def test_las_dependencias_implicitas_del_registro():
     dep = variantes.implicitas()
     assert dep["control"] == set() and dep["h1"] == {"control"} and dep["h2"] == {"control"}
     assert dep["h3"] == {"control", "h1"}
-    assert dep["sampling_1"] == {"control", "h1", "h2", "h3"}
+    assert dep["h4"] == {"control", "h1", "h3"}
+    assert dep["sampling_1"] == {"control", "h1", "h2", "h3", "h4"}
 
 
 def test_arbol_consistente_pasa_y_dice_que_se_rompe(tmp_path):
     _arbol_completo(tmp_path)
     problemas, informe = variantes.verificar(tmp_path)
     assert problemas == []
-    assert "si falta experimentos/h1/ se rompen: h3, sampling_1" in informe
+    assert "si falta experimentos/h1/ se rompen: h3, h4, sampling_1" in informe
 
 
 def test_declaracion_distinta_del_registro(tmp_path):
@@ -136,7 +137,7 @@ def test_carpeta_faltante_lista_lo_que_se_rompe(tmp_path):
     shutil.rmtree(tmp_path / "experimentos" / "h1")
     problemas, informe = variantes.verificar(tmp_path)
     assert any("falta la carpeta experimentos/h1/" in p for p in problemas)
-    assert "si falta experimentos/h1/ se rompen: h3, sampling_1" in informe
+    assert "si falta experimentos/h1/ se rompen: h3, h4, sampling_1" in informe
     assert "si falta experimentos/h2/ se rompen: sampling_1" in informe
 
 
