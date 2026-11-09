@@ -1,0 +1,8 @@
+{
+  "referencia_s": 16.2448,
+  "medido_s": 15.105397022999995,
+  "factor_vm": 1.0754301906308794,
+  "commit": "748cc70",
+  "codigo_sucio": false,
+  "maquina": "n2-highmem-8"
+}
