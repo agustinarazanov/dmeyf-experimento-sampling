@@ -28,6 +28,15 @@ compuerta de resultados, no una variante.
   sirven para la compuerta de resultados (el control se repite) y para medir cuánto varía el tiempo entre VMs del
   mismo tipo.
 
+- **Réplicas de optimización `C@1…7`** (8-nov-2026, cambio `h3-semillas-optuna`): siete estudios más de `C`, uno por
+  réplica k = 1…7, con la semilla del sampler TPE = k (en `C` no hay muestra de optimización: r = 1), y sus 10 finales
+  con las mismas semillas de abajo. Los estudios se llaman `C@k`, son de `control` y sus hiperparámetros van a
+  `ledger/hp/C@k.json`; las filas llevan `replica_opt = k` y el `id` con `@k`. **Lo ya corrido no cambia**: el estudio
+  `C`, sus finales y `C-rep` son la réplica 0, con el mismo `id`, y N\* = 3.300 y δ = 5,52 M$ siguen saliendo de ella
+  (no se recalculan con las réplicas). Para qué sirven y cómo se usan:
+  [`h3/docs/hipotesis.md`](../../h3/docs/hipotesis.md) § H3 con réplicas de optimización; ejecución:
+  [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases.
+
 **Semillas finales**, iguales en todas las variantes y en este orden: 100003, 200003, 300007, 400009, 500009, 600011,
 700001, 800011, 900001, 999983. La semilla 0 queda reservada para Optuna y para las muestras de optimización, y no
 coincide con ninguna final.

@@ -25,3 +25,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Lo que sigue diciendo «brazo»: la historia de git (los commits anteriores) y el tag `corridas-v1`.
 - Un clon anterior al renombre no consolida: `comun/ledger.py` rechaza una cabecera `brazo` nombrando el archivo. Hay que
   actualizar el clon y volver a bajar el ledger del bucket renombrado.
+
+### 2026-11-08 — réplicas `C@1…7` (`h3-semillas-optuna` 1.2)
+
+- Sesión headless de aplicación del grupo 1, etapa `diseno`.
+- `docs/diseno.md` § Grilla suma las réplicas de optimización `C@1…7`: siete estudios más de `C` (semilla TPE = k) con
+  sus 10 finales, de este experimento, para el Δ con réplicas de H3.
+- Qué cambia de lo ya corrido: **nada**. El estudio `C`, sus finales y `C-rep` son la réplica 0, con los mismos `id`;
+  N\* = 3.300 y δ = 5,52 M$ siguen saliendo de ella.
+- Las corridas esperan la revisión en sesión limpia de la etapa (1.3) y el tag `corridas-v2`.

@@ -78,6 +78,31 @@ VM, con `src/correr.py` (hoy `comun/correr.py`) ya guardando `ledger/prediccione
 reemplazan a las anteriores: las ganancias son las mismas (determinismo, como mostró `C-rep`) y los tiempos finales
 quedan todos medidos en la misma máquina. Los tiempos de optimización siguen siendo los de las fases 1 a 3.
 
+**Fase 5: réplicas de optimización (agregada el 8-nov, cambio `h3-semillas-optuna`, D3).** Ocho réplicas (k = 0…7) ×
+10 semillas finales × 5 variantes (`C`, `H3-0.25`, `H3-0.1`, `H3-0.05`, `H3R-0.1`); de las 40 celdas ya están las 3 de
+k = 0 de las fases 1–4, así que quedan 37 celdas nuevas y 28 estudios nuevos (`C@k`, `U0.25@k`, `U0.1@k`, `U0.05@k`,
+k = 1…7). Qué es una réplica, los nombres `@k` y los dueños están en
+[`h3/docs/diseno.md`](../../h3/docs/diseno.md) § Réplicas de optimización; las réplicas de `C`, en
+[`control/docs/diseno.md`](../../control/docs/diseno.md) § Grilla.
+
+- **Quién**: todo lo corre Agustina, desde su cuenta; no se reparte entre integrantes.
+- **Commit**: todas las VMs salen del tag `corridas-v2`.
+- **Una VM `n2-highmem-8` spot por réplica**:
+
+  | lista | VM | corridas |
+  |---|---|---|
+  | `fase5_r1` … `fase5_r7` | una por k = 1…7 | estudios `C@k`, `U0.25@k`, `U0.1@k`, `U0.05@k`; finales de las 5 variantes en la réplica k |
+  | `fase5_r0` | una más | finales de `H3-0.05` y `H3R-0.1` en k = 0 (estudios `U0.05` y `U0.1` de `h1`, ya corridos) |
+
+- **Carga**: Optuna `C@1…7` 7 × 748 s ≈ 87 min; Optuna `U0.25@k`, `U0.1@k`, `U0.05@k` 7 × (153 + 77 + 67) s ≈ 35 min;
+  finales 370 × ~35 s ≈ 216 min; en total **~5,6 h de VM**. Cada VM de réplica tarda unos 47 min y el total de pared
+  queda en ~50 min.
+- **Cuota**: 8 VMs (64 vCPU), dentro de la cuota de 200 vCPU N2 de `us-central1`. Antes de lanzar se verifican la cuota
+  y el crédito del trial (`CLAUDE.md` § Cómputo); si la cuota no alcanzara, se lanzan en tandas. El lanzador
+  (`scripts/lanzar_fase.sh`) hace la verificación de la cuota.
+- **Orden**: espera al cierre de la revisión de hipótesis y diseño del cambio y al tag `corridas-v2`; las 8 listas no
+  dependen entre sí. Una VM que se cae se retoma con el mecanismo de § Corridas perdidas.
+
 **Orden entre fases.**
 
 - Todo espera al cierre de la compuerta de código (`docs/revision.md` § 3) y al tag `corridas-v1`.
@@ -94,8 +119,9 @@ de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
 - **Pesos o selección de instancias sobre CONTINUA** (propuestas del grupo al cierre de hipótesis): cambian la
   proporción de clases o su peso, que corresponde a H4 y corre por separado quien la propuso. Solo entran si se reabre la compuerta de hipótesis
   y se agregan a `hipotesis.md`.
-- Lo que queda fuera de la grilla de una hipótesis está en su `diseno.md` (reescalar `min_data_in_leaf` en `h3`,
-  respuesta del tutor sobre H2 en `h2`).
+- Lo que queda fuera de la grilla de una hipótesis está en su `diseno.md` (réplicas de `U*`, `B*` y `GOSS` en `h3`,
+  respuesta del tutor sobre H2 en `h2`). Reescalar `min_data_in_leaf` en `h3`, que estaba acá, entró el 8-nov como
+  `H3R-0.1` (fase 5).
 
 ## Devolución del tutor
 
