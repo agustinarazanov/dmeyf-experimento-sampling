@@ -710,3 +710,52 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   2. `h3/docs/hipotesis.md` regla 3: A = T(`C`) / T(`H3-0.05`), cada T como mediana entre sus 8 réplicas.
 - Tokens: ~25 turnos · contexto promedio ~58.000 por turno · ≈ US$ 1,0 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-08 — grupo 2 de `h3-semillas-optuna` implementado (código, sesión headless)
+- Sesión: `73253550-be37-45c3-88cf-df31d827f7ec` · modelo: Sonnet · etapa: **codigo** (tareas 2.1–2.5, commits
+  `fc523d7`, `49d8df1`, `df04f6b`). No dejó entrada propia; la clasifica la revisión del grupo. 72 turnos, contexto
+  promedio ~124.000 por turno (supera el objetivo de 100.000): cinco tareas de código en una sola sesión, con smoke,
+  tests y consolidación del ledger real dentro de la conversación.
+
+### 2026-11-08 — cierre revisión del grupo 2 de `h3-semillas-optuna` (código)
+- Sesión: `a5f2b686-74a5-48f3-a6a1-f3e427f640d1` · modelo: Opus · etapa: **revision** (grupo 2, tareas 2.1–2.5).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 (código) y la verificación escrita en cada tarea. Ningún ✗ abierto.
+  - ✓ Smoke `--filas 20000 --trials 3` en la Mac, los cuatro métodos, una fila (o `hp/*.json`) cada uno en el ledger
+    del dueño: U0.25 → h1, B0.5 y GOSS → h2, `opt-muestra 0.1 --replica 3` (estudio `U0.1@3`) → `h3/ledger/exploracion/`
+    con `replica_opt = 3`, y los finales de H3-0.1 y H3R-0.1 en la réplica 3 → h3. `h1/` sin tocar (`git status`).
+  - ✓ Réplica no habilitada: `bagging 0.5 --replica 2` falla nombrando B0.5 y las variantes que admiten réplicas.
+  - ✓ Reescalado: H3R-0.1 usa `min_data_in_leaf` 111 = round(35 × √10) sobre el `hp` de `U0.1@3`.
+  - ✓ Determinismo: el final de H3-0.1 réplica 3, semilla 100003, corrido dos veces da hash `b063898d…`, AUC 201910
+    0,862507 y ganancia 3.575.000 iguales.
+  - ✓ Meses leídos: `optimizar` (también con `--replica`) lee 201903–201906 y 201908; solo el final lee 201910.
+  - ✓ Filas de train: `U0.1@3` 985 = 0,1 × 9852 (± 0,1%).
+  - ✓ Columnas: `replica_opt` es obligatoria en `COLUMNAS` y en la clave; `test_falta_una_columna_y_se_nombra` pasa.
+    Los 12 CSV consolidados de `control`, `h1`, `h2` y `h3` que tocó `fc523d7` solo suman `replica_opt = 0`: el resto de
+    cada tabla es idéntico al de `3d8cf0c` (comparado con pandas, mismas filas).
+  - ✓ `codigo_sucio`: `commit_y_sucio()` no cambió en el grupo; las filas del smoke salen `False` (solo `ledger/` sucio).
+  - ✓ `consolidar.py`: `python -m comun.consolidar` sobre el ledger real no cambia ningún archivo; `apareado.csv` de
+    las hipótesis no cambió desde `3d8cf0c` y no hay `replicas.csv` (ninguna variante con dos réplicas todavía). El
+    apareo por semillas en común, la descomposición exacta, las réplicas incompletas y el apareado H3R − H3 están
+    cubiertos por `tests/test_replicas_ledger.py`. Welch entre medias por réplica y IC t de D con k − 1 g.l. coinciden
+    con D5.
+  - ✓ `vm.sh`: la sexta columna (`replica`) y el `-` de variante se pasan bien en la VM y en `--en-seco`; el borrado
+    de la VM no cambia. Cada corrida escribe archivos propios (`corridas/`, `hp/<estudio>@k.json`, curvas,
+    predicciones), así que 8 VMs sincronizando el mismo ledger del bucket no se pisan.
+  - ✗→✓ `lanzar_fase.sh --en-seco` con las 8 listas: 65 corridas (7 × 9 + 2) = 37 celdas y 28 estudios, sin repetir
+    (`tests/test_fase5.py`, 6 pasan). La verificación de cuota miraba solo `N2_CPUS` de la región.
+  - ✓ `python -m pytest` 128 pasan; `python -m comun.variantes --verificar` sin problemas.
+  - ✓ Ningún archivo del dataset ni base de Optuna en `git ls-files`.
+- Hallazgos:
+  1. `scripts/lanzar_fase.sh` verificaba la cuota regional `N2_CPUS` pero no la global `CPUS_ALL_REGIONS`, que en una
+     cuenta de trial suele ser la que limita: con 8 VMs × 8 vCPU podía pasar la verificación y crear solo algunas.
+  2. `pytest` a secas (el ejecutable del PATH) falla al importar `comun` con 15 errores de colección; `python -m pytest`
+     pasa. No es del grupo; conviene usar siempre `python -m pytest`.
+  3. La sesión de implementación (`73253550…`) no dejó entrada en la bitácora y superó el objetivo de contexto.
+- Correcciones:
+  1. `lanzar_fase.sh` verifica también `CPUS_ALL_REGIONS` (de `gcloud compute project-info describe`) y no lanza
+     ninguna VM si alguna de las dos cuotas no alcanza.
+  2. Entrada de etapa **codigo** para la sesión de implementación (arriba).
+- Tag `corridas-v2` creado sobre el commit de esta revisión (lo pushea Agustina).
+- Tokens: ~45 turnos · contexto promedio ~60.000 por turno · ≈ US$ 1,6 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —

@@ -1,0 +1,253 @@
+{
+ "duration_api_ms": 477732,
+ "stop_reason": "end_turn",
+ "session_id": "73253550-be37-45c3-88cf-df31d827f7ec",
+ "total_cost_usd": 2.2390247999999997,
+ "usage": {
+  "input_tokens": 144,
+  "cache_creation_input_tokens": 170147,
+  "cache_read_input_tokens": 8772688,
+  "output_tokens": 68088,
+  "output_tokens_details": {
+   "thinking_tokens": 18442
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 170147,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1343,
+    "cache_read_input_tokens": 181773,
+    "cache_creation_input_tokens": 226,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 226
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 144,
+   "outputTokens": 68088,
+   "cacheReadInputTokens": 8772688,
+   "cacheCreationInputTokens": 170147,
+   "webSearchRequests": 0,
+   "costUSD": 2.2390247999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 18442,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 170147,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LrhWN6866to3hrgYxsKCTY",
+   "tool_input": {
+    "command": "openspec instructions apply --change h3-semillas-optuna --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; echo; ls experimentos/sampling_1/ledger/sesiones/; cat experimentos/sampling_1/ledger/sesiones/en_curso.txt 2>/dev/null"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_0133MMYmYSnSPWW594yVVkwp",
+   "tool_input": {
+    "command": "openspec instructions apply --change h3-semillas-optuna --json > /tmp/apply.json"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019ZZLH3S5VvfvGP6RSkVbAd",
+   "tool_input": {
+    "command": "cd openspec/changes/h3-semillas-optuna; wc -l design.md proposal.md specs/*/spec.md tasks.md ../../../docs/metodo.md; sed -n 1,40p tasks.md; ls ../../../comun ../../../experimentos/*/ ../../../scripts; git log --oneline | head -20"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_016twf8MAaucBHMSWpaDzVbo",
+   "tool_input": {
+    "command": "ls ~/datos/experimentos-dmeyf ~/datos/experimentos-dmeyf/optuna 2>&1 | head -20; git check-ignore -v experimentos/h3/ledger/exploracion/x; ls experimentos/*/ledger/exploracion 2>/dev/null | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01MNX5rCGvweu34cbd78PPXN",
+   "tool_input": {
+    "command": "git check-ignore -v experimentos/h3/ledger/exploracion/x"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012B1zTKzEM1Gtn84mdGtUvj",
+   "tool_input": {
+    "command": "cd experimentos; for f in control/ledger/exploracion/hp/C.json sampling_1/ledger/exploracion/hp/C.json h1/ledger/exploracion/hp/U0.1.json h3/ledger/exploracion/hp/U0.1@3.json; do echo $f; python -c \"import json,sys; d=json.load(open('$f')); print({k:d.get(k) for k in ['hp','hash_muestra','n_trials','filas_train','commit','replica_opt','estudio']})\"; done; ls ~/datos/experimentos-dmeyf/optuna"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Wn4AWgpg6y35HxP8aN6hrb",
+   "tool_input": {
+    "command": "python - <<'EOF'\nimport json,os\nfor f in [\"control/ledger/exploracion/hp/C.json\",\"sampling_1/ledger/exploracion/hp/C.json\",\"h1/ledger/exploracion/hp/U0.1.json\",\"h3/ledger/exploracion/hp/U0.1@3.json\"]:\n    d=json.load(open(\"experimentos/\"+f)); print(f,{k:d.get(k) for k in ['hp','hash_muestra','n_trials','filas_train','commit','replica_opt']})\nprint(os.listdir(os.path.expanduser(\"~/datos/experimentos-dmeyf/optuna\")))\nEOF"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Pcp2pkJey3uJnXJ7pHUHLX",
+   "tool_input": {
+    "command": "python -m comun.correr --metodo opt-muestra-reescalado --tasa 0.1 --etapa final --semilla 100003 --filas 20000 --replica 3 2>&1 | tail -2; f=$(ls experimentos/h3/ledger/exploracion/corridas/exp-H3R-0.1@3* | tail -1); python -c \"import pandas as pd,sys; r=pd.read_csv(sys.argv[1]).iloc[0]; print(r['variante'],r['replica_opt'],r['estudio'],r['hp'])\" \"$f\"; python -c \"import json; print(json.load(open('experimentos/h3/ledger/exploracion/hp/U0.1@3.json'))['hp']['min_data_in_leaf'])\""
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01EVaPcPQqMSLUrN1onqzX21",
+   "tool_input": {
+    "command": "python -m comun.variantes --verificar | grep -c PROBLEMA; python -m comun.variantes --verificar >/dev/null; echo exit=$?; python -m comun.consolidar >/dev/null && git status --short | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01GxPx8kUKMjJFbPqKyTkuDJ",
+   "tool_input": {
+    "command": "cat > /tmp/chk.py <<'EOF'\nimport subprocess, io, pandas as pd, glob\nok=True\nfor f in glob.glob(\"experimentos/*/ledger/*.csv\"):\n    if f.split(\"/\")[-1] not in (\"resultados.csv\",\"reemplazadas.csv\",\"estudios.csv\"): continue\n    old=pd.read_csv(io.StringIO(subprocess.run([\"git\",\"show\",\"HEAD:\"+f],capture_output=True,text=True).stdout))\n    new=pd.read_csv(f)\n    assert (new[\"replica_opt\"]==0).all()\n    same=old.reset_index(drop=True).equals(new.drop(columns=\"replica_opt\").reset_index(drop=True))\n    print(f,same); ok&=same\nprint(\"TODO IGUAL\" if ok else \"DIFERENCIAS\")\nEOF\npython /tmp/chk.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_016gLjbJ2ANL1154VcPZuywW",
+   "tool_input": {
+    "command": "sed -i '13s/- \\[ \\]/- [x]/;14s/- \\[ \\]/- [x]/' openspec/changes/h3-semillas-optuna/tasks.md && sed -n 12,19p openspec/changes/h3-semillas-optuna/tasks.md | cut -c1-60"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LqyoyYDTvYqx6StqcqXYvs",
+   "tool_input": {
+    "command": "cat >> comun/ledger.py <<'EOF'\n\n\n# --- réplicas de optimización (`h3-semillas-optuna` D5) -------------------------\n\n\ndef con_replica(tabla: pd.DataFrame) -> pd.DataFrame:\n    \"\"\"La tabla con `replica_opt` entera; una tabla anterior a las réplicas (sin la columna o con huecos) es la réplica 0.\"\"\"\n    t = tabla.copy()\n    t[\"replica_opt\"] = t[\"replica_opt\"].fillna(0).astype(int) if \"replica_opt\" in t.columns else 0\n    return t\n\n\ndef _welch(a: np.ndarray, b: np.ndarray) -> tuple[float, float, float, float]:\n    \"\"\"(media(a) − media(b), semiamplitud-less: sd de la diferencia, ic_inf, ic_sup) con IC 95% de Welch.\"\"\"\n    dif = float(a.mean() - b.mean())\n    va, vb = a.var(ddof=1) / len(a), b.var(ddof=1) / len(b)\n    se = float(np.sqrt(va + vb))\n    if se == 0:\n        return dif, se, dif, dif\n    gl = (va + vb) ** 2 / (va ** 2 / (len(a) - 1) + vb ** 2 / (len(b) - 1))\n    mitad = float(stats.t.ppf(0.975, gl)) * se\n    return dif, se, dif - mitad, dif + mitad\n\n\ndef descomposicion(g: pd.DataFrame) -> dict:\n    \"\"\"Suma de cuadrados de G entre réplicas y dentro de cada réplica (`g` trae `replica_opt` y `g`).\n\n    SS_total = SS_entre + SS_dentro sin resto. Las varianzas dividen por el total de observaciones, así\n    var_total = var_entre + var_dentro vale también con réplicas incompletas.\"\"\"\n    x = g[\"g\"].to_numpy(dtype=float)\n    por_replica = g.groupby(\"replica_opt\")[\"g\"]\n    medias, n = por_replica.mean(), por_replica.size()\n    ss_total = float(((x - x.mean()) ** 2).sum())\n    ss_entre = float((n * (medias - x.mean()) ** 2).sum())\n    ss_dentro = float(g.assign(d=g[\"g\"] - g[\"replica_opt\"].map(medias))[\"d\"].pow(2).sum())\n    sd_dentro = por_replica.std(ddof=1)\n    return {\n        \"ss_total\": ss_total, \"ss_entre\": ss_entre, \"ss_dentro\": ss_dentro,\n        \"var_total\": ss_total / len(x), \"var_entre\": ss_entre / len(x), \"var_dentro\": ss_dentro / len(x),\n        \"frac_entre\": ss_entre / ss_total if ss_total > 0 else float(\"nan\"),\n        \"sd_entre_replicas\": float(medias.std(ddof=1)) if len(medias) > 1 else float(\"nan\"),\n        \"sd_dentro_medio\": float(sd_dentro.mean()) if sd_dentro.notna().any() else float(\"nan\"),\n    }\n\n\ndef _resumen_replicas(g: pd.DataFrame) -> dict:\n    medias = g.groupby(\"replica_opt\")[\"g\"].mean()\n    n_sem = g.groupby(\"replica_opt\").size()\n    return {\"n_replicas\": len(medias), \"n_semillas\": int(n_sem.sum()), \"replicas\": \" \".join(str(k) for k in medias.index),\n            \"g_media_replicas\": float(medias.mean()), \"g_mediana_replicas\": float(medias.median()),\n            \"g_min_replicas\": float(medias.min()), \"g_max_replicas\": float(medias.max())}\n\n\ndef _veredicto_t(lo: float, hi: float) -> str:\n    \"\"\"Diferencia entre variantes que comparten estudios (`H3R-0.1` − `H3-0.1`): mejora, empeora o no cambia.\"\"\"\n    if lo > 0:\n        return \"mejora\"\n    if hi < 0:\n        return \"empeora\"\n    return \"no cambia\"\n\n\ndef replicas(finales: pd.DataFrame, delta: float, propias: set[str] | None = None,\n             pares: list[tuple[str, str]] = (), semillas_por_replica: int = 10) -> pd.DataFrame:\n    \"\"\"Tabla de réplicas: una fila por variante con al menos dos réplicas y, para las que no son el control, Δ con réplicas.\n\n    `finales` ya trae `g` y `replica_opt`; `delta` es δ de la réplica 0 (no se recalcula). `propias` limita las filas a las\n    variantes del experimento (por defecto, todas). La fila de una variante trae la descomposición de la varianza de G\n    entre réplicas y semillas; Δ con réplicas = media de las medias por réplica menos la del control, con IC de Welch\n    entre réplicas, y solo se calcula si el control también tiene dos réplicas. `pares` (a, b) suma las filas\n    `a − b` apareadas por réplica y semilla, con IC t entre réplicas.\"\"\"\n    finales = con_replica(finales[~finales[\"variante\"].isin([\"C-rep\"])])\n    por_variante = {v: d for v, d in finales.groupby(\"variante\", sort=True) if d[\"replica_opt\"].nunique() >= 2}\n    ctrl = por_variante.get(CONTROL)\n    filas = []\n    for variante, g in por_variante.items():\n        if propias is not None and variante not in propias:\n            continue\n        fila = {\"variante\": variante, \"contra\": \"\", **_resumen_replicas(g), **descomposicion(g)}\n        incompletas = g.groupby(\"replica_opt\").size().lt(semillas_por_replica).any()\n        notas = [\"réplicas con menos de %d semillas\" % semillas_por_replica] if incompletas else []\n        if variante != CONTROL and ctrl is not None:\n            medias_v = g.groupby(\"replica_opt\")[\"g\"].mean().to_numpy(dtype=float)\n            medias_c = ctrl.groupby(\"replica_opt\")[\"g\"].mean().to_numpy(dtype=float)\n            dif, se, lo, hi = _welch(medias_v, medias_c)\n            fila.update(contra=CONTROL, delta_g_media=dif, delta_g_se=se, delta_g_ic_inf=lo, delta_g_ic_sup=hi,\n                        delta_g_margen=delta, veredicto=veredicto(dif, lo, delta),\n                        n_replicas_control=int(ctrl[\"replica_opt\"].nunique()), n_semillas_control=len(ctrl))\n            if set(g[\"replica_opt\"]) != set(ctrl[\"replica_opt\"]):\n                notas.append(\"réplicas distintas a las del control\")\n            if ctrl.groupby(\"replica_opt\").size().lt(semillas_por_replica).any():\n                notas.append(\"control con réplicas incompletas\")\n        elif variante != CONTROL:\n            notas.append(\"control con menos de dos réplicas: sin Δ con réplicas\")\n        fila[\"nota\"] = \"; \".join(notas)\n        filas.append(fila)\n    for a, b in pares:\n        if (propias is not None and a not in propias) or a not in por_variante or b not in por_variante:\n            continue\n        ga = por_variante[a].set_index([\"replica_opt\", \"semilla\"])[\"g\"]\n        gb = por_variante[b].set_index([\"replica_opt\", \"semilla\"])[\"g\"]\n        comunes = ga.index.intersection(gb.index)\n        dif = (ga.loc[comunes] - gb.loc[comunes]).rename(\"d\").reset_index()\n        por_replica = dif.groupby(\"replica_opt\")[\"d\"].mean().to_numpy(dtype=float)\n        if len(por_replica) < 2:\n            continue\n        media, sd, lo, hi = _ic(por_replica)\n        fila = {\"variante\": f\"{a} - {b}\", \"contra\": b, \"n_replicas\": len(por_replica), \"n_semillas\": len(dif),\n                \"replicas\": \" \".join(str(k) for k in sorted(dif[\"replica_opt\"].unique())),\n                \"delta_g_media\": media, \"delta_g_se\": sd / np.sqrt(len(por_replica)), \"delta_g_ic_inf\": lo,\n                \"delta_g_ic_sup\": hi, \"veredicto\": _veredicto_t(lo, hi),\n                \"nota\": \"apareado por réplica y semilla; IC t entre réplicas (%d g.l.)\" % (len(por_replica) - 1)}\n        filas.append(fila)\n    return pd.DataFrame(filas)\nEOF"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01SBFrJCHUmv69vHL6Zwmuv3",
+   "tool_input": {
+    "command": "sed -i 's|^    fin = res\\[res\\[\"etapa\"\\] == \"final\"\\]$|    fin = lg.con_replica(res[res[\"etapa\"] == \"final\"])\\n    fin = fin[fin[\"replica_opt\"] == 0]  # los chequeos de las fases 1 a 4 son de la réplica 0|' comun/consolidar.py; grep -n \"réplica 0\" comun/consolidar.py; sed -n 1,60p tests/test_consolidar.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Dko15wff4oauUaWJgQysji",
+   "tool_input": {
+    "command": "ls experimentos/h1/ledger/hp experimentos/control/ledger/hp; sed -n 76,130p experimentos/sampling_1/docs/diseno.md; cat .env | sed 's/=.*/=…/'"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01GaQe2zhDoS3cP6PGhLQnwb",
+   "tool_input": {
+    "command": "cat > /tmp/p.py <<'PYEOF'\nimport re\np='scripts/vm.sh'\ns=open(p).read()\ndef rep(a,b):\n    global s\n    assert s.count(a)==1,a\n    s=s.replace(a,b)\nrep('''`configuraciones.txt`: una por línea, `metodo tasa semilla etapa [variante]`; `#` comenta. Ej.:''','''`configuraciones.txt`: una por línea, `metodo tasa semilla etapa [variante|-] [replica]`; `#` comenta; `-` deja la\n# variante por defecto y `replica` es `--replica k` (réplicas de optimización). Ej.:''')\nrep('''#   uniforme 1 todas final C-rep\n''','''#   uniforme 1 todas final C-rep\n#   opt-muestra 0.1 todas final - 3\n''')\nrep('''while read -r metodo tasa semilla etapa variante; do\n  [ -z \"\\\\$metodo\" ] && continue; case \"\\\\$metodo\" in \\\\#*) continue;; esac\n  B=\"\"; [ -n \"\\\\${variante:-}\" ] && B=\"--variante \\\\$variante\"\n  python -m comun.correr --metodo \\\\$metodo --tasa \\\\$tasa --semilla \\\\$semilla --etapa \\\\$etapa \\\\$B $EXTRA \\\\''','''while read -r metodo tasa semilla etapa variante replica; do\n  [ -z \"\\\\$metodo\" ] && continue; case \"\\\\$metodo\" in \\\\#*) continue;; esac\n  B=\"\"; [ -n \"\\\\${variante:-}\" ] && [ \"\\\\$variante\" != \"-\" ] && B=\"--variante \\\\$variante\"\n  [ -n \"\\\\${replica:-}\" ] && B=\"\\\\$B --replica \\\\$replica\"\n  python -m comun.correr --metodo \\\\$metodo --tasa \\\\$tasa --semilla \\\\$semilla --etapa \\\\$etapa \\\\$B $EXTRA \\\\''')\nrep('''grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante; do\n    echo \"  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${variante:+ --variante $variante}$EXTRA\"''','''grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante replica; do\n    [ \"${variante:-}\" = \"-\" ] && variante=\"\"\n    echo \"  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${variante:+ --variante $variante}${replica:+ --replica $replica}$EXTRA\"''')\nopen(p,'w').write(s)\nPYEOF\npython /tmp/p.py && git diff --stat scripts/vm.sh"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_013gV6EogFFJZNFsS1EEotRC",
+   "tool_input": {
+    "command": "sh -n scripts/lanzar_fase.sh; sh -n scripts/vm.sh; bash -n scripts/lanzar_fase.sh && bash -n scripts/vm.sh && echo OK; ls -l scripts/lanzar_fase.sh"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_018XqCmX3yiLvS5DW2tWG85t",
+   "tool_input": {
+    "command": "scripts/lanzar_fase.sh --en-seco fase5_r1 fase5_r2 fase5_r3 fase5_r4 fase5_r5 fase5_r6 fase5_r7 fase5_r0 > experimentos/sampling_1/ledger/sesiones/fase5_en_seco.txt 2>&1; echo rc=$?; head -30 experimentos/sampling_1/ledger/sesiones/fase5_en_seco.txt; tail -12 experimentos/sampling_1/ledger/sesiones/fase5_en_seco.txt; wc -l experimentos/sampling_1/ledger/sesiones/fase5_en_seco.txt"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01BPy9xoPuBPiYsqxAxBKVKW",
+   "tool_input": {
+    "command": "bash -n /tmp/remoto-49d8df1.sh"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01EguqsuL5rYUcx2gBaH15uH",
+   "tool_input": {
+    "command": "grep -n \"replica\\|grep -v\" /tmp/remoto-49d8df1.sh"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 113,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Hice las tareas 2.1 a 2.5 del grupo 2 de `h3-semillas-optuna`. Están marcadas y commiteadas, y el cambio queda en 8 de 18 tareas. No hice la 2.6 (revisión en sesión limpia y tag `corridas-v2`), como pediste, y no lancé ninguna VM. `pytest` da 128 tests en verde y `python -m comun.variantes --verificar` pasa. No hay `EN_CURSO` ni `BLOQUEADO`.\n\n- **2.1** (`fc523d7`): `--replica k` en `comun/correr.py`.\n  - En la réplica k, la semilla de TPE y la de la muestra son k, y el estudio se llama `<estudio>@k`. El `id` lleva `@k` solo si k ≥ 1, y el ledger tiene la columna `replica_opt`.\n  - El smoke de la Mac con `--filas 20000` dio, para `C` en réplica 0, los mismos hiperparámetros y `hash_muestra` que la corrida vieja de `main`. Para `U0.1` en réplica 0 no pude compararlo con `main`: tuve que usar el estudio recién creado y el código de esa ruta no cambió.\n  - `--replica 3` de `H3-0.1` escribió `h3/ledger/hp/U0.1@3.json` sin tocar `h1/`. El final de `H3R-0.1` en la réplica 3 leyó ese estudio y subió `min_data_in_leaf` de 35 a 111 (× √10).\n- **2.2** (`fc523d7`): variantes `H3-0.05` y `H3R-0.1` en el registro, con la marca de réplicas y la regla de dueños (`U{r}@k` es de `h3`, `C@k` de `control`). Los tests cubren la regla, el reescalado y una réplica no habilitada, que falla nombrando la variante.\n- **2.3 y 2.4** (`49d8df1`): `python -m comun.consolidar` ahora escribe `ledger/replicas.csv`.\n  - Trae el Δ con réplicas con IC de Welch, el número de réplicas y semillas, y la descomposición exacta de la varianza.\n  - También trae la diferencia `H3R-0.1` − `H3-0.1` apareada por réplica y semilla, con IC t entre réplicas.\n  - N\\*, δ y el apareado salen solo de la réplica 0.\n  - Consolidar el ledger real no cambió ningún `apareado.csv`. Los demás CSV solo ganaron `replica_opt = 0`.\n- **2.5** (`df04f6b`): las listas `fase5_r0` a `fase5_r7`.\n  - `scripts/lanzar_fase.sh` ahora acepta varias listas y exige 8 vCPU N2 libres por VM antes de lanzar.\n  - Con `--en-seco` las 8 listas imprimen 37 finales y 28 estudios, sin repetir. `tests/test_fase5.py` lo comprueba contra las celdas esperadas.\n\nCambios que no estaban en las tareas:\n- `scripts/vm.sh` lee la réplica como sexta columna de la lista (`-` deja la variante por defecto).\n- `scripts/vm.sh` ahora ignora `experimentos/Experimentos h3 y h4/` al sincronizar ledgers. Sin eso, el nombre con espacios se partía en tres carpetas falsas.\n\nPara tener en cuenta:\n- La cuota se consulta en la región de `ZONA`. El default de `vm.sh` es `northamerica-northeast2-b`, y el diseño habla de `us-central1`. Si querés `us-central1`, hay que definir `ZONA` en `.env`.\n- Quedaron sin commitear `costos.csv` y el JSON `g1_revisar_20261108T214304.json` de la sesión anterior, que no son míos.",
+ "ttft_ms": 1798,
+ "type": "result",
+ "duration_ms": 2724041,
+ "uuid": "36c02814-bad9-465f-9fe8-f124cbc69bb9",
+ "ttft_stream_ms": 1389,
+ "time_to_request_ms": 206,
+ "first_content_frame_ms": 1389,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 144,
+   "outputTokens": 68088,
+   "cacheReadInputTokens": 8772688,
+   "cacheCreationInputTokens": 170147,
+   "webSearchRequests": 0,
+   "costUSD": 2.2390247999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 18442,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 170147,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

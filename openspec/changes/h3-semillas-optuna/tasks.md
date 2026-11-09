@@ -15,7 +15,7 @@ Requiere `renombrar-brazos` archivado.
 - [x] 2.3 `comun/ledger.py` y `comun/consolidar.py`: columna `replica_opt` (ausente = 0), clave con réplica y `ledger/replicas.csv` con Δ con réplicas, IC de Welch, n de réplicas y semillas, y descomposición de varianza (D5); tests con un ledger sintético de 3 réplicas (suma de cuadrados exacta, réplicas incompletas, variante de una réplica sin fila); verificar que consolidar el ledger real da los mismos `apareado.csv` que antes
 - [x] 2.4 Diferencia apareada `H3R-0.1` − `H3-0.1` por réplica y semilla (D4, D5) en `h3/ledger/replicas.csv`; test con datos sintéticos
 - [x] 2.5 Listas `sampling_1/scripts/fase5_r<k>.txt` (k = 1…7) y `fase5_r0.txt` según D3, y un `scripts/lanzar_fase.sh` que lanza varias listas en VMs paralelas tras verificar la cuota de vCPU N2; verificar con `--en-seco` que cada lista imprime sus corridas y destinos y que la suma cubre las 37 celdas y los 28 estudios nuevos sin repetir
-- [ ] 2.6 Revisión en sesión limpia del grupo 2 con la lista de código de `docs/revision.md`, cierre en la bitácora; crear el tag `corridas-v2` (lo pushea Agustina)
+- [x] 2.6 Revisión en sesión limpia del grupo 2 con la lista de código de `docs/revision.md`, cierre en la bitácora; crear el tag `corridas-v2` (lo pushea Agustina)
 
 ## 3. Corridas (VM, cada persona su lista)
 

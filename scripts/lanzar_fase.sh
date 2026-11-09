@@ -46,15 +46,18 @@ if [ -n "$EN_SECO" ]; then
   exit 0
 fi
 
-# Cuota de vCPU N2 de la región: límite menos uso, contra lo que piden las VMs que se van a lanzar.
+# Cuota de vCPU N2 de la región y cuota global de vCPU del proyecto (CPUS_ALL_REGIONS, la que suele limitar en el
+# trial): límite menos uso de cada una, contra lo que piden las VMs que se van a lanzar.
 : "${PROYECTO:?falta PROYECTO}"
 NECESARIAS=$(( ${#RUTAS[@]} * VCPU_POR_VM ))
-LIBRES=$(gcloud compute regions describe "$REGION" --project "$PROYECTO" --format=json | python3 -c '
+libres() { python3 -c '
 import json, sys
-q = {c["metric"]: c for c in json.load(sys.stdin)["quotas"]}["N2_CPUS"]
-print(int(q["limit"] - q["usage"]))')
-echo "cuota N2_CPUS en $REGION: $LIBRES vCPU libres, hacen falta $NECESARIAS (${#RUTAS[@]} VMs)"
-[ "$LIBRES" -ge "$NECESARIAS" ] || { echo "cuota insuficiente: lanzar en tandas"; exit 1; }
+q = {c["metric"]: c for c in json.load(sys.stdin)["quotas"]}.get(sys.argv[1])
+print(int(q["limit"] - q["usage"]) if q else 999999)' "$1"; }
+LIBRES=$(gcloud compute regions describe "$REGION" --project "$PROYECTO" --format=json | libres N2_CPUS)
+LIBRES_GLOBAL=$(gcloud compute project-info describe --project "$PROYECTO" --format=json | libres CPUS_ALL_REGIONS)
+echo "cuota N2_CPUS en $REGION: $LIBRES vCPU libres; CPUS_ALL_REGIONS: $LIBRES_GLOBAL libres; hacen falta $NECESARIAS (${#RUTAS[@]} VMs)"
+[ "$LIBRES" -ge "$NECESARIAS" ] && [ "$LIBRES_GLOBAL" -ge "$NECESARIAS" ] || { echo "cuota insuficiente: lanzar en tandas"; exit 1; }
 
 for i in "${!RUTAS[@]}"; do
   ruta=${RUTAS[$i]}; corto=${NOMBRES[$i]}
