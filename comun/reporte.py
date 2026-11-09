@@ -34,7 +34,7 @@ from comun import variantes as reg
 from comun import ledger as lg
 from comun import rutas
 from comun.baseline import SEMILLAS_FINALES
-from comun.ganancia import ganancia
+from comun.ganancia import aporte, ganancia
 
 N_SEMILLAS = 10
 MES = 201910
@@ -147,10 +147,32 @@ def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
             r = lg.leer_csv(f)
             finales.append(_absolutas(r[r["etapa"] == "final"], rutas.ledger(e)))
     fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=["variante"])
-    aps = [lg.leer_csv(rutas.ledger(e) / "apareado.csv") for e in reg.duenos()
+    if "replica_opt" in fin:  # lo de siempre es la réplica 0; las demás las lee `cargar_replicas`
+        fin = fin[lg.con_replica(fin)["replica_opt"] == 0]
+    aps =[lg.leer_csv(rutas.ledger(e) / "apareado.csv") for e in reg.duenos()
            if (rutas.ledger(e) / "apareado.csv").exists()]
     ap = pd.concat(aps, ignore_index=True).drop_duplicates("variante") if aps else pd.DataFrame()
     return fin, ap.set_index("variante") if not ap.empty else ap
+
+
+def cargar_replicas(exps: list[str], n_est: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """(finales de todas las réplicas con `g` al corte `n_est`, tiempos de estudio, `replicas.csv` de los ledgers)."""
+    finales, estudios, tablas = [], [], []
+    for e in exps:
+        led = rutas.ledger(e)
+        if (led / "resultados.csv").exists():
+            r = lg.leer_csv(led / "resultados.csv")
+            finales.append(_absolutas(r[r["etapa"] == "final"], led))
+        if (led / "estudios.csv").exists():
+            estudios.append(lg.leer_csv(led / "estudios.csv"))
+        if (led / "replicas.csv").exists():
+            tablas.append(lg.leer_csv(led / "replicas.csv"))
+    fin = lg.con_replica(pd.concat(finales, ignore_index=True)) if finales else pd.DataFrame(columns=["variante", "replica_opt"])
+    if len(fin):
+        fin = lg.agregar_ganancia(fin, pd.read_csv, n_est)
+    est = pd.concat(estudios, ignore_index=True) if estudios else pd.DataFrame(columns=["estudio", "tiempo_optimizacion_s"])
+    rep = pd.concat(tablas, ignore_index=True).drop_duplicates("variante") if tablas else pd.DataFrame(columns=["variante"])
+    return fin, est, rep.set_index("variante")
 
 
 def estado(variante: str, fin: pd.DataFrame) -> tuple[int, bool]:
@@ -379,6 +401,322 @@ def fig_tiempo_igual(ctx: Contexto, g_c1: float, g_c10: float | None, datos: dic
     return png(fig, "tiempo_igual", figuras)
 
 
+# --- comparación limpia: tiempo igual con intervalo, bloque A y bloque B (`h3-semillas-optuna` D6, D7) ---
+
+N_BOOT = 1000
+SEMILLA_BOOT = 20261108
+GRADOS = 0.95
+
+
+def _tiempos(estudios: pd.DataFrame) -> pd.Series:
+    return estudios.groupby("estudio")["tiempo_optimizacion_s"].last()
+
+
+def tiempo_replica(fin_k: pd.DataFrame, t_estudio: pd.Series) -> tuple[float, float] | None:
+    """(tiempo de optimización del estudio, media del tiempo de entrenamiento final) de una variante en una réplica."""
+    if fin_k.empty or fin_k["estudio"].iloc[0] not in t_estudio.index:
+        return None
+    return float(t_estudio[fin_k["estudio"].iloc[0]]), float(fin_k["tiempo_entrenamiento_s"].mean())
+
+
+def tiempo_igual_replicas(variante: str, finr: pd.DataFrame, estudios: pd.DataFrame, n_est: int) -> dict | None:
+    """Por réplica k, el ensamble de K_k semillas de la variante en el presupuesto del control de esa réplica contra Ḡ_C,k.
+
+    Devuelve las listas por réplica y la media con IC t entre réplicas (None si la variante tiene menos de dos réplicas)."""
+    t_est = _tiempos(estudios)
+    v, c = finr[finr["variante"] == variante], finr[finr["variante"] == lg.CONTROL]
+    ks = sorted(set(v["replica_opt"]) & set(c["replica_opt"]))
+    if len(set(v["replica_opt"])) < 2:
+        return None
+    filas = []
+    for k in ks:
+        vk, ck = v[v["replica_opt"] == k], c[c["replica_opt"] == k]
+        tv, tc = tiempo_replica(vk, t_est), tiempo_replica(ck, t_est)
+        if tv is None or tc is None:
+            continue
+        t_c, t_v = tc[0] + tc[1], tv[0] + tv[1]
+        kk = max(0, math.floor((t_c - tv[0]) / tv[1]))
+        g = ensamble(vk, variante, min(kk, N_SEMILLAS), n_est) if kk >= 2 else None
+        filas.append({"replica": k, "T_v": t_v, "T_c": t_c, "K": kk, "g_ens": g, "g_c": float(ck["g"].mean())})
+    d = np.array([f["g_ens"] - f["g_c"] for f in filas if f["g_ens"] is not None], dtype=float)
+    media, _, lo, hi = lg._ic(d) if len(d) else (float("nan"),) * 4
+    return {"filas": filas, "n": len(d), "media": media, "inf": lo, "sup": hi,
+            "T": float(np.median([f["T_v"] for f in filas])) if filas else float("nan"),
+            "T_c": float(np.median([f["T_c"] for f in filas])) if filas else float("nan")}
+
+
+def _probs(fin: pd.DataFrame, variante: str, k: int) -> tuple[np.ndarray, np.ndarray, list[np.ndarray]] | None:
+    """(clientes, es_baja2, `prob` de las primeras k semillas) de la réplica 0 de una variante; None si falta alguna."""
+    sub = fin[fin["variante"] == variante].set_index("semilla")
+    probs, clientes, baja2 = [], None, None
+    for s in SEMILLAS_FINALES[:k]:
+        ruta = sub["predicciones_201910"].get(s) if "predicciones_201910" in sub else None
+        if not isinstance(ruta, str) or not Path(ruta).exists():
+            return None
+        p = pd.read_parquet(ruta)
+        if clientes is None:
+            clientes, baja2 = p["numero_de_cliente"].to_numpy(), p["es_baja2"].to_numpy()
+        elif not np.array_equal(clientes, p["numero_de_cliente"].to_numpy()):
+            raise ValueError(f"{variante} semilla {s}: las predicciones no están en el mismo orden de clientes")
+        probs.append(p["prob"].to_numpy(dtype="float64"))
+    return (clientes, baja2, probs) if probs else None
+
+
+def bootstrap_tiempo_igual(fin: pd.DataFrame, datos: dict, n_est: int, n_boot: int = N_BOOT) -> dict:
+    """IC por bootstrap de clientes de `G(ensamble de K) − Ḡ_C` en la réplica 0 (`datos` sale de `calcular_tiempo_igual`).
+
+    Cada remuestreo toma los n clientes de 201910 con reposición (`default_rng(SEMILLA_BOOT)`) y mide todas las variantes
+    en el mismo remuestreo. El corte es N* · n_b / n, redondeado, con n_b el tamaño del remuestreo; como solo cuenta el
+    principio del orden por score, se ordena una vez y se recorre un prefijo."""
+    ctrl = _probs(fin, lg.CONTROL, N_SEMILLAS)
+    if ctrl is None:
+        return {}
+    clientes, baja2, p_c = ctrl
+    n = len(clientes)
+    contrib = aporte(baja2)
+    ordenes: dict[str, np.ndarray] = {}
+    vectores: dict[str, np.ndarray] = {f"__c{i}": p for i, p in enumerate(p_c)}
+    for b, d in datos.items():
+        if d is None or d[3] is None:
+            continue
+        pr = _probs(fin, b, min(d[2], N_SEMILLAS))
+        if pr is not None and np.array_equal(pr[0], clientes):
+            vectores[b] = np.mean(pr[2], axis=0)
+    for nombre, p in vectores.items():
+        ordenes[nombre] = np.argsort(-p, kind="stable")[: 2 * n_est + 1000]
+    rng = np.random.default_rng(SEMILLA_BOOT)
+    difs = {b: np.empty(n_boot) for b in vectores if not b.startswith("__c")}
+    for i in range(n_boot):
+        cuenta = np.bincount(rng.integers(0, n, n), minlength=n)
+        corte = round(n_est * cuenta.sum() / n)
+
+        def g_corte(nombre: str) -> float:
+            o = ordenes[nombre]
+            c, a = cuenta[o], contrib[o]
+            acum = np.cumsum(c)
+            j = int(np.searchsorted(acum, corte, side="left"))
+            previo = acum[j - 1] if j else 0
+            return float((c[:j] * a[:j]).sum() + (corte - previo) * a[j])
+
+        g_c = np.mean([g_corte(f"__c{s}") for s in range(len(p_c))])
+        for b in difs:
+            difs[b][i] = g_corte(b) - g_c
+    alfa = (1 - GRADOS) / 2 * 100
+    return {b: (float(np.mean(d)), float(np.percentile(d, alfa)), float(np.percentile(d, 100 - alfa)))
+            for b, d in difs.items()}
+
+
+def fila_bloque_a(ctx: Contexto, b: str, fin: pd.DataFrame, ap: pd.DataFrame, rep: pd.DataFrame,
+                  ti_rep: dict | None, ti_boot: tuple | None, k0: tuple | None) -> dict:
+    """Una fila del bloque A, con todo lo que muestran la tabla HTML y `tabla_resultados.md`."""
+    r, rr = fila(ap, b), (rep.loc[b] if b in rep.index else None)
+    con_rep = rr is not None and pd.notna(rr.get("delta_g_media"))
+    out = {"variante": b, "hipotesis": ctx.hip_de[b], "d0": None, "dR": None, "G": None, "T": None, "A": None,
+           "ti_rep": ti_rep, "ti_boot": ti_boot, "k0": k0, "nota": ""}
+    if r is not None:
+        out.update(G=float(r["g_control"] + r["delta_g_media"]), T=float(r["tiempo_total_s"]), A=float(r["aceleracion"]),
+                   d0=(float(r["delta_g_media"]), float(r["delta_g_ic_inf"]), float(r["delta_g_ic_sup"])))
+    if con_rep:
+        out["dR"] = (float(rr["delta_g_media"]), float(rr["delta_g_ic_inf"]), float(rr["delta_g_ic_sup"]), int(rr["n_replicas"]))
+        out["G"] = float(rr["g_media_replicas"])
+        if ti_rep and ti_rep["T"] == ti_rep["T"] and ti_rep["T"] > 0:
+            out["T"], out["A"] = ti_rep["T"], ti_rep["T_c"] / ti_rep["T"]
+        out["veredicto"], out["fuente"] = str(rr["veredicto"]), f"con réplicas ({int(rr['n_replicas'])})"
+    else:
+        out["veredicto"], out["fuente"] = veredicto(ap, fin, b), "réplica 0"
+        out["nota"] = "sin réplicas"
+    return out
+
+
+def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot: int = N_BOOT) -> dict:
+    """Todo el bloque A y las tablas de réplicas, calculado una vez desde el ledger."""
+    vacio = {"filas": [], "rep": pd.DataFrame(), "g_c1": None, "g_c10": None, "ti": {}}
+    if ap.empty or not estado(lg.CONTROL, fin)[1]:
+        return vacio
+    n_est = int(ap["n_estrella"].iloc[0])
+    finr, estudios, rep = cargar_replicas([reg.CONTROL, *ctx.exps], n_est)
+    g_c1 = g_control(fin, ap)
+    g_c10, datos = calcular_tiempo_igual(ctx, fin, ap)
+    boot = bootstrap_tiempo_igual(fin, datos, n_est, n_boot)
+    filas = []
+    for b in ctx.variantes:
+        ti = tiempo_igual_replicas(b, finr, estudios, n_est) if len(finr) else None
+        filas.append(fila_bloque_a(ctx, b, fin, ap, rep, ti, boot.get(b), datos.get(b)))
+    filas.sort(key=lambda f: (list(ctx.hipotesis).index(f["hipotesis"]), -(f["A"] if f["A"] is not None else -1.0)))
+    return {"filas": filas, "rep": rep, "g_c1": g_c1, "g_c10": g_c10, "n_est": n_est}
+
+
+def _ic_txt(t: tuple | None) -> str:
+    return "pendiente" if t is None else f"{_m(t[0])} [{_m(t[1])}; {_m(t[2])}]"
+
+
+def celdas_bloque_a(f: dict) -> list[str]:
+    tr, tb, k0 = f["ti_rep"], f["ti_boot"], f["k0"]
+    if tr and tr["n"] >= 2:
+        ti_rep = f"{_ic_txt((tr['media'], tr['inf'], tr['sup']))} (R={tr['n']})"
+    else:
+        ti_rep = "sin réplicas" if not tr else f"no aplica (K<2 en {len(tr['filas']) - tr['n']} de {len(tr['filas'])} réplicas)"
+    ti_boot = _ic_txt(tb) if tb else ("no aplica (K<2)" if k0 and k0[2] < 2 else "pendiente")
+    dR = f"{_ic_txt(f['dR'][:3])} (R={f['dR'][3]})" if f["dR"] else "—"
+    return [f["variante"], f["hipotesis"], _m(f["G"]) if f["G"] is not None else "pendiente", _ic_txt(f["d0"]), dR,
+            f"{f['T']:,.0f}" if f["T"] is not None else "pendiente", f"{f['A']:.2f}" if f["A"] is not None else "pendiente",
+            ti_rep, ti_boot, f"{f['veredicto']} ({f['fuente']})"]
+
+
+CAB_A = ("variante", "hipótesis", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "T mediana (s)", "A",
+         "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)", "veredicto (fuente)")
+
+
+def pares_replicas(rep: pd.DataFrame) -> list[list[str]]:
+    """Filas `a - b` de `replicas.csv` (diferencia apareada por réplica y semilla)."""
+    return [[v, _ic_txt((r["delta_g_media"], r["delta_g_ic_inf"], r["delta_g_ic_sup"])), f"{int(r['n_replicas'])}",
+             str(r["veredicto"])] for v, r in rep.iterrows() if " - " in v]
+
+
+def varianza(rep: pd.DataFrame, ctx: Contexto) -> list[list[str]]:
+    filas = []
+    for v, r in rep.iterrows():
+        if " - " in v:
+            continue
+        filas.append([v, f"{int(r['n_replicas'])}", f"{int(r['n_semillas'])}", f"{r['sd_entre_replicas'] / 1e6:.2f}",
+                      f"{r['sd_dentro_medio'] / 1e6:.2f}", f"{100 * r['frac_entre']:.0f} %"])
+    return filas
+
+
+CAB_VAR = ("variante", "réplicas", "corridas", "sd entre réplicas (M$)", "sd entre semillas (M$)", "varianza entre réplicas")
+CAB_PARES = ("diferencia", "Δ [IC t entre réplicas] (M$)", "réplicas", "veredicto")
+AVISO_B = "Las cifras del bloque B no se comparan una a una con las del bloque A: otro protocolo, otra muestra o otro entorno."
+
+
+def _resumen_columna(s: pd.Series) -> str:
+    x = pd.to_numeric(s, errors="coerce").dropna()
+    if x.empty:
+        return "sin datos numéricos"
+    f = (lambda v: f"{v:,.0f}") if x.abs().max() >= 1000 else (lambda v: f"{v:.4g}")
+    return f"mediana {f(x.median())} [{f(x.min())}; {f(x.max())}], n = {len(x)}"
+
+
+def bloque_b(raiz: Path = rutas.RAIZ) -> list[dict]:
+    """Una fila por `exploratorio.json`. Un CSV que falta deja la tabla como pendiente con el nombre del archivo."""
+    import json
+    filas = []
+    for m in reg.manifiestos(raiz):
+        d = json.loads(m.read_text())
+        cifras = []
+        for t in d.get("tablas", []):
+            ruta = m.parent / t["csv"]
+            if not ruta.is_file():
+                cifras.append(f"pendiente: falta {t['csv']}")
+                continue
+            df = pd.read_csv(ruta)
+            for c in t["columnas"]:
+                cifras.append(f"{ruta.name}, {c}: " + (_resumen_columna(df[c]) if c in df else f"pendiente: falta la columna {c}"))
+        filas.append({"carpeta": str(m.parent.relative_to(raiz)), "autor": d.get("autor", ""), "pregunta": d.get("pregunta", ""),
+                      "protocolo": d.get("protocolo", ""), "cifras": cifras, "advertencia": d.get("advertencia", "")})
+    return filas
+
+
+def tabla_md(cab, filas) -> str:
+    esc = lambda c: str(c).replace("|", "\\|").replace("\n", " ")
+    return ("| " + " | ".join(cab) + " |\n|" + "---|" * len(cab) + "\n"
+            + "".join("| " + " | ".join(esc(c) for c in f) + " |\n" for f in filas))
+
+
+def filas_b(b: list[dict]) -> list[list[str]]:
+    return [[f["carpeta"], f["autor"], f["pregunta"], f["protocolo"], "; ".join(f["cifras"]), f["advertencia"]] for f in b]
+
+
+CAB_B = ("carpeta", "autor", "pregunta", "protocolo", "cifras principales", "advertencia")
+
+
+def markdown_resultados(ctx: Contexto, a: dict, b: list[dict]) -> str:
+    """`informe/tabla_resultados.md`: las tablas que copia el informe, sin fecha ni cifras escritas a mano."""
+    if not a["filas"]:
+        return "# Resultados\n\npendiente: el control no tiene sus 10 semillas.\n"
+    partes = ["# Resultados de sampling_1\n",
+              "Generado por `python -m comun.reporte --experimento sampling_1`; no editar a mano.\n",
+              f"N* = {a['n_est']:,} envíos; Ḡ_C (réplica 0) = {_m(a['g_c1'])} M$"
+              + (f"; ensamble de {N_SEMILLAS} semillas del control = {_m(a['g_c10'])} M$" if a["g_c10"] is not None else "") + ".\n",
+              "## Bloque A: mismo protocolo\n", tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
+    notas = [f"- `{f['variante']}`: {f['nota']}" for f in a["filas"] if f["nota"]]
+    if notas:
+        partes += ["Notas:\n", "\n".join(notas) + "\n"]
+    if len(a["rep"]):
+        partes += ["### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
+        pares = pares_replicas(a["rep"])
+        if pares:
+            partes += ["### Diferencia apareada por réplica y semilla\n", tabla_md(CAB_PARES, pares)]
+    partes += ["## Bloque B: exploratorios\n", AVISO_B + "\n", tabla_md(CAB_B, filas_b(b)) if b else "No hay exploratorios declarados.\n"]
+    return "\n".join(partes)
+
+
+def fig_tiempo_ganancia_replicas(ctx: Contexto, a: dict, ap: pd.DataFrame, figuras: Path | None) -> str:
+    if not a["filas"]:
+        return "<p class='pend'>pendiente: no hay apareado.csv (falta el control)</p>"
+    rep = a["rep"]
+    fig, ax = plt.subplots(figsize=(7.5, 4.5))
+    gc, tc = ap["g_control"].iloc[0], ap["tiempo_total_control_s"].iloc[0]
+    ax.scatter([tc], [gc / 1e6], s=90, color=COLOR_C, marker="s", zorder=3, label="control (réplica 0)")
+    for h in ctx.hipotesis:
+        for f in [f for f in a["filas"] if f["hipotesis"] == h and f["G"] is not None and f["T"] is not None]:
+            y = f["G"] / 1e6
+            if f["variante"] in rep.index and f["dR"]:
+                r = rep.loc[f["variante"]]
+                ax.errorbar([f["T"]], [y], yerr=[[y - r["g_min_replicas"] / 1e6], [r["g_max_replicas"] / 1e6 - y]],
+                            fmt="o", color=ctx.color[h], capsize=3, zorder=2)
+            else:
+                ax.scatter([f["T"]], [y], color=ctx.color[h], zorder=2)
+            ax.annotate(f["variante"], (f["T"], y), textcoords="offset points", xytext=(5, 4), fontsize=8, color=ctx.color[h])
+    for h in ctx.hipotesis:
+        ax.scatter([], [], color=ctx.color[h], label=h)
+    ax.axhline((gc - ap["delta_g_margen"].iloc[0]) / 1e6, color=COLOR_C, ls=":", lw=1, label="control − δ")
+    ax.set_xscale("log")
+    ax.set_xlabel("tiempo del pipeline T (s, escala log; mediana entre réplicas)")
+    ax.set_ylabel(f"ganancia media en {MES} al corte N* (M$)")
+    ax.set_title("Tiempo contra ganancia (barras: rango entre réplicas; sin barra: una sola réplica)", fontsize=9)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.legend(frameon=False, fontsize=8)
+    return png(fig, "tiempo_vs_ganancia", figuras)
+
+
+def fig_varianza(ctx: Contexto, a: dict, figuras: Path | None) -> str:
+    rep = a["rep"]
+    r = rep[[" - " not in v for v in rep.index]] if len(rep) else rep
+    if r.empty:
+        return "<p class='pend'>pendiente: ninguna variante tiene réplicas</p>"
+    fig, ax = plt.subplots(figsize=(7.5, 0.4 * len(r) + 1.6))
+    entre, dentro = r["var_entre"] / r["var_total"], r["var_dentro"] / r["var_total"]
+    y = np.arange(len(r))
+    ax.barh(y, entre, color=PALETA[0], label="entre réplicas (suerte de Optuna)")
+    ax.barh(y, dentro, left=entre, color=PALETA[1], label="entre semillas")
+    ax.set_yticks(y, list(r.index), fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlabel("fracción de la varianza de G")
+    ax.set_title("Descomposición de la varianza de la ganancia", fontsize=10)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.legend(frameon=False, fontsize=8, loc="lower right")
+    return png(fig, "varianza", figuras)
+
+
+def html_resultados(ctx: Contexto, a: dict, b: list[dict], ap: pd.DataFrame, figuras: Path | None) -> str:
+    if not a["filas"]:
+        return "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
+    out = ["<h3>Bloque A: mismo protocolo</h3>", html_tabla(CAB_A, [celdas_bloque_a(f) for f in a["filas"]]),
+           fig_tiempo_ganancia_replicas(ctx, a, ap, figuras)]
+    notas = [f"{f['variante']}: {f['nota']}" for f in a["filas"] if f["nota"]]
+    if notas:
+        out.append(f"<p>Notas: {html.escape('; '.join(notas))}.</p>")
+    if len(a["rep"]):
+        out += ["<h3>Varianza entre réplicas y entre semillas</h3>", html_tabla(CAB_VAR, varianza(a["rep"], ctx)),
+                fig_varianza(ctx, a, figuras)]
+        pares = pares_replicas(a["rep"])
+        if pares:
+            out += ["<h3>Diferencia apareada por réplica y semilla</h3>", html_tabla(CAB_PARES, pares)]
+    out += ["<h3>Bloque B: exploratorios</h3>", f"<p>{html.escape(AVISO_B)}</p>",
+            html_tabla(CAB_B, filas_b(b)) if b else "<p>No hay exploratorios declarados.</p>"]
+    return "".join(out)
+
+
 def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame,
                       figuras: Path | None) -> str:
     titulo, variantes = ctx.hipotesis[h]
@@ -422,7 +760,8 @@ def enlaces(exp: str, exps: list[str]) -> str:
     return f"<section><h2>Otros reportes</h2><ul>{items}</ul></section>"
 
 
-def generar(exp: str, figuras: Path | None = None) -> str:
+def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str | None]:
+    """(HTML del reporte, `tabla_resultados.md` del agregador o None para los demás experimentos)."""
     ctx = Contexto(exp)
     fin, ap = cargar([reg.CONTROL, *ctx.exps])
     hip, dis = _leer(exp, "hipotesis"), _leer(exp, "diseno")
@@ -439,21 +778,29 @@ def generar(exp: str, figuras: Path | None = None) -> str:
         if not ap.empty else "N* pendiente"
     completos = sum(estado(b, fin)[1] for b in ["C", *ctx.variantes])
     titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)
-    cuerpo = (f"<h1>{html.escape(titulo)}</h1><section>{intro}</section>"
-              f"<section><h2>{'Todas las variantes' if ctx.agregador else 'Variantes'} contra el control</h2><p>"
-              f"{html.escape(n_est)}. Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_variantes(ctx, fin, ap)}"
-              + (fig_tiempo_ganancia(ctx, ap, figuras) if ctx.agregador else "") + "</section>")
+    md = None
+    cuerpo = f"<h1>{html.escape(titulo)}</h1><section>{intro}</section>"
     if ctx.agregador:
+        a, b = calcular_bloque_a(ctx, fin, ap), bloque_b()
+        md = markdown_resultados(ctx, a, b)
+        cuerpo += (f"<section><h2>Todas las variantes contra el control</h2><p>{html.escape(n_est)}. "
+                   f"Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{html_resultados(ctx, a, b, ap, figuras)}</section>")
         cuerpo += f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(ctx, fin, ap, figuras)}</section>"
     else:
+        cuerpo += (f"<section><h2>Variantes contra el control</h2><p>{html.escape(n_est)}. "
+                   f"Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{tabla_variantes(ctx, fin, ap)}</section>")
         for h in ctx.hipotesis:
             cuerpo += seccion_hipotesis(ctx, h, seccion(hip, h + " "), fin, ap, figuras)
     cuerpo += markdown("## Limitaciones previstas\n" + seccion(hip, "Limitaciones"))
     cuerpo += enlaces(exp, [e for e in reg.duenos() if e != reg.CONTROL])
     cuerpo += (f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
-               f"finales, {completos}/{len(ctx.variantes) + 1} variantes con {N_SEMILLAS} semillas</footer>")
+               f"finales (réplica 0), {completos}/{len(ctx.variantes) + 1} variantes con {N_SEMILLAS} semillas</footer>")
     return (f"<!doctype html><html lang='es'><head><meta charset='utf-8'><title>{html.escape(titulo)} — reporte"
-            f"</title><style>{CSS}</style></head><body>{cuerpo}</body></html>\n")
+            f"</title><style>{CSS}</style></head><body>{cuerpo}</body></html>\n"), md
+
+
+def generar(exp: str, figuras: Path | None = None) -> str:
+    return generar_con_tabla(exp, figuras)[0]
 
 
 def main() -> None:
@@ -468,8 +815,12 @@ def main() -> None:
     for exp in exps:
         salida = a.salida or rutas.informe(exp) / "reporte.html"
         salida.parent.mkdir(parents=True, exist_ok=True)
-        salida.write_text(generar(exp, a.figuras))
+        pagina, md = generar_con_tabla(exp, a.figuras)
+        salida.write_text(pagina)
         print(salida)
+        if md is not None and not a.salida:
+            (salida.parent / "tabla_resultados.md").write_text(md)
+            print(salida.parent / "tabla_resultados.md")
 
 
 if __name__ == "__main__":
