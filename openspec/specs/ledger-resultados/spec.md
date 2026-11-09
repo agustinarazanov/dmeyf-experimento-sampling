@@ -18,7 +18,9 @@ optimización y entrenamiento, memoria máxima, tipo de máquina, hilos, commit,
 
 ### Requirement: Acumulación sin conflictos
 Cada corrida SHALL escribirse en su propio archivo bajo el `ledger/corridas/` del experimento, y un comando de
-consolidación SHALL producir el `ledger/resultados.csv` de ese experimento ordenado y sin duplicados por clave (variante, método, tasa, semilla, etapa). El commit no forma parte de la clave: una corrida repetida con código más nuevo reemplaza a la anterior, porque la misma semilla no puede contar dos veces en el apareado.
+consolidación SHALL producir el `ledger/resultados.csv` de ese experimento ordenado y sin duplicados por clave (variante,
+método, tasa, réplica de optimización, semilla, etapa). El commit no forma parte de la clave: una corrida repetida con
+código más nuevo reemplaza a la anterior, porque la misma semilla no puede contar dos veces en el apareado.
 
 #### Scenario: Dos personas corren en paralelo
 - **WHEN** dos integrantes registran corridas y hacen push
@@ -29,12 +31,18 @@ consolidación SHALL producir el `ledger/resultados.csv` de ese experimento orde
 - **THEN** se conserva la más reciente y la anterior queda marcada como reemplazada
 
 #### Scenario: Misma semilla corrida en dos commits
-- **WHEN** una fase se relanza y vuelve a correr una variante y una semilla ya registradas con otro commit
-- **THEN** en `resultados.csv` queda una sola fila por variante y semilla (la más reciente) y la otra va a `reemplazadas.csv`
+- **WHEN** una fase se relanza y vuelve a correr una variante, una réplica y una semilla ya registradas con otro commit
+- **THEN** en `resultados.csv` queda una sola fila por variante, réplica y semilla (la más reciente) y la otra va a
+  `reemplazadas.csv`
 
 #### Scenario: Ledger con la columna vieja
 - **WHEN** se consolida o se reporta un ledger cuya cabecera dice `brazo` (por ejemplo, un clon del tag `corridas-v1`)
 - **THEN** el comando falla antes de escribir nada, nombrando el archivo y la columna, y no hay alias de lectura
+
+#### Scenario: Fila anterior a las réplicas
+- **WHEN** se consolida una fila sin columna `replica_opt`
+- **THEN** se lee como réplica 0 y la consolidación de las corridas ya existentes da el mismo `resultados.csv` que antes,
+  salvo la columna nueva
 
 ### Requirement: Predicciones de cada corrida final
 Cada corrida final SHALL guardar sus predicciones del mes de test en `ledger/predicciones/<id>.parquet` con las columnas
@@ -87,3 +95,29 @@ entre semillas de cada variante junto al control.
 #### Scenario: Gráfico de una variante
 - **WHEN** se pide la curva de un método y tasa
 - **THEN** se obtiene la banda (mínimo, mediana, máximo entre semillas) y la del control en el mismo eje
+
+### Requirement: Diferencia con réplicas de optimización
+Para cada variante con al menos dos réplicas, y con el control también en al menos dos, el sistema SHALL derivar:
+- la ganancia media de cada réplica, promediando sus semillas finales;
+- **Δ con réplicas**: la media de esas ganancias menos la del control, con IC 95% de Welch entre réplicas;
+- el veredicto con las reglas comunes de `control`: δ y N\* fijos, sin recalcular;
+- la descomposición de la varianza de G en una parte entre réplicas y otra entre semillas finales dentro de cada
+  réplica.
+
+La tabla apareada por semilla de la réplica 0 SHALL seguir calculándose igual que antes. Los resultados SHALL guardarse
+en el `ledger/replicas.csv` de cada experimento, solo con sus variantes.
+
+#### Scenario: Variante con una sola réplica
+- **WHEN** una variante (por ejemplo `U0.25`) tiene solo la réplica 0
+- **THEN** no tiene fila en `replicas.csv`, y la comparación muestra su Δ apareado con la nota "1 réplica"
+
+#### Scenario: Réplicas incompletas
+- **WHEN** una variante tiene réplicas con menos de 10 semillas, o el control y la variante no tienen las mismas
+  réplicas
+- **THEN** cada réplica se promedia con las semillas que tiene, el IC se calcula con las réplicas presentes y
+  `replicas.csv` registra cuántas réplicas y semillas entraron
+
+#### Scenario: Descomposición de la varianza
+- **WHEN** `C` tiene 8 réplicas de 10 semillas
+- **THEN** `replicas.csv` tiene, para `C`, el desvío entre réplicas y el desvío medio entre semillas dentro de una
+  réplica, y su suma de cuadrados reproduce la varianza total de las 80 ganancias
