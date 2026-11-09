@@ -13,7 +13,8 @@ def _panel(ruta, df):
 
 
 def _base():
-    return pd.DataFrame({"numero_de_cliente": [1, 2, 1, 2], "foto_mes": [201908, 201908, 201910, 201910],
+    # un id de más de 2**24, como los reales: no entra exacto en float32
+    return pd.DataFrame({"numero_de_cliente": [16777264, 2, 16777264, 2], "foto_mes": [201908, 201908, 201910, 201910],
                          "clase_ternaria": ["CONTINUA", "BAJA+1", None, "BAJA+2"],
                          "a": np.array([1.0, np.nan, 3.0, 4.0], dtype=np.float32),
                          "b": np.array([0.5, 0.25, 0.0, -1.0], dtype=np.float32)})

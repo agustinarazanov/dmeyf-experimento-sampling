@@ -113,7 +113,8 @@ def _valores(col: pa.ChunkedArray) -> np.ndarray:
     """Columna en float32 con nulos como NaN; las de texto, como bytes UTF-8 (con un marcador para los nulos)."""
     if pa.types.is_string(col.type) or pa.types.is_large_string(col.type):
         return np.array([("\0" if v is None else v) for v in col.to_pylist()], dtype=object)
-    return col.cast(pa.float32()).to_numpy(zero_copy_only=False).astype(np.float32)
+    # sin `safe`: los enteros de más de 2**24 (numero_de_cliente) no entran exactos en float32; las filas se alinean aparte
+    return col.cast(pa.float32(), safe=False).to_numpy(zero_copy_only=False).astype(np.float32)
 
 
 def huella(v: np.ndarray) -> str:

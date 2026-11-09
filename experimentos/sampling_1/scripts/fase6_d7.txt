@@ -1,0 +1,3 @@
+# Panel de Luis contra comun.datos (D7), reintento solo: en fase6_martin falló por un cast a float32 de numero_de_cliente
+# (arreglado en panel_luis.py). La replicación de Martín de esa VM sigue valiendo. Cambio incorporar-aportes, D7.
+@ experimentos.sampling_1.exploratorios.validacion_50_semillas.panel_luis
