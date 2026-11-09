@@ -25,3 +25,14 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Lo que sigue diciendo «brazo»: la historia de git (los commits anteriores) y el tag `corridas-v1`.
 - Un clon anterior al renombre no consolida: `comun/ledger.py` rechaza una cabecera `brazo` nombrando el archivo. Hay que
   actualizar el clon y volver a bajar el ledger del bucket renombrado.
+
+### 2026-11-08 — hipótesis y diseño de las réplicas (`h3-semillas-optuna` 1.1)
+
+- Sesión headless de aplicación del grupo 1, etapa `hipotesis`.
+- `docs/hipotesis.md` suma § H3 con réplicas de optimización: δ = 5,52 M$ y N\* = 3.300 fijos, R = 8 cerrado, y las
+  reglas de D4 (H3 con réplicas, A contra B, `H3-0.05`, `H3R-0.1`), cada una con umbral numérico y métrica. La hipótesis
+  de la réplica 0 y su veredicto no cambian.
+- `docs/diseno.md` suma las variantes `H3-0.05` y `H3R-0.1`, § Réplicas de optimización (nombres `@k` y regla de
+  dueños: `U{r}` es de `h1`, `U{r}@k` de `h3`), § Grilla con réplicas (D3) y `## Dependencias` actualizada (`U0.05`
+  de `h1`). `python -m comun.variantes --verificar` sin problemas.
+- Pendiente: revisión en sesión limpia (1.3). Ninguna corrida con réplicas antes de ese cierre.
