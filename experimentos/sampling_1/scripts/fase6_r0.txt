@@ -1,0 +1,12 @@
+# Fase 6, réplica 0: estudios K0.1, NH0.1 y NU0.1 y finales de H3R-0.25, H3L-0.25, H3L-0.1, H3K-0.1, H4H-0.1, H4U-0.1, H4F-0.05 y H4F-0.25. Cambio incorporar-aportes, D3 y D6.
+opt-muestra-cliente 0.1 0 optimizar - 0
+clase-dificil 0.1 0 optimizar - 0
+clase-uniforme 0.1 0 optimizar - 0
+opt-muestra-reescalado 0.25 todas final - 0
+opt-muestra-lineal 0.25 todas final - 0
+opt-muestra-lineal 0.1 todas final - 0
+opt-muestra-cliente 0.1 todas final - 0
+clase-dificil 0.1 todas final - 0
+clase-uniforme 0.1 todas final - 0
+fast-retrain 0.05 todas final - 0
+fast-retrain 0.25 todas final - 0
