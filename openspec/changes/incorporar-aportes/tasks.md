@@ -10,7 +10,7 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 
 ## 2. Métodos y variantes (sesión: Sonnet)
 
-- [ ] 2.1 `comun/muestreo.py` y `comun/metodos.py`: muestra por cliente, muestra de búsqueda por clase (uniforme y difícil, con la sonda de la spec), final submuestreado con peso 1/f y reescalados `raiz` y `lineal`; tests sin datos (todo cliente entero o ausente, misma cantidad de positivos y negativos en `H4H` y `H4U`, peso que restituye la proporción, recorte a [1; 8000]); verificar que `pytest` pasa
+- [x] 2.1 `comun/muestreo.py` y `comun/metodos.py`: muestra por cliente, muestra de búsqueda por clase (uniforme y difícil, con la sonda de la spec), final submuestreado con peso 1/f y reescalados `raiz` y `lineal`; tests sin datos (todo cliente entero o ausente, misma cantidad de positivos y negativos en `H4H` y `H4U`, peso que restituye la proporción, recorte a [1; 8000]); verificar que `pytest` pasa
 - [ ] 2.2 `comun/variantes.py`: las 8 variantes de D3, los estudios `K0.1` (h3), `NH0.1` y `NU0.1` (h4) con sus `@k`, y el experimento `h4`; `comun/correr.py` suma el tiempo de la sonda a la optimización; verificar que `python -m comun.variantes --verificar` pasa con las dependencias de D3 y un smoke en la Mac (`--filas 20000`) de una optimización de `NH0.1` en la réplica 2 y un final de `H4F-0.05`
 - [ ] 2.3 Listas `sampling_1/scripts/fase6_r<k>.txt` (k = 0…7) según D6; verificar con `--en-seco` que cubren las 8 variantes × 8 réplicas y los 24 estudios nuevos sin repetir
 - [ ] 2.4 Revisión en sesión limpia del grupo 2 con la lista de código de `docs/revision.md` y cierre en la bitácora
