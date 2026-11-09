@@ -97,6 +97,9 @@ k = 1…7). Qué es una réplica, los nombres `@k` y los dueños están en
 - **Carga**: Optuna `C@1…7` 7 × 748 s ≈ 87 min; Optuna `U0.25@k`, `U0.1@k`, `U0.05@k` 7 × (153 + 77 + 67) s ≈ 35 min;
   finales 370 × ~35 s ≈ 216 min; en total **~5,6 h de VM**. Cada VM de réplica tarda unos 47 min y el total de pared
   queda en ~50 min.
+- **Costo**: a las ~5,6 h se suma hasta media hora por VM para preparar el entorno y bajar el panel del bucket (8 VMs,
+  ≤ 4 h), así que son ≤ 10 h de VM. En el peor caso (precio a demanda, US$ 0,52/h con un 15% extra) dan **≈ US$ 6**,
+  más disco y bucket, dentro del crédito del trial (§ Estimación de horas y costo).
 - **Cuota**: 8 VMs (64 vCPU), dentro de la cuota de 200 vCPU N2 de `us-central1`. Antes de lanzar se verifican la cuota
   y el crédito del trial (`CLAUDE.md` § Cómputo); si la cuota no alcanzara, se lanzan en tandas. El lanzador
   (`scripts/lanzar_fase.sh`) hace la verificación de la cuota.

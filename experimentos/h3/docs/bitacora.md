@@ -36,3 +36,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   dueños: `U{r}` es de `h1`, `U{r}@k` de `h3`), § Grilla con réplicas (D3) y `## Dependencias` actualizada (`U0.05`
   de `h1`). `python -m comun.variantes --verificar` sin problemas.
 - Pendiente: revisión en sesión limpia (1.3). Ninguna corrida con réplicas antes de ese cierre.
+
+### 2026-11-08 — cierre revisión de hipótesis y diseño de las réplicas (`h3-semillas-optuna` 1.3)
+
+- Revisión en sesión limpia (`e16c0e12-db59-4e10-a044-7b41ea926a16`, Opus) con `docs/revision.md` § 1 y § 2: ningún ✗
+  abierto. Detalle en [`sampling_1/docs/bitacora.md`](../../sampling_1/docs/bitacora.md) (cierre del grupo 1 de
+  `h3-semillas-optuna`).
+- Corregido: la regla de `H3-0.05` aclara A = T(`C`) / T(`H3-0.05`) con cada T como mediana entre sus 8 réplicas; la
+  fase 5 de `sampling_1/docs/diseno.md` suma el costo (≈ US$ 6 en el peor caso).
+- Las corridas con réplicas quedan habilitadas después del grupo 2 y del tag `corridas-v2`.

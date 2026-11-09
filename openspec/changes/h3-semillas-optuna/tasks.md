@@ -6,7 +6,7 @@ Requiere `renombrar-brazos` archivado.
 
 - [x] 1.1 Escribir en `h3/docs/hipotesis.md` las predicciones y reglas de D4, citando δ = 5,52 M$ y N\* = 3.300 como fijos y R = 8 como cerrado, y en `h3/docs/diseno.md` las variantes `H3-0.05` y `H3R-0.1`, la grilla de D3, la regla de dueños de `U{r}@k` y `## Dependencias` actualizada; verificar con un grep que cada regla tiene umbral numérico y métrica
 - [x] 1.2 Anotar en `control/docs/diseno.md` y en su bitácora las réplicas `C@1…7` (qué cambia: nada de lo ya corrido); actualizar `sampling_1/docs/diseno.md` § Reparto y fases con la ejecución de D3 (todo lo corre Agustina, una VM por réplica); verificar que los enlaces existen
-- [ ] 1.3 Revisión en sesión limpia de la etapa hipótesis y diseño con la lista de `docs/revision.md`, cierre en `h3/docs/bitacora.md`. Ninguna corrida real antes de este cierre
+- [x] 1.3 Revisión en sesión limpia de la etapa hipótesis y diseño con la lista de `docs/revision.md`, cierre en `h3/docs/bitacora.md`. Ninguna corrida real antes de este cierre
 
 ## 2. Código (sesión: Sonnet)
 

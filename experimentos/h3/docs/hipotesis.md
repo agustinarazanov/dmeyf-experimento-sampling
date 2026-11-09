@@ -61,7 +61,7 @@ entonces. Esta sección suma réplicas de la optimización para medir la suerte 
    - **Cualquier otro resultado**: "mecanismo sin resolver". La respuesta práctica sale de la regla 1.
 3. **`H3-0.05`** (nueva: Optuna sobre la muestra del 5 %, estudios `U0.05` / `U0.05@k`, final con r = 1).
    - **Predicción**: *no pierde* con réplicas (cota inferior del IC de Welch de Δ con réplicas ≥ −5,52 M$) **y** A ≥ 8,
-     con T como mediana entre réplicas.
+     con A = T(`C`) / T(`H3-0.05`) y la T de cada una como mediana entre sus 8 réplicas.
    - **Se confirma** si se cumplen las dos condiciones; **se refuta** si sale *pierde* (media de Δ con réplicas
      < −5,52 M$) o A < 8; si no, *indeterminado*.
 4. **`H3R-0.1`** (nueva: los estudios de `H3-0.1` con `min_data_in_leaf` × √(1/r) = × √10 en el final, recortado a

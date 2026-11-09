@@ -675,3 +675,38 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   2. README nombra el cambio en lugar de la palabra.
   3. `design.md` D8 suma los registros de `ledger/sesiones/` posteriores al reemplazo de D3 (no se reescriben).
 - Tokens: ~25 turnos · ≈ US$ 1,0 (presupuesto US$ 4). `comun/tokens.py` corrido.
+
+### 2026-11-08 — cierre revisión del grupo 1 de `h3-semillas-optuna` (hipótesis y diseño)
+- Sesión: `e16c0e12-db59-4e10-a044-7b41ea926a16` · modelo: Opus · etapa: **revision** (grupo 1, tareas 1.1 y 1.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 1 (sobre `h3/docs/hipotesis.md` § H3 con réplicas) y § 2 (sobre `h3/docs/diseno.md`,
+  `control/docs/diseno.md` § Grilla y `sampling_1/docs/diseno.md` § Reparto y fases, fase 5); ítems ✓ 18/18 después de
+  las correcciones, ningún ✗ abierto.
+  - ✓ Pregunta del tutor y control: no cambian; la sección nueva remite a `control/docs/hipotesis.md`.
+  - ✓ Una variable por hipótesis (r_opt en `H3-0.05`, el reescalado en `H3R-0.1`, la réplica como fuente de varianza).
+  - ✓ Métrica y umbral numérico en cada regla: H3 con réplicas (cota inferior del IC de Welch ≥ −5,52 M$), A contra B
+    (cota > 0 M$ y mediana de `feature_fraction`; IC que contiene 0 y Ḡ_{C,0} contra la mediana de Ḡ_{C,k}),
+    `H3-0.05` (no pierde y A ≥ 8; la regla compuesta es la de D4) y `H3R-0.1` (IC t de D con 7 g.l. contra 0).
+  - ✓ Sin zona gris sin nombre: la regla 1 cubre *gana*/*no pierde* contra *pierde*/*indeterminado*; A y B son
+    excluyentes y el resto es «mecanismo sin resolver»; `H3-0.05` y `H3R-0.1` tienen la tercera salida nombrada.
+  - ✓ Adaptaciones declaradas (réplicas con semilla TPE = semilla de muestra = k; 8 VMs de una persona en lugar de una
+    por persona); ninguna toca la proporción de clases; δ, N\* y R = 8 fijos antes de correr, sin usar 201910 para
+    elegir nada; el texto coincide con D1–D5 de `design.md`.
+  - ✓ Grilla: 8 × 10 × 5 = 40 celdas, 3 hechas, 37 nuevas, 28 estudios; tiempos 87 + 35 + 216 min ≈ 5,6 h; ~47 min por
+    VM de réplica (1045 s de Optuna + 50 × 35 s); semiamplitud de Welch con s = 4, 8 contra 8: ±4,29 (5 contra 5: ±5,83).
+  - ✓ Cada variante de la hipótesis está en la grilla y en la tabla de variantes; control apareado por las mismas 10
+    semillas finales; 40 trials y espacio iguales en cada réplica; máquina `n2-highmem-8`.
+  - ✓ Reparto: `fase5_r1…r7` (5 celdas cada una) + `fase5_r0` (2) = 37 celdas, sin huecos ni solapes; todo Agustina.
+  - ✗→✓ Horas y costo: la fase 5 tenía horas pero no costo en US$ ni la preparación de cada VM.
+  - ✓ Tutor: sin devolución nueva sobre este cambio.
+  - ✓ Enlaces relativos de los seis documentos tocados (script ad hoc, 0 rotos) y secciones citadas (§ Grilla, § Reparto
+    y fases, § Corridas perdidas, § Estudios de Optuna compartidos); `python -m comun.variantes --verificar` sin
+    problemas; `h1/ledger/hp/U0.05.json` existe (dependencia de k = 0).
+- Hallazgos:
+  1. La fase 5 de `sampling_1/docs/diseno.md` no estimaba el costo en US$ ni sumaba la preparación de las 8 VMs.
+  2. En `H3-0.05`, «A ≥ 8 con T como mediana entre réplicas» no decía que la T de `C` también es la mediana de sus 8.
+- Correcciones:
+  1. La fase 5 suma **Costo**: ≤ 10 h de VM con la preparación (≤ 0,5 h × 8), ≈ US$ 6 en el peor caso, dentro del trial.
+  2. `h3/docs/hipotesis.md` regla 3: A = T(`C`) / T(`H3-0.05`), cada T como mediana entre sus 8 réplicas.
+- Tokens: ~25 turnos · contexto promedio ~58.000 por turno · ≈ US$ 1,0 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —
