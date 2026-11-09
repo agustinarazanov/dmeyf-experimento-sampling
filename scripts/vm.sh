@@ -5,11 +5,13 @@
 #
 #   PROYECTO=proj-uba-... BUCKET=gs://mi-bucket scripts/vm.sh configuraciones.txt [--filas 20000] [--en-seco]
 #
-# `configuraciones.txt`: una por línea, `metodo tasa semilla etapa [variante]`; `#` comenta. Ej.:
+# `configuraciones.txt`: una por línea, `metodo tasa semilla etapa [variante|-] [replica]`; `#` comenta; `-` deja la
+# variante por defecto y `replica` es `--replica k` (réplicas de optimización). Ej.:
 #   uniforme 0.25 0 optimizar
 #   uniforme 0.25 todas final
 #   opt-muestra 0.25 todas final
 #   uniforme 1 todas final C-rep
+#   opt-muestra 0.1 todas final - 3
 # Variables: PROYECTO (obligatoria), BUCKET (obligatoria), ZONA (northamerica-northeast2-b), NOMBRE (sampling-<usuario>),
 # TEMPLATE (to-064ram-08vcpu), PERSONA (usuario de git). Cada línea es `python -m comun.correr`, desde la raíz del repo.
 # Cada corrida escribe en el ledger de quien es dueño de la variante (`comun/variantes.py`), así que se sincroniza cada
@@ -35,7 +37,7 @@ NOMBRE=${NOMBRE:-sampling-$(whoami | tr -c 'a-z0-9\n' '-')}
 PERSONA=${PERSONA:-$(git config user.name)}
 COMMIT=$(git rev-parse --short HEAD)
 G="gcloud compute --project=$PROYECTO"
-EXPERIMENTOS=$(ls -d experimentos/*/ | xargs -n1 basename)   # carpetas de experimentos del repo
+EXPERIMENTOS=$(find experimentos -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -v ' ' | sort)   # carpetas de experimentos del repo (sin las de aportes, que tienen espacios y no tienen ledger)
 
 [ -z "$(git status --porcelain | grep -v '/ledger/' || true)" ] || echo "AVISO: árbol sucio; a la VM va HEAD ($COMMIT), sin los cambios sin commitear" >&2
 
@@ -49,18 +51,19 @@ export PERSONA="$PERSONA" COMMIT_REPO="$COMMIT"
 export DATOS_DIR=\${DATOS_DIR:-\$HOME/datos}; mkdir -p \$DATOS_DIR/optuna
 gsutil -q cp "$BUCKET/panel_2019.parquet" \$DATOS_DIR/ 2>/dev/null || true
 gsutil -q -m cp "$BUCKET/optuna/*.db" \$DATOS_DIR/optuna/ 2>/dev/null || true
-for e in \$(ls experimentos); do
+for e in \$(ls experimentos | grep -v ' '); do
   mkdir -p experimentos/\$e/ledger
   gsutil -q -m rsync -r "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
 done
 subir() {
-  for e in \$(ls experimentos); do
+  for e in \$(ls experimentos | grep -v ' '); do
     gsutil -q -m rsync -r -x '^exploracion/' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
   done
 }
-while read -r metodo tasa semilla etapa variante; do
+while read -r metodo tasa semilla etapa variante replica; do
   [ -z "\$metodo" ] && continue; case "\$metodo" in \#*) continue;; esac
-  B=""; [ -n "\${variante:-}" ] && B="--variante \$variante"
+  B=""; [ -n "\${variante:-}" ] && [ "\$variante" != "-" ] && B="--variante \$variante"
+  [ -n "\${replica:-}" ] && B="\$B --replica \$replica"
   python -m comun.correr --metodo \$metodo --tasa \$tasa --semilla \$semilla --etapa \$etapa \$B $EXTRA \
     --tras-trial 'gsutil -q cp {db} $BUCKET/optuna/' >> ~/corrida.log 2>&1 || echo "FALLO: \$metodo \$tasa \$semilla \$etapa" >> ~/corrida.log
   subir
@@ -75,8 +78,9 @@ if [ -n "$EN_SECO" ]; then
   echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM"
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
   echo "corridas (una por línea de la lista):"
-  grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante; do
-    echo "  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${variante:+ --variante $variante}$EXTRA"
+  grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante replica; do
+    [ "${variante:-}" = "-" ] && variante=""
+    echo "  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${variante:+ --variante $variante}${replica:+ --replica $replica}$EXTRA"
   done
   echo "destinos de los ledgers (VM -> bucket -> acá):"
   for e in $EXPERIMENTOS; do

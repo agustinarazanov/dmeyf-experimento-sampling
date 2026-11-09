@@ -1,0 +1,3 @@
+# Fase 5, réplica 0: finales de H3-0.05 y H3R-0.1 (estudios U0.05 y U0.1 de h1, ya corridos). Cambio h3-semillas-optuna, D3.
+opt-muestra 0.05 todas final
+opt-muestra-reescalado 0.1 todas final

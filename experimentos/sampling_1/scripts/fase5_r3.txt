@@ -1,0 +1,10 @@
+# Fase 5, réplica 3: estudios C@3, U0.25@3, U0.1@3, U0.05@3 y finales de C, H3-0.25, H3-0.1, H3-0.05 y H3R-0.1. Cambio h3-semillas-optuna, D3.
+uniforme 1 0 optimizar - 3
+opt-muestra 0.25 0 optimizar - 3
+opt-muestra 0.1 0 optimizar - 3
+opt-muestra 0.05 0 optimizar - 3
+uniforme 1 todas final - 3
+opt-muestra 0.25 todas final - 3
+opt-muestra 0.1 todas final - 3
+opt-muestra 0.05 todas final - 3
+opt-muestra-reescalado 0.1 todas final - 3
