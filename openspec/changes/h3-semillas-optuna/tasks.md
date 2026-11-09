@@ -19,8 +19,8 @@ Requiere `renombrar-brazos` archivado.
 
 ## 3. Corridas (VM, cada persona su lista)
 
-- [ ] 3.1 Verificar la cuota de vCPU N2 y el crédito del trial, y lanzar las 8 listas de `fase5_*` en paralelo desde `corridas-v2`; verificar al terminar que el ledger del bucket tiene las filas esperadas de cada lista y que `gcloud compute instances list` no muestra VMs encendidas
-- [ ] 3.2 Consolidar todo (`python -m comun.consolidar`) y verificar que hay 8 réplicas × 10 semillas en las 5 variantes, que las corridas son todas `n2-highmem-8` y `codigo_sucio = False` y que ninguna fila quedó `valida = False` sin explicación; anotar en la bitácora tiempos reales contra los de D3
+- [x] 3.1 Verificar la cuota de vCPU N2 y el crédito del trial, y lanzar las 8 listas de `fase5_*` en paralelo desde `corridas-v2`; verificar al terminar que el ledger del bucket tiene las filas esperadas de cada lista y que `gcloud compute instances list` no muestra VMs encendidas
+- [x] 3.2 Consolidar todo (`python -m comun.consolidar`) y verificar que hay 8 réplicas × 10 semillas en las 5 variantes, que las corridas son todas `n2-highmem-8` y `codigo_sucio = False` y que ninguna fila quedó `valida = False` sin explicación; anotar en la bitácora tiempos reales contra los de D3
 - [ ] 3.3 Revisión en sesión limpia de resultados con la lista de `docs/revision.md` y cierre en la bitácora
 
 ## 4. Comparación limpia (sesión: Sonnet)

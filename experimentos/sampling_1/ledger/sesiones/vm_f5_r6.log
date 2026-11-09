@@ -1,0 +1,13 @@
+== creando sampling-f5-r6 (n2-highmem-8, Ice Lake, spot) en northamerica-northeast2-b
+Created [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f5-r6].
+WARNING: Some requests generated warnings:
+ - Disk size: '256 GB' is larger than image size: '70 GB'. You might need to resize the root repartition manually if the operating system does not support automatic resizing. See https://cloud.google.com/compute/docs/disks/add-persistent-disk#resize_pd for details.
+
+NAME            ZONE                       MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+sampling-f5-r6  northamerica-northeast2-b  n2-highmem-8  true         10.188.0.17  34.130.250.91  RUNNING
+== copiando el repo @ dcd06d6
+== corriendo; seguimiento: gcloud compute --project=proj-uba-261012163242176 ssh sampling-f5-r6 --zone=northamerica-northeast2-b --command='tail -f ~/corrida.log'
+== estado: DONE
+== trayendo los ledgers
+== borrando sampling-f5-r6
+Deleted [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f5-r6].

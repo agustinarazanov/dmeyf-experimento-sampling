@@ -759,3 +759,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Tag `corridas-v2` creado sobre el commit de esta revisión (lo pushea Agustina).
 - Tokens: ~45 turnos · contexto promedio ~60.000 por turno · ≈ US$ 1,6 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — grupo 3 de `h3-semillas-optuna` (corridas)
+
+- Fase 5 completa: 8 listas en VMs paralelas, 65 corridas, ledgers consolidados (8 réplicas × 10 semillas en las 5
+  variantes, todo `n2-highmem-8`, sin código sucio ni filas inválidas). Detalle y tiempos contra D3 en
+  [`h3/docs/bitacora.md`](../../h3/docs/bitacora.md). Pendiente: revisión de resultados (3.3).

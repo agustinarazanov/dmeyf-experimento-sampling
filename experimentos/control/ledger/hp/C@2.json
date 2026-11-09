@@ -1,0 +1,24 @@
+{
+  "estudio": "C@2",
+  "replica_opt": 2,
+  "variante": "C",
+  "metodo": "uniforme",
+  "tasa": 1.0,
+  "hp": {
+    "num_leaves": 875,
+    "learning_rate": 0.04597014761100336,
+    "min_data_in_leaf": 1043,
+    "feature_fraction": 0.6206991452953541,
+    "bagging_fraction": 0.7369300198863021
+  },
+  "auc_val": 0.9314897775608858,
+  "n_trials": 40,
+  "tiempo_trials_s": 1186.6132770570002,
+  "tiempo_dataset_s": 7.407325622000002,
+  "tiempo_optimizacion_s": 1194.0206026790001,
+  "filas_train": 506871,
+  "hash_muestra": "59400a0c32f9b4a7",
+  "commit": "dcd06d6",
+  "codigo_sucio": false,
+  "fecha": "2026-11-09T04:08:59"
+}

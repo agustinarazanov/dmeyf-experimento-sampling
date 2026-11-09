@@ -1,0 +1,134 @@
+{
+ "duration_api_ms": 18374,
+ "stop_reason": "end_turn",
+ "session_id": "d1091ec3-7754-4f78-8466-ab81f8ea0e7e",
+ "total_cost_usd": 0.17865109999999998,
+ "usage": {
+  "input_tokens": 14,
+  "cache_creation_input_tokens": 33379,
+  "cache_read_input_tokens": 249671,
+  "output_tokens": 2014,
+  "output_tokens_details": {
+   "thinking_tokens": 162
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 33379,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 517,
+    "cache_read_input_tokens": 44630,
+    "cache_creation_input_tokens": 601,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 601
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 14,
+   "outputTokens": 2014,
+   "cacheReadInputTokens": 249671,
+   "cacheCreationInputTokens": 33379,
+   "webSearchRequests": 0,
+   "costUSD": 0.17865109999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 162,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 33379,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01J4zdLVWKsFK9e2yrcaSC2A",
+   "tool_input": {
+    "command": "openspec instructions apply --change h3-semillas-optuna --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; echo; ls experimentos/sampling_1/ledger/sesiones | tail; cat experimentos/sampling_1/ledger/sesiones/en_curso.txt 2>/dev/null; grep -n \"^## \\|^- \\[\" openspec/changes/h3-semillas-optuna/tasks.md"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Huo568niiZUqxDQ54MrD1t",
+   "tool_input": {
+    "command": "openspec instructions apply --change h3-semillas-optuna --json > /tmp/apply.json"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 9,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "EN_CURSO. No marqué 3.1 ni 3.2 todavía.\n\nLa cuota global de vCPU (`CPUS_ALL_REGIONS`) tenía 32 libres, y las 8 VMs necesitan 64. El lanzador no deja lanzar las 8 juntas, así que van en dos tandas de 4.\n\n- **Tanda 1, ya lanzada:** `fase5_r0`, `fase5_r1`, `fase5_r2` y `fase5_r3`, en las VMs `sampling-f5-r0` a `sampling-f5-r3`. Los logs están en `ledger/sesiones/vm_f5_*.log`.\n- **Tanda 2, pendiente:** `fase5_r4` a `fase5_r7`. Hay que lanzarla cuando termine la tanda 1 y se liberen los vCPU: `scripts/lanzar_fase.sh fase5_r4 fase5_r5 fase5_r6 fase5_r7`.\n\nDejé `experimentos/sampling_1/ledger/sesiones/en_curso.txt` con EN_CURSO y lo que espero.\n\nCuando vuelva a correr este grupo, tiene que lanzar la tanda 2 y esperar a que termine. Recién entonces puede verificar las filas del ledger por lista, que no queden VMs encendidas, consolidar y marcar 3.1 y 3.2. No hice commits porque no se cerró ninguna tarea. La 3.3 es de revisión y no la toqué.",
+ "ttft_ms": 2541,
+ "type": "result",
+ "duration_ms": 255904,
+ "uuid": "38d4dd53-faa6-4ca1-90ce-f232674849f9",
+ "ttft_stream_ms": 1048,
+ "time_to_request_ms": 124,
+ "first_content_frame_ms": 1049,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 14,
+   "outputTokens": 2014,
+   "cacheReadInputTokens": 249671,
+   "cacheCreationInputTokens": 33379,
+   "webSearchRequests": 0,
+   "costUSD": 0.17865109999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 162,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 33379,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

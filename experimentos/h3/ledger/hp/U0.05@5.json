@@ -1,0 +1,24 @@
+{
+  "estudio": "U0.05@5",
+  "replica_opt": 5,
+  "variante": "U0.05",
+  "metodo": "uniforme",
+  "tasa": 0.05,
+  "hp": {
+    "num_leaves": 30,
+    "learning_rate": 0.03693582580534598,
+    "min_data_in_leaf": 476,
+    "feature_fraction": 0.8703320870424582,
+    "bagging_fraction": 0.8475051236844895
+  },
+  "auc_val": 0.916811441105748,
+  "n_trials": 40,
+  "tiempo_trials_s": 58.89924226200037,
+  "tiempo_dataset_s": 0.5310874980000335,
+  "tiempo_optimizacion_s": 59.430329760000404,
+  "filas_train": 25344,
+  "hash_muestra": "d1781acfbe9c21ac",
+  "commit": "dcd06d6",
+  "codigo_sucio": false,
+  "fecha": "2026-11-09T05:51:25"
+}

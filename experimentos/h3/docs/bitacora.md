@@ -45,3 +45,14 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Corregido: la regla de `H3-0.05` aclara A = T(`C`) / T(`H3-0.05`) con cada T como mediana entre sus 8 réplicas; la
   fase 5 de `sampling_1/docs/diseno.md` suma el costo (≈ US$ 6 en el peor caso).
 - Las corridas con réplicas quedan habilitadas después del grupo 2 y del tag `corridas-v2`.
+
+### 2026-11-09 — corridas con réplicas y consolidación (`h3-semillas-optuna` 3.1 y 3.2)
+
+- Las 8 listas `fase5_r0…r7` corrieron en VMs paralelas desde `dcd06d6` (logs `sampling_1/ledger/sesiones/vm_f5_r*.log`:
+  todas `DONE`, ledgers traídos y VMs borradas por `vm.sh`). 65 corridas: 28 estudios nuevos y 37 celdas finales.
+- `python -m comun.consolidar`: `C`, `H3-0.05`, `H3-0.1`, `H3-0.25` y `H3R-0.1` tienen 8 réplicas × 10 semillas (50
+  celdas finales); todas las filas son `n2-highmem-8`, `codigo_sucio = False` y `valida = True` (ninguna `False`).
+  `control/ledger/replicas.csv` y `h3/ledger/replicas.csv` generados.
+- Tiempos reales contra D3 (media por estudio, réplicas 1…7): Optuna `C` 915 s (D3: 748 s), `U0.25` 213 s (153 s),
+  `U0.1` 110 s (77 s), `U0.05` 61 s (67 s); finales ≈ 33 s `C` y ≈ 23 s las `H3-*` (D3: ~35 s). Optuna salió ~25–40 %
+  más lento que lo estimado, los finales más rápidos; no cambia el diseño.
