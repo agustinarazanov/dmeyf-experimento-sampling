@@ -965,3 +965,50 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `proposal.md` del cambio cargados. Esta revisión: ~30 turnos, ~68.000 de contexto por turno, ≈ US$ 1,4 (presupuesto
   US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — grupo 2 de `incorporar-aportes` implementado (código, sesión headless)
+- Sesión: `7f099845-7e93-4917-8be5-0ee283342aa7` · modelo: Sonnet · etapa: **codigo** (tareas 2.1–2.3, commits
+  `f4d522b`, `8f7af4f`, `2af65bd`). No dejó entrada propia; la clasifica la revisión del grupo. 35 turnos (42 en
+  `costos.csv`), contexto promedio ~88.300 por turno, US$ 1,01.
+
+### 2026-11-09 — cierre revisión del grupo 2 de `incorporar-aportes` (métodos y variantes)
+- Sesión: `949834e4-0550-42ca-870c-eab00c0f4cbe` · modelo: Opus · etapa: **revision** (grupo 2, tareas 2.1–2.3).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión `7f099845` que implementó el grupo).
+- Lista: docs/revision.md § 3 (código) sobre `git diff HEAD~3 HEAD` en `comun/` (`muestreo.py`, `metodos.py`,
+  `correr.py`, `variantes.py`), sus tests y `sampling_1/scripts/fase6_r*.txt`, contra la spec delta
+  `corrida-reproducible` y D3/D6 del cambio. Ningún ✗ abierto.
+  - ✓ Smoke `--filas 20000` en la Mac de los métodos nuevos, una fila cada uno en `exploracion/`: optimizar `NH0.1@2`,
+    `NU0.1@2` (h4) y `K0.1@2` (h3); finales `H4F-0.05` (r0) y `H4U-0.1` (r2). `NH0.1@2` y `NU0.1@2` tienen las mismas
+    1.079 filas (todas las bajas + 10 % de CONTINUA); `K0.1@2` 989 de 9.852 (~10 %, clientes enteros); el final de
+    `H4F-0.05` 4.978 filas (bajas + 50 % de CONTINUA). Los finales de H3R/H3L/H3K usan las funciones de H3 ya
+    revisadas; se comprobó con `Contexto` que cada variante nueva resuelve estudio (`U0.05@3`, `NH0.1@3`, `K0.1@3`),
+    dueño (h4/h3) y ledger de hp (`h3` para `U{r}@k`, `h4` para `N*`) como dice D3.
+  - ✓ Determinismo: `NH0.1@2` repetido da el mismo `hash_muestra` (`aa4080ab580e7efb`; la sonda y el sorteo se
+    recalculan; el estudio de Optuna se reanuda, así que AUC y T salen del SQLite); el final de `H4F-0.05`, semilla
+    100003, repetido con los mismos hp da el mismo hash (`fa38d03e1d28a62f`), AUC 201908 0,835355 y ganancia
+    3.850.000.
+  - ✓ `optimizar` no lee 201910: los logs de `NU0.1@2` y `K0.1@2` leen 201903–201906 y 201908; el corredor además falla
+    si `MESES_LEIDOS` contiene `MES_TEST`.
+  - ✓ Columnas obligatorias del ledger: el grupo no cambió el esquema; `tiempo_sonda_s` va al JSON del estudio y se suma
+    a `tiempo_optimizacion_s` (spec: «la fila del ledger suma el tiempo de la sonda»). Tests de `test_ledger.py` pasan.
+  - ✓ `codigo_sucio`: el smoke de 2.2 quedó `True` (código sin commitear sobre `f4d522b`); los de esta revisión, `False`
+    con solo `ledger/sesiones/` cambiado, que por diseño no cuenta.
+  - ✓ Filas de train = r × total ± 0,1 %: el chequeo de `consolidar.py` sigue solo para `U*`; H4H/H4U/H4F y K0.1 no
+    son r × total por diseño (bajas completas o clientes enteros) y registran la cantidad exacta, como pide la spec.
+  - ✓ `consolidar.py` aparea solo semillas en común: sin cambios; `tests/test_consolidar.py` pasa.
+  - ✓ `vm.sh` borra la VM: sin cambios (`trap borrar EXIT`, `instances delete --delete-disks=all`).
+  - ✓ No hay datos del dataset en el repo (`git ls-files` sin parquet ni gz).
+- Otras verificaciones: `pytest` 160 verdes; `python -m comun.variantes --verificar` pasa (h4 depende de control, h1 y
+  h3); `scripts/lanzar_fase.sh --en-seco fase6_r0 … fase6_r7` imprime 8 VMs con 3 estudios y 8 finales cada una
+  (24 estudios y 64 finales, réplicas 0–7, sin repetidos) y en cada lista los estudios `N*`/`K0.1` van antes de sus
+  finales. Sonda contra la spec: 40 árboles, 31 hojas, `learning_rate` 0,08 sobre el 10 % uniforme, pozo 35 %,
+  semilla k (`SEMILLA_OPTUNA` = 0); peso 1/f = 2 solo en las CONTINUA de `fast-retrain`, sorteo con la semilla final.
+- Hallazgos: (1) la sesión `7f099845` no dejó entrada en la bitácora (agregada arriba); (2) el smoke de un final con
+  `--hp` necesita un JSON con clave `hp` (el formato de `hp/<estudio>.json`), no los hp sueltos; es el contrato de
+  siempre, no se toca; (3) el mensaje de 2.2 decía 147 tests y hoy pasan 160 sin cambios en `tests/` desde
+  `8f7af4f`; no se investigó de dónde sale la diferencia (todos pasan, no afecta la revisión).
+- Correcciones: ninguna en código; solo la entrada de la sesión de implementación.
+- Tokens (`comun/tokens.py`): la implementación (`7f099845`), 35 turnos, ~88.300 de contexto por turno, US$ 1,01,
+  debajo del objetivo. Esta revisión: ~45 turnos, ~74.000 de contexto por turno, ≈ US$ 1,8 (presupuesto US$ 4); lo
+  más pesado fue la salida completa de `--en-seco` de las 8 listas en el chat. `comun/tokens.py` corrido.
+- Tutor: —

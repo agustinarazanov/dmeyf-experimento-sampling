@@ -1,0 +1,162 @@
+{
+ "duration_api_ms": 205375,
+ "stop_reason": "end_turn",
+ "session_id": "7f099845-7e93-4917-8be5-0ee283342aa7",
+ "total_cost_usd": 1.0131832000000003,
+ "usage": {
+  "input_tokens": 70,
+  "cache_creation_input_tokens": 102982,
+  "cache_read_input_tokens": 2986652,
+  "output_tokens": 30245,
+  "output_tokens_details": {
+   "thinking_tokens": 10297
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 102982,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 741,
+    "cache_read_input_tokens": 114289,
+    "cache_creation_input_tokens": 545,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 545
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 70,
+   "outputTokens": 30245,
+   "cacheReadInputTokens": 2986652,
+   "cacheCreationInputTokens": 102982,
+   "webSearchRequests": 0,
+   "costUSD": 1.0131832000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 10297,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 102982,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01F1B7E7SmTNWRRLTFaYiCNh",
+   "tool_input": {
+    "command": "openspec instructions apply --change incorporar-aportes --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; ls experimentos/sampling_1/ledger/sesiones/"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01XjsAXqKNvDJj25unjM6yHA",
+   "tool_input": {
+    "command": "openspec instructions apply --change incorporar-aportes --json > /tmp/apply.json"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01WwwjBnx4XVUo8kPsqenovz",
+   "tool_input": {
+    "command": "cd openspec/changes/incorporar-aportes; wc -c design.md specs/*/spec.md; sed -n 1,40p tasks.md | cut -c1-1500; cd ../../..; ls comun experimentos/sampling_1/scripts; wc -l comun/*.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_015JPfzdg7wkYeyx9KcUB9F8",
+   "tool_input": {
+    "command": "cat > tests/test_muestreo_informado.py <<'EOF'\n\"\"\"Muestras por cliente y por clase, final submuestreado con peso y reescalados (`incorporar-aportes` D3). Sin datos.\"\"\"\n\nimport numpy as np\nimport pandas as pd\nimport pytest\n\nfrom comun import datos as dt\nfrom comun import metodos, muestreo\n\n\ndef _y(n=2000, pos=100, semilla=0):\n    y = np.zeros(n, dtype=int)\n    y[np.random.default_rng(semilla).choice(n, pos, replace=False)] = 1\n    return y\n\n\ndef test_por_cliente_cada_cliente_esta_entero_o_ausente():\n    clientes = np.repeat(np.arange(200), np.random.default_rng(1).integers(1, 5, 200))\n    idx = muestreo.indices_por_cliente(clientes, 0.1, 3)\n    elegidos = set(clientes[idx])\n    assert len(elegidos) == 20\n    assert set(np.flatnonzero(np.isin(clientes, list(elegidos)))) == set(idx)\n    assert np.array_equal(idx, muestreo.indices_por_cliente(clientes, 0.1, 3))\n    assert not np.array_equal(idx, muestreo.indices_por_cliente(clientes, 0.1, 4))\n\n\ndef test_por_clase_conserva_todos_los_positivos_y_la_fraccion_de_negativos():\n    y = _y()\n    idx = muestreo.indices_por_clase(y, 0.1, 0)\n    assert y[idx].sum() == y.sum()\n    assert (y[idx] == 0).sum() == round((y == 0).sum() * 0.1)\n\n\ndef test_dificil_y_uniforme_tienen_igual_cantidad_de_positivos_y_negativos():\n    y = _y()\n    prob = np.random.default_rng(2).random(len(y))\n    pozo = muestreo.pozo_dificil(y, prob)\n    assert len(pozo) == round((y == 0).sum() * 0.35) and (y[pozo] == 0).all()\n    dif, uni = muestreo.indices_por_clase(y, 0.1, 5, pozo), muestreo.indices_por_clase(y, 0.1, 5)\n    assert len(dif) == len(uni) and y[dif].sum() == y[uni].sum()\n    assert set(dif) - set(np.flatnonzero(y == 1)) <= set(pozo)\n\n\ndef test_pozo_son_los_negativos_de_mayor_probabilidad():\n    y = np.array([0, 0, 1, 0, 0, 0, 0, 0, 0, 0])\n    prob = np.array([.9, .1, .99, .8, .2, .3, .4, .5, .6, .7])\n    assert list(muestreo.pozo_dificil(y, prob, 0.35)) == [0, 3, 9]  # 9 negativos · 0,35 = 3\n\n\ndef test_pozo_chico_falla():\n    y = _y()\n    with pytest.raises(ValueError, match=\"pozo\"):\n        muestreo.indices_por_clase(y, 0.5, 0, muestreo.pozo_dificil(y, np.zeros(len(y))))\n\n\ndef test_peso_inverso_restituye_la_proporcion_de_clases():\n    y = _y()\n    idx = muestreo.indices_por_clase(y, 0.5, 7)\n    w = muestreo.peso_inverso(y[idx], 0.5)\n    assert w[y[idx] == 1].tolist() == [1.0] * y.sum() and set(w[y[idx] == 0]) == {2.0}\n    assert w[y[idx] == 0].sum() == pytest.approx((y == 0).sum(), rel=1e-3)\n    assert w[y[idx] == 1].sum() / w[y[idx] == 0].sum() == pytest.approx(y.sum() / (y == 0).sum(), rel=1e-3)\n\n\ndef test_pesos_solo_para_fast_retrain():\n    df = pd.DataFrame({dt.Y: [1, 0, 0]})\n    assert metodos.pesos(\"opt-muestra\", df) is None\n    assert metodos.pesos(\"fast-retrain\", df).tolist() == [1.0, 2.0, 2.0]\n\n\n@pytest.mark.parametrize(\"metodo,tasa,mdl,esperado\", [\n    (\"opt-muestra-reescalado\", 0.1, 100, 316), (\"opt-muestra-lineal\", 0.1, 100, 1000), (\"opt-muestra-lineal\", 0.25, 100, 400),\n    (\"opt-muestra-reescalado\", 0.25, 100, 200), (\"opt-muestra-lineal\", 0.05, 1000, 8000), (\"opt-muestra\", 0.1, 100, 100),\n])\ndef test_reescalado_redondea_y_recorta(metodo, tasa, mdl, esperado):\n    hp = {\"min_data_in_leaf\": mdl, \"num_leaves\": 31}\n    assert metodos.ajustar_hp(metodo, tasa, hp) == {**hp, \"min_data_in_leaf\": esperado}\n\n\ndef test_lineal_recorta_a_uno_y_a_8000():\n    assert metodos.ajustar_hp(\"opt-muestra-lineal\", 0.1, {\"min_data_in_leaf\": 5000})[\"min_data_in_leaf\"] == 8000\n\n\ndef test_metodo_optimizacion_y_validacion():\n    assert [metodos.metodo_optimizacion(m) for m in (\"opt-muestra-lineal\", \"fast-retrain\", \"opt-muestra-cliente\", \"clase-dificil\")] == [\n        \"uniforme\", \"uniforme\", \"opt-muestra-cliente\", \"clase-dificil\"]\n    with pytest.raises(ValueError, match=\"tasa\"):\n        metodos.validar(\"clase-uniforme\", 1.0)\n\n\ndef _train(n=3000):\n    rng = np.random.default_rng(0)\n    df = pd.DataFrame({dt.ID: np.arange(n) // 3, dt.MES: 201903, dt.CLASE: \"CONTINUA\", dt.BAJA2: 0,\n                       \"a\": rng.normal(size=n), \"b\": rng.normal(size=n)})\n    df[dt.Y] = (df[\"a\"] + rng.normal(scale=.5, size=n) > 1.6).astype(int)\n    return df\n\n\ndef test_sonda_y_muestra_dificil_sobre_datos_sinteticos():\n    train = _train()\n    pozo, t = metodos.sonda_pozo(train, 2)\n    assert t > 0 and (train[dt.Y].to_numpy()[pozo] == 0).all()\n    d, _, idx = metodos.clase_dificil(train, 0.1, 2, pozo)\n    u, _, idx_u = metodos.clase_uniforme(train, 0.1, 2)\n    assert len(d) == len(u) and d[dt.Y].sum() == u[dt.Y].sum() == train[dt.Y].sum()\n    assert set(idx) - set(np.flatnonzero(train[dt.Y] == 1)) <= set(pozo)\n    assert np.array_equal(pozo, metodos.sonda_pozo(train, 2)[0])\n\n\ndef test_cliente_toma_clientes_enteros():\n    train = _train()\n    datos, _, idx = metodos.cliente(train, 0.1, 0)\n    assert set(datos[dt.ID]) == set(train.loc[train[dt.ID].isin(datos[dt.ID]), dt.ID])\n    assert len(datos) == (train[dt.ID].isin(datos[dt.ID])).sum()\nEOF\npytest -q tests 2>&1 | tail -8"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01MtRNz59GSQAS6kVNyYnkbM",
+   "tool_input": {
+    "command": "sed -i '13s/- \\[ \\]/- [x]/' openspec/changes/incorporar-aportes/tasks.md && sed -n 13p openspec/changes/incorporar-aportes/tasks.md | cut -c1-40 && git add comun/muestreo.py comun/metodos.py tests/test_muestreo_informado.py openspec/changes/incorporar-aportes/tasks.md && git commit -q -m \"incorporar-aportes 2.1: comun/muestreo.py y comun/metodos.py suman muestra por cliente, muestra de búsqueda por clase (uniforme y difícil con sonda de 40 árboles), final submuestreado con peso 1/f (fast-retrain) y reescalado lineal; tests sin datos (clientes enteros, mismas filas en H4H y H4U, peso que restituye la proporción, recorte a [1; 8000]); pytest pasa (138)\" && git log --oneline | head -1"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01ANSqJmcy4hw83dv5tWAQXR",
+   "tool_input": {
+    "command": "scripts/lanzar_fase.sh --en-seco fase6_r0 fase6_r1 fase6_r2 fase6_r3 fase6_r4 fase6_r5 fase6_r6 fase6_r7 2>&1 | grep \"python -m comun.correr\" | sed 's/--semilla [a-z0-9]* //' | sort | uniq -c | awk '{print $1}' | sort | uniq -c; scripts/lanzar_fase.sh --en-seco fase6_r0 fase6_r1 fase6_r2 fase6_r3 fase6_r4 fase6_r5 fase6_r6 fase6_r7 2>&1 | grep -c \"etapa optimizar\"; scripts/lanzar_fase.sh --en-seco fase6_r0 fase6_r1 fase6_r2 fase6_r3 fase6_r4 fase6_r5 fase6_r6 fase6_r7 2>&1 | grep -c \"etapa final\"; scripts/lanzar_fase.sh --en-seco fase6_r0 fase6_r1 fase6_r2 fase6_r3 fase6_r4 fase6_r5 fase6_r6 fase6_r7 2>&1 | grep \"python -m comun.correr\" | grep final | awk '{print $5,$6}' | sort | uniq -c"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 42,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Apliqué las tareas 2.1, 2.2 y 2.3 del cambio `incorporar-aportes`, cada una con su commit. La 2.4 es la revisión en sesión limpia y la dejé sin hacer ni marcar. No lancé ninguna corrida en VM.\n\n- **2.1:** `comun/muestreo.py` y `comun/metodos.py` ahora arman la muestra por cliente y la muestra de búsqueda por clase, uniforme y difícil con la sonda. También arman el final submuestreado con peso 1/f y el reescalado lineal, recortado a [1; 8000]. Agregué `tests/test_muestreo_informado.py`, sin datos.\n- **2.2:**\n  - `comun/variantes.py` registra las 8 variantes de D3, los estudios `K0.1`, `NH0.1` y `NU0.1`, y el experimento `h4`.\n  - `comun/correr.py` suma el tiempo de la sonda a la optimización y pesa el final de `H4F`.\n  - En el smoke con `--filas 20000`, `NH0.1@2` midió 0,41 s de sonda dentro de 9,96 s de optimización, y el final de `H4F-0.05` corrió bien.\n- **2.3:** creé `experimentos/sampling_1/scripts/fase6_r0.txt` a `fase6_r7.txt`. El `--en-seco` de las ocho listas da 24 estudios nuevos y 64 finales (8 variantes × 8 réplicas), sin repetir ninguna corrida.\n\nCon `pytest` a secas fallan los 12 módulos de test por `No module named 'comun'`; con `python -m pytest -q tests` pasan los 147 tests. `python -m comun.variantes --verificar` también pasa.\n\nEn `sampling_1/docs/diseno.md` agregué `h4` a `## Dependencias`, que `--verificar` exigía; no toqué nada más del diseño.\n\nComo las VMs no corrieron, `en_curso.txt` y `bloqueo.txt` no existen. El `costos.csv` y el JSON de la sesión g1 que ya estaban sin commitear siguen así.",
+ "ttft_ms": 1611,
+ "type": "result",
+ "duration_ms": 874859,
+ "uuid": "0afff343-0c6b-4fea-81d2-854ebcc2a146",
+ "ttft_stream_ms": 1209,
+ "time_to_request_ms": 225,
+ "first_content_frame_ms": 1209,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 70,
+   "outputTokens": 30245,
+   "cacheReadInputTokens": 2986652,
+   "cacheCreationInputTokens": 102982,
+   "webSearchRequests": 0,
+   "costUSD": 1.0131832000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 10297,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 102982,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

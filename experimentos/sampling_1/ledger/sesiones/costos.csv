@@ -53,3 +53,5 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-09T02:25,3,aplicar,claude-sonnet-5-5,19,0.2537,557623f9-1f88-4c0e-a1e1-29452ca6bfb3,success,0,h3-semillas-optuna
 2026-11-09T06:49,3,aplicar,claude-sonnet-5-5,14,0.2777,54b1a27c-2bff-454f-99ff-a855433b553d,success,0,h3-semillas-optuna
 2026-11-09T11:40,1,aplicar,claude-opus-5-5,70,2.5315,f0b04f89-178e-4a6c-80fb-07a78749b44f,success,0,incorporar-aportes
+2026-11-09T11:53,1,revisar,claude-opus-5-5,44,1.4916,bf7f462e-3502-49bc-af4a-8fc438d913dc,success,0,incorporar-aportes
+2026-11-09T12:08,2,aplicar,claude-sonnet-5-5,42,1.0132,7f099845-7e93-4917-8be5-0ee283342aa7,success,0,incorporar-aportes
