@@ -64,3 +64,16 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Gasto estimado (revisión 3.3): ≈ 5,7 h de corrida sumando las 8 VMs según el ledger, ≈ 7 h con arranque y
   sincronización; a ≈ US$ 0,19/h (spot + disco) son **≈ US$ 1,3**, dentro del peor caso de D3 (≈ US$ 6). La cifra
   exacta está en Billing.
+
+### 2026-11-09 — informe con réplicas (`h3-semillas-optuna` 5.1)
+
+- Sesión headless de aplicación del grupo 5, etapa `informe`.
+- `informe/informe.md` aplica las reglas de D4 tal como están en `docs/hipotesis.md`: H3 con réplicas *confirmada*
+  (`H3-0.1` y `H3-0.25` no pierden), A contra B *apoya (B)* (el IC de Δ de `H3-0.1` contiene a 0 y Ḡ_{C,0} = 276,10 M$
+  queda debajo de la mediana de `C`, 276,49 M$), `H3-0.05` *confirmada* (no pierde, A = 11,82) y `H3R-0.1` *no cambia*
+  (−0,54 [−1,88; 0,81] M$). Copia las filas de H3 de `sampling_1/informe/tabla_resultados.md` y responde «¿alcanzan
+  50 semillas finales?» con la descomposición de varianza.
+- `python -m scripts.verificar_informe_h3`: 10 filas copiadas idénticas a la tabla y 102 números del texto con fuente
+  (tabla, `replicas.csv`, `apareado.csv`, medianas de `feature_fraction`, constantes del diseño); una fila alterada lo
+  hace salir con 1. Límite conocido: un entero chico puede coincidir por casualidad con otra fuente.
+- Pendiente: 5.2 (informe conjunto, guion y README) y la revisión en sesión limpia (5.3).
