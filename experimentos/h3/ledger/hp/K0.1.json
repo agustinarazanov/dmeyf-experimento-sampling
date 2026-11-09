@@ -1,0 +1,25 @@
+{
+  "estudio": "K0.1",
+  "replica_opt": 0,
+  "variante": "H3K-0.1",
+  "metodo": "opt-muestra-cliente",
+  "tasa": 0.1,
+  "hp": {
+    "num_leaves": 359,
+    "learning_rate": 0.028391995301038926,
+    "min_data_in_leaf": 319,
+    "feature_fraction": 0.9027912603010207,
+    "bagging_fraction": 0.9411201899202699
+  },
+  "auc_val": 0.9161477722160328,
+  "n_trials": 40,
+  "tiempo_trials_s": 226.32718817899988,
+  "tiempo_dataset_s": 1.1108353900000054,
+  "tiempo_sonda_s": 0.0,
+  "tiempo_optimizacion_s": 227.43802356899988,
+  "filas_train": 50762,
+  "hash_muestra": "5eaca9e44700aac2",
+  "commit": "7dba436",
+  "codigo_sucio": false,
+  "fecha": "2026-11-09T20:53:42"
+}
