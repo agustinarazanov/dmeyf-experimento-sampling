@@ -16,9 +16,9 @@ consolidación, reporte) SHALL vivir en `comun/`.
 
 #### Scenario: Agregar un experimento nuevo
 - **WHEN** un integrante copia `plantilla/` a `experimentos/<nombre>/`, completa `docs/hipotesis.md` y registra sus
-  brazos
+  variantes
 - **THEN** el experimento aparece en el README del repo y sus corridas se registran en su propio `ledger/`. Ningún
-  archivo de otro experimento cambia, salvo el registro de brazos en `comun/`
+  archivo de otro experimento cambia, salvo el registro de variantes en `comun/`
 
 #### Scenario: Cambio en código común
 - **WHEN** se modifica algo en `comun/`
@@ -95,7 +95,7 @@ Cambiar una regla común SHALL anotarse en la bitácora de `control` y en la de 
   referencia a `experimentos/control/docs/hipotesis.md`
 
 ### Requirement: Una hipótesis, una carpeta
-Cada hipótesis con brazos propios SHALL tener su experimento (`h1`, `h2`, `h3`, …). La comparación entre hipótesis, la
+Cada hipótesis con variantes propias SHALL tener su experimento (`h1`, `h2`, `h3`, …). La comparación entre hipótesis, la
 respuesta a la pregunta del tutor y el guion del video SHALL vivir en `experimentos/sampling_1/`, que depende de todos los
 demás y del que no depende ninguno.
 
