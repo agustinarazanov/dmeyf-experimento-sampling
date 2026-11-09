@@ -1,0 +1,2 @@
+# Aporte de Luis, estrategia 7 con --hp ledger (H4_Hard sale del estudio NH0.1): corre después de la tanda de variantes. Cambio incorporar-aportes, D1 y D6.
+@ experimentos.sampling_1.exploratorios.validacion_50_semillas.validacion --estrategia 7 --hp ledger --semillas 50 --presupuesto 900

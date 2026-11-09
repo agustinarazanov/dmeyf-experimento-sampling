@@ -12,6 +12,8 @@
 #   opt-muestra 0.25 todas final
 #   uniforme 1 todas final C-rep
 #   opt-muestra 0.1 todas final - 3
+# Una línea que empieza con `@` corre otro módulo en vez de `comun.correr`: `@ <módulo> <args>...` -> `python -m <módulo>
+# <args>` (los exploratorios, p. ej. el paquete de Luis).
 # Variables: PROYECTO (obligatoria), BUCKET (obligatoria), ZONA (northamerica-northeast2-b), NOMBRE (sampling-<usuario>),
 # TEMPLATE (to-064ram-08vcpu), PERSONA (usuario de git). Cada línea es `python -m comun.correr`, desde la raíz del repo.
 # Cada corrida escribe en el ledger de quien es dueño de la variante (`comun/variantes.py`), así que se sincroniza cada
@@ -62,6 +64,11 @@ subir() {
 }
 while read -r metodo tasa semilla etapa variante replica; do
   [ -z "\$metodo" ] && continue; case "\$metodo" in \#*) continue;; esac
+  if [ "\$metodo" = "@" ]; then   # línea de módulo: \`@ <módulo> <args>...\` corre \`python -m <módulo> <args>\`
+    python -m \$tasa \$semilla \$etapa \$variante \$replica $EXTRA >> ~/corrida.log 2>&1 || echo "FALLO: @ \$tasa \$semilla \$etapa \$variante \$replica" >> ~/corrida.log
+    subir
+    continue
+  fi
   B=""; [ -n "\${variante:-}" ] && [ "\$variante" != "-" ] && B="--variante \$variante"
   [ -n "\${replica:-}" ] && B="\$B --replica \$replica"
   python -m comun.correr --metodo \$metodo --tasa \$tasa --semilla \$semilla --etapa \$etapa \$B $EXTRA \
@@ -79,6 +86,7 @@ if [ -n "$EN_SECO" ]; then
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
   echo "corridas (una por línea de la lista):"
   grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante replica; do
+    if [ "$metodo" = "@" ]; then echo "  python -m $tasa $semilla $etapa ${variante:-} ${replica:-}$EXTRA"; continue; fi
     [ "${variante:-}" = "-" ] && variante=""
     echo "  python -m comun.correr --metodo $metodo --tasa $tasa --semilla $semilla --etapa $etapa${variante:+ --variante $variante}${replica:+ --replica $replica}$EXTRA"
   done

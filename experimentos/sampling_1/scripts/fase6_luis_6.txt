@@ -1,0 +1,2 @@
+# Aporte de Luis, estrategia 6 (--hp original): 50 semillas y, si el presupuesto de 900 s pide más, las extra. Cambio incorporar-aportes, D1, D2 y D6.
+@ experimentos.sampling_1.exploratorios.validacion_50_semillas.validacion --estrategia 6 --hp original --semillas 50 --presupuesto 900

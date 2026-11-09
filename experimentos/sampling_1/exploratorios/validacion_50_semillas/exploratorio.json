@@ -1,0 +1,12 @@
+{
+  "autor": "Luis María Laguinge",
+  "fecha": "2026-11-06",
+  "pregunta": "¿Con 50 semillas finales, qué estrategias de las hipótesis 3 y 4 ganan al control y cuántas semillas entran en un presupuesto de 900 s?",
+  "protocolo": "9 estrategias con hiperparámetros fijos, 50 semillas finales (10 oficiales + 110017 + i·19937), presupuesto de 900 s; ranking y curva según K en 201908, 201910 solo informado",
+  "advertencia": "origen: commit 9e1889e, script de Colab con su propio panel; el resumen original elige con 201910 (ya mirado) y hay piezas reconstruidas (presupuesto, resumen CSV, H4_Hard); no es una variante ni cambia el veredicto de ninguna hipótesis",
+  "tablas": [
+    {"csv": "resultados/resumen_50_semillas_original.csv", "columnas": ["g_201908", "gmax_201908", "auc_201908", "g_201910", "auc_201910", "tiempo_s"]},
+    {"csv": "resultados/ranking_201908_original.csv", "columnas": ["puesto_201908", "g_201908", "g_201908_sd"]},
+    {"csv": "resultados/presupuesto_original.csv", "columnas": ["k_presupuesto", "ens_k_201908", "ens_k_201910"]}
+  ]
+}
