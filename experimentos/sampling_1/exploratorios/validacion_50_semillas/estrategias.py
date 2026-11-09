@@ -89,22 +89,20 @@ def hp_original() -> dict[str, dict]:
     return json.loads((AQUI / "hp_original.json").read_text())
 
 
-def hp_ledger(raiz: Path = rutas.RAIZ) -> dict[str, dict]:
-    """Los mismos datos leídos de `experimentos/<exp>/ledger/hp/<estudio>.json` (t_opt = `tiempo_optimizacion_s`)."""
-    out = {}
-    for clave, (exp, estudio) in LEDGER_HP.items():
-        ruta = raiz / "experimentos" / exp / "ledger" / "hp" / f"{estudio}.json"
-        if not ruta.is_file():
-            raise FileNotFoundError(f"falta {ruta.relative_to(raiz)}: `--hp ledger` necesita el estudio {estudio} de {exp}")
-        d = json.loads(ruta.read_text())
-        out[clave] = {"hp": d["hp"], "t_opt": float(d["tiempo_optimizacion_s"])}
-    return out
+def hp_ledger(clave: str, raiz: Path = rutas.RAIZ) -> dict:
+    """Lo mismo que una entrada de `hp_original.json`, leído de `experimentos/<exp>/ledger/hp/<estudio>.json`
+    (t_opt = `tiempo_optimizacion_s`)."""
+    exp, estudio = LEDGER_HP[clave]
+    ruta = raiz / "experimentos" / exp / "ledger" / "hp" / f"{estudio}.json"
+    if not ruta.is_file():
+        raise FileNotFoundError(f"falta {ruta.relative_to(raiz)}: `--hp ledger` necesita el estudio {estudio} de {exp}")
+    d = json.loads(ruta.read_text())
+    return {"hp": d["hp"], "t_opt": float(d["tiempo_optimizacion_s"])}
 
 
 def hp_de(e: Estrategia, modo_hp: str = "original", raiz: Path = rutas.RAIZ) -> tuple[dict, float]:
     """(hiperparámetros finales de la estrategia, tiempo de optimización en segundos)."""
     if modo_hp not in ("original", "ledger"):
         raise ValueError(f"--hp inválido: {modo_hp!r} (original o ledger)")
-    fuente = hp_original() if modo_hp == "original" else hp_ledger(raiz)
-    base = fuente[e.estudio]
+    base = hp_original()[e.estudio] if modo_hp == "original" else hp_ledger(e.estudio, raiz)
     return escalar_hp(base["hp"], mult_min_data=e.mult_min_data), float(base["t_opt"])
