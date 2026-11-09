@@ -848,3 +848,19 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   ledger cambió.
 - Tokens: ~47 turnos · contexto ~69.000 por turno · ≈ US$ 1,8 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — grupo 5 de `h3-semillas-optuna` (informe, sesión headless)
+- Sesión headless de aplicación del grupo 5 · modelo: Opus · etapa: **informe** (tareas 5.1–5.2).
+- 5.1: `h3/informe/informe.md` con los veredictos de D4 (detalle en la bitácora de `h3`); `scripts/verificar_informe_h3.py`.
+- 5.2: `informe/informe.md` reescrito: § Diseño suma la fase 5; § Resultados copia los bloques A y B de
+  `tabla_resultados.md` (27 líneas de tabla idénticas, comprobado por script) y los comenta (H3 confirmada con
+  réplicas, mecanismo (B), `H3-0.05` confirmada, `H3R-0.1` no cambia, varianza de Optuna, tiempo igual con intervalo);
+  § Limitaciones, § Conclusiones y § Qué sigue (H4 y `incorporar-aportes`) actualizadas. Atiende el hallazgo 2 de la
+  revisión del grupo 4: al citar a Martín dice que la `delta` de `08_…` es ganancia y la de `07_…` es AUC.
+  `guion.md` con los bloques de H3 con réplicas, varianza y exploratorios.
+- README: § Resultados apunta a `tabla_resultados.md` y al informe (sin la tabla vieja de la réplica 0), respuesta corta
+  con Δ con réplicas, `h3` confirmada también con réplicas, § Qué sigue solo con `incorporar-aportes`.
+  `scripts/verificar_readme.py` pasa a comparar contra `tabla_resultados.md`: 25 números del texto en la tabla (salvo
+  identificadores listados en `NO_RESULTADOS`), 22 enlaces existen; un número cambiado lo hace salir con 1. Los enlaces
+  del informe conjunto (13) y del de `h3` (7) existen.
+- Pendiente: revisión en sesión limpia de la etapa informe (5.3).
