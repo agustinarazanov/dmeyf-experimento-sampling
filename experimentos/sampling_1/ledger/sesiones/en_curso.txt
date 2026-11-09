@@ -1,0 +1,5 @@
+EN_CURSO (4.1): la cuota global CPUS_ALL_REGIONS es 32, así que solo caben 4 VMs a la vez; se lanzan en tandas (design.md lo permite).
+Tanda 1 lanzada el 2026-11-09: fase6_r0 fase6_r1 fase6_r2 fase6_r3.
+Faltan, en este orden: tanda 2 fase6_r4..r7; tanda 3 fase6_luis_1..4; tanda 4 fase6_luis_5,6,7,8; tanda 5 fase6_luis_9 y fase6_martin.
+Luego 4.2 (fase6_luis_7_ledger, con NH0.1 ya en el ledger), 4.3 y 4.4.
+Espero a que terminen las VMs de la tanda (pgrep -f vm.sh vacío y ledger/corridas con filas) y lanzo la siguiente sin relanzar las que ya terminaron.
