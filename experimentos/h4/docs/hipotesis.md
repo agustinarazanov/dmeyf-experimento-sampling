@@ -73,7 +73,9 @@ Detalle en [`docs/diseno.md`](diseno.md). Todas con 8 réplicas de optimización
    - **Se confirma** para una variante si cumple las tres; **se refuta** si sale *pierde* (media de Δ con réplicas
      < −5,52 M$) o si A no supera a la de su H3; si no, *indeterminado*.
 
-La respuesta de H4 sale de las reglas 1 y 3; la regla 2 explica el mecanismo de la búsqueda y no decide.
+La respuesta de H4 sale de las reglas 1 y 3; la regla 2 explica el mecanismo de la búsqueda y no decide. No hay un
+veredicto único que junte las dos: el informe da el de la regla 1 y el de la regla 3 por variante, y la respuesta al
+tutor usa los contrastes principales (§ Comparaciones múltiples).
 
 ## Comparaciones múltiples
 
@@ -99,3 +101,7 @@ El resto de los contrastes se informa como secundario.
 - La muestra de búsqueda de `H4H-0.1` y `H4U-0.1` cambia la proporción de clases, así que Optuna ve probabilidades
   descalibradas. El final es completo y G se mide con un corte por cantidad de envíos (N\*), que depende solo del orden;
   en `H4F-*` el peso 2 restituye la proporción ponderada del train.
+- **Toca la proporción de clases**, que es el terreno de Sampling_2 (undersampling de la clase mayoritaria). Es la
+  excepción declarada a la regla de `sampling_1` (`sampling_1/docs/hipotesis.md` § Pregunta): H4 sigue midiendo
+  velocidad, con el final completo (`H4H-0.1`, `H4U-0.1`) o con la proporción ponderada restituida (`H4F-*`), y no
+  compara proporciones de clases entre sí.

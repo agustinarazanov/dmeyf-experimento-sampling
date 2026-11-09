@@ -101,7 +101,7 @@ La ejecución (una VM por réplica, todas desde `corridas-v2`) está en
 | Finales (32 celdas × 10 semillas) | 320 × ~35 s | ~187 min |
 | **Total** | | **~3,3 h de VM** |
 
-Con las ~2,6 h de `h4` ([`h4/docs/diseno.md`](../../h4/docs/diseno.md) § Grilla) dan las ~5,8 h de la tanda de
+Con las ~2,6 h de `h4` ([`h4/docs/diseno.md`](../../h4/docs/diseno.md) § Grilla) dan las ~5,9 h de la tanda de
 variantes del cambio. R = 8 queda cerrado, como en § Grilla con réplicas. La ejecución (fase 6, una VM por réplica,
 desde `corridas-v3`) está en [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases.
 

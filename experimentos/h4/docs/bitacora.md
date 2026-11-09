@@ -28,3 +28,11 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   estudios), `## Dependencias` con `control`, `h1` y `h3`.
 - Las variantes no están todavía en `comun/variantes.py` (grupo 2), así que `--verificar` no mira `h4`.
 - Pendiente: revisión en sesión limpia de hipótesis y diseño (1.3). Ninguna corrida real antes de ese cierre.
+
+### 2026-11-09 — cierre revisión de hipótesis y diseño (`incorporar-aportes` 1.3)
+
+- Sesión limpia `bf7f462e-3502-49bc-af4a-8fc438d913dc` · modelo: Opus · etapa `revision`. Lista de `docs/revision.md`
+  § 1 y § 2 sin ✗ abiertos; detalle en `sampling_1/docs/bitacora.md`. Correcciones en `docs/hipotesis.md`: no hay un
+  veredicto único de H4 (se informan las reglas 1 y 3 por variante) y H4 declara que toca la proporción de clases
+  (terreno de Sampling_2) como excepción; en `docs/diseno.md`, ~5,9 h para la tanda de variantes. Ninguna regla ni
+  umbral cambia.

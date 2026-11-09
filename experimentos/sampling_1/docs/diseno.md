@@ -127,7 +127,7 @@ exploratorios.
   | Martín | una | 1 | `sensibilidad_07` + `ganancia_08` (4 hilos) y la comparación del panel de Luis con `comun.datos` | ~2,1 h |
   | Luis, `--hp ledger` | una | 1 | estrategia 7 con los hiperparámetros de `NH0.1`, después de la tanda de variantes | ~30 min |
 
-- **Carga**: variantes ~5,8 h de VM (~3,3 h de `h3` y ~2,6 h de `h4`, detalle en el `diseno.md` de cada una); Luis
+- **Carga**: variantes ~5,9 h de VM (~3,3 h de `h3` y ~2,6 h de `h4`, detalle en el `diseno.md` de cada una); Luis
   ~3,7 h; Martín ~2,1 h. En total unas 12 h de VM y ~2 h de pared.
 - **Cuota**: 18 VMs × 8 vCPU = 144 vCPU simultáneas, dentro de la cuota de 200 vCPU N2. Antes de lanzar se verifican la
   cuota y el crédito del trial; si no alcanzan, se lanzan en tandas (ninguna decisión depende del orden).

@@ -906,7 +906,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 
 ### 2026-11-09 — cuatro hipótesis (`incorporar-aportes` 1.1 y 1.2)
 
-- Sesión headless `f0b04f89-178e-4a6c-80fb-07a78749b44f` · modelo: Opus · etapa `hipotesis`.
+- Sesión headless `f0b04f89-178e-4a6c-80fb-07a78749b44f` · modelo: Opus · etapa: **hipotesis**.
 - `experimentos/h4/` nuevo (1.1). `docs/hipotesis.md` pasa a cuatro hipótesis: la H4 del 1-nov queda como registro
   («reemplazada el 9-nov») y apunta a `h4`; se suman los contrastes principales (`H3-0.1`, `H4H-0.1`, `H4F-0.05`) y dos
   limitaciones comunes (test ya mirado, comparaciones múltiples). `docs/diseno.md`: índice con `h4`, fase 6 según D6
@@ -915,3 +915,53 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Verificación: los 36 enlaces relativos de los seis documentos tocados existen; `python -m comun.variantes
   --verificar` sale con 0 y sin `PROBLEMA`.
 - Pendiente: revisión en sesión limpia (1.3).
+
+### 2026-11-09 — cierre revisión del grupo 1 de `incorporar-aportes` (hipótesis y diseño)
+- Sesión: `bf7f462e-3502-49bc-af4a-8fc438d913dc` · modelo: Opus · etapa: **revision** (grupo 1, tareas 1.1–1.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión `f0b04f89` que implementó el grupo).
+- Lista: docs/revision.md § 1 (hipótesis) y § 2 (diseño) sobre `h4/docs/{hipotesis,diseno}.md`, las extensiones de
+  `h3/docs/{hipotesis,diseno}.md` y `sampling_1/docs/{hipotesis,diseno}.md`, contra D3, D4 y D6 del cambio. Ningún ✗
+  abierto.
+  - ✓ Pregunta del tutor citada (Zulip 208986 en `sampling_1/docs/hipotesis.md`; `h4` la remite ahí).
+  - ✓ Control: se cita `control/docs/hipotesis.md` sin cambios; δ = 5,52 M$, N\* = 3.300 y R = 8 citados de `h3`.
+  - ✓ Una variable por hipótesis: H4, cómo se arma la muestra (búsqueda o final); cada extensión de H3, una sola
+    diferencia (reescalado o unidad de muestreo).
+  - ✓ Métrica: Δ con réplicas contra `C` (y A para `H4F-*`); D apareada (reglas 5 y 6 de `h3`) o Welch (regla 7 de
+    `h3`, D_HU de `h4`).
+  - ✓ Umbrales numéricos en todas las reglas (−5,52 M$ y 0 M$; A contra la H3 de la misma tasa).
+  - ✗→✓ Confirma/refuta sin zona gris sin nombre: cada regla nombra sus salidas, pero no estaba escrito cómo se juntan
+    las reglas 1 y 3 en un veredicto de H4. Corregido: no hay veredicto único, se informa cada regla por variante y la
+    respuesta al tutor usa los contrastes principales.
+  - ✓ Adaptaciones declaradas: sonda y sorteo dentro del pozo y `K0.1`, marcadas como reconstrucción; peso 2 del
+    fast-retrain; reescalados con recorte a [1; 8000].
+  - ✗→✓ Proporción de clases: H4 la toca (búsqueda con todas las bajas + 10 % de CONTINUA; final con 50 % y peso 2) y
+    `sampling_1` lo decía, pero `h4` no lo declaraba como excepción ni nombraba el solape con Sampling_2. Corregido en
+    `h4/docs/hipotesis.md` § Limitaciones previstas.
+  - ✓ Regla de "¿vale la pena?": la de `sampling_1`, con la nota de contrastes principales (`H3-0.1`, `H4H-0.1`,
+    `H4F-0.05`).
+  - ✓ 201910, con salvedad declarada: nada nuestro se elige con 201910 (Optuna y N\* en 201908), pero las variantes
+    salen de estrategias que Luis eligió mirando 201910; está declarado en `h4`, en las extensiones de `h3` y en las
+    limitaciones de `sampling_1`, como pide D4 y la consigna (Zulip 208135).
+  - ✓ Grilla: `h4` 4 × 8 × 10 = 320 finales y 16 estudios; `h3` 4 × 8 × 10 = 320 finales y 8 estudios `K0.1`;
+    coinciden con D3 y con las variantes de cada `hipotesis.md`.
+  - ✓ Apareo: las 10 semillas finales de siempre; los pares sin aparear (D_HU, D_K) usan Welch y lo dicen.
+  - ✓ Optuna: 40 trials, TPE con semilla k, mismo espacio; la sonda de `NH0.1` suma a T y está declarada.
+  - ✓ Máquina: `n2-highmem-8` spot.
+  - ✗→✓ Horas y costo: 155 min (`h4`) + 197 min (`h3`) = 5,87 h, no ~5,8; corregido a ~5,9 h en los `diseno.md` de
+    `h3`, `h4` y `sampling_1` (las ~12 h totales, ~45 min de pared por VM y < US$ 15 no cambian). `proposal.md` del
+    cambio sigue diciendo ~5,8 h; no se toca un artefacto de planificación por un redondeo.
+  - ✓ Reparto: todo lo lanza Agustina desde `corridas-v3`, 18 VMs = 144 vCPU < 200; sin huecos ni solapes.
+  - n/a Devolución del tutor: no hubo sobre este cambio.
+- Otras verificaciones: los números de Luis (+7,19, −2,31, 283,25 contra 276,65 M$, 12,3 s) y la sonda (40 árboles, 31
+  hojas, `learning_rate` 0,08, pozo 35 %) coinciden con el commit `9e1889e`; los 36 enlaces relativos existen;
+  `python -m comun.variantes --verificar` pasa.
+- Hallazgos: los tres ✗→✓ de arriba; ninguno cambia una regla ni un umbral. Además, la entrada del grupo 1 declaraba
+  la etapa como «etapa `hipotesis`», que `comun/tokens.py` no lee, y la sesión `f0b04f89` quedaba `sin-etapa`.
+- Correcciones: `h4/docs/hipotesis.md` (combinación de las reglas 1 y 3; proporción de clases y Sampling_2); ~5,9 h en
+  `h3/docs/diseno.md`, `h4/docs/diseno.md` y `sampling_1/docs/diseno.md`; la entrada del grupo 1 pasa a
+  «etapa: **hipotesis**».
+- Tokens: la implementación (`f0b04f89`) tuvo 43 turnos y ~104.300 de contexto por turno, arriba del objetivo; lo más
+  probable (estimación del revisor) es haber escrito dos documentos nuevos y extendido cuatro con `design.md` y
+  `proposal.md` del cambio cargados. Esta revisión: ~30 turnos, ~68.000 de contexto por turno, ≈ US$ 1,4 (presupuesto
+  US$ 4). `comun/tokens.py` corrido.
+- Tutor: —

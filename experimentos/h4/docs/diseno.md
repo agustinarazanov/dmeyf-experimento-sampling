@@ -92,7 +92,7 @@ descomposición de la varianza, T como mediana entre réplicas, A y tiempo igual
 
 ## Estimación de horas y costo
 
-~2,6 h de corrida para `h4`, dentro de las ~5,8 h de la tanda de variantes del cambio (que suma las de `h3`), más hasta
+~2,6 h de corrida para `h4`, dentro de las ~5,9 h de la tanda de variantes del cambio (que suma las de `h3`), más hasta
 media hora por VM de arranque. Detalle y costo en [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md)
 § Reparto y fases.
 

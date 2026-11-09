@@ -96,3 +96,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   comparaciones múltiples con los contrastes principales de `h4`. `docs/diseno.md`: variantes, reescalados, muestra
   por cliente (reconstrucción), grilla de la fase 6 (32 celdas, 8 estudios, ~3,3 h). Dependencias sin cambio.
 - Pendiente: revisión en sesión limpia de hipótesis y diseño (1.3). Ninguna corrida real antes de ese cierre.
+
+### 2026-11-09 — cierre revisión de hipótesis y diseño (`incorporar-aportes` 1.3)
+
+- Sesión limpia `bf7f462e-3502-49bc-af4a-8fc438d913dc` · modelo: Opus · etapa `revision`. Lista de `docs/revision.md`
+  § 1 y § 2 sin ✗ abiertos; detalle en `sampling_1/docs/bitacora.md`. Reglas 5 a 8 sin cambios. Corrección: la tanda
+  de variantes suma ~5,9 h de VM (no ~5,8) en `docs/diseno.md` § Grilla de las extensiones.
