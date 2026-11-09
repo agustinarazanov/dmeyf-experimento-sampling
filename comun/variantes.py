@@ -26,6 +26,7 @@ class Variante(NamedTuple):
     metodo: str
     tasa: float
     estudio: str
+    replicas: bool = False  # admite réplicas de optimización `--replica k ≥ 1` (`h3-semillas-optuna` D2)
 
 
 def _t(tasa: float) -> str:
@@ -35,12 +36,13 @@ def _t(tasa: float) -> str:
 VARIANTES: dict[str, Variante] = {
     b.nombre: b
     for b in [
-        Variante("C", CONTROL, "uniforme", 1.0, "C"),
+        Variante("C", CONTROL, "uniforme", 1.0, "C", replicas=True),
         Variante("C-rep", CONTROL, "uniforme", 1.0, "C"),
         *[Variante(f"U{_t(r)}", "h1", "uniforme", r, f"U{_t(r)}") for r in (0.5, 0.25, 0.1, 0.05)],
         *[Variante(f"B{_t(f)}", "h2", "bagging", f, f"B{_t(f)}") for f in (0.5, 0.25, 0.1)],
         Variante("GOSS", "h2", "goss", 1.0, "GOSS"),
-        *[Variante(f"H3-{_t(r)}", "h3", "opt-muestra", r, f"U{_t(r)}") for r in (0.25, 0.1)],
+        *[Variante(f"H3-{_t(r)}", "h3", "opt-muestra", r, f"U{_t(r)}", replicas=True) for r in (0.25, 0.1, 0.05)],
+        Variante("H3R-0.1", "h3", "opt-muestra-reescalado", 0.1, "U0.1", replicas=True),
     ]
 }
 
@@ -56,6 +58,8 @@ def nombre(metodo: str, tasa: float) -> str:
     """Nombre de la variante de la grilla para `(método, tasa)`; no dice si está en el registro."""
     if metodo == "opt-muestra":
         return f"H3-{_t(tasa)}"
+    if metodo == "opt-muestra-reescalado":
+        return f"H3R-{_t(tasa)}"
     if metodo == "uniforme":
         return "C" if tasa == 1 else f"U{_t(tasa)}"
     if metodo == "bagging":
@@ -74,16 +78,47 @@ def variante(nombre_variante: str) -> Variante:
                          f"(variantes: {', '.join(VARIANTES)})") from None
 
 
-def dueno_variante(nombre_variante: str) -> str:
-    return variante(nombre_variante).dueno
+def partir_estudio(estudio: str) -> tuple[str, int]:
+    """`U0.1@3` -> (`U0.1`, 3); sin `@k` es la réplica 0."""
+    base, _, k = estudio.partition("@")
+    if not k:
+        return estudio, 0
+    if not k.isdigit() or int(k) < 1:
+        raise ValueError(f"estudio {estudio!r}: la réplica tiene que ser un entero ≥ 1 después de '@'")
+    return base, int(k)
+
+
+def nombre_estudio(estudio: str, replica: int = 0) -> str:
+    """`<estudio>@k` para k ≥ 1; la réplica 0 conserva el nombre de siempre."""
+    return estudio if replica == 0 else f"{estudio}@{replica}"
+
+
+def validar_replica(nombre_variante: str, replica: int) -> None:
+    """Falla nombrando la variante y la réplica si k < 0 o si k ≥ 1 y el registro no habilita réplicas de la variante."""
+    if replica < 0:
+        raise ValueError(f"réplica {replica} inválida para {nombre_variante}: tiene que ser ≥ 0")
+    if replica and not variante(nombre_variante).replicas:
+        raise ValueError(f"la variante {nombre_variante} no admite réplicas de optimización (pedida la réplica {replica}); "
+                         f"las admiten: {', '.join(b.nombre for b in VARIANTES.values() if b.replicas)}")
+
+
+def dueno_variante(nombre_variante: str, replica: int = 0) -> str:
+    """Dueño de las filas de la variante. Las réplicas k ≥ 1 de las optimizaciones `U{r}` son de `h3`, no de `h1`."""
+    dueno = variante(nombre_variante).dueno
+    return "h3" if replica and dueno == "h1" else dueno
 
 
 def dueno_estudio(estudio: str) -> str:
+    """Dueño del estudio. `U{r}` es de `h1`, sus réplicas `U{r}@k` son de `h3`; `C@k` es de `control`."""
+    base, k = partir_estudio(estudio)
     try:
-        return ESTUDIOS[estudio]
+        dueno = ESTUDIOS[base]
     except KeyError:
         raise ValueError(f"estudio {estudio!r} no está en el registro de comun/variantes.py "
                          f"(estudios: {', '.join(ESTUDIOS)})") from None
+    if k and not any(b.replicas and b.estudio == base for b in VARIANTES.values()):
+        raise ValueError(f"estudio {estudio!r}: el estudio {base} no admite réplicas de optimización")
+    return "h3" if k and dueno == "h1" else dueno
 
 
 def variantes_de(exp: str) -> list[Variante]:

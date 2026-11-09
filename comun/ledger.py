@@ -17,14 +17,14 @@ from scipy import stats
 #: Columnas obligatorias de cada fila (`specs/ledger-resultados`). Sin valor se escribe vacío, pero la columna tiene que
 #: estar: una fila a la que le falta una no se escribe.
 COLUMNAS: list[str] = [
-    "id", "fecha", "variante", "metodo", "tasa", "semilla", "etapa", "etapa_corrida", "estudio", "hp",
+    "id", "fecha", "variante", "metodo", "tasa", "semilla", "replica_opt", "etapa", "etapa_corrida", "estudio", "hp",
     "filas_train", "hash_muestra", "auc_val", "auc_test", "ganancia_max_201910", "envios_max_201910",
     "curva_201908", "curva_201910", "predicciones_201910",
     "tiempo_preparacion_s", "tiempo_optimizacion_s", "tiempo_entrenamiento_s", "tiempo_lgbtrain_s",
     "memoria_max_mb", "maquina", "cpu", "hilos", "load_avg", "commit", "codigo_sucio", "persona", "valida",
 ]
 #: Sin `commit`: la misma semilla no puede contar dos veces; una repetición con código más nuevo reemplaza a la anterior.
-CLAVE: list[str] = ["variante", "metodo", "tasa", "semilla", "etapa"]
+CLAVE: list[str] = ["variante", "metodo", "tasa", "replica_opt", "semilla", "etapa"]
 CONTROL = "C"
 #: Variantes que no entran en Δ: el control y su réplica (`docs/diseno.md` § Grilla).
 SIN_DELTA = {"C", "C-rep"}
@@ -67,7 +67,10 @@ def leer_corridas(directorio: Path) -> pd.DataFrame:
         return pd.DataFrame(columns=COLUMNAS)
     # Las filas anteriores a D12 no tienen `predicciones_201910`: se leen con la columna vacía.
     corridas = pd.concat([leer_csv(a) for a in archivos], ignore_index=True)
-    return corridas.reindex(columns=list(dict.fromkeys([*COLUMNAS, *corridas.columns])))
+    corridas = corridas.reindex(columns=list(dict.fromkeys([*COLUMNAS, *corridas.columns])))
+    # Las filas anteriores a las réplicas (`h3-semillas-optuna`) no tienen `replica_opt`: son la réplica 0.
+    corridas["replica_opt"] = corridas["replica_opt"].fillna(0).astype(int)
+    return corridas
 
 
 # --- consolidación ------------------------------------------------------------

@@ -2,10 +2,15 @@
 
     python -m comun.correr --metodo uniforme --tasa 0.25 --semilla 0 --etapa optimizar
     python -m comun.correr --metodo uniforme --tasa 0.25 --semilla todas --etapa final
+    python -m comun.correr --metodo opt-muestra --tasa 0.1 --etapa optimizar --replica 3
 
 Se corre desde la raíz del repo. La fila va al ledger del experimento dueño de la variante y los hiperparámetros se
 guardan y se leen en el ledger del dueño del estudio (`comun/variantes.py`): un final de `H3-0.25` escribe en
 `experimentos/h3/ledger/` y lee `experimentos/h1/ledger/hp/U0.25.json`.
+
+Con `--replica k` (k ≥ 1, solo variantes que el registro habilita) el sampler TPE y el sorteo de la muestra de
+optimización usan la semilla k y el estudio se llama `<estudio>@k`; las semillas finales no cambian. La réplica 0 es la
+optimización de siempre.
 
 `optimizar` corre Optuna (40 trials, AUC en 201908, una semilla) y guarda los mejores hiperparámetros en
 `<ledger del estudio>/hp/<estudio>.json`; no carga 201910. `final` entrena con ese JSON y evalúa en 201908 y 201910 (curvas) para cada
@@ -121,10 +126,12 @@ class Contexto:
         self.valida = not self.explora and not self.sucio
         self.rel = "exploracion/" if self.explora else ""
         self.etapa = "exploracion" if self.explora else a.etapa
-        self.metodo = "uniforme" if (a.metodo == "opt-muestra" and a.etapa == "optimizar") else a.metodo
-        self.estudio = metodos.estudio(a.metodo, a.tasa)
+        self.replica = a.replica
+        self.semilla_opt = bl.SEMILLA_OPTUNA + self.replica  # sampler TPE y sorteo de la muestra de optimización
+        self.metodo = "uniforme" if (a.metodo in metodos.METODOS_H3 and a.etapa == "optimizar") else a.metodo
+        self.estudio = variantes.nombre_estudio(metodos.estudio(a.metodo, a.tasa), self.replica)
         self.variante = a.variante or metodos.variante(self.metodo, a.tasa)
-        self.raiz = rutas.ledger(variantes.dueno_variante(self.variante))  # ledger del dueño de la variante: filas, curvas, predicciones
+        self.raiz = rutas.ledger(variantes.dueno_variante(self.variante, self.replica))  # ledger del dueño de la variante: filas, curvas, predicciones
         self.base = self.raiz / "exploracion" if self.explora else self.raiz
         ledger_estudio = rutas.ledger(variantes.dueno_estudio(self.estudio))  # ledger del dueño del estudio: hp
         self.base_hp = ledger_estudio / "exploracion" if self.explora else ledger_estudio
@@ -132,7 +139,7 @@ class Contexto:
         self.db = bl.DATOS_DIR / "optuna" / f"{self.estudio}{sufijo}.db"
 
     def id(self, semilla: int, etapa: str) -> str:
-        base = f"{self.variante}_{self.metodo}_{self.a.tasa:g}_{semilla}_{etapa}_{self.commit}"
+        base = f"{variantes.nombre_estudio(self.variante, self.replica)}_{self.metodo}_{self.a.tasa:g}_{semilla}_{etapa}_{self.commit}"
         if self.valida:
             return base
         return f"exp-{base}-{datetime.now():%H%M%S%f}"  # una corrida no válida nunca se saltea
@@ -141,7 +148,7 @@ class Contexto:
         base = {c: None for c in lg.COLUMNAS}
         base.update(
             fecha=datetime.now().isoformat(timespec="seconds"), variante=self.variante, metodo=self.metodo,
-            tasa=self.a.tasa, etapa=self.etapa, estudio=self.estudio, maquina=tipo_de_maquina(),
+            tasa=self.a.tasa, replica_opt=self.replica, etapa=self.etapa, estudio=self.estudio, maquina=tipo_de_maquina(),
             cpu=modelo_de_cpu(), hilos=bl.NUM_THREADS, load_avg=round(os.getloadavg()[0], 2), commit=self.commit,
             codigo_sucio=self.sucio, persona=persona(), valida=self.valida,
         )
@@ -161,7 +168,7 @@ def _dataset_params() -> dict:
 
 def optimizar(cx: Contexto) -> None:
     a = cx.a
-    id_ = cx.id(bl.SEMILLA_OPTUNA, "optimizar")
+    id_ = cx.id(cx.semilla_opt, "optimizar")
     if lg.existe_fila(cx.base / "corridas", id_):
         log.info("ya existe %s: se saltea", id_)
         return
@@ -172,7 +179,7 @@ def optimizar(cx: Contexto) -> None:
     if bl.MES_TEST in dt.MESES_LEIDOS:  # el test no se toca al elegir hiperparámetros
         raise RuntimeError(f"la etapa optimizar leyó {bl.MES_TEST}")
     cols = dt.columnas_predictoras(train)
-    datos, params_variante, idx = metodos.FUNCIONES[cx.metodo](train, a.tasa, bl.SEMILLA_OPTUNA)
+    datos, params_variante, idx = metodos.FUNCIONES[cx.metodo](train, a.tasa, cx.semilla_opt)
     hash_ = muestreo.hash_muestra(idx, len(train))
     x_tr, y_tr = dt.matriz(datos, cols), datos[dt.Y].to_numpy()
     x_va, y_va = dt.matriz(val, cols), val[dt.Y].to_numpy()
@@ -185,7 +192,7 @@ def optimizar(cx: Contexto) -> None:
     optuna.logging.set_verbosity(optuna.logging.WARNING)
     study = optuna.create_study(
         study_name=cx.estudio, storage=f"sqlite:///{cx.db}", direction="maximize", load_if_exists=True,
-        sampler=optuna.samplers.TPESampler(seed=bl.SEMILLA_OPTUNA),
+        sampler=optuna.samplers.TPESampler(seed=cx.semilla_opt),
     )
     t0 = time.perf_counter()
     dtrain = lgb.Dataset(x_tr, label=y_tr, params=_dataset_params(), free_raw_data=False)
@@ -195,7 +202,7 @@ def optimizar(cx: Contexto) -> None:
 
     def objetivo(trial: optuna.Trial) -> float:
         hp = bl.sugerir(trial, sin_bagging)
-        params = {**bl.PARAMS_FIJOS, **params_variante, **hp, "seed": bl.SEMILLA_OPTUNA}
+        params = {**bl.PARAMS_FIJOS, **params_variante, **hp, "seed": cx.semilla_opt}
         t = time.perf_counter()
         pred = lgb.train(params, dtrain).predict(x_va)
         trial.set_user_attr("duracion_s", time.perf_counter() - t)
@@ -213,7 +220,7 @@ def optimizar(cx: Contexto) -> None:
     t_trials = sum(t.user_attrs["duracion_s"] for t in completos)
     t_opt = t_trials + study.user_attrs["tiempo_dataset_s"]
     resumen = {
-        "estudio": cx.estudio, "variante": cx.variante, "metodo": cx.metodo, "tasa": a.tasa, "hp": study.best_params,
+        "estudio": cx.estudio, "replica_opt": cx.replica, "variante": cx.variante, "metodo": cx.metodo, "tasa": a.tasa, "hp": study.best_params,
         "auc_val": study.best_value, "n_trials": len(completos), "tiempo_trials_s": t_trials,
         "tiempo_dataset_s": study.user_attrs["tiempo_dataset_s"], "tiempo_optimizacion_s": t_opt,
         "filas_train": filas_train, "hash_muestra": hash_, "commit": cx.commit, "codigo_sucio": cx.sucio,
@@ -222,7 +229,7 @@ def optimizar(cx: Contexto) -> None:
     cx.ruta_hp().parent.mkdir(parents=True, exist_ok=True)
     cx.ruta_hp().write_text(json.dumps(resumen, indent=2, ensure_ascii=False))
     lg.escribir_fila(cx.base / "corridas", cx.fila(
-        id=id_, semilla=bl.SEMILLA_OPTUNA, etapa_corrida="optimizar", hp=json.dumps(study.best_params),
+        id=id_, semilla=cx.semilla_opt, etapa_corrida="optimizar", hp=json.dumps(study.best_params),
         filas_train=filas_train, hash_muestra=hash_, auc_val=study.best_value, tiempo_preparacion_s=round(t_prep, 3),
         tiempo_optimizacion_s=round(t_opt, 3), memoria_max_mb=memoria_max_mb(),
     ))
@@ -242,7 +249,7 @@ def final(cx: Contexto) -> None:
     ruta_hp = cx.ruta_hp()
     if not ruta_hp.exists():
         raise FileNotFoundError(f"falta el JSON de hiperparámetros {ruta_hp}: correr --etapa optimizar o pasar --hp")
-    hp = json.loads(ruta_hp.read_text())["hp"]
+    hp = metodos.ajustar_hp(cx.metodo, a.tasa, json.loads(ruta_hp.read_text())["hp"])
 
     t0 = time.perf_counter()
     _, t_panel = dt.asegurar_panel(a.filas)
@@ -307,15 +314,18 @@ def parsear(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--etapa", required=True, choices=["optimizar", "final"])
     p.add_argument("--hp", help="JSON de hiperparámetros (por defecto <ledger del dueño del estudio>/hp/<estudio>.json)")
     p.add_argument("--filas", type=int, help="smoke test: panel de ~N filas, corrida exploratoria")
+    p.add_argument("--replica", type=int, default=0, help="réplica de optimización k (semilla de TPE y de la muestra; estudio `<estudio>@k`)")
     p.add_argument("--variante", help="nombre de variante si no es el que sale del método (C-rep)")
     p.add_argument("--trials", type=int, default=bl.N_TRIALS, help="solo para pruebas: distinto de 40 es exploratorio")
     p.add_argument("--tras-trial", help="comando que corre tras cada trial; `{db}` es el SQLite del estudio")
     a = p.parse_args(argv)
     try:
         metodos.validar(a.metodo, a.tasa)
-        efectivo = "uniforme" if (a.metodo == "opt-muestra" and a.etapa == "optimizar") else a.metodo
-        variantes.dueno_variante(a.variante or metodos.variante(efectivo, a.tasa))  # variante sin dueño: falla antes de cargar datos
-        variantes.dueno_estudio(metodos.estudio(a.metodo, a.tasa))
+        efectivo = "uniforme" if (a.metodo in metodos.METODOS_H3 and a.etapa == "optimizar") else a.metodo
+        pedida = a.variante or metodos.variante(a.metodo, a.tasa)
+        variantes.validar_replica(pedida, a.replica)  # réplica negativa o no habilitada: falla antes de cargar datos
+        variantes.dueno_variante(a.variante or metodos.variante(efectivo, a.tasa), a.replica)  # variante sin dueño: falla antes de cargar datos
+        variantes.dueno_estudio(variantes.nombre_estudio(metodos.estudio(a.metodo, a.tasa), a.replica))
         if a.etapa == "optimizar" and a.semilla not in ("0", str(bl.SEMILLA_OPTUNA)):
             raise ValueError(f"--semilla inválida para optimizar: {a.semilla} (la de Optuna es {bl.SEMILLA_OPTUNA})")
         if a.etapa == "final":
@@ -329,7 +339,7 @@ def main(argv: list[str] | None = None) -> None:
     a = parsear(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s", stream=sys.stderr)
     cx = Contexto(a)
-    if a.metodo == "opt-muestra" and a.etapa == "optimizar":
+    if a.metodo in metodos.METODOS_H3 and a.etapa == "optimizar":
         log.info("H3 comparte el estudio de uniforme r=%g: se corre ese estudio (%s)", a.tasa, cx.estudio)
     (optimizar if a.etapa == "optimizar" else final)(cx)
 

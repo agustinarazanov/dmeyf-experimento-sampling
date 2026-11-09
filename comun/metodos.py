@@ -11,7 +11,11 @@ import pandas as pd
 
 from comun import variantes, muestreo
 
-METODOS = ("uniforme", "bagging", "goss", "opt-muestra")
+METODOS = ("uniforme", "bagging", "goss", "opt-muestra", "opt-muestra-reescalado")
+#: Los dos métodos de H3 optimizan sobre una muestra (como `uniforme`) y entrenan con todo.
+METODOS_H3 = ("opt-muestra", "opt-muestra-reescalado")
+#: `min_data_in_leaf` reescalado queda en [1; 8000] (`h3-semillas-optuna` D2).
+MIN_DATA_REESCALADO = (1, 8000)
 
 
 def uniforme(train: pd.DataFrame, tasa: float, semilla: int) -> tuple[pd.DataFrame, dict, np.ndarray]:
@@ -35,7 +39,23 @@ def opt_muestra(train: pd.DataFrame, tasa: float, semilla: int) -> tuple[pd.Data
     return train, {"bagging_freq": 1}, np.arange(len(train))
 
 
-FUNCIONES = {"uniforme": uniforme, "bagging": bagging, "goss": goss, "opt-muestra": opt_muestra}
+def opt_muestra_reescalado(train: pd.DataFrame, tasa: float, semilla: int) -> tuple[pd.DataFrame, dict, np.ndarray]:
+    """H3R: igual que `opt-muestra`; el reescalado de `min_data_in_leaf` lo hace `ajustar_hp` sobre los hp del estudio."""
+    return opt_muestra(train, tasa, semilla)
+
+
+FUNCIONES = {"uniforme": uniforme, "bagging": bagging, "goss": goss, "opt-muestra": opt_muestra,
+             "opt-muestra-reescalado": opt_muestra_reescalado}
+
+
+def ajustar_hp(metodo: str, tasa: float, hp: dict) -> dict:
+    """Hiperparámetros con los que se entrena el final. Solo `opt-muestra-reescalado` los toca: `min_data_in_leaf` × √(1/r),
+    redondeado y recortado a [1; 8000]; el resto sale tal cual del estudio."""
+    if metodo != "opt-muestra-reescalado":
+        return dict(hp)
+    lo, hi = MIN_DATA_REESCALADO
+    nuevo = int(round(hp["min_data_in_leaf"] * (1 / tasa) ** 0.5))
+    return {**hp, "min_data_in_leaf": min(hi, max(lo, nuevo))}
 
 
 def validar(metodo: str, tasa: float) -> None:
@@ -44,8 +64,8 @@ def validar(metodo: str, tasa: float) -> None:
         raise ValueError(f"--metodo inválido: {metodo!r} (opciones: {', '.join(METODOS)})")
     if not 0 < tasa <= 1:
         raise ValueError(f"--tasa inválida: {tasa} (tiene que estar en (0, 1])")
-    if metodo == "opt-muestra" and tasa >= 1:
-        raise ValueError("--tasa inválida para opt-muestra: la muestra de optimización tiene que ser r < 1")
+    if metodo in METODOS_H3 and tasa >= 1:
+        raise ValueError(f"--tasa inválida para {metodo}: la muestra de optimización tiene que ser r < 1")
 
 
 def sin_bagging_fraction(metodo: str) -> bool:
