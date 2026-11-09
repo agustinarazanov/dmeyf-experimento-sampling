@@ -765,3 +765,41 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Fase 5 completa: 8 listas en VMs paralelas, 65 corridas, ledgers consolidados (8 réplicas × 10 semillas en las 5
   variantes, todo `n2-highmem-8`, sin código sucio ni filas inválidas). Detalle y tiempos contra D3 en
   [`h3/docs/bitacora.md`](../../h3/docs/bitacora.md). Pendiente: revisión de resultados (3.3).
+- Sesión de la consolidación: `3421053b-9538-41ab-85e2-6322b4379378` (Sonnet, headless) · etapa: **corridas**
+  (clasificada en la revisión 3.3).
+
+### 2026-11-09 — cierre revisión del grupo 3 de `h3-semillas-optuna` (corridas)
+- Sesión: `111f125f-b1eb-409a-9712-50f47987aa6c` · modelo: Opus · etapa: **revision** (grupo 3, tareas 3.1–3.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que corrió y consolidó el grupo).
+- Lista: docs/revision.md § 4 (resultados) sobre los ledgers de `control` y `h3`, y la verificación de 3.1 y 3.2.
+  Ningún ✗ abierto.
+  - ✓ Máquina y commit: las 341 filas de `h3` y las 98 de `control` son `n2-highmem-8`; todo lo de la fase 5 es
+    `dcd06d6` (los k = 0 previos de `C`, `H3-0.1` y `H3-0.25` conservan `2bd8a63`/`4a42bc6` de su fase).
+  - ✓ Sin `codigo_sucio`, sin `etapa = exploracion` en los `resultados.csv`; todas las filas `valida = True`.
+  - ✓ Filas de train: estudios `U0.05@k` 25.344, `U0.1@k` 50.687 y `U0.25@k` 126.718 (= r × 506.871); `C@k` y todos
+    los finales de `H3-*` usan las 506.871 completas.
+  - ✓ Control repetido: `C-rep` (fase 2, otra VM) reproduce exacto, limitación ya declarada el 2-nov; además `C` tiene
+    ahora 8 réplicas de optimización.
+  - n/a `bagging_fraction` de H2: el grupo no tocó `h2/ledger` ni `h1/ledger` (`git diff dcd06d6 adb62a2` vacío).
+  - ✓ Semillas: las 40 celdas variante × réplica (`C`, `H3-0.05`, `H3-0.1`, `H3-0.25`, `H3R-0.1` × k = 0…7) tienen
+    las 10 semillas; 7 estudios `@k` por tasa en `h3` y 8 en `control`.
+  - ✓ `apareado.csv` de `h3` con media, sd, IC 95%, semillas ganadas y veredicto para las 4 variantes; `replicas.csv`
+    de `h3` (4 variantes contra `C` y `H3R-0.1 − H3-0.1`, 8 réplicas × 80 semillas, sin notas de incompletas) y de
+    `control`. `python -m comun.consolidar` vuelto a correr no cambia ningún archivo.
+  - ✗→✓ VMs borradas: los 8 `vm_f5_r*.log` terminan en `DONE` y `Deleted`; `gcloud compute instances list` no
+    muestra ninguna `sampling-*` (solo `desktop-jr`, `TERMINATED`, que no es del experimento). Gasto: no estaba
+    anotado; estimado ahora en la bitácora de `h3`.
+- Hallazgos:
+  1. Gasto de la fase 5 sin anotar.
+  2. La bitácora de `h3` daba Optuna `C` 915 s como media de las réplicas 1…7 (es la media con k = 0; la de 1…7 es
+     938 s) y «50 celdas finales» (son 40); los finales de `H3-0.05` promedian ≈ 20 s, no ≈ 23.
+  3. Los logs r3–r5 tienen errores de `gsutil`/`tar` al traer archivos de `C@5` que r5 estaba subiendo (carrera entre
+     VMs que sincronizan el mismo bucket). Los archivos locales están completos: el CSV se lee y los parquet de
+     predicciones de los cuatro experimentos abren todos. No estaba anotado.
+  4. Optuna de `C@k` va de 644 a 1194 s entre réplicas con la misma máquina; parte es la VM y parte los `hp` que
+     elige cada TPE. A tener en cuenta en la comparación a tiempo igual (4.2).
+  5. `comun/tokens.py` dejaba sin etapa la sesión de consolidación `3421053b…`.
+- Correcciones: entradas de `h3/docs/bitacora.md` (cifras, errores de sincronización y gasto ≈ US$ 1,3 estimado desde
+  el ledger a US$ 0,19/h); clasificación de `3421053b…` como **corridas** (arriba). Nada en código ni en ledger.
+- Tokens: ~30 turnos · contexto ~55.000 por turno · ≈ US$ 1,1 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —
