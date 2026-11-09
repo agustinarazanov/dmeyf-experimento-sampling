@@ -58,7 +58,7 @@ en carpetas están en [`experimentos/sampling_1/README.md`](experimentos/samplin
   control, y las otras tres quedan dentro del ruido de una semilla. Es exploratorio, con su propio protocolo: no es una
   variante y no cambia el veredicto de `h3`; aparece en el bloque B de la comparación. Sigue las convenciones del repo;
   falta volver a correr sus pasos 07 y 08, que hace `incorporar-aportes`.
-- **Luis** ([`experimentos/Experimentos h3 y h4/`](experimentos/Experimentos%20h3%20y%20h4/resumen_completo_de_experimentos.md))
+- **Luis** ([`experimentos/sampling_1/exploratorios/validacion_50_semillas/`](experimentos/sampling_1/exploratorios/validacion_50_semillas/resumen_original.md))
   preguntó **si las H3 le ganan al control con 50 semillas finales** y probó muestras de búsqueda que conservan todas
   las bajas (lo que pasa a ser H4). Por ahora es un script de Colab con su resumen, fuera del método: rutas de Drive,
   hiperparámetros escritos a mano, sin ledger, y elige estrategias mirando 201910, que la consigna reserva para la

@@ -86,7 +86,7 @@ Lo de arriba no cambia. Las réplicas, Ḡ_{v,k}, Δ con réplicas, δ = 5,52 M$
 réplicas de optimización.
 
 **Origen: vienen de mirar 201910.** Las cuatro variantes salen del aporte de Luis María Laguinge
-(`experimentos/Experimentos h3 y h4/`, commit `9e1889e`), que eligió el reescalado √(1/r) frente al lineal y descartó
+(`experimentos/sampling_1/exploratorios/validacion_50_semillas/`, origen en el commit `9e1889e`), que eligió el reescalado √(1/r) frente al lineal y descartó
 el muestreo por cliente mirando su ganancia en 201910. Por eso estos contrastes no cuentan con un mes de test que no se
 haya mirado. No usamos otro mes (consigna, Zulip 208135): entran todas, con regla escrita antes de correr, y ninguna se
 elige ni se descarta por 201910. El informe lo lista entre las limitaciones.

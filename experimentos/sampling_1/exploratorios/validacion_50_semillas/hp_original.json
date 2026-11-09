@@ -1,0 +1,8 @@
+{
+  "C":       {"hp": {"num_leaves": 90,  "learning_rate": 0.03713176670645638,  "min_data_in_leaf": 2309, "feature_fraction": 0.9851335432695507,  "bagging_fraction": 0.6746689291233527}, "t_opt": 747.938},
+  "U0.5":    {"hp": {"num_leaves": 207, "learning_rate": 0.04004102434149391,  "min_data_in_leaf": 1813, "feature_fraction": 0.37433100030983035, "bagging_fraction": 0.9289154018979361}, "t_opt": 328.300},
+  "U0.25":   {"hp": {"num_leaves": 66,  "learning_rate": 0.035168512739019754, "min_data_in_leaf": 653,  "feature_fraction": 0.30453714081792604, "bagging_fraction": 0.7557527934484102}, "t_opt": 153.234},
+  "U0.1":    {"hp": {"num_leaves": 36,  "learning_rate": 0.03320067439611416,  "min_data_in_leaf": 427,  "feature_fraction": 0.17592451928725802, "bagging_fraction": 0.939428308217783},  "t_opt": 76.889},
+  "U0.05":   {"hp": {"num_leaves": 46,  "learning_rate": 0.027225755409454242, "min_data_in_leaf": 985,  "feature_fraction": 0.33737440572119703, "bagging_fraction": 0.8586715100403081}, "t_opt": 66.923},
+  "H4_Hard": {"hp": {"num_leaves": 105, "learning_rate": 0.032077823268913785, "min_data_in_leaf": 196,  "feature_fraction": 0.8434748564337696,  "bagging_fraction": 0.8700909486457561}, "t_opt": 169.000}
+}

@@ -18,7 +18,7 @@ búsqueda de Optuna o en el modelo final.
 
 ## Origen: las variantes salen de mirar 201910
 
-Las cuatro variantes vienen del aporte de Luis María Laguinge (`experimentos/Experimentos h3 y h4/`, commit `9e1889e`),
+Las cuatro variantes vienen del aporte de Luis María Laguinge (`experimentos/sampling_1/exploratorios/validacion_50_semillas/`, origen en el commit `9e1889e`),
 que eligió y descartó estrategias **mirando su ganancia en 201910**: la búsqueda con hard negatives como la de mayor
 ganancia (+7,19 M$), la búsqueda con CONTINUA uniforme como descarte (−2,31 M$) y el fast-retrain como la arquitectura
 de producción (283,25 M$ contra 276,65 M$ del control a tiempo igual). No sabemos con qué mes fijó el pozo del 35 % ni
