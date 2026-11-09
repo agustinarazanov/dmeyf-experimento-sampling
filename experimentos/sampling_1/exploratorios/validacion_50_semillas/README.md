@@ -38,7 +38,9 @@ la **raíz del repo**; el paquete importa solo de `comun/` y de esta carpeta.
 las nueve estrategias y sus semillas, `escalar_hp`, el entrenamiento final por semilla (modo `full` y fast-retrain con el
 50 % de las CONTINUA y peso 2, que es `comun.muestreo.indices_por_clase` + `peso_inverso`; un test lo contrasta con la
 receta del script), los parámetros de LightGBM, la medición del tiempo (construcción del dataset + entrenamiento +
-predicción de test) y los ensambles acumulados por K.
+predicción de test) y los ensambles acumulados por K. Las estrategias se numeran 1…9; en el script de Luis van de
+`0_Control_C` a `8_IdeaC_FastRetrain_U0.25_H4_50pct` (la estrategia `k` de acá es la `k − 1` de allá).
+`calibracion_<hp>_e<k>.json` registra además el commit, `codigo_sucio` y el tipo de máquina de la corrida.
 
 **RECONSTRUIDO** (el script no lo tiene o no lo escribe; cada pieza está marcada así en el código; `design.md` D2):
 

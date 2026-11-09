@@ -1012,3 +1012,52 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   debajo del objetivo. Esta revisión: ~45 turnos, ~74.000 de contexto por turno, ≈ US$ 1,8 (presupuesto US$ 4); lo
   más pesado fue la salida completa de `--en-seco` de las 8 listas en el chat. `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — grupo 3 de `incorporar-aportes` implementado (migración del aporte de Luis, sesión headless)
+- Sesión: `70eef9b3-f905-4514-90c6-1e51f18898c8` · modelo: Sonnet · etapa: **codigo** (tareas 3.1–3.4, commits
+  `dcbb57e`, `c4d7dd6`, `969aeb9`, `53bd92e`). No dejó entrada propia; la agrega la revisión del grupo. 90 turnos y
+  US$ 1,86 según `costos.csv`.
+
+### 2026-11-09 — cierre revisión del grupo 3 de `incorporar-aportes` (migración del aporte de Luis)
+- Sesión: `a51775b5-54a3-4238-bc7d-406c6cd49a5c` · modelo: Opus · etapa: **revision** (grupo 3, tareas 3.1–3.4).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión `70eef9b3` que implementó el grupo).
+- Lista: docs/revision.md § 3 (código) sobre `exploratorios/validacion_50_semillas/` y `scripts/fase6_luis_*.txt`,
+  contra la spec delta `protocolo-experimental` y D1, D2 y D9; ítems ✓ 4/9, n/a 4, ✗ 1 corregido. Ningún ✗ abierto.
+  - ✓ Smoke `--filas 20000` en la Mac: la estrategia 8 con 2 semillas repetida en `ledger/exploracion/luis_rev3/`
+    escribe `semillas_original_e8.csv` (2 filas), ensambles y calibración; el `--agregar` de 3.4 en
+    `ledger/exploracion/luis_smoke/` tiene los 6 CSV agregados y `reporte_50_semillas_original.html`. (El paquete no
+    tiene «cuatro métodos»: se aplica a una estrategia, como pide 3.4.)
+  - ✓ Determinismo: la repetición da las mismas G, ganancia máxima y AUC en 201908 y 201910 que el smoke de 3.4, semilla
+    por semilla (`diff` solo difiere en `tiempo_s`). El paquete no registra hash de muestra (no es del ledger).
+  - n/a `optimizar` no lee 201910: el paquete no optimiza (hp fijos). 201910 se lee solo para columnas de comparación;
+    `ranking_201908`, `curva_k_201908`, `ensambles_201908` y K del presupuesto miran solo 201908, y `tabla_201910`
+    lista todas las estrategias en el orden de 201908 (código leído; test con 201908 y 201910 que ordenan distinto).
+  - n/a Columnas obligatorias del ledger: no escribe filas al ledger de corridas; sus CSV tienen las columnas de D2.
+  - ✗ → corregido `codigo_sucio`: las salidas no registraban commit, `codigo_sucio` ni tipo de máquina, y la spec pide
+    el número reproducido «en `n2-highmem-8`». Ahora `calibracion_<hp>_e<k>.json` los guarda con
+    `comun.correr.commit_y_sucio()` y `tipo_de_maquina()` (en la VM el commit llega por `COMMIT_REPO`); el smoke lo
+    escribe (`53bd92e`, `codigo_sucio: true`, `local`).
+  - n/a Filas de train = r × total: las estrategias usan el train completo o fast-retrain (`indices_por_clase` +
+    `peso_inverso`, ya testeados contra la receta del script).
+  - n/a `consolidar.py`: sin cambios en el grupo; `tests/test_consolidar.py` pasa.
+  - ✓ `vm.sh` borra la VM: `trap borrar EXIT` sin cambios; las líneas `@ <módulo> …` dejan el resto de la línea en la
+    última variable de `read`, así que pasan los 8 argumentos; `--en-seco` de `fase6_luis_1 … 9` imprime 9 VMs
+    (72 vCPU), una estrategia cada una con `--hp original --semillas 50 --presupuesto 900`.
+  - ✓ No hay datos del dataset en el repo (`git ls-files` sin parquet ni gz).
+- Otras verificaciones: `pytest` 183 verdes (antes y después de la corrección); `python -m comun.variantes --verificar`
+  pasa con el manifiesto; `experimentos/Experimentos h3 y h4/` no existe; el paquete importa solo de `comun/` y de su
+  carpeta; `hp_original.json` coincide exactamente (hp y `t_opt` de los 6 estudios) con `ESTUDIOS_HP` del script de
+  `9e1889e`; las 9 estrategias coinciden con las del script.
+- Hallazgos: (1) sin procedencia en las salidas (corregido arriba); (2) la numeración 1…9 difiere de la del script
+  (0…8): estaba dicho solo en `estrategias.py`, se sumó al README porque 4.2 habla de «la estrategia 7» (= `6_IdeaB` del
+  script, la de `H4_Hard`, coherente con `fase6_luis_7_ledger.txt`); (3) con `--filas 20000` G al corte 3.300 sale
+  negativa (el corte supera los positivos del panel chico), esperado en un smoke; (4) la sesión `70eef9b3` no dejó
+  entrada en la bitácora (agregada arriba).
+- Corregido: `validacion.py` (procedencia en `calibracion_*.json`) y `README.md` (numeración y procedencia).
+- Tag: `corridas-v3` creado sobre el commit de esta revisión (lo pushea Agustina).
+- Tokens (`comun/tokens.py`): implementación `70eef9b3`, 56 turnos (90 en `costos.csv`), contexto promedio ~118.300
+  por turno, US$ 1,86: **supera el objetivo** de 100.000. No se miró el transcript; lo probable es que haya leído entero
+  el script original de 390 líneas y el resumen al portar cuatro tareas en una sola sesión. Esta revisión: 46 turnos,
+  ~65.300 de contexto por turno, ≈ US$ 1,5 (presupuesto US$ 4); salidas largas (`--en-seco`, script original) a
+  archivo en `DATOS_DIR`. `comun/tokens.py` corrido.
+- Tutor: —

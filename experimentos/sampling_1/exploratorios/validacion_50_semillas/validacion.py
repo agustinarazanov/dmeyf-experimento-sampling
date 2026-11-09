@@ -23,6 +23,7 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 
 from comun import baseline as bl
+from comun import correr
 from comun import datos as dt
 from comun import ganancia as gn
 from comun import muestreo
@@ -299,6 +300,8 @@ def main(argv: list[str] | None = None) -> None:
     hp, t_opt = es.hp_de(e, a.hp)
     d = Datos(a.filas)
     calib = calibracion(d)
+    commit, sucio = correr.commit_y_sucio()   # procedencia: estas salidas no van al ledger de corridas
+    calib.update(commit=commit, codigo_sucio=sucio, maquina=correr.tipo_de_maquina())
     filas, ensambles = correr_estrategia(e, hp, t_opt, a.semillas, d, a.hp, a.presupuesto)
     escribir_estrategia(a.salida, a.hp, e, filas, ensambles, calib)
     print(f"estrategia {e.id}: {len(filas)} semillas en {a.salida}")

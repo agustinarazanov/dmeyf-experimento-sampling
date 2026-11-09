@@ -1,0 +1,234 @@
+{
+ "duration_api_ms": 372612,
+ "stop_reason": "end_turn",
+ "session_id": "70eef9b3-f905-4514-90c6-1e51f18898c8",
+ "total_cost_usd": 1.8554688,
+ "usage": {
+  "input_tokens": 112,
+  "cache_creation_input_tokens": 158161,
+  "cache_read_input_tokens": 6466508,
+  "output_tokens": 57595,
+  "output_tokens_details": {
+   "thinking_tokens": 12456
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 158161,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 980,
+    "cache_read_input_tokens": 170783,
+    "cache_creation_input_tokens": 838,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 838
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 112,
+   "outputTokens": 57595,
+   "cacheReadInputTokens": 6466508,
+   "cacheCreationInputTokens": 158161,
+   "webSearchRequests": 0,
+   "costUSD": 1.8554688,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 12456,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 158161,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019xzS4o75XewYnpZ4TDT9rb",
+   "tool_input": {
+    "command": "openspec instructions apply --change incorporar-aportes --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; ls experimentos/sampling_1/ledger/sesiones/; cat experimentos/sampling_1/ledger/sesiones/en_curso.txt 2>/dev/null; pgrep -f vm.sh"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Ldr2XFzjs9rZWJ7JLpWand",
+   "tool_input": {
+    "command": "openspec instructions apply --change incorporar-aportes --json > /tmp/apply.json"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01EnD6ZFEWhxPqzpv6LmMdBh",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; sed -n 176,249p openspec/changes/incorporar-aportes/design.md; git status --short | head; git ls-tree -r --name-only 9e1889e | head -30; ls experimentos experimentos/sampling_1 experimentos/sampling_1/scripts"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01QPeGRdE4hssFEY2UbqTbhS",
+   "tool_input": {
+    "command": "git ls-tree -r --name-only 9e1889e; ls experimentos experimentos/sampling_1 experimentos/sampling_1/scripts experimentos/sampling_1/exploratorios; ls comun"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Vc66KovKNqNS4zvFsn8BfE",
+   "tool_input": {
+    "command": "git ls-tree -r --name-only 9e1889e"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01HSvJPp5fFf8FjJKkb69ibB",
+   "tool_input": {
+    "command": "sed -n 195,301p comun/variantes.py; cat scripts/lanzar_fase.sh | head -60; ls scripts; grep -n \"exploratorio\\|luis\" -i docs/metodo.md | head -20; cat experimentos/Experimentos\\ h3\\ y\\ h4/resumen_completo_de_experimentos.md | head -70; sed -n 1,25p experimentos/h3/sensibilidad_muestra/tests/test_h3sm_ganancia.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DJRx2vLiSwwPG6gYXhNv81",
+   "tool_input": {
+    "command": "D=experimentos/sampling_1/exploratorios/validacion_50_semillas; mkdir -p $D/tests && touch $D/__init__.py && git show 9e1889e:\"experimentos/Experimentos h3 y h4/script_de_validaci_n_50_semillas.py\" | head -3; git log --oneline -3 -- \"experimentos/Experimentos h3 y h4\"; git ls-files \"experimentos/Experimentos h3 y h4\""
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01SJQrch8RXy4GVUCukjE69X",
+   "tool_input": {
+    "command": "sed -i 's#`experimentos/Experimentos h3 y h4/`, commit `9e1889e`#`experimentos/sampling_1/exploratorios/validacion_50_semillas/`, origen en el commit `9e1889e`#' experimentos/h3/docs/hipotesis.md experimentos/h4/docs/hipotesis.md\nsed -i 's#\\[`experimentos/Experimentos h3 y h4/`\\](experimentos/Experimentos%20h3%20y%20h4/resumen_completo_de_experimentos.md)#[`experimentos/sampling_1/exploratorios/validacion_50_semillas/`](experimentos/sampling_1/exploratorios/validacion_50_semillas/resumen_original.md)#' README.md\ngrep -rn \"Experimentos h3 y h4\" README.md experimentos/h?/docs/hipotesis.md; python -m comun.variantes --verificar | tail -3; git add -A experimentos README.md; git status --short | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Vonfn7nThxoWvbUZKHQyMr",
+   "tool_input": {
+    "command": "sed -i 's/^- \\[ \\] 3.1 /- [x] 3.1 /' openspec/changes/incorporar-aportes/tasks.md && git add experimentos/sampling_1/exploratorios experimentos/h3/docs/hipotesis.md experimentos/h4/docs/hipotesis.md README.md openspec/changes/incorporar-aportes/tasks.md \"experimentos/Experimentos h3 y h4\" && git commit -q -m \"incorporar-aportes 3.1: paquete de Luis en sampling_1/exploratorios/validacion_50_semillas (estrategias.py, validacion.py y hp_original.json portados del commit 9e1889e sin cambios de lógica; datos de comun.datos, ganancia de comun.ganancia, sin Colab, Drive ni FACTOR_VM); resumen movido a resumen_original.md y script original quitado (queda en 9e1889e); experimentos/Experimentos h3 y h4/ ya no existe; referencias de README, h3 y h4 al nuevo paquete\" && git log --oneline -1"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019FSdr4kCLDUog2S3Mo4amc",
+   "tool_input": {
+    "command": "cat >> experimentos/sampling_1/exploratorios/validacion_50_semillas/validacion.py <<'EOF'\n\n\n# --- RECONSTRUIDO: salidas por estrategia y semilla, presupuesto, agregados (design.md D1, D2, D9) --------------------------\n# El script original anuncia un `resumen_50_semillas.csv` que nunca escribe; lo de abajo es nuestra interpretación.\n\nimport argparse\nimport base64\nimport json\nfrom io import BytesIO\nfrom pathlib import Path\n\nimport pandas as pd\n\nfrom comun import rutas\n\nfrom . import presupuesto as pr\n\n#: Dónde escribe cada VM (se sincroniza con el bucket como parte del ledger de `sampling_1`) y de dónde agrega `--agregar`.\nSALIDA = rutas.ledger(\"sampling_1\") / \"luis\"\n#: Tope de semillas cuando el presupuesto pide más que las 50 (el control a 900 s da K ≈ 4; el fast-retrain más de 60).\nTOPE_SEMILLAS = 300\nREFERENCIA_CALIBRACION_S = 16.2448   # un final de U0.1 en la VM de Luis; con él calculaba su FACTOR_VM\n\n\ndef calibracion(d: Datos) -> dict:\n    \"\"\"Lo que Luis usaba como `FACTOR_VM`: no se aplica a ningún tiempo, se registra aparte para explicar diferencias.\"\"\"\n    hp = es.hp_original()[\"U0.1\"][\"hp\"]\n    t0 = time.perf_counter()\n    lgb.train({**bl.PARAMS_FIJOS, \"bagging_freq\": 1, **hp, \"seed\": 100003}, d.dtrain_full)\n    t = d.t_construct_full + (time.perf_counter() - t0)\n    return {\"referencia_s\": REFERENCIA_CALIBRACION_S, \"medido_s\": t, \"factor_vm\": REFERENCIA_CALIBRACION_S / t}\n\n\ndef correr_con_presupuesto(e: es.Estrategia, hp: dict, t_opt: float, n: int, d: Datos, modo_hp: str,\n                           presupuesto_s: float | None) -> tuple[list[dict], list[dict]]:\n    \"\"\"Las `n` semillas de Luis y, si `presupuesto_s` y K > n, las semillas extra hasta K (hasta `TOPE_SEMILLAS`).\"\"\"\n    filas, ensambles = correr_estrategia(e, hp, t_opt, es.semillas(n), d, modo_hp)\n    while presupuesto_s:\n        k = min(TOPE_SEMILLAS, pr.k_presupuesto(t_opt, float(np.mean([f[\"tiempo_s\"] for f in filas])), presupuesto_s))\n        if k <= len(filas):\n            break\n        todas = es.semillas(k)[len(filas):]\n        # el ensamble de las K primeras sigue al de las n: se vuelve a correr desde cero con las semillas extendidas\n        # para no guardar predicciones; las primeras n repiten el mismo resultado (`deterministic=True`)\n        filas, ensambles = correr_estrategia(e, hp, t_opt, es.semillas(len(filas) + len(todas)), d, modo_hp)\n    return filas, ensambles\n\n\ndef escribir_estrategia(salida: Path, modo_hp: str, e: es.Estrategia, filas: list[dict], ensambles: list[dict],\n                        calib: dict) -> None:\n    salida.mkdir(parents=True, exist_ok=True)\n    pd.DataFrame(filas).to_csv(salida / f\"semillas_{modo_hp}_e{e.id}.csv\", index=False)\n    pd.DataFrame(ensambles).to_csv(salida / f\"ensambles_{modo_hp}_e{e.id}.csv\", index=False)\n    (salida / f\"calibracion_{modo_hp}_e{e.id}.json\").write_text(json.dumps(calib, indent=2))\n\n\n# --- agregados: todo lo que ordena o decide sale de 201908 (D9) ------------------------------------------------------------\n\ndef ranking_201908(resumen: pd.DataFrame) -> pd.DataFrame:\n    \"\"\"Una fila por estrategia, ordenada por G media al corte N* en 201908. Solo mira columnas de 201908.\"\"\"\n    v = resumen[[\"estrategia\", \"nombre\", \"g_201908\", \"gmax_201908\", \"auc_201908\", \"tiempo_s\"]]\n    r = v.groupby([\"estrategia\", \"nombre\"], as_index=False).agg(\n        n=(\"g_201908\", \"size\"), g_201908=(\"g_201908\", \"mean\"), g_201908_sd=(\"g_201908\", \"std\"),\n        gmax_201908=(\"gmax_201908\", \"mean\"), auc_201908=(\"auc_201908\", \"mean\"), tiempo_s=(\"tiempo_s\", \"mean\"))\n    r = r.sort_values([\"g_201908\", \"estrategia\"], ascending=[False, True]).reset_index(drop=True)\n    r.insert(0, \"puesto_201908\", range(1, len(r) + 1))\n    return r\n\n\ndef _ens(ensambles: pd.DataFrame, estrategia: int, k: int, mes: str) -> float:\n    e = ensambles[ensambles[\"estrategia\"] == estrategia].sort_values(\"k\")\n    return float(e[mes].iloc[min(k, len(e)) - 1])\n\n\ndef curva_k_201908(ensambles: pd.DataFrame) -> pd.DataFrame:\n    \"\"\"Ganancia en 201908 del ensamble de las primeras K semillas, K = 1…n (la curva según K de Luis, pero en 201908).\"\"\"\n    return ensambles[[\"estrategia\", \"k\", \"g_201908\"]].copy()\n\n\ndef ensambles_201908(ranking: pd.DataFrame, ensambles: pd.DataFrame) -> pd.DataFrame:\n    \"\"\"Ensambles de 10 y de 50 semillas (los del script de Luis) en 201908, en el orden del ranking.\"\"\"\n    out = ranking[[\"puesto_201908\", \"estrategia\", \"nombre\"]].copy()\n    for k in (10, 50):\n        out[f\"ens{k}_201908\"] = [_ens(ensambles, int(s), k, \"g_201908\") for s in out[\"estrategia\"]]\n    return out\n\n\ndef tabla_201910(ranking: pd.DataFrame, resumen: pd.DataFrame, ensambles: pd.DataFrame, ks: dict[int, int]) -> pd.DataFrame:\n    \"\"\"Todas las estrategias en 201910, en el orden del ranking de 201908 y sin elegir ninguna. `ks[estrategia]` es el K del\n    presupuesto (D2); también se informan los ensambles de 10 y 50 del script de Luis.\"\"\"\n    t = resumen[[\"estrategia\", \"g_201910\", \"auc_201910\"]].groupby(\"estrategia\", as_index=False).mean()\n    out = ranking[[\"puesto_201908\", \"estrategia\", \"nombre\"]].merge(t, on=\"estrategia\")\n    for k in (10, 50):\n        out[f\"ens{k}_201910\"] = [_ens(ensambles, int(s), k, \"g_201910\") for s in out[\"estrategia\"]]\n    out[\"k_presupuesto\"] = [ks[int(s)] for s in out[\"estrategia\"]]\n    out[\"ens_k_201910\"] = [_ens(ensambles, int(s), ks[int(s)], \"g_201910\") if ks[int(s)] > 0 else float(\"nan\")\n                           for s in out[\"estrategia\"]]\n    return out\n\n\ndef leer(salida: Path, modo_hp: str) -> tuple[pd.DataFrame, pd.DataFrame]:\n    sem = sorted(salida.glob(f\"semillas_{modo_hp}_e*.csv\"))\n    if not sem:\n        raise FileNotFoundError(f\"no hay semillas_{modo_hp}_e*.csv en {salida}\")\n    resumen = pd.concat([pd.read_csv(p) for p in sem], ignore_index=True)\n    ensambles = pd.concat([pd.read_csv(p) for p in sorted(salida.glob(f\"ensambles_{modo_hp}_e*.csv\"))], ignore_index=True)\n    return resumen, ensambles\n\n\ndef _png(fig) -> str:\n    buf = BytesIO()\n    fig.tight_layout()\n    fig.savefig(buf, format=\"png\", dpi=120)\n    import matplotlib.pyplot as plt\n    plt.close(fig)\n    return base64.b64encode(buf.getvalue()).decode()\n\n\ndef html_reporte(ranking: pd.DataFrame, resumen: pd.DataFrame, curva: pd.DataFrame, ens: pd.DataFrame,\n                 pres: pd.DataFrame, t910: pd.DataFrame) -> str:\n    import matplotlib\n    matplotlib.use(\"Agg\")\n    import matplotlib.pyplot as plt\n\n    orden = list(ranking[\"estrategia\"])\n    fig, ax = plt.subplots(figsize=(10, 5))\n    ax.boxplot([resumen.loc[resumen[\"estrategia\"] == s, \"g_201908\"] / 1e6 for s in orden], vert=False,\n               tick_labels=[f\"{s}_{n}\" for s, n in zip(ranking[\"estrategia\"], ranking[\"nombre\"])], showmeans=True)\n    ax.invert_yaxis()\n    ax.set_xlabel(\"G al corte N* = 3.300 en 201908 (M$)\")\n    img1 = _png(fig)\n    fig, ax = plt.subplots(figsize=(10, 5))\n    for s in orden:\n        c = curva[curva[\"estrategia\"] == s]\n        ax.plot(c[\"k\"], c[\"g_201908\"] / 1e6, label=str(s))\n    ax.set_xlabel(\"K (semillas del ensamble)\")\n    ax.set_ylabel(\"G en 201908 (M$)\")\n    ax.legend(title=\"estrategia\", ncol=3)\n    img2 = _png(fig)\n    f = {\"float_format\": lambda x: f\"{x:,.2f}\", \"index\": False}\n    return f\"\"\"<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\"><title>Validación con 50 semillas (aporte de Luis)</title></head><body>\n<h1>Validación con 50 semillas (aporte de Luis)</h1>\n<p>RECONSTRUIDO (design.md D2 y D9): todo lo que ordena o elige sale de 201908; 201910 va al final, sin elegir.</p>\n<h2>Ranking en 201908</h2>{ranking.to_html(**f)}\n<img src=\"data:image/png;base64,{img1}\" alt=\"G en 201908 por estrategia\">\n<h2>Ganancia en 201908 según K</h2><img src=\"data:image/png;base64,{img2}\" alt=\"G según K\">\n<h2>Ensambles de 10 y 50 semillas en 201908</h2>{ens.to_html(**f)}\n<h2>Presupuesto de 900 s</h2>{pres.to_html(**f)}\n<h2>201910, todas las estrategias, sin elegir</h2>{t910.to_html(**f)}\n</body></html>\"\"\"\n\n\ndef agregar(salida: Path, modo_hp: str = \"original\", presupuesto_s: float = pr.PRESUPUESTO_S) -> dict[str, Path]:\n    \"\"\"Junta los CSV de las VMs: resumen por semilla, ranking y curva según K en 201908, presupuesto, 201910 y el HTML.\"\"\"\n    resumen, ensambles = leer(salida, modo_hp)\n    ranking = ranking_201908(resumen)\n    curva = curva_k_201908(ensambles)\n    ens = ensambles_201908(ranking, ensambles)\n    pres = pr.tabla_presupuesto(resumen, ensambles, presupuesto_s)\n    ks = {int(r.estrategia): int(r.k_presupuesto) for r in pres.itertuples()}\n    t910 = tabla_201910(ranking, resumen, ensambles, ks)\n    rutas_out = {\"resumen\": salida / f\"resumen_50_semillas_{modo_hp}.csv\", \"ranking\": salida / f\"ranking_201908_{modo_hp}.csv\",\n                 \"curva\": salida / f\"curva_k_201908_{modo_hp}.csv\", \"ensambles\": salida / f\"ensambles_201908_{modo_hp}.csv\",\n                 \"presupuesto\": salida / f\"presupuesto_{modo_hp}.csv\", \"t201910\": salida / f\"tabla_201910_{modo_hp}.csv\",\n                 \"html\": salida / f\"reporte_50_semillas_{modo_hp}.html\"}\n    resumen.to_csv(rutas_out[\"resumen\"], index=False)\n    ranking.to_csv(rutas_out[\"ranking\"], index=False)\n    curva.to_csv(rutas_out[\"curva\"], index=False)\n    ens.to_csv(rutas_out[\"ensambles\"], index=False)\n    pres.to_csv(rutas_out[\"presupuesto\"], index=False)\n    t910.to_csv(rutas_out[\"t201910\"], index=False)\n    rutas_out[\"html\"].write_text(html_reporte(ranking, resumen, curva, ens, pres, t910), encoding=\"utf-8\")\n    return rutas_out\n\n\ndef parsear(argv: list[str] | None = None) -> argparse.Namespace:\n    p = argparse.ArgumentParser(description=__doc__.split(\"\\n\")[0])\n    p.add_argument(\"--estrategia\", type=int, help=\"1…9; una VM por estrategia\")\n    p.add_argument(\"--hp\", choices=[\"original\", \"ledger\"], default=\"original\",\n                   help=\"original: hp_original.json (réplica fiel); ledger: nuestros hp/*.json (H4_Hard sale de NH0.1)\")\n    p.add_argument(\"--semillas\", type=int, default=es.N_SEMILLAS, help=\"cantidad de semillas (50 = las de Luis)\")\n    p.add_argument(\"--presupuesto\", type=float, default=None,\n                   help=\"segundos; si K = ⌊(P − T_opt)/T_final⌋ > --semillas, corre semillas extra hasta K\")\n    p.add_argument(\"--filas\", type=int, default=None, help=\"smoke test: panel de ~N filas\")\n    p.add_argument(\"--salida\", type=Path, default=SALIDA)\n    p.add_argument(\"--agregar\", action=\"store_true\", help=\"junta los CSV de --salida y arma agregados y HTML (sin datos)\")\n    a = p.parse_args(argv)\n    if not a.agregar and a.estrategia is None:\n        p.error(\"falta --estrategia (o --agregar)\")\n    return a\n\n\ndef main(argv: list[str] | None = None) -> None:\n    a = parsear(argv)\n    logging.basicConfig(level=logging.INFO, format=\"%(asctime)s %(name)s %(message)s\")\n    if a.agregar:\n        for k, v in agregar(a.salida, a.hp, a.presupuesto or pr.PRESUPUESTO_S).items():\n            print(f\"{k}: {v}\")\n        return\n    e = es.estrategia(a.estrategia)\n    hp, t_opt = es.hp_de(e, a.hp)\n    d = Datos(a.filas)\n    calib = calibracion(d)\n    filas, ensambles = correr_con_presupuesto(e, hp, t_opt, a.semillas, d, a.hp, a.presupuesto)\n    escribir_estrategia(a.salida, a.hp, e, filas, ensambles, calib)\n    print(f\"estrategia {e.id}: {len(filas)} semillas en {a.salida}\")\n\n\nif __name__ == \"__main__\":\n    main()\nEOF"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DG3NfmaDrWLBNfofPCg5q9",
+   "tool_input": {
+    "command": "cd experimentos/sampling_1/scripts && M=experimentos.sampling_1.exploratorios.validacion_50_semillas.validacion && for i in 1 2 3 4 5 6 7 8 9; do printf '# Aporte de Luis, estrategia %s (--hp original): 50 semillas y, si el presupuesto de 900 s pide más, las extra. Cambio incorporar-aportes, D1, D2 y D6.\\n@ %s --estrategia %s --hp original --semillas 50 --presupuesto 900\\n' $i $M $i > fase6_luis_$i.txt; done; printf '# Aporte de Luis, estrategia 7 con --hp ledger (H4_Hard sale de NH0.1): corre despues de la tanda de variantes. Cambio incorporar-aportes, D1 y D6.\\n@ %s --estrategia 7 --hp ledger --semillas 50 --presupuesto 900\\n' $M > fase6_luis_7_ledger.txt; cat fase6_luis_7_ledger.txt; ls | grep luis"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01M6BXfWEs86EE94Mcv9TJi8",
+   "tool_input": {
+    "command": "python -m comun.variantes --verificar | tail -4; echo \"rc=$?\"; scripts/lanzar_fase.sh --en-seco fase6_luis_1 fase6_luis_2 fase6_luis_3 fase6_luis_4 fase6_luis_5 fase6_luis_6 fase6_luis_7 fase6_luis_8 fase6_luis_9 | grep -E \"^== |python -m\" | head -30"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01BqnSMbg5b1p5Nz4nA3HAXc",
+   "tool_input": {
+    "command": "bash -n /tmp/remoto-c4d7dd6.sh && echo sintaxis-ok; grep -n '\"@\"' -A4 /tmp/remoto-c4d7dd6.sh | head -8"
+   }
+  },
+  {
+   "tool_name": "Read",
+   "tool_use_id": "toolu_01NMoFQSHmhxfRmn2hkzy9r8",
+   "tool_input": {
+    "file_path": "/tmp/remoto-c4d7dd6.sh",
+    "offset": 18,
+    "limit": 25
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01UAK7nuKBb3VvoNi66Ab4qg",
+   "tool_input": {
+    "command": "ls ~/datos/experimentos-dmeyf/; python -m experimentos.sampling_1.exploratorios.validacion_50_semillas.validacion --estrategia 8 --semillas 2 --filas 20000 --salida experimentos/sampling_1/ledger/exploracion/luis_smoke > /tmp/smoke_luis.log 2>&1; tail -5 /tmp/smoke_luis.log"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01HGLwN8UeQFkP2LXfQQf1DR",
+   "tool_input": {
+    "command": "git status --short | head; git check-ignore -v experimentos/sampling_1/ledger/exploracion/luis_smoke/semillas_original_e8.csv"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 90,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Las tareas 3.1 a 3.4 están hechas y commiteadas. La 3.5 (revisión en sesión limpia y tag `corridas-v3`) la dejé sin tocar, como pediste. No lancé ninguna VM, así que no hay `en_curso.txt` ni `bloqueo.txt`.\n\n`pytest` pasa completo (183 tests, 23 nuevos del paquete) y `python -m comun.variantes --verificar` acepta el manifiesto. `scripts/lanzar_fase.sh --en-seco` con las nueve listas imprime las 9 VMs.\n\n- **3.1:** el paquete de Luis está en `experimentos/sampling_1/exploratorios/validacion_50_semillas/`. Importa solo de `comun/` y de su carpeta, y `experimentos/Experimentos h3 y h4/` ya no existe. Actualicé tres referencias que apuntaban a la carpeta vieja: el `README.md` de la raíz y los `hipotesis.md` de h3 y h4.\n- **3.2:** las reconstrucciones de D2 están marcadas en el código y en el README. Los tests con datos sintéticos comprueban que el ranking y la curva según K salen solo de 201908, incluso si 201910 ordena al revés.\n- **3.3:** agregué `exploratorio.json` y las listas `fase6_luis_1` a `fase6_luis_9`. También agregué `fase6_luis_7_ledger` para la estrategia 7 con `--hp ledger`; es la lista de la tarea 4.2, que corre después de la tanda de variantes.\n- **3.4:** el smoke de la estrategia 8 con 2 semillas y `--filas 20000`, más `--agregar`, escribió los CSV y el HTML. La salida quedó en `ledger/exploracion/`, que git ignora, así que no se commiteó.\n\n- **Cambio en `scripts/vm.sh`:** el script solo sabía correr `comun.correr`, y el paquete de Luis es otro módulo. Le agregué que una línea `@ <módulo> <args>` corra `python -m <módulo> <args>`, sin tocar el comportamiento de las líneas existentes. Sin este cambio las listas de Luis no se podían lanzar. Si preferís resolverlo de otra forma, avisá.\n- **Más de 50 semillas:** las listas usan `--presupuesto 900`. Con ese flag, si K supera las 50 semillas, la propia VM sigue corriendo semillas hasta K, con un tope de 300.\n- **Carpeta de salida:** cada VM escribe en `experimentos/sampling_1/ledger/luis/`, que el lanzador ya sincroniza con el bucket.\n\nEl código y las listas de Luis quedan en HEAD (`53bd92e`), que es lo que `vm.sh` empaqueta.",
+ "ttft_ms": 1456,
+ "type": "result",
+ "duration_ms": 2143810,
+ "uuid": "8f9bc39c-6325-4f29-b711-118b210198cb",
+ "ttft_stream_ms": 804,
+ "time_to_request_ms": 125,
+ "first_content_frame_ms": 804,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 112,
+   "outputTokens": 57595,
+   "cacheReadInputTokens": 6466508,
+   "cacheCreationInputTokens": 158161,
+   "webSearchRequests": 0,
+   "costUSD": 1.8554688,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 12456,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 158161,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

@@ -21,7 +21,7 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 - [x] 3.2 Reconstrucciones de D2 marcadas como tales en código y README: CSV por estrategia y semilla (G, ganancia máxima y AUC en 201908 y G y AUC en 201910), `presupuesto.py` (900 s, semillas extendidas) y `--agregar` con el ranking y la curva según K en 201908 (D9); tests sin datos (ningún orden, máximo ni K se calcula sobre 201910: test con datos sintéticos donde 201908 y 201910 ordenan distinto) (semillas 50 + extendidas con la fórmula de Luis, `--hp original` y `--hp ledger` iguales en `C` y `U*`, K del presupuesto con tiempos sintéticos); verificar que `pytest` pasa
 - [x] 3.3 `README.md` (autor, fecha, commit de origen, protocolo, diferencias con el nuestro, qué se portó y qué se reconstruyó, tabla reportado/reproducido vacía) y `exploratorio.json`; listas `sampling_1/scripts/fase6_luis_<estrategia>.txt`; verificar que `comun.variantes --verificar` acepta el manifiesto y que `--en-seco` imprime las 9 VMs
 - [x] 3.4 Smoke en la Mac de una estrategia con 2 semillas sobre `--filas 20000` y `--agregar`; verificar que se escriben el CSV y el HTML
-- [ ] 3.5 Revisión en sesión limpia del grupo 3 con la lista de código y cierre en la bitácora; crear el tag `corridas-v3` (lo pushea Agustina)
+- [x] 3.5 Revisión en sesión limpia del grupo 3 con la lista de código y cierre en la bitácora; crear el tag `corridas-v3` (lo pushea Agustina)
 
 ## 4. Corridas (VM, todas las lanza Agustina)
 
