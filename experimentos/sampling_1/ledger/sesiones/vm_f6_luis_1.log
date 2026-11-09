@@ -1,9 +1,1 @@
 == creando sampling-f6-luis-1 (n2-highmem-8, Ice Lake, spot) en northamerica-northeast2-b
-Created [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f6-luis-1].
-WARNING: Some requests generated warnings:
- - Disk size: '256 GB' is larger than image size: '70 GB'. You might need to resize the root repartition manually if the operating system does not support automatic resizing. See https://cloud.google.com/compute/docs/disks/add-persistent-disk#resize_pd for details.
-
-NAME                ZONE                       MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
-sampling-f6-luis-1  northamerica-northeast2-b  n2-highmem-8  true         10.188.0.30  34.130.28.112  RUNNING
-== copiando el repo @ 06ec3f3
-== corriendo; seguimiento: gcloud compute --project=proj-uba-261012163242176 ssh sampling-f6-luis-1 --zone=northamerica-northeast2-b --command='tail -f ~/corrida.log'
