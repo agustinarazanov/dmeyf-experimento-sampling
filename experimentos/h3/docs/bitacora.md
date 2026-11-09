@@ -77,3 +77,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   (tabla, `replicas.csv`, `apareado.csv`, medianas de `feature_fraction`, constantes del diseño); una fila alterada lo
   hace salir con 1. Límite conocido: un entero chico puede coincidir por casualidad con otra fuente.
 - Pendiente: 5.2 (informe conjunto, guion y README) y la revisión en sesión limpia (5.3).
+
+### 2026-11-09 — cierre revisión del informe (`h3-semillas-optuna` 5.3)
+
+- Sesión limpia headless `8240957c-794f-41de-9371-672f20033d70`, etapa `revision`, lista de `docs/revision.md` § 5;
+  detalle ítem por ítem en la bitácora de `sampling_1`. Ningún ✗ abierto.
+- Los veredictos de D4 se mantienen. Corrección: «apoya (B)» se presenta como el nombre de la regla y se agrega que
+  Ḡ_{C,0} (276,10 M$) queda arriba de la media de `C` con réplicas (275,92 M$): Δ se achica porque la réplica 0 de
+  `H3-0.1` quedó arriba de su media (278,22 M$), no porque el control haya salido bajo. `verificar_informe_h3` pasa
+  (107 números, 0 sin fuente).

@@ -89,9 +89,11 @@ Figuras: tiempo contra ganancia con el rango entre réplicas y descomposición d
 - **H3, confirmada también con réplicas** ([`h3`](../../h3/informe/informe.md)): `H3-0.1` y `H3-0.25` no pierden con
   réplicas (cotas inferiores −0,88 y −1,78 M$, contra −δ = −5,52 M$) y aceleran 8,30 y 4,53 veces. Con réplicas Δ se
   achica: de 4,07 a 2,30 M$ en `H3-0.1` y de 4,18 a 1,81 M$ en `H3-0.25`.
-- **Mecanismo: apoya (B), el control tuvo mala suerte.** El IC de Δ con réplicas de `H3-0.1` contiene a 0 y la réplica 0
-  de `C` (276,10 M$) quedó debajo de la mediana de sus 8 réplicas. No hay evidencia de que la muestra regularice: H3
-  no pierde, pero tampoco le gana al control.
+- **Mecanismo: apoya (B)** (la regla pre-registrada "el control tuvo mala suerte"). El IC de Δ con réplicas de `H3-0.1`
+  contiene a 0 y la réplica 0 de `C` (276,10 M$) quedó debajo de la mediana de sus 8 réplicas. No hay evidencia de que
+  la muestra regularice: H3 no pierde, pero tampoco le gana al control. La regla se cumple, pero la réplica 0 de `C`
+  está arriba de la media con réplicas (275,92 M$): Δ se achica porque la réplica 0 de las H3 había salido alta, no
+  porque el control haya salido bajo.
 - **`H3-0.05`, confirmada**: no pierde con réplicas y A = 11,82 (≥ 8). En la réplica 0 salía *gana*; con réplicas no.
 - **`H3R-0.1`, no cambia**: reescalar `min_data_in_leaf` × √10 da −0,54 M$ [−1,88; 0,81] contra `H3-0.1`.
 - U0.25 y H3-0.25 comparten el estudio de Optuna de la réplica 0, o sea los mismos hiperparámetros. U0.25 pierde y
@@ -154,8 +156,8 @@ Optuna contra 35 s de un final; `control/ledger/estudios.csv`), y los hiperpará
 sirven para el total.
 
 Lo que las réplicas corrigen es el tamaño de la ventaja: con una sola optimización, H3 parecía ganarle al control por
-unos 4 M$; con 8 réplicas la diferencia baja a cerca de la mitad (1,76 a 2,30 M$) y su IC contiene a 0. El control había tenido mala suerte en su
-única optimización (B). La respuesta práctica no cambia (H3 no pierde y acelera), pero no hay que venderla como una
+unos 4 M$; con 8 réplicas la diferencia baja a cerca de la mitad (1,76 a 2,30 M$) y su IC contiene a 0. La regla de mecanismo da (B), pero la suerte de
+la réplica 0 estaba más en las H3 que en el control. La respuesta práctica no cambia (H3 no pierde y acelera), pero no hay que venderla como una
 mejora de ganancia. Para comparar variantes con Optuna, más semillas finales no alcanzan: hay que repetir la
 optimización.
 

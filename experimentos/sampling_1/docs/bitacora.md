@@ -850,7 +850,8 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Tutor: —
 
 ### 2026-11-09 — grupo 5 de `h3-semillas-optuna` (informe, sesión headless)
-- Sesión headless de aplicación del grupo 5 · modelo: Opus · etapa: **informe** (tareas 5.1–5.2).
+- Sesión headless de aplicación del grupo 5 (`5555c3ce-e19b-44b4-b52e-7ced72269b7d`, id agregado en la revisión) ·
+  modelo: Opus · etapa: **informe** (tareas 5.1–5.2).
 - 5.1: `h3/informe/informe.md` con los veredictos de D4 (detalle en la bitácora de `h3`); `scripts/verificar_informe_h3.py`.
 - 5.2: `informe/informe.md` reescrito: § Diseño suma la fase 5; § Resultados copia los bloques A y B de
   `tabla_resultados.md` (27 líneas de tabla idénticas, comprobado por script) y los comenta (H3 confirmada con
@@ -864,3 +865,41 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   identificadores listados en `NO_RESULTADOS`), 22 enlaces existen; un número cambiado lo hace salir con 1. Los enlaces
   del informe conjunto (13) y del de `h3` (7) existen.
 - Pendiente: revisión en sesión limpia de la etapa informe (5.3).
+
+### 2026-11-09 — cierre revisión del grupo 5 de `h3-semillas-optuna` (informe)
+- Sesión: `8240957c-794f-41de-9371-672f20033d70` · modelo: Opus · etapa: **revision** (grupo 5, tareas 5.1–5.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 5 (informe) sobre `informe/informe.md`, `informe/guion.md`, `h3/informe/informe.md` y la
+  respuesta corta del README. Ningún ✗ abierto.
+  - ✓ Reglas escritas: los cuatro veredictos de `h3/informe/informe.md` § Veredictos siguen las reglas 1–4 de
+    `h3/docs/hipotesis.md` § Predicciones y reglas (cotas contra −5,52 M$; (A) exige *gana* y no se cumple; (B) se
+    cumple con Ḡ_{C,0} = 276,10 < mediana 276,49 M$, comprobado en `control/ledger/replicas.csv`; `H3-0.05` con
+    A ≥ 8; `H3R-0.1` con el IC t de D). Sin reglas nuevas.
+  - ✗→✓ Cada afirmación con fuente: `verificar_informe_h3` (107 números, 0 sin fuente) y `verificar_readme` (25
+    números, 22 enlaces) pasan; los 748 s de Optuna del control están en `control/ledger/estudios.csv`. Pero «el
+    control tuvo mala suerte», usado como explicación de por qué se achica Δ (informe conjunto, informe de `h3`, guion
+    y README), no lo sostienen las fuentes: Ḡ_{C,0} = 276,10 M$ está debajo de la mediana pero **arriba de la media**
+    con réplicas (275,92 M$), y Δ baja porque la media con réplicas de `H3-0.1` (278,22 M$) queda debajo de su
+    réplica 0 (276,10 + 4,07). Corregido abajo.
+  - ✓ Refutaciones y empates con el mismo peso: H2 refutada, H1 ninguna de las dos, `H3R-0.1` *no cambia* con la
+    predicción (*mejora*) dicha como no cumplida, `H3-0.05` «salía *gana*; con réplicas ya no».
+  - ✓ Limitaciones: semillas y suerte de Optuna (réplicas solo en `C` y H3, R = 8 cerrado, 50 semillas no alcanzan),
+    un solo mes de test (201910, con el bootstrap de clientes) y la adaptación de H2 (`bagging_fraction`, remitida al
+    informe de `h2` y nombrada en el guion).
+  - ✓ Guion: 0:00–10:00, pregunta → hipótesis → diseño → limitaciones → resultados → conclusión → qué sigue.
+  - ✓ El guion no explica el baseline (lo nombra y lo sigue).
+  - ✓ Bibliografía lista para Zulip (LightGBM, Friedman, Optuna, TPE, Bolaños 208135). No se posteó.
+- Hallazgos:
+  1. «El control tuvo mala suerte» leído como causa (arriba): el veredicto *apoya (B)* es correcto por la regla, pero
+     su nombre sugiere que el control salió bajo en la réplica 0, y salió arriba de su media; la suerte estaba en las
+     H3.
+  2. La entrada del grupo 5 no tenía id de sesión, así que `comun/tokens.py` la dejaba `sin-etapa`.
+- Correcciones: el veredicto *apoya (B)* queda; se aclara que es el nombre de la regla pre-registrada y que la suerte de
+  la réplica 0 estaba más en las H3 que en el control, en `h3/informe/informe.md` (regla 2 y conclusión),
+  `informe/informe.md` (Mecanismo y Conclusiones), `guion.md` (H3 con réplicas) y README (respuesta corta). Solo cifras
+  que ya estaban en las fuentes; los dos verificadores pasan después del cambio. Id `5555c3ce…` agregado a la entrada
+  del grupo 5.
+- Tokens: la implementación (`5555c3ce`) tuvo 46 turnos y ~103.500 de contexto por turno, arriba del objetivo; lo más
+  probable (estimación del revisor) es la lectura y reescritura de dos informes largos con tablas de 10 columnas.
+  Esta revisión: ~20 turnos, ≈ US$ 1 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —

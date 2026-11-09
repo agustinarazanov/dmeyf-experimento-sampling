@@ -64,11 +64,14 @@ antes de las corridas.
    (−0,88 y −1,78 M$) quedan por encima de −5,52 M$. La respuesta al tutor se sostiene: el tradeoff vale la pena. Con
    réplicas, Δ baja de 4,07 a 2,30 M$ en `H3-0.1` y de 4,18 a 1,81 M$ en `H3-0.25`: cerca de la mitad de la ventaja
    de la réplica 0 era suerte de Optuna.
-2. **A contra B: apoya (B), el control tuvo mala suerte.** En `H3-0.1`, el IC de Δ con réplicas, [−0,88; 5,47] M$,
+2. **A contra B: apoya (B)** (la regla pre-registrada "el control tuvo mala suerte"). En `H3-0.1`, el IC de Δ con réplicas, [−0,88; 5,47] M$,
    contiene a 0, y Ḡ_{C,0} = 276,10 M$ queda debajo de la mediana de las 8 Ḡ_{C,k}, 276,49 M$. La condición de (A) no
    se cumple: Δ con réplicas no *gana* (cota inferior −0,88 < 0), aunque la mediana de `feature_fraction` sí es menor en
    `H3-0.1` (0,518) que en `C` (0,641). Con los datos no se distingue una ventaja de H3 sobre el control: H3 *no
-   pierde*, pero no se puede decir que regularice.
+   pierde*, pero no se puede decir que regularice. La regla se cumple, pero su nombre se lee de más: Ḡ_{C,0} queda
+   debajo de la mediana y arriba de la media de las réplicas de `C` (275,92 M$). Δ se achica porque la réplica 0 de
+   `H3-0.1` quedó arriba de su media entre réplicas (278,22 M$), no porque el control haya salido bajo: la suerte de
+   la réplica 0 estaba más en H3 que en `C`.
 3. **`H3-0.05`: confirmada.** *No pierde* con réplicas (cota inferior −1,02 ≥ −5,52 M$) y A = 11,82 ≥ 8, con T como
    mediana entre réplicas (83 s en `H3-0.05`). En la réplica 0 salía *gana* ([1,77; 5,71] M$); con réplicas ya
    no.
@@ -102,6 +105,6 @@ No, si hay un solo estudio de Optuna. La descomposición de la varianza de G (su
 
 Optimizar sobre una muestra del 5 %, 10 % o 25 % y entrenar con todas las filas no pierde contra el control, también
 cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,53 a 11,82 veces. La ventaja que mostraba la réplica 0
-se achica a la mitad con réplicas y su IC contiene a 0: el control había tenido mala suerte (B), no hay evidencia de que
+se achica a la mitad con réplicas y su IC contiene a 0: la regla da (B), aunque la suerte de la réplica 0 estaba más en H3 que en el control; no hay evidencia de que
 la muestra regularice. El reescalado de `min_data_in_leaf` no cambia nada. Comparación con las otras hipótesis y a tiempo
 igual: informe conjunto.

@@ -33,7 +33,7 @@ Requiere `renombrar-brazos` archivado.
 
 - [x] 5.1 Aplicar las reglas de D4 tal como quedaron escritas en 1.1: veredicto con réplicas de cada H3, A contra B y efecto del reescalado; escribirlo en `h3/informe/informe.md` (con la tabla que genera el reporte y la descomposición de varianza como respuesta a "¿alcanzan 50 semillas finales?"); verificar con un script que cada número del informe coincide con `replicas.csv` y `tabla_resultados.md`
 - [x] 5.2 Actualizar `sampling_1/informe/informe.md` (Resultados con los dos bloques, Conclusiones, Limitaciones, Qué sigue con H4) y `guion.md`; en el README de la raíz, que la sección de resultados apunte a la comparación nueva; verificar que los enlaces existen y que el README no tiene números que no estén en `tabla_resultados.md`
-- [ ] 5.3 Revisión en sesión limpia de la etapa informe con la lista de `docs/revision.md`, cierre en las bitácoras de `h3` y `sampling_1`, y `comun/tokens.py`
+- [x] 5.3 Revisión en sesión limpia de la etapa informe con la lista de `docs/revision.md`, cierre en las bitácoras de `h3` y `sampling_1`, y `comun/tokens.py`
 
 ## Workflow follow-up
 

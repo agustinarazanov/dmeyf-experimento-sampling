@@ -13,7 +13,7 @@ baseline oficial de Bolaños (2019, LightGBM con Optuna), medimos cuánto tiempo
 el 10% de las filas y el modelo final se entrena con todas (`H3-0.1`), no pierde ganancia contra el control y el proceso
 es 8,30 veces más rápido. Se sostiene con 8 réplicas de la optimización, que miden la suerte de Optuna: Δ con réplicas
 = 2,30 M$, IC [−0,88; 5,47]. No es una mejora de ganancia: el IC contiene a 0 y la ventaja que mostraba una sola
-optimización (4,07 M$) era en buena parte mala suerte del control. Entrenar el final con menos filas sí pierde: al azar
+optimización (4,07 M$) era en buena parte suerte de esa optimización. Entrenar el final con menos filas sí pierde: al azar
 desde r = 0,25 y dentro de LightGBM con `bagging_fraction` = 0,1.
 
 ## Resultados
