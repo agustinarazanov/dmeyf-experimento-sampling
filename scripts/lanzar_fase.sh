@@ -24,6 +24,7 @@ EXP=${EXP:-experimentos/sampling_1}
 ZONA=${ZONA:-northamerica-northeast2-b}
 REGION=${ZONA%-*}
 VCPU_POR_VM=8
+PRIORIDAD=""; command -v taskpolicy >/dev/null && PRIORIDAD="taskpolicy -t 0 -l 0"
 
 # Resuelve cada argumento a (ruta, nombre corto).
 RUTAS=(); NOMBRES=()
@@ -64,6 +65,8 @@ for i in "${!RUTAS[@]}"; do
   LOG="$EXP/ledger/sesiones/vm_$corto.log"
   mkdir -p "$EXP/ledger/sesiones"
   if pgrep -f "vm.sh $ruta" >/dev/null; then echo "$ruta ya está corriendo (ver $LOG)"; continue; fi
-  NOMBRE=$(nombre_vm "$corto") nohup caffeinate -i scripts/vm.sh "$ruta" > "$LOG" 2>&1 &
+  # Prioridad normal: lanzado desde un shell en segundo plano, vm.sh heredaba nice 5 y macOS estiraba sus `sleep` (el
+  # 8-nov, un `sleep 300` duró 53 min); taskpolicy pide temporizadores y E/S sin estirar.
+  NOMBRE=$(nombre_vm "$corto") nohup $PRIORIDAD caffeinate -i scripts/vm.sh "$ruta" > "$LOG" 2>&1 &
   echo "$ruta lanzada en la VM $(nombre_vm "$corto") (pid $!); log: $LOG"
 done

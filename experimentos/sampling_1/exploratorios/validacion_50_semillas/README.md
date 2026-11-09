@@ -26,7 +26,7 @@ la **raíz del repo**; el paquete importa solo de `comun/` y de esta carpeta.
 |---|---|---|
 | Semillas finales | 50 (+ extendidas para el presupuesto) | 10 |
 | Réplicas de optimización | una por estudio (los hp se fijan) | 8 réplicas (`replica_opt`) |
-| Panel de datos | arma el suyo con DuckDB en Colab | `comun.datos` (se compara una vez, D7) |
+| Panel de datos | arma el suyo con DuckDB en Colab | `comun.datos` (se compara una vez, D7: `panel_luis.py`, salida `ledger/luis/panel_d7.json`) |
 | Ganancia | `mergesort` descendente (empates en orden inverso) | `comun.ganancia`: `argsort` estable, empates por orden de aparición |
 | Tiempos | × `FACTOR_VM` | medidos en la VM, sin factor (el factor se registra aparte) |
 | Mes que decide | 201910 ("campeón", máximo de la curva, K) | **201908** (consigna: 201910 solo para comparar; D9) |

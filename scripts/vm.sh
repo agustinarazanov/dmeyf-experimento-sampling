@@ -100,37 +100,70 @@ if [ -n "$EN_SECO" ]; then
   exit 0
 fi
 
-borrar() { echo "== borrando $NOMBRE"; $G instances delete "$NOMBRE" --zone="$ZONA" --delete-disks=all --quiet || true; }
+# ssh y scp con tiempo de conexión y keepalive: el 8-nov un ssh colgado contra una VM que ya no respondía dejó a vm.sh
+# esperando para siempre.
+SSHF=(--ssh-flag=-oConnectTimeout=20 --ssh-flag=-oServerAliveInterval=15 --ssh-flag=-oServerAliveCountMax=4)
+SCPF=(--scp-flag=-oConnectTimeout=20 --scp-flag=-oServerAliveInterval=15 --scp-flag=-oServerAliveCountMax=4)
+# Las copias de vuelta de varias VMs escriben en las mismas carpetas locales: van de a una (el 8-nov dos copias en
+# paralelo dejaron un parquet roto). Candado con mkdir (macOS no trae flock); si quien lo tomó ya no existe, se libera.
+CANDADO=${TMPDIR:-/tmp}/vm-sh-copia.lock
+tomar_candado() {
+  until mkdir "$CANDADO" 2>/dev/null; do
+    kill -0 "$(cat "$CANDADO/pid" 2>/dev/null)" 2>/dev/null || rm -rf "$CANDADO"
+    sleep 5
+  done
+  echo $$ > "$CANDADO/pid"
+}
+soltar_candado() { [ "$(cat "$CANDADO/pid" 2>/dev/null)" = "$$" ] && rm -rf "$CANDADO" || true; }
+borrar() {
+  soltar_candado
+  echo "== borrando $NOMBRE"; $G instances delete "$NOMBRE" --zone="$ZONA" --delete-disks=all --quiet || true
+}
 trap borrar EXIT
 
 echo "== creando $NOMBRE (n2-highmem-8, Ice Lake, spot) en $ZONA"
 $G instances create "$NOMBRE" --zone="$ZONA" \
   --source-instance-template="projects/$PROYECTO/regions/$REGION/instanceTemplates/$TEMPLATE" \
   --machine-type=n2-highmem-8 --min-cpu-platform="Intel Ice Lake"
-for i in $(seq 30); do $G ssh "$NOMBRE" --zone="$ZONA" --command=true >/dev/null 2>&1 && break; sleep 10; done
+for i in $(seq 30); do $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command=true >/dev/null 2>&1 && break; sleep 10; done
 
 echo "== copiando el repo @ $COMMIT"
 git archive --format=tar.gz -o /tmp/repo-$COMMIT.tgz HEAD
-$G scp /tmp/repo-$COMMIT.tgz "$NOMBRE":~/ --zone="$ZONA"
-$G scp "$LISTA" "$NOMBRE":~/configuraciones.txt --zone="$ZONA"
-$G scp /tmp/remoto-$COMMIT.sh "$NOMBRE":~/remoto.sh --zone="$ZONA"
+$G scp /tmp/repo-$COMMIT.tgz "$NOMBRE":~/ --zone="$ZONA" "${SCPF[@]}"
+$G scp "$LISTA" "$NOMBRE":~/configuraciones.txt --zone="$ZONA" "${SCPF[@]}"
+$G scp /tmp/remoto-$COMMIT.sh "$NOMBRE":~/remoto.sh --zone="$ZONA" "${SCPF[@]}"
 # La corrida va en una unidad transitoria de systemd, no en la sesión ssh: el 1-nov una actualización automática
 # (unattended-upgrades reinició el agente de Google) mató el nohup de la fase 3 sin dejar traza. Por eso además se
 # apagan los timers de apt mientras dura la VM.
-$G ssh "$NOMBRE" --zone="$ZONA" --command="rm -f ~/estado; sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer unattended-upgrades >/dev/null 2>&1; sudo systemd-run --quiet --unit=corrida --uid=\$USER --gid=\$USER --setenv=HOME=\$HOME --setenv=PATH=/usr/local/bin:/usr/bin:/bin -p WorkingDirectory=\$HOME -p StandardOutput=append:\$HOME/remoto.log -p StandardError=append:\$HOME/remoto.log bash \$HOME/remoto.sh"
+$G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command="rm -f ~/estado; sudo systemctl disable --now apt-daily.timer apt-daily-upgrade.timer unattended-upgrades >/dev/null 2>&1; sudo systemd-run --quiet --unit=corrida --uid=\$USER --gid=\$USER --setenv=HOME=\$HOME --setenv=PATH=/usr/local/bin:/usr/bin:/bin -p WorkingDirectory=\$HOME -p StandardOutput=append:\$HOME/remoto.log -p StandardError=append:\$HOME/remoto.log bash \$HOME/remoto.sh"
 
 echo "== corriendo; seguimiento: $G ssh $NOMBRE --zone=$ZONA --command='tail -f ~/corrida.log'"
-until [ "$($G ssh "$NOMBRE" --zone="$ZONA" --command='cat ~/estado 2>/dev/null' 2>/dev/null || true)" != "" ]; do sleep 60; done
-ESTADO=$($G ssh "$NOMBRE" --zone="$ZONA" --command='cat ~/estado')
+# Hasta que la VM escriba ~/estado o deje de existir (una spot desalojada se borra sola: el template dice DELETE).
+ESTADO=""
+while :; do
+  ESTADO=$($G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command='cat ~/estado 2>/dev/null' 2>/dev/null || true)
+  [ -n "$ESTADO" ] && break
+  VIVA=$($G instances describe "$NOMBRE" --zone="$ZONA" --format='value(status)' 2>/dev/null || true)
+  case "$VIVA" in RUNNING|PROVISIONING|STAGING) ;; *) ESTADO="PERDIDA (${VIVA:-la VM ya no existe})"; break;; esac
+  sleep 60
+done
 echo "== estado: $ESTADO"
 
 echo "== trayendo los ledgers"
+tomar_candado
 for e in $EXPERIMENTOS; do
   mkdir -p "experimentos/$e/ledger"
   gsutil -q -m rsync -r "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
 done
-# Lo que el bucket no alcanzó a recibir (si la VM murió antes de subir): los ledgers de la VM, sin exploración.
-$G ssh "$NOMBRE" --zone="$ZONA" --command='cd ~/repo/experimentos && tar czf ~/ledgers.tgz --exclude=exploracion */ledger' 2>/dev/null \
-  && $G scp "$NOMBRE":~/ledgers.tgz /tmp/ledgers-$COMMIT.tgz --zone="$ZONA" 2>/dev/null \
-  && tar xzf /tmp/ledgers-$COMMIT.tgz -C experimentos || true
+# Lo que el bucket no alcanzó a recibir: los ledgers de la VM, sin exploración. Con DONE la VM ya subió todo y una VM
+# perdida no responde, así que solo se intenta con FALLO; no pisa nada de lo que vino del bucket.
+if [ "$ESTADO" = FALLO ]; then
+  T=$(mktemp -d)
+  $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command='cd ~/repo/experimentos && tar czf ~/ledgers.tgz --exclude=exploracion */ledger' 2>/dev/null \
+    && $G scp "$NOMBRE":~/ledgers.tgz "$T/ledgers.tgz" --zone="$ZONA" "${SCPF[@]}" 2>/dev/null \
+    && tar xzf "$T/ledgers.tgz" -C "$T" && rm "$T/ledgers.tgz" \
+    && rsync -a --ignore-existing "$T/" experimentos/ || true
+  rm -rf "$T"
+fi
+soltar_candado
 [ "$ESTADO" = DONE ]   # el trap borra la VM; el código de salida dice si la tanda terminó

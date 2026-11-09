@@ -1,0 +1,5 @@
+# Salidas de la replicación de Martín (D5): al repo van los CSV y los JSON; modelos y matrices quedan en el bucket.
+matrices_tmp/
+*.npy
+*.npz
+control/modelo_*.txt

@@ -1,0 +1,4 @@
+# Aporte de Martín (D5) y panel de Luis contra comun.datos (D7), en una VM. Cambio incorporar-aportes, D5, D6 y D7.
+# D7 va primero y solo: así no comparte CPU con 07 (sus tiempos se reportan, aunque no se comparan).
+@ experimentos.sampling_1.exploratorios.validacion_50_semillas.panel_luis
+@ experimentos.sampling_1.exploratorios.replicacion_martin
