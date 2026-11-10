@@ -1,0 +1,416 @@
+{
+  "naturaleza": "evaluación final en 201910 autorizada por el grupo; sin reentrenar; corte fijo de 3300 envíos (N* del control del grupo, de 201908); octubre no elige nada",
+  "corrida_07": "20261109T235232_15814",
+  "script_sha256": "f4ed6b47d70bed7dfb5588adec2680b9d5bd8be516b032e19c95d9abec1b98d1",
+  "referencia_grupo": {
+    "commit": "4a42bc64612184783d004f1f1eea40bee76f3c40",
+    "head": "f2a5ce7104bd7ff01f68a4e74b5514f08b642362",
+    "archivos_sin_cambios_hasta_head": {
+      "comun/ganancia.py": true,
+      "comun/datos.py": true,
+      "comun/baseline.py": true,
+      "tests/test_ganancia.py": true
+    },
+    "constantes": {
+      "MESES_TRAIN": "[201903, 201904, 201905, 201906]",
+      "MES_VALIDACION": "201908",
+      "MES_TEST": "201910",
+      "CRUDO_DESDE": "201901",
+      "CRUDO_HASTA": "201912"
+    },
+    "importes": {
+      "BAJA+2": 1072500,
+      "BAJA+1": -27500,
+      "CONTINUA": -27500
+    },
+    "sha256_fuentes": {
+      "comun/ganancia.py": "95f61b1687f48bafee4551c6d13ee243bea0b57470417ec4fddc1415bda7a210",
+      "comun/datos.py": "c9dccb075e2cf15ae1b4977b1e6357e366a14f1472c5e569594473fa44866776",
+      "comun/baseline.py": "ec59f097727d5789223980a9d7b5d7709478ed3901583e1be121250dcd1bb4cf",
+      "tests/test_ganancia.py": "f964229ad51ba12a7c635df99f71e8e31581d7e583865d66fccbe2780a6ac815"
+    },
+    "checks": {
+      "importe_baja2": true,
+      "costo_estimulo": true,
+      "aporte_solo_baja2_suma": true,
+      "desempate_argsort_estable": true,
+      "sql_macros_igual": true,
+      "sql_etiqueta_igual": true,
+      "sql_crudo_igual": true,
+      "baja2_es_la_de_ganancia": true,
+      "panel_ordenado_por_mes_y_cliente": true,
+      "constantes_esperadas": true
+    }
+  },
+  "pruebas_sinteticas": {
+    "test_10_scores_del_grupo": true,
+    "baja1_cuesta": true,
+    "desempate_menor_cliente": true,
+    "propia_igual_al_grupo_con_empates": true,
+    "sin_ordenar_el_grupo_cambia": true,
+    "etiqueta_sql_grupo_igual_a_03": true
+  },
+  "elecciones_07": {
+    "modo_07": "completa",
+    "control": 6,
+    "h3_por_semilla": {
+      "20261102": 16,
+      "20261103": 3,
+      "20261104": 6,
+      "20261105": 6,
+      "20261106": 6,
+      "20261107": 6,
+      "20261108": 6,
+      "20261109": 6,
+      "20261110": 6,
+      "20261111": 13
+    },
+    "configuraciones_a_predecir": [
+      3,
+      6,
+      13,
+      16
+    ],
+    "modelos_distintos": 4
+  },
+  "modelos": {
+    "3": {
+      "archivo": "control/modelo_03.txt",
+      "sha256_modelo": "4dc08c27f5b46d78dacc9673d2ffc6ee1ea3c414e151fabae463c7c840ef0ae0",
+      "arboles": 100,
+      "parametros_efectivos_iguales_a_07": true,
+      "prediccion_agosto_identica": true,
+      "max_dif_agosto": 0.0
+    },
+    "6": {
+      "archivo": "control/modelo_06.txt",
+      "sha256_modelo": "e2f00db970b8d9ef1bd67d86f6e1e6d08b16821b6b6236802e6af91bb1e571d7",
+      "arboles": 100,
+      "parametros_efectivos_iguales_a_07": true,
+      "prediccion_agosto_identica": true,
+      "max_dif_agosto": 0.0
+    },
+    "13": {
+      "archivo": "control/modelo_13.txt",
+      "sha256_modelo": "e159ea43522b1b21de5099c94d2db31c09f3d50ab4d88ae834243c75678704a0",
+      "arboles": 100,
+      "parametros_efectivos_iguales_a_07": true,
+      "prediccion_agosto_identica": true,
+      "max_dif_agosto": 0.0
+    },
+    "16": {
+      "archivo": "control/modelo_16.txt",
+      "sha256_modelo": "39876773a0ddc3556a4c890be58ab09c9f95501df27bd3abeef6d6f48768de44",
+      "arboles": 100,
+      "parametros_efectivos_iguales_a_07": true,
+      "prediccion_agosto_identica": true,
+      "max_dif_agosto": 0.0
+    }
+  },
+  "etiquetas_grupo": {
+    "fuente": "competencia_02_crudo.csv.gz",
+    "tipo_numero_de_cliente_en_el_crudo": "DOUBLE",
+    "ids_no_enteros": 0,
+    "por_mes": {
+      "201903": {
+        "ambos": 125622,
+        "solo_grupo": 0,
+        "solo_03": 0,
+        "distintas": 0,
+        "baja2_grupo": 774,
+        "baja2_03": 774
+      },
+      "201904": {
+        "ambos": 126116,
+        "solo_grupo": 0,
+        "solo_03": 0,
+        "distintas": 0,
+        "baja2_grupo": 575,
+        "baja2_03": 575
+      },
+      "201905": {
+        "ambos": 126763,
+        "solo_grupo": 0,
+        "solo_03": 0,
+        "distintas": 0,
+        "baja2_grupo": 658,
+        "baja2_03": 658
+      },
+      "201906": {
+        "ambos": 128370,
+        "solo_grupo": 0,
+        "solo_03": 0,
+        "distintas": 0,
+        "baja2_grupo": 589,
+        "baja2_03": 589
+      },
+      "201908": {
+        "ambos": 131775,
+        "solo_grupo": 0,
+        "solo_03": 0,
+        "distintas": 0,
+        "baja2_grupo": 543,
+        "baja2_03": 543
+      },
+      "201910": {
+        "ambos": 135633,
+        "solo_grupo": 0,
+        "solo_03": 0,
+        "distintas": 0,
+        "baja2_grupo": 632,
+        "baja2_03": 632
+      }
+    },
+    "discrepancias": 0,
+    "coinciden_en_201910": true,
+    "igual_a_la_referencia": true
+  },
+  "octubre": {
+    "filas": 135633,
+    "sha256_claves": "007d7b1084e00f819378949bc171c9685ae293d397db46a728807965aa71e981",
+    "sha256_X": "4507df7a0f223fe5d8de6bf96d0587ef61d70ce322d35c9a93d41006ea435f83",
+    "union": {
+      "filas_features": 135633,
+      "filas_target": 135633,
+      "filas_union": 135633,
+      "features_sin_target": 0,
+      "target_sin_features": 0,
+      "etiquetas_nulas": 0,
+      "binaria_incoherente": 0,
+      "sin_horizonte_completo": 0,
+      "checks": {
+        "features_claves_unicas": true,
+        "target_claves_unicas": true,
+        "union_1a1_cobertura_completa": true,
+        "sin_etiquetas_nulas": true,
+        "binaria_coherente_con_ternaria": true,
+        "horizonte_completo": true
+      }
+    },
+    "tipos": {
+      "bigint": 395,
+      "double": 365,
+      "max_abs_bigint": 2914756,
+      "bigint_exacto_en_float64": true,
+      "double_no_finitos": {},
+      "celdas_null_a_nan": 9419868
+    },
+    "clases": {
+      "BAJA+2": 632,
+      "BAJA+1": 621,
+      "CONTINUA": 134380
+    },
+    "igual_a_la_referencia": true
+  },
+  "corte": {
+    "envios": 3300,
+    "origen": "N* del control del grupo en 201908 (informe de h3); no se ajusta con octubre",
+    "importes": {
+      "BAJA+2": 1072500,
+      "BAJA+1": -27500,
+      "CONTINUA": -27500
+    },
+    "desempate": "a igual probabilidad, menor numero_de_cliente"
+  },
+  "por_configuracion": {
+    "3": {
+      "envios": 3300,
+      "ganancia": 282150000,
+      "baja2": 339,
+      "baja1": 379,
+      "continua": 2582,
+      "prob_corte": 0.06403749376164948,
+      "empatados_en_el_corte": 1,
+      "empatados_dentro": 1,
+      "ganancia_modulo_grupo": 282150000.0,
+      "ganancia_etiquetas_grupo": 282150000.0,
+      "ganancia_curva_grupo": 282150000.0,
+      "segundos_prediccion": 0.29,
+      "igual_con_etiquetas_del_grupo": true
+    },
+    "6": {
+      "envios": 3300,
+      "ganancia": 273350000,
+      "baja2": 331,
+      "baja1": 380,
+      "continua": 2589,
+      "prob_corte": 0.06541826012362038,
+      "empatados_en_el_corte": 1,
+      "empatados_dentro": 1,
+      "ganancia_modulo_grupo": 273350000.0,
+      "ganancia_etiquetas_grupo": 273350000.0,
+      "ganancia_curva_grupo": 273350000.0,
+      "segundos_prediccion": 0.32,
+      "igual_con_etiquetas_del_grupo": true
+    },
+    "13": {
+      "envios": 3300,
+      "ganancia": 263450000,
+      "baja2": 322,
+      "baja1": 377,
+      "continua": 2601,
+      "prob_corte": 0.06415312647057628,
+      "empatados_en_el_corte": 1,
+      "empatados_dentro": 1,
+      "ganancia_modulo_grupo": 263450000.0,
+      "ganancia_etiquetas_grupo": 263450000.0,
+      "ganancia_curva_grupo": 263450000.0,
+      "segundos_prediccion": 0.28,
+      "igual_con_etiquetas_del_grupo": true
+    },
+    "16": {
+      "envios": 3300,
+      "ganancia": 268950000,
+      "baja2": 327,
+      "baja1": 386,
+      "continua": 2587,
+      "prob_corte": 0.06856503024491302,
+      "empatados_en_el_corte": 1,
+      "empatados_dentro": 1,
+      "ganancia_modulo_grupo": 268950000.0,
+      "ganancia_etiquetas_grupo": 268950000.0,
+      "ganancia_curva_grupo": 268950000.0,
+      "segundos_prediccion": 0.33,
+      "igual_con_etiquetas_del_grupo": true
+    }
+  },
+  "por_semilla": [
+    {
+      "semilla_muestra": 20261102,
+      "config_h3": 16,
+      "ganancia_h3": 268950000,
+      "baja2_h3": 327,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": -4400000,
+      "delta_pct": -1.6096579476861168
+    },
+    {
+      "semilla_muestra": 20261103,
+      "config_h3": 3,
+      "ganancia_h3": 282150000,
+      "baja2_h3": 339,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 8800000,
+      "delta_pct": 3.2193158953722336
+    },
+    {
+      "semilla_muestra": 20261104,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261105,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261106,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261107,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261108,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261109,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261110,
+      "config_h3": 6,
+      "ganancia_h3": 273350000,
+      "baja2_h3": 331,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": 0,
+      "delta_pct": 0.0
+    },
+    {
+      "semilla_muestra": 20261111,
+      "config_h3": 13,
+      "ganancia_h3": 263450000,
+      "baja2_h3": 322,
+      "ganancia_control": 273350000,
+      "baja2_control": 331,
+      "delta": -9900000,
+      "delta_pct": -3.6217303822937628
+    }
+  ],
+  "delta": {
+    "mediana": 0.0,
+    "min": -9900000.0,
+    "max": 8800000.0
+  },
+  "delta_pct": {
+    "mediana": 0.0,
+    "min": -3.6217303822937628,
+    "max": 3.2193158953722336
+  },
+  "semillas_con_la_ganadora_de_control": 7,
+  "versiones": {
+    "python": "3.14.4",
+    "plataforma": "Linux-7.0.0-1011-gcp-x86_64-with-glibc2.43",
+    "procesador": "",
+    "nucleos_logicos": 8,
+    "lightgbm": "4.7.0",
+    "sklearn": "1.9.0",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "duckdb": "1.5.5"
+  },
+  "tiempos": {
+    "prediccion_por_modelo_s": {
+      "3": 0.29,
+      "6": 0.32,
+      "13": 0.28,
+      "16": 0.33
+    },
+    "ganancia_y_verificacion_s": 0.3,
+    "sesion": "sesiones.json"
+  },
+  "memoria": {
+    "rss_mb": 1149.7,
+    "pico_working_set_mb": 0.0,
+    "pico_commit_privado_mb": 0.0
+  }
+}

@@ -1,0 +1,425 @@
+{
+  "naturaleza": "exploratorio: sensibilidad de H3 a la muestra; agosto completo ya se usó en 06; las muestras comparten la mitad de evaluación y no son tests independientes",
+  "modo": "completa",
+  "particiones": {
+    "train": [
+      201903,
+      201904,
+      201905,
+      201906
+    ],
+    "validacion": [
+      201908
+    ]
+  },
+  "meses_reservados": {
+    "201909": "reservado para un eventual acuerdo grupal",
+    "201910": "test"
+  },
+  "datos": {
+    "meses_leidos": [
+      201903,
+      201904,
+      201905,
+      201906,
+      201908
+    ],
+    "predictores": 760,
+    "sha256_predictores": "57eb82bb809f7bd4ff6162c44ad26157ebfeb5829cd80444847af6f136ea105f",
+    "sha256_manifiesto": "4655105b63090ceb4d53ed1a685de74e06269f2b17f347619703b40d21b4c448",
+    "huellas": {
+      "train": {
+        "filas": 506871,
+        "positivos": 5313,
+        "sha256_claves": "d09a907b258d426ca4c2fa6b7c7da884f07ca518deb93309d8f723230e5260b9",
+        "sha256_y": "194ae8174681acc26b9915be7a1067894207b1774db530ed0b6a6e8d6c65ce9f",
+        "sha256_X": "473d505851cd0241a0bf6bd4d7c67abbe48d3b78948c1dcab723d01f11f923e6"
+      },
+      "validacion": {
+        "filas": 131775,
+        "positivos": 1202,
+        "sha256_claves": "87de134c5944df4dd22a2da9a4a3fc323ef574109b650e911ba9654277461770",
+        "sha256_y": "d59e801296c16d88be09911074283738b4409de324ed51ac9f66a141f7d79d84",
+        "sha256_X": "96ebfd08ee4bb12056228f7f2dd30d8f17186427a17c6b755681dfc74d4572e9"
+      }
+    },
+    "orden_train_igual_a_06": true
+  },
+  "particion": {
+    "semilla": 20261102,
+    "metodo": "orden por (numero_de_cliente, foto_mes); por clase binaria (0 y después 1), default_rng(semilla).permutation; floor(n/2) a selección y el resto a evaluación",
+    "conteos": {
+      "seleccion": {
+        "filas": 65887,
+        "positivos": 601,
+        "negativos": 65286
+      },
+      "evaluacion": {
+        "filas": 65888,
+        "positivos": 601,
+        "negativos": 65287
+      }
+    },
+    "sha256": "130029c9f601a8f584c39657f58a2a919b5e2f4684cb3babd38500f193a6b9e8"
+  },
+  "configuraciones": {
+    "origen": "experimentos/h3/sensibilidad_muestra/referencia/grilla_06.json",
+    "sha256_las_20": "7ecaa079c78cfd99347113ba7020008256c6a78d7f04ce7b41e83b8c88ede899",
+    "ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "configuraciones": [
+      {
+        "id": 0,
+        "num_leaves": 18,
+        "learning_rate": 0.0107948,
+        "min_data_in_leaf": 559,
+        "feature_fraction": 0.879296,
+        "bagging_fraction": 0.983206
+      },
+      {
+        "id": 1,
+        "num_leaves": 58,
+        "learning_rate": 0.0186185,
+        "min_data_in_leaf": 170,
+        "feature_fraction": 0.854212,
+        "bagging_fraction": 0.853596
+      },
+      {
+        "id": 2,
+        "num_leaves": 12,
+        "learning_rate": 0.0118946,
+        "min_data_in_leaf": 963,
+        "feature_fraction": 0.666744,
+        "bagging_fraction": 0.678187
+      },
+      {
+        "id": 3,
+        "num_leaves": 49,
+        "learning_rate": 0.0333317,
+        "min_data_in_leaf": 172,
+        "feature_fraction": 0.633772,
+        "bagging_fraction": 0.732763
+      },
+      {
+        "id": 4,
+        "num_leaves": 61,
+        "learning_rate": 0.0338669,
+        "min_data_in_leaf": 203,
+        "feature_fraction": 0.811255,
+        "bagging_fraction": 0.786152
+      },
+      {
+        "id": 5,
+        "num_leaves": 61,
+        "learning_rate": 0.031328,
+        "min_data_in_leaf": 106,
+        "feature_fraction": 0.94841,
+        "bagging_fraction": 0.887143
+      },
+      {
+        "id": 6,
+        "num_leaves": 47,
+        "learning_rate": 0.0329875,
+        "min_data_in_leaf": 784,
+        "feature_fraction": 0.642466,
+        "bagging_fraction": 0.641699
+      },
+      {
+        "id": 7,
+        "num_leaves": 29,
+        "learning_rate": 0.0141444,
+        "min_data_in_leaf": 1146,
+        "feature_fraction": 0.999845,
+        "bagging_fraction": 0.598257
+      },
+      {
+        "id": 8,
+        "num_leaves": 10,
+        "learning_rate": 0.0233209,
+        "min_data_in_leaf": 1270,
+        "feature_fraction": 0.535528,
+        "bagging_fraction": 0.73711
+      },
+      {
+        "id": 9,
+        "num_leaves": 18,
+        "learning_rate": 0.0947903,
+        "min_data_in_leaf": 397,
+        "feature_fraction": 0.673917,
+        "bagging_fraction": 0.720578
+      },
+      {
+        "id": 10,
+        "num_leaves": 40,
+        "learning_rate": 0.0184744,
+        "min_data_in_leaf": 237,
+        "feature_fraction": 0.817575,
+        "bagging_fraction": 0.885754
+      },
+      {
+        "id": 11,
+        "num_leaves": 53,
+        "learning_rate": 0.0185833,
+        "min_data_in_leaf": 423,
+        "feature_fraction": 0.747979,
+        "bagging_fraction": 0.847842
+      },
+      {
+        "id": 12,
+        "num_leaves": 9,
+        "learning_rate": 0.046257,
+        "min_data_in_leaf": 1961,
+        "feature_fraction": 0.771283,
+        "bagging_fraction": 0.684349
+      },
+      {
+        "id": 13,
+        "num_leaves": 34,
+        "learning_rate": 0.0526891,
+        "min_data_in_leaf": 272,
+        "feature_fraction": 0.541522,
+        "bagging_fraction": 0.693221
+      },
+      {
+        "id": 14,
+        "num_leaves": 34,
+        "learning_rate": 0.0192536,
+        "min_data_in_leaf": 1279,
+        "feature_fraction": 0.541425,
+        "bagging_fraction": 0.660538
+      },
+      {
+        "id": 15,
+        "num_leaves": 52,
+        "learning_rate": 0.0218649,
+        "min_data_in_leaf": 1231,
+        "feature_fraction": 0.636465,
+        "bagging_fraction": 0.768978
+      },
+      {
+        "id": 16,
+        "num_leaves": 47,
+        "learning_rate": 0.0535958,
+        "min_data_in_leaf": 535,
+        "feature_fraction": 0.994501,
+        "bagging_fraction": 0.807907
+      },
+      {
+        "id": 17,
+        "num_leaves": 47,
+        "learning_rate": 0.0268391,
+        "min_data_in_leaf": 231,
+        "feature_fraction": 0.934141,
+        "bagging_fraction": 0.964836
+      },
+      {
+        "id": 18,
+        "num_leaves": 10,
+        "learning_rate": 0.0319202,
+        "min_data_in_leaf": 334,
+        "feature_fraction": 0.908649,
+        "bagging_fraction": 0.819185
+      },
+      {
+        "id": 19,
+        "num_leaves": 51,
+        "learning_rate": 0.0155083,
+        "min_data_in_leaf": 611,
+        "feature_fraction": 0.635322,
+        "bagging_fraction": 0.946061
+      }
+    ]
+  },
+  "semillas": {
+    "particion": 20261102,
+    "modelo": 20261102,
+    "muestreo": [
+      20261102,
+      20261103,
+      20261104,
+      20261105,
+      20261106,
+      20261107,
+      20261108,
+      20261109,
+      20261110,
+      20261111
+    ]
+  },
+  "muestras": {
+    "20261102": {
+      "semilla": 20261102,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1339,
+      "filas_por_mes": {
+        "201903": 31376,
+        "201904": 31730,
+        "201905": 31873,
+        "201906": 31739
+      },
+      "sha256_indices": "0bef8bd88a60cd62b03c8956c7b251410a4196a30c3dd2ae21ce0b6ab6b18333",
+      "sha256_claves": "edf25c1cf8073138ba80b4a1c923c5686a7ea0330bb4bdf008f48d24c0cc5746"
+    },
+    "20261103": {
+      "semilla": 20261103,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1300,
+      "filas_por_mes": {
+        "201903": 31685,
+        "201904": 31415,
+        "201905": 31754,
+        "201906": 31864
+      },
+      "sha256_indices": "32af12c6a39bb6b0dc194b16121a49c0095ab710b7e5b3e508c1a595dcaf1bc6",
+      "sha256_claves": "fcbcd10365bc9aa5bbdc49af9585e8b513ace624787fa1d37a5f4ee22113024c"
+    },
+    "20261104": {
+      "semilla": 20261104,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1322,
+      "filas_por_mes": {
+        "201903": 31245,
+        "201904": 31592,
+        "201905": 31691,
+        "201906": 32190
+      },
+      "sha256_indices": "f3c8332ca1407e6be929eeeb1bfa61bdbdfb69233cc87e90df6ec2d2ac10e1da",
+      "sha256_claves": "6e370315faf2e3c46755530726f3a60d07d7b20e79f136265d5d07ec0e134a60"
+    },
+    "20261105": {
+      "semilla": 20261105,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1313,
+      "filas_por_mes": {
+        "201903": 31541,
+        "201904": 31670,
+        "201905": 31692,
+        "201906": 31815
+      },
+      "sha256_indices": "c9ccf9c30faf644953a1f98105439ed33ffd4a447875bbf3288f732da286a31e",
+      "sha256_claves": "29e1c1338199f061a2ad9f0709cfe80b116954cf3b1613b1a076d4ac4057741d"
+    },
+    "20261106": {
+      "semilla": 20261106,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1324,
+      "filas_por_mes": {
+        "201903": 31644,
+        "201904": 31408,
+        "201905": 31529,
+        "201906": 32137
+      },
+      "sha256_indices": "308a9b982bccc8413c0c0ec19bf663d32b554c224cd8149ae4a94b4f4b7102ac",
+      "sha256_claves": "5288c318c2b2d6c8284419061dd9d7c1299e7c3aabb77efcfc7189c0d0fe4b8a"
+    },
+    "20261107": {
+      "semilla": 20261107,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1322,
+      "filas_por_mes": {
+        "201903": 31385,
+        "201904": 31612,
+        "201905": 31566,
+        "201906": 32155
+      },
+      "sha256_indices": "a89c570406630396ad11ae3afa52cc1c1efec3143f1b5b5677e33884ec7f95f7",
+      "sha256_claves": "c1ccf9740eb104137a650186cafb3c785e4ac94974534002c24a23608a016a4e"
+    },
+    "20261108": {
+      "semilla": 20261108,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1362,
+      "filas_por_mes": {
+        "201903": 31354,
+        "201904": 31462,
+        "201905": 31804,
+        "201906": 32098
+      },
+      "sha256_indices": "1307874fa7b23017109c58435addb833604baac7565999d44617935c85bab08d",
+      "sha256_claves": "51e58fc6f42991470f5e19ee554a02c948b2831c6b2f55e31c1818b06905c323"
+    },
+    "20261109": {
+      "semilla": 20261109,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1329,
+      "filas_por_mes": {
+        "201903": 31331,
+        "201904": 31749,
+        "201905": 31502,
+        "201906": 32136
+      },
+      "sha256_indices": "980eb9e6148bbf9e98e2b8b79516667ec131adccbcaf72f3b7757725fd066136",
+      "sha256_claves": "61bcbaf058e78efd9cc7e1bc3a4012a7322b6d2ab29376b9fb0ce8f594d2ec07"
+    },
+    "20261110": {
+      "semilla": 20261110,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1367,
+      "filas_por_mes": {
+        "201903": 31327,
+        "201904": 31422,
+        "201905": 31753,
+        "201906": 32216
+      },
+      "sha256_indices": "db5615ded28e5a37564c89f3d0e764476f88782cc06a1b403a339b34e79bba92",
+      "sha256_claves": "90189b4e213c5a0901e2110e7064cef70e6d4d638c46046f32e93597cea0d827"
+    },
+    "20261111": {
+      "semilla": 20261111,
+      "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+      "filas": 126718,
+      "positivos": 1377,
+      "filas_por_mes": {
+        "201903": 31590,
+        "201904": 31512,
+        "201905": 31665,
+        "201906": 31951
+      },
+      "sha256_indices": "053be57902e8158c5a6cc3a1de3223a5502a975d844638afdd1f6c4681d03f8b",
+      "sha256_claves": "a97a36d9ee98401946e4d4262d1b819eb0e5e90ff1fee2a88e5ee52ac1e6b35b"
+    }
+  },
+  "modelo": {
+    "fijos": {
+      "objective": "binary",
+      "metric": "auc",
+      "bagging_freq": 1,
+      "num_threads": 4,
+      "seed": 20261102,
+      "verbosity": -1
+    },
+    "arboles": 100,
+    "early_stopping": false
+  },
+  "criterio": "mayor AUC en la mitad de selección; a igual AUC, menor id; final de H3 = ajuste completo de Control de la configuración elegida; delta = AUC_eval(H3) - AUC_eval(Control)",
+  "script_sha256": "067b26ba226d6ed980d27555813f94f0e945549d76e0ae1c2d08697e9ed55cb5"
+}

@@ -1,0 +1,22 @@
+00:32:24 Corrida /home/agustina/repo/experimentos/sampling_1/ledger/martin/08/08_evaluar_ganancia_h3/20261110T003224_23847 | completa
+00:32:24 Fin en 0.1s
+00:32:24 la corrida falló
+Traceback (most recent call last):
+  File "/home/agustina/repo/experimentos/h3/sensibilidad_muestra/ganancia_08.py", line 582, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/agustina/repo/experimentos/h3/sensibilidad_muestra/ganancia_08.py", line 450, in main
+    grp, rep["referencia_grupo"] = referencia_grupo(a.repo_grupal.resolve(), run / "referencia_grupo")
+                                   ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/agustina/repo/experimentos/h3/sensibilidad_muestra/ganancia_08.py", line 121, in referencia_grupo
+    completo = git(repo, "rev-parse", f"{COMMIT_REF}^{{commit}}").strip()
+               ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/agustina/repo/experimentos/h3/sensibilidad_muestra/ganancia_08.py", line 111, in git
+    return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True,
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                          encoding="utf-8").stdout
+                          ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', '-C', '/home/agustina/repo', 'rev-parse', '4a42bc6^{commit}']' returned non-zero exit status 128.

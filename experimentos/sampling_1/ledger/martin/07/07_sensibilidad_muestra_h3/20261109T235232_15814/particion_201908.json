@@ -1,0 +1,27 @@
+{
+  "mes": [
+    201908
+  ],
+  "semilla": 20261102,
+  "metodo": "orden por (numero_de_cliente, foto_mes); por clase binaria (0 y después 1), default_rng(semilla).permutation; floor(n/2) a selección y el resto a evaluación",
+  "conteos": {
+    "seleccion": {
+      "filas": 65887,
+      "positivos": 601,
+      "negativos": 65286
+    },
+    "evaluacion": {
+      "filas": 65888,
+      "positivos": 601,
+      "negativos": 65287
+    }
+  },
+  "checks": {
+    "claves_unicas": true,
+    "todas_asignadas": true,
+    "disjuntas": true,
+    "cubren_agosto": true,
+    "igual_a_la_referencia": true
+  },
+  "sha256": "130029c9f601a8f584c39657f58a2a919b5e2f4684cb3babd38500f193a6b9e8"
+}

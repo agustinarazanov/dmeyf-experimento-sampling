@@ -1,0 +1,108 @@
+{
+  "criterio": "mayor AUC en la mitad de selección de 201908; a igual AUC, menor id",
+  "ranking": [
+    {
+      "posicion": 1,
+      "id": 6,
+      "auc_seleccion": 0.9296026193312079
+    },
+    {
+      "posicion": 2,
+      "id": 13,
+      "auc_seleccion": 0.9279127426167305
+    },
+    {
+      "posicion": 3,
+      "id": 17,
+      "auc_seleccion": 0.9269479489274455
+    },
+    {
+      "posicion": 4,
+      "id": 3,
+      "auc_seleccion": 0.926900315177917
+    },
+    {
+      "posicion": 5,
+      "id": 15,
+      "auc_seleccion": 0.926866762566224
+    },
+    {
+      "posicion": 6,
+      "id": 12,
+      "auc_seleccion": 0.9256318149202769
+    },
+    {
+      "posicion": 7,
+      "id": 16,
+      "auc_seleccion": 0.925469059904499
+    },
+    {
+      "posicion": 8,
+      "id": 4,
+      "auc_seleccion": 0.9251449516151715
+    },
+    {
+      "posicion": 9,
+      "id": 5,
+      "auc_seleccion": 0.9247398735975123
+    },
+    {
+      "posicion": 10,
+      "id": 11,
+      "auc_seleccion": 0.9247024470800256
+    },
+    {
+      "posicion": 11,
+      "id": 14,
+      "auc_seleccion": 0.9246354055721955
+    },
+    {
+      "posicion": 12,
+      "id": 19,
+      "auc_seleccion": 0.9241146965638405
+    },
+    {
+      "posicion": 13,
+      "id": 10,
+      "auc_seleccion": 0.9241074202473663
+    },
+    {
+      "posicion": 14,
+      "id": 18,
+      "auc_seleccion": 0.9238451287902918
+    },
+    {
+      "posicion": 15,
+      "id": 1,
+      "auc_seleccion": 0.9234099642871761
+    },
+    {
+      "posicion": 16,
+      "id": 7,
+      "auc_seleccion": 0.9218022806397022
+    },
+    {
+      "posicion": 17,
+      "id": 9,
+      "auc_seleccion": 0.9211694449962211
+    },
+    {
+      "posicion": 18,
+      "id": 8,
+      "auc_seleccion": 0.9189851610548297
+    },
+    {
+      "posicion": 19,
+      "id": 0,
+      "auc_seleccion": 0.9147401631209978
+    },
+    {
+      "posicion": 20,
+      "id": 2,
+      "auc_seleccion": 0.9117196379957369
+    }
+  ],
+  "ganadora": 6,
+  "sha256": "d0e37174cf7b0312f8bff621ad37fae44711e5b09c2b26f7142bb448910185ee",
+  "congelado": "2026-11-10T00:01:57"
+}

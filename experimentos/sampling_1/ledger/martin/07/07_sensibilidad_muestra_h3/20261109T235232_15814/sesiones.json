@@ -1,0 +1,124 @@
+[
+  {
+    "pid": 15814,
+    "inicio": "2026-11-09T23:52:32",
+    "reanudacion": false,
+    "etapas": {
+      "carga_y_validacion": {
+        "segundos": 71.3,
+        "hora": "23:53:43",
+        "rss_mb": 4043.0,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0,
+        "huella_X_s": 5.2
+      },
+      "diseno": {
+        "segundos": 0.5,
+        "hora": "23:53:43",
+        "rss_mb": 4061.4,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "control": {
+        "segundos": 493.5,
+        "hora": "00:01:57",
+        "rss_mb": 4242.4,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "control_evaluacion": {
+        "segundos": 0.9,
+        "hora": "00:01:58",
+        "rss_mb": 4122.9,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261102": {
+        "segundos": 178.5,
+        "hora": "00:04:56",
+        "rss_mb": 4309.2,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261103": {
+        "segundos": 177.4,
+        "hora": "00:07:54",
+        "rss_mb": 4384.0,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261104": {
+        "segundos": 178.9,
+        "hora": "00:10:53",
+        "rss_mb": 4304.7,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261105": {
+        "segundos": 185.8,
+        "hora": "00:13:58",
+        "rss_mb": 4340.6,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261106": {
+        "segundos": 183.1,
+        "hora": "00:17:02",
+        "rss_mb": 4860.3,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261107": {
+        "segundos": 182.4,
+        "hora": "00:20:04",
+        "rss_mb": 4399.9,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261108": {
+        "segundos": 185.3,
+        "hora": "00:23:09",
+        "rss_mb": 4338.5,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261109": {
+        "segundos": 185.4,
+        "hora": "00:26:15",
+        "rss_mb": 4326.4,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261110": {
+        "segundos": 184.0,
+        "hora": "00:29:19",
+        "rss_mb": 4861.0,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "h3_20261111": {
+        "segundos": 184.2,
+        "hora": "00:32:23",
+        "rss_mb": 4349.5,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "resumen": {
+        "segundos": 0.0,
+        "hora": "00:32:23",
+        "rss_mb": 4350.9,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      }
+    },
+    "ajustes_nuevos": 220,
+    "fin": "2026-11-10T00:32:23",
+    "total_s": 2391.4,
+    "temporales_borrados": true,
+    "memoria_fin": {
+      "rss_mb": 640.0,
+      "pico_working_set_mb": 0.0,
+      "pico_commit_privado_mb": 0.0
+    }
+  }
+]

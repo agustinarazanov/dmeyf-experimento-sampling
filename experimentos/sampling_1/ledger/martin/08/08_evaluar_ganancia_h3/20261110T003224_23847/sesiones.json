@@ -1,0 +1,17 @@
+[
+  {
+    "pid": 23847,
+    "inicio": "2026-11-10T00:32:24",
+    "reanudacion": false,
+    "etapas": {},
+    "ajustes_nuevos": 0,
+    "fin": "2026-11-10T00:32:24",
+    "total_s": 0.1,
+    "temporales_borrados": true,
+    "memoria_fin": {
+      "rss_mb": 284.3,
+      "pico_working_set_mb": 0.0,
+      "pico_commit_privado_mb": 0.0
+    }
+  }
+]

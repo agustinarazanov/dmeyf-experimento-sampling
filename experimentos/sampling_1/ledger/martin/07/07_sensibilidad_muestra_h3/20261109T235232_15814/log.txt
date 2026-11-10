@@ -1,0 +1,259 @@
+23:52:32 Corrida /home/agustina/repo/experimentos/sampling_1/ledger/martin/07/07_sensibilidad_muestra_h3/20261109T235232_15814 | nueva | completa
+23:52:41   X_train.npy: 129,718/506,871 filas (26%) en 4s
+23:52:45   X_train.npy: 259,930/506,871 filas (51%) en 8s
+23:52:49   X_train.npy: 390,789/506,871 filas (77%) en 12s
+23:52:53   X_train.npy: 506,871/506,871 filas (100%) en 16s
+23:53:29   X_validacion.npy: 131,072/131,775 filas (99%) en 4s
+23:53:29   X_validacion.npy: 131,775/131,775 filas (100%) en 4s
+23:53:43 [carga_y_validacion] 71.3s | {'rss_mb': 4043.0, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+23:53:43 partición {'seleccion': {'filas': 65887, 'positivos': 601, 'negativos': 65286}, 'evaluacion': {'filas': 65888, 'positivos': 601, 'negativos': 65287}} | muestras {20261102: 1339, 20261103: 1300, 20261104: 1322, 20261105: 1313, 20261106: 1324, 20261107: 1322, 20261108: 1362, 20261109: 1329, 20261110: 1367, 20261111: 1377}
+23:53:43 [diseno] 0.5s | {'rss_mb': 4061.4, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+23:53:43 ajustes ya completados: 0 de 220
+23:54:05 control          cfg 00 | AUC sel 0.914740 | {'dataset_s': 6.1, 'entrenamiento_s': 15.1, 'prediccion_s': 0.2, 'total_s': 21.4}
+23:54:32 control          cfg 01 | AUC sel 0.923410 | {'dataset_s': 6.6, 'entrenamiento_s': 19.6, 'prediccion_s': 0.3, 'total_s': 26.5}
+23:54:47 control          cfg 02 | AUC sel 0.911720 | {'dataset_s': 6.2, 'entrenamiento_s': 9.2, 'prediccion_s': 0.2, 'total_s': 15.6}
+23:55:08 control          cfg 03 | AUC sel 0.926900 | {'dataset_s': 6.2, 'entrenamiento_s': 14.2, 'prediccion_s': 0.3, 'total_s': 20.7}
+23:55:34 control          cfg 04 | AUC sel 0.925145 | {'dataset_s': 6.4, 'entrenamiento_s': 18.7, 'prediccion_s': 0.3, 'total_s': 25.4}
+23:56:02 control          cfg 05 | AUC sel 0.924740 | {'dataset_s': 6.2, 'entrenamiento_s': 21.6, 'prediccion_s': 0.3, 'total_s': 28.1}
+23:56:22 control          cfg 06 | AUC sel 0.929603 | {'dataset_s': 6.2, 'entrenamiento_s': 13.5, 'prediccion_s': 0.4, 'total_s': 20.1}
+23:56:42 control          cfg 07 | AUC sel 0.921802 | {'dataset_s': 6.2, 'entrenamiento_s': 12.6, 'prediccion_s': 0.2, 'total_s': 19.0}
+23:57:18 control          cfg 08 | AUC sel 0.918985 | {'dataset_s': 6.2, 'entrenamiento_s': 30.4, 'prediccion_s': 0.2, 'total_s': 36.8}
+23:57:36 control          cfg 09 | AUC sel 0.921169 | {'dataset_s': 6.3, 'entrenamiento_s': 10.8, 'prediccion_s': 0.2, 'total_s': 17.3}
+23:58:00 control          cfg 10 | AUC sel 0.924107 | {'dataset_s': 6.2, 'entrenamiento_s': 17.2, 'prediccion_s': 0.2, 'total_s': 23.6}
+23:58:24 control          cfg 11 | AUC sel 0.924702 | {'dataset_s': 6.3, 'entrenamiento_s': 17.1, 'prediccion_s': 0.3, 'total_s': 23.7}
+23:58:41 control          cfg 12 | AUC sel 0.925632 | {'dataset_s': 6.2, 'entrenamiento_s': 10.5, 'prediccion_s': 0.2, 'total_s': 16.9}
+23:59:20 control          cfg 13 | AUC sel 0.927913 | {'dataset_s': 6.3, 'entrenamiento_s': 32.5, 'prediccion_s': 0.3, 'total_s': 39.1}
+23:59:59 control          cfg 14 | AUC sel 0.924635 | {'dataset_s': 6.3, 'entrenamiento_s': 32.5, 'prediccion_s': 0.3, 'total_s': 39.1}
+00:00:21 control          cfg 15 | AUC sel 0.926867 | {'dataset_s': 6.2, 'entrenamiento_s': 15.3, 'prediccion_s': 0.3, 'total_s': 21.8}
+00:00:46 control          cfg 16 | AUC sel 0.925469 | {'dataset_s': 6.2, 'entrenamiento_s': 17.9, 'prediccion_s': 0.4, 'total_s': 24.5}
+00:01:14 control          cfg 17 | AUC sel 0.926948 | {'dataset_s': 6.2, 'entrenamiento_s': 21.1, 'prediccion_s': 0.3, 'total_s': 27.6}
+00:01:33 control          cfg 18 | AUC sel 0.923845 | {'dataset_s': 6.3, 'entrenamiento_s': 12.9, 'prediccion_s': 0.2, 'total_s': 19.4}
+00:01:57 control          cfg 19 | AUC sel 0.924115 | {'dataset_s': 6.3, 'entrenamiento_s': 16.9, 'prediccion_s': 0.3, 'total_s': 23.5}
+00:01:57 [control] 493.5s | {'rss_mb': 4242.4, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:01:57 Control congelado: ganadora cfg 6 (AUC sel 0.929603)
+00:01:58 Control: AUC evaluación de la ganadora 0.927379 | reproduce 06: False
+00:01:58 [control_evaluacion] 0.9s | {'rss_mb': 4122.9, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:02:06 muestra 20261102: 126718 filas, 1339 positivos | matriz en 8.2s
+00:02:13 h3      20261102 cfg 00 | AUC sel 0.903709 | {'dataset_s': 2.5, 'entrenamiento_s': 4.2, 'prediccion_s': 0.2, 'total_s': 6.9}
+00:02:22 h3      20261102 cfg 01 | AUC sel 0.918269 | {'dataset_s': 2.5, 'entrenamiento_s': 6.2, 'prediccion_s': 0.3, 'total_s': 9.0}
+00:02:28 h3      20261102 cfg 02 | AUC sel 0.908012 | {'dataset_s': 2.5, 'entrenamiento_s': 2.5, 'prediccion_s': 0.2, 'total_s': 5.2}
+00:02:35 h3      20261102 cfg 03 | AUC sel 0.921885 | {'dataset_s': 2.5, 'entrenamiento_s': 4.6, 'prediccion_s': 0.3, 'total_s': 7.4}
+00:02:44 h3      20261102 cfg 04 | AUC sel 0.922817 | {'dataset_s': 2.5, 'entrenamiento_s': 6.2, 'prediccion_s': 0.3, 'total_s': 9.0}
+00:02:55 h3      20261102 cfg 05 | AUC sel 0.920636 | {'dataset_s': 2.5, 'entrenamiento_s': 7.5, 'prediccion_s': 0.3, 'total_s': 10.3}
+00:03:03 h3      20261102 cfg 06 | AUC sel 0.922360 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.4, 'total_s': 7.9}
+00:03:10 h3      20261102 cfg 07 | AUC sel 0.915575 | {'dataset_s': 2.5, 'entrenamiento_s': 4.5, 'prediccion_s': 0.3, 'total_s': 7.3}
+00:03:21 h3      20261102 cfg 08 | AUC sel 0.916970 | {'dataset_s': 2.5, 'entrenamiento_s': 8.0, 'prediccion_s': 0.2, 'total_s': 10.7}
+00:03:27 h3      20261102 cfg 09 | AUC sel 0.916699 | {'dataset_s': 2.6, 'entrenamiento_s': 3.1, 'prediccion_s': 0.3, 'total_s': 6.0}
+00:03:35 h3      20261102 cfg 10 | AUC sel 0.916697 | {'dataset_s': 2.5, 'entrenamiento_s': 5.2, 'prediccion_s': 0.3, 'total_s': 8.0}
+00:03:44 h3      20261102 cfg 11 | AUC sel 0.919896 | {'dataset_s': 2.6, 'entrenamiento_s': 5.5, 'prediccion_s': 0.3, 'total_s': 8.4}
+00:03:49 h3      20261102 cfg 12 | AUC sel 0.919969 | {'dataset_s': 2.5, 'entrenamiento_s': 2.7, 'prediccion_s': 0.2, 'total_s': 5.4}
+00:04:02 h3      20261102 cfg 13 | AUC sel 0.920840 | {'dataset_s': 2.5, 'entrenamiento_s': 9.1, 'prediccion_s': 0.3, 'total_s': 11.9}
+00:04:14 h3      20261102 cfg 14 | AUC sel 0.920116 | {'dataset_s': 2.8, 'entrenamiento_s': 9.0, 'prediccion_s': 0.3, 'total_s': 12.1}
+00:04:22 h3      20261102 cfg 15 | AUC sel 0.920277 | {'dataset_s': 2.5, 'entrenamiento_s': 5.2, 'prediccion_s': 0.4, 'total_s': 8.1}
+00:04:32 h3      20261102 cfg 16 | AUC sel 0.922923 | {'dataset_s': 2.5, 'entrenamiento_s': 6.8, 'prediccion_s': 0.4, 'total_s': 9.7}
+00:04:42 h3      20261102 cfg 17 | AUC sel 0.919515 | {'dataset_s': 2.5, 'entrenamiento_s': 6.6, 'prediccion_s': 0.3, 'total_s': 9.4}
+00:04:48 h3      20261102 cfg 18 | AUC sel 0.921623 | {'dataset_s': 2.6, 'entrenamiento_s': 3.5, 'prediccion_s': 0.2, 'total_s': 6.3}
+00:04:56 h3      20261102 cfg 19 | AUC sel 0.921928 | {'dataset_s': 2.5, 'entrenamiento_s': 5.2, 'prediccion_s': 0.3, 'total_s': 8.0}
+00:04:56 [h3_20261102] 178.5s | {'rss_mb': 4309.2, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:05:05 muestra 20261103: 126718 filas, 1300 positivos | matriz en 8.3s
+00:05:12 h3      20261103 cfg 00 | AUC sel 0.912294 | {'dataset_s': 2.7, 'entrenamiento_s': 4.5, 'prediccion_s': 0.2, 'total_s': 7.4}
+00:05:21 h3      20261103 cfg 01 | AUC sel 0.920637 | {'dataset_s': 2.5, 'entrenamiento_s': 6.1, 'prediccion_s': 0.3, 'total_s': 8.9}
+00:05:26 h3      20261103 cfg 02 | AUC sel 0.907195 | {'dataset_s': 2.5, 'entrenamiento_s': 2.4, 'prediccion_s': 0.2, 'total_s': 5.1}
+00:05:34 h3      20261103 cfg 03 | AUC sel 0.926348 | {'dataset_s': 2.6, 'entrenamiento_s': 4.6, 'prediccion_s': 0.3, 'total_s': 7.5}
+00:05:43 h3      20261103 cfg 04 | AUC sel 0.923648 | {'dataset_s': 2.6, 'entrenamiento_s': 6.1, 'prediccion_s': 0.3, 'total_s': 9.0}
+00:05:53 h3      20261103 cfg 05 | AUC sel 0.923591 | {'dataset_s': 2.6, 'entrenamiento_s': 7.3, 'prediccion_s': 0.3, 'total_s': 10.2}
+00:06:01 h3      20261103 cfg 06 | AUC sel 0.924607 | {'dataset_s': 2.5, 'entrenamiento_s': 4.4, 'prediccion_s': 0.4, 'total_s': 7.3}
+00:06:08 h3      20261103 cfg 07 | AUC sel 0.916790 | {'dataset_s': 2.6, 'entrenamiento_s': 4.4, 'prediccion_s': 0.3, 'total_s': 7.3}
+00:06:19 h3      20261103 cfg 08 | AUC sel 0.917405 | {'dataset_s': 2.6, 'entrenamiento_s': 8.2, 'prediccion_s': 0.2, 'total_s': 11.0}
+00:06:25 h3      20261103 cfg 09 | AUC sel 0.920258 | {'dataset_s': 2.5, 'entrenamiento_s': 3.0, 'prediccion_s': 0.3, 'total_s': 5.8}
+00:06:33 h3      20261103 cfg 10 | AUC sel 0.921720 | {'dataset_s': 2.6, 'entrenamiento_s': 5.1, 'prediccion_s': 0.3, 'total_s': 8.0}
+00:06:42 h3      20261103 cfg 11 | AUC sel 0.925342 | {'dataset_s': 2.5, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.2}
+00:06:47 h3      20261103 cfg 12 | AUC sel 0.924488 | {'dataset_s': 2.5, 'entrenamiento_s': 2.6, 'prediccion_s': 0.2, 'total_s': 5.3}
+00:06:59 h3      20261103 cfg 13 | AUC sel 0.922437 | {'dataset_s': 2.6, 'entrenamiento_s': 9.0, 'prediccion_s': 0.3, 'total_s': 11.9}
+00:07:11 h3      20261103 cfg 14 | AUC sel 0.919254 | {'dataset_s': 2.5, 'entrenamiento_s': 9.0, 'prediccion_s': 0.3, 'total_s': 11.8}
+00:07:19 h3      20261103 cfg 15 | AUC sel 0.921792 | {'dataset_s': 2.5, 'entrenamiento_s': 5.1, 'prediccion_s': 0.4, 'total_s': 8.0}
+00:07:30 h3      20261103 cfg 16 | AUC sel 0.924956 | {'dataset_s': 2.7, 'entrenamiento_s': 7.3, 'prediccion_s': 0.4, 'total_s': 10.4}
+00:07:39 h3      20261103 cfg 17 | AUC sel 0.924771 | {'dataset_s': 2.5, 'entrenamiento_s': 6.5, 'prediccion_s': 0.3, 'total_s': 9.3}
+00:07:45 h3      20261103 cfg 18 | AUC sel 0.923905 | {'dataset_s': 2.5, 'entrenamiento_s': 3.4, 'prediccion_s': 0.2, 'total_s': 6.1}
+00:07:54 h3      20261103 cfg 19 | AUC sel 0.921390 | {'dataset_s': 2.5, 'entrenamiento_s': 5.1, 'prediccion_s': 0.3, 'total_s': 7.9}
+00:07:54 [h3_20261103] 177.4s | {'rss_mb': 4384.0, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:08:02 muestra 20261104: 126718 filas, 1322 positivos | matriz en 8.2s
+00:08:09 h3      20261104 cfg 00 | AUC sel 0.908590 | {'dataset_s': 2.5, 'entrenamiento_s': 4.2, 'prediccion_s': 0.2, 'total_s': 6.9}
+00:08:18 h3      20261104 cfg 01 | AUC sel 0.919616 | {'dataset_s': 2.5, 'entrenamiento_s': 6.2, 'prediccion_s': 0.3, 'total_s': 9.0}
+00:08:23 h3      20261104 cfg 02 | AUC sel 0.909761 | {'dataset_s': 2.5, 'entrenamiento_s': 2.4, 'prediccion_s': 0.2, 'total_s': 5.1}
+00:08:31 h3      20261104 cfg 03 | AUC sel 0.921441 | {'dataset_s': 2.5, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.7}
+00:08:41 h3      20261104 cfg 04 | AUC sel 0.923195 | {'dataset_s': 2.6, 'entrenamiento_s': 6.2, 'prediccion_s': 0.3, 'total_s': 9.1}
+00:08:51 h3      20261104 cfg 05 | AUC sel 0.918065 | {'dataset_s': 2.5, 'entrenamiento_s': 7.4, 'prediccion_s': 0.3, 'total_s': 10.2}
+00:08:58 h3      20261104 cfg 06 | AUC sel 0.924415 | {'dataset_s': 2.5, 'entrenamiento_s': 4.4, 'prediccion_s': 0.4, 'total_s': 7.3}
+00:09:06 h3      20261104 cfg 07 | AUC sel 0.914726 | {'dataset_s': 2.6, 'entrenamiento_s': 4.5, 'prediccion_s': 0.3, 'total_s': 7.4}
+00:09:17 h3      20261104 cfg 08 | AUC sel 0.916217 | {'dataset_s': 2.5, 'entrenamiento_s': 8.0, 'prediccion_s': 0.2, 'total_s': 10.7}
+00:09:23 h3      20261104 cfg 09 | AUC sel 0.919580 | {'dataset_s': 2.6, 'entrenamiento_s': 3.1, 'prediccion_s': 0.3, 'total_s': 6.0}
+00:09:31 h3      20261104 cfg 10 | AUC sel 0.916169 | {'dataset_s': 2.6, 'entrenamiento_s': 5.1, 'prediccion_s': 0.3, 'total_s': 8.0}
+00:09:40 h3      20261104 cfg 11 | AUC sel 0.920004 | {'dataset_s': 2.6, 'entrenamiento_s': 5.9, 'prediccion_s': 0.3, 'total_s': 8.8}
+00:09:45 h3      20261104 cfg 12 | AUC sel 0.919616 | {'dataset_s': 2.5, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.5}
+00:09:58 h3      20261104 cfg 13 | AUC sel 0.920638 | {'dataset_s': 2.6, 'entrenamiento_s': 9.2, 'prediccion_s': 0.3, 'total_s': 12.1}
+00:10:10 h3      20261104 cfg 14 | AUC sel 0.916636 | {'dataset_s': 2.6, 'entrenamiento_s': 9.1, 'prediccion_s': 0.3, 'total_s': 12.0}
+00:10:18 h3      20261104 cfg 15 | AUC sel 0.917190 | {'dataset_s': 2.6, 'entrenamiento_s': 5.2, 'prediccion_s': 0.4, 'total_s': 8.2}
+00:10:28 h3      20261104 cfg 16 | AUC sel 0.921662 | {'dataset_s': 2.6, 'entrenamiento_s': 6.7, 'prediccion_s': 0.4, 'total_s': 9.7}
+00:10:38 h3      20261104 cfg 17 | AUC sel 0.922013 | {'dataset_s': 2.6, 'entrenamiento_s': 6.6, 'prediccion_s': 0.3, 'total_s': 9.5}
+00:10:44 h3      20261104 cfg 18 | AUC sel 0.919745 | {'dataset_s': 2.7, 'entrenamiento_s': 3.6, 'prediccion_s': 0.2, 'total_s': 6.5}
+00:10:53 h3      20261104 cfg 19 | AUC sel 0.919558 | {'dataset_s': 2.5, 'entrenamiento_s': 5.3, 'prediccion_s': 0.3, 'total_s': 8.1}
+00:10:53 [h3_20261104] 178.9s | {'rss_mb': 4304.7, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:11:01 muestra 20261105: 126718 filas, 1313 positivos | matriz en 8.3s
+00:11:08 h3      20261105 cfg 00 | AUC sel 0.909508 | {'dataset_s': 2.6, 'entrenamiento_s': 4.3, 'prediccion_s': 0.2, 'total_s': 7.1}
+00:11:18 h3      20261105 cfg 01 | AUC sel 0.915273 | {'dataset_s': 2.5, 'entrenamiento_s': 6.5, 'prediccion_s': 0.3, 'total_s': 9.3}
+00:11:23 h3      20261105 cfg 02 | AUC sel 0.909324 | {'dataset_s': 2.6, 'entrenamiento_s': 2.6, 'prediccion_s': 0.2, 'total_s': 5.4}
+00:11:31 h3      20261105 cfg 03 | AUC sel 0.922150 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.8}
+00:11:41 h3      20261105 cfg 04 | AUC sel 0.921909 | {'dataset_s': 2.6, 'entrenamiento_s': 6.5, 'prediccion_s': 0.4, 'total_s': 9.5}
+00:11:52 h3      20261105 cfg 05 | AUC sel 0.919367 | {'dataset_s': 2.6, 'entrenamiento_s': 7.9, 'prediccion_s': 0.3, 'total_s': 10.8}
+00:11:59 h3      20261105 cfg 06 | AUC sel 0.925196 | {'dataset_s': 2.5, 'entrenamiento_s': 4.6, 'prediccion_s': 0.4, 'total_s': 7.5}
+00:12:07 h3      20261105 cfg 07 | AUC sel 0.913458 | {'dataset_s': 2.6, 'entrenamiento_s': 4.6, 'prediccion_s': 0.3, 'total_s': 7.5}
+00:12:18 h3      20261105 cfg 08 | AUC sel 0.919365 | {'dataset_s': 2.6, 'entrenamiento_s': 8.2, 'prediccion_s': 0.2, 'total_s': 11.0}
+00:12:24 h3      20261105 cfg 09 | AUC sel 0.914772 | {'dataset_s': 2.6, 'entrenamiento_s': 3.3, 'prediccion_s': 0.3, 'total_s': 6.2}
+00:12:33 h3      20261105 cfg 10 | AUC sel 0.917501 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:12:42 h3      20261105 cfg 11 | AUC sel 0.919186 | {'dataset_s': 2.6, 'entrenamiento_s': 5.9, 'prediccion_s': 0.3, 'total_s': 8.8}
+00:12:48 h3      20261105 cfg 12 | AUC sel 0.919977 | {'dataset_s': 2.6, 'entrenamiento_s': 3.1, 'prediccion_s': 0.2, 'total_s': 5.9}
+00:13:01 h3      20261105 cfg 13 | AUC sel 0.922211 | {'dataset_s': 2.6, 'entrenamiento_s': 9.6, 'prediccion_s': 0.3, 'total_s': 12.5}
+00:13:13 h3      20261105 cfg 14 | AUC sel 0.918862 | {'dataset_s': 2.6, 'entrenamiento_s': 9.4, 'prediccion_s': 0.3, 'total_s': 12.3}
+00:13:22 h3      20261105 cfg 15 | AUC sel 0.920634 | {'dataset_s': 2.6, 'entrenamiento_s': 5.6, 'prediccion_s': 0.4, 'total_s': 8.6}
+00:13:32 h3      20261105 cfg 16 | AUC sel 0.919292 | {'dataset_s': 2.6, 'entrenamiento_s': 7.3, 'prediccion_s': 0.4, 'total_s': 10.3}
+00:13:43 h3      20261105 cfg 17 | AUC sel 0.919976 | {'dataset_s': 2.6, 'entrenamiento_s': 7.2, 'prediccion_s': 0.3, 'total_s': 10.1}
+00:13:49 h3      20261105 cfg 18 | AUC sel 0.920126 | {'dataset_s': 2.6, 'entrenamiento_s': 3.7, 'prediccion_s': 0.2, 'total_s': 6.5}
+00:13:58 h3      20261105 cfg 19 | AUC sel 0.920315 | {'dataset_s': 2.8, 'entrenamiento_s': 5.6, 'prediccion_s': 0.4, 'total_s': 8.8}
+00:13:58 [h3_20261105] 185.8s | {'rss_mb': 4340.6, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:14:07 muestra 20261106: 126718 filas, 1324 positivos | matriz en 8.3s
+00:14:14 h3      20261106 cfg 00 | AUC sel 0.906416 | {'dataset_s': 2.6, 'entrenamiento_s': 4.4, 'prediccion_s': 0.2, 'total_s': 7.2}
+00:14:24 h3      20261106 cfg 01 | AUC sel 0.916274 | {'dataset_s': 2.6, 'entrenamiento_s': 6.7, 'prediccion_s': 0.3, 'total_s': 9.6}
+00:14:29 h3      20261106 cfg 02 | AUC sel 0.906941 | {'dataset_s': 2.6, 'entrenamiento_s': 2.6, 'prediccion_s': 0.2, 'total_s': 5.4}
+00:14:37 h3      20261106 cfg 03 | AUC sel 0.921325 | {'dataset_s': 2.6, 'entrenamiento_s': 4.8, 'prediccion_s': 0.3, 'total_s': 7.7}
+00:14:47 h3      20261106 cfg 04 | AUC sel 0.920267 | {'dataset_s': 2.6, 'entrenamiento_s': 6.5, 'prediccion_s': 0.3, 'total_s': 9.4}
+00:14:58 h3      20261106 cfg 05 | AUC sel 0.919140 | {'dataset_s': 2.6, 'entrenamiento_s': 7.7, 'prediccion_s': 0.3, 'total_s': 10.6}
+00:15:06 h3      20261106 cfg 06 | AUC sel 0.923038 | {'dataset_s': 2.6, 'entrenamiento_s': 5.1, 'prediccion_s': 0.4, 'total_s': 8.1}
+00:15:13 h3      20261106 cfg 07 | AUC sel 0.916386 | {'dataset_s': 2.5, 'entrenamiento_s': 4.7, 'prediccion_s': 0.3, 'total_s': 7.5}
+00:15:24 h3      20261106 cfg 08 | AUC sel 0.913204 | {'dataset_s': 2.5, 'entrenamiento_s': 8.0, 'prediccion_s': 0.2, 'total_s': 10.7}
+00:15:31 h3      20261106 cfg 09 | AUC sel 0.917787 | {'dataset_s': 2.6, 'entrenamiento_s': 3.2, 'prediccion_s': 0.3, 'total_s': 6.1}
+00:15:39 h3      20261106 cfg 10 | AUC sel 0.916545 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:15:48 h3      20261106 cfg 11 | AUC sel 0.916445 | {'dataset_s': 2.6, 'entrenamiento_s': 5.6, 'prediccion_s': 0.3, 'total_s': 8.5}
+00:15:53 h3      20261106 cfg 12 | AUC sel 0.921318 | {'dataset_s': 2.6, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.6}
+00:16:06 h3      20261106 cfg 13 | AUC sel 0.921677 | {'dataset_s': 2.6, 'entrenamiento_s': 9.2, 'prediccion_s': 0.3, 'total_s': 12.1}
+00:16:18 h3      20261106 cfg 14 | AUC sel 0.916490 | {'dataset_s': 2.6, 'entrenamiento_s': 9.6, 'prediccion_s': 0.4, 'total_s': 12.6}
+00:16:27 h3      20261106 cfg 15 | AUC sel 0.918092 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.4, 'total_s': 8.4}
+00:16:37 h3      20261106 cfg 16 | AUC sel 0.919155 | {'dataset_s': 2.4, 'entrenamiento_s': 7.0, 'prediccion_s': 0.4, 'total_s': 9.8}
+00:16:47 h3      20261106 cfg 17 | AUC sel 0.917769 | {'dataset_s': 2.6, 'entrenamiento_s': 6.8, 'prediccion_s': 0.3, 'total_s': 9.7}
+00:16:53 h3      20261106 cfg 18 | AUC sel 0.921124 | {'dataset_s': 2.4, 'entrenamiento_s': 3.5, 'prediccion_s': 0.2, 'total_s': 6.1}
+00:17:01 h3      20261106 cfg 19 | AUC sel 0.916389 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:17:02 [h3_20261106] 183.1s | {'rss_mb': 4860.3, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:17:10 muestra 20261107: 126718 filas, 1322 positivos | matriz en 8.2s
+00:17:17 h3      20261107 cfg 00 | AUC sel 0.912508 | {'dataset_s': 2.5, 'entrenamiento_s': 4.8, 'prediccion_s': 0.2, 'total_s': 7.5}
+00:17:27 h3      20261107 cfg 01 | AUC sel 0.921390 | {'dataset_s': 2.6, 'entrenamiento_s': 6.5, 'prediccion_s': 0.3, 'total_s': 9.4}
+00:17:32 h3      20261107 cfg 02 | AUC sel 0.915450 | {'dataset_s': 2.6, 'entrenamiento_s': 2.6, 'prediccion_s': 0.2, 'total_s': 5.4}
+00:17:40 h3      20261107 cfg 03 | AUC sel 0.923434 | {'dataset_s': 2.5, 'entrenamiento_s': 4.8, 'prediccion_s': 0.3, 'total_s': 7.6}
+00:17:50 h3      20261107 cfg 04 | AUC sel 0.924829 | {'dataset_s': 2.6, 'entrenamiento_s': 6.5, 'prediccion_s': 0.3, 'total_s': 9.4}
+00:18:01 h3      20261107 cfg 05 | AUC sel 0.924635 | {'dataset_s': 2.4, 'entrenamiento_s': 7.9, 'prediccion_s': 0.3, 'total_s': 10.6}
+00:18:08 h3      20261107 cfg 06 | AUC sel 0.925860 | {'dataset_s': 2.4, 'entrenamiento_s': 4.6, 'prediccion_s': 0.4, 'total_s': 7.4}
+00:18:16 h3      20261107 cfg 07 | AUC sel 0.918335 | {'dataset_s': 2.5, 'entrenamiento_s': 4.7, 'prediccion_s': 0.3, 'total_s': 7.5}
+00:18:27 h3      20261107 cfg 08 | AUC sel 0.919084 | {'dataset_s': 2.7, 'entrenamiento_s': 8.3, 'prediccion_s': 0.2, 'total_s': 11.2}
+00:18:33 h3      20261107 cfg 09 | AUC sel 0.919587 | {'dataset_s': 2.6, 'entrenamiento_s': 3.2, 'prediccion_s': 0.3, 'total_s': 6.1}
+00:18:42 h3      20261107 cfg 10 | AUC sel 0.921229 | {'dataset_s': 2.5, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.2}
+00:18:50 h3      20261107 cfg 11 | AUC sel 0.923294 | {'dataset_s': 2.6, 'entrenamiento_s': 5.7, 'prediccion_s': 0.3, 'total_s': 8.6}
+00:18:56 h3      20261107 cfg 12 | AUC sel 0.923268 | {'dataset_s': 2.5, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.5}
+00:19:08 h3      20261107 cfg 13 | AUC sel 0.923087 | {'dataset_s': 2.5, 'entrenamiento_s': 9.2, 'prediccion_s': 0.3, 'total_s': 12.0}
+00:19:20 h3      20261107 cfg 14 | AUC sel 0.921155 | {'dataset_s': 2.5, 'entrenamiento_s': 9.2, 'prediccion_s': 0.4, 'total_s': 12.1}
+00:19:29 h3      20261107 cfg 15 | AUC sel 0.921880 | {'dataset_s': 2.5, 'entrenamiento_s': 5.7, 'prediccion_s': 0.4, 'total_s': 8.6}
+00:19:39 h3      20261107 cfg 16 | AUC sel 0.925772 | {'dataset_s': 2.5, 'entrenamiento_s': 6.9, 'prediccion_s': 0.4, 'total_s': 9.8}
+00:19:49 h3      20261107 cfg 17 | AUC sel 0.923541 | {'dataset_s': 2.6, 'entrenamiento_s': 6.8, 'prediccion_s': 0.3, 'total_s': 9.7}
+00:19:55 h3      20261107 cfg 18 | AUC sel 0.922143 | {'dataset_s': 2.5, 'entrenamiento_s': 3.5, 'prediccion_s': 0.2, 'total_s': 6.2}
+00:20:04 h3      20261107 cfg 19 | AUC sel 0.924178 | {'dataset_s': 2.5, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.2}
+00:20:04 [h3_20261107] 182.4s | {'rss_mb': 4399.9, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:20:12 muestra 20261108: 126718 filas, 1362 positivos | matriz en 8.3s
+00:20:19 h3      20261108 cfg 00 | AUC sel 0.907198 | {'dataset_s': 2.6, 'entrenamiento_s': 4.4, 'prediccion_s': 0.2, 'total_s': 7.2}
+00:20:29 h3      20261108 cfg 01 | AUC sel 0.920101 | {'dataset_s': 2.6, 'entrenamiento_s': 6.6, 'prediccion_s': 0.3, 'total_s': 9.5}
+00:20:35 h3      20261108 cfg 02 | AUC sel 0.910063 | {'dataset_s': 2.6, 'entrenamiento_s': 3.0, 'prediccion_s': 0.2, 'total_s': 5.8}
+00:20:43 h3      20261108 cfg 03 | AUC sel 0.923239 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.8}
+00:20:53 h3      20261108 cfg 04 | AUC sel 0.921291 | {'dataset_s': 2.6, 'entrenamiento_s': 6.5, 'prediccion_s': 0.3, 'total_s': 9.4}
+00:21:03 h3      20261108 cfg 05 | AUC sel 0.923060 | {'dataset_s': 2.6, 'entrenamiento_s': 7.6, 'prediccion_s': 0.3, 'total_s': 10.5}
+00:21:11 h3      20261108 cfg 06 | AUC sel 0.925781 | {'dataset_s': 2.6, 'entrenamiento_s': 4.7, 'prediccion_s': 0.4, 'total_s': 7.7}
+00:21:19 h3      20261108 cfg 07 | AUC sel 0.916113 | {'dataset_s': 2.5, 'entrenamiento_s': 4.7, 'prediccion_s': 0.3, 'total_s': 7.5}
+00:21:30 h3      20261108 cfg 08 | AUC sel 0.917980 | {'dataset_s': 2.6, 'entrenamiento_s': 8.1, 'prediccion_s': 0.2, 'total_s': 10.9}
+00:21:36 h3      20261108 cfg 09 | AUC sel 0.916153 | {'dataset_s': 2.6, 'entrenamiento_s': 3.2, 'prediccion_s': 0.3, 'total_s': 6.1}
+00:21:45 h3      20261108 cfg 10 | AUC sel 0.919686 | {'dataset_s': 2.7, 'entrenamiento_s': 5.8, 'prediccion_s': 0.3, 'total_s': 8.8}
+00:21:54 h3      20261108 cfg 11 | AUC sel 0.922567 | {'dataset_s': 2.6, 'entrenamiento_s': 5.8, 'prediccion_s': 0.3, 'total_s': 8.7}
+00:22:00 h3      20261108 cfg 12 | AUC sel 0.923458 | {'dataset_s': 2.6, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.6}
+00:22:12 h3      20261108 cfg 13 | AUC sel 0.921279 | {'dataset_s': 2.6, 'entrenamiento_s': 9.2, 'prediccion_s': 0.3, 'total_s': 12.1}
+00:22:24 h3      20261108 cfg 14 | AUC sel 0.921319 | {'dataset_s': 2.6, 'entrenamiento_s': 9.3, 'prediccion_s': 0.3, 'total_s': 12.2}
+00:22:33 h3      20261108 cfg 15 | AUC sel 0.920634 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.4, 'total_s': 8.4}
+00:22:44 h3      20261108 cfg 16 | AUC sel 0.923770 | {'dataset_s': 2.6, 'entrenamiento_s': 7.4, 'prediccion_s': 0.4, 'total_s': 10.4}
+00:22:54 h3      20261108 cfg 17 | AUC sel 0.922592 | {'dataset_s': 2.8, 'entrenamiento_s': 7.0, 'prediccion_s': 0.3, 'total_s': 10.1}
+00:23:00 h3      20261108 cfg 18 | AUC sel 0.921455 | {'dataset_s': 2.7, 'entrenamiento_s': 3.6, 'prediccion_s': 0.2, 'total_s': 6.5}
+00:23:09 h3      20261108 cfg 19 | AUC sel 0.921128 | {'dataset_s': 2.6, 'entrenamiento_s': 5.6, 'prediccion_s': 0.3, 'total_s': 8.5}
+00:23:09 [h3_20261108] 185.3s | {'rss_mb': 4338.5, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:23:18 muestra 20261109: 126718 filas, 1329 positivos | matriz en 8.4s
+00:23:25 h3      20261109 cfg 00 | AUC sel 0.908788 | {'dataset_s': 2.6, 'entrenamiento_s': 4.4, 'prediccion_s': 0.2, 'total_s': 7.2}
+00:23:35 h3      20261109 cfg 01 | AUC sel 0.916350 | {'dataset_s': 2.7, 'entrenamiento_s': 6.6, 'prediccion_s': 0.3, 'total_s': 9.6}
+00:23:40 h3      20261109 cfg 02 | AUC sel 0.909899 | {'dataset_s': 2.5, 'entrenamiento_s': 2.6, 'prediccion_s': 0.2, 'total_s': 5.3}
+00:23:48 h3      20261109 cfg 03 | AUC sel 0.918488 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.8}
+00:23:58 h3      20261109 cfg 04 | AUC sel 0.923067 | {'dataset_s': 2.7, 'entrenamiento_s': 6.9, 'prediccion_s': 0.3, 'total_s': 9.9}
+00:24:09 h3      20261109 cfg 05 | AUC sel 0.917619 | {'dataset_s': 2.6, 'entrenamiento_s': 7.9, 'prediccion_s': 0.3, 'total_s': 10.8}
+00:24:17 h3      20261109 cfg 06 | AUC sel 0.923551 | {'dataset_s': 2.7, 'entrenamiento_s': 4.7, 'prediccion_s': 0.4, 'total_s': 7.8}
+00:24:25 h3      20261109 cfg 07 | AUC sel 0.914187 | {'dataset_s': 2.6, 'entrenamiento_s': 4.7, 'prediccion_s': 0.3, 'total_s': 7.6}
+00:24:36 h3      20261109 cfg 08 | AUC sel 0.915906 | {'dataset_s': 2.6, 'entrenamiento_s': 8.2, 'prediccion_s': 0.2, 'total_s': 11.0}
+00:24:42 h3      20261109 cfg 09 | AUC sel 0.920861 | {'dataset_s': 2.5, 'entrenamiento_s': 3.3, 'prediccion_s': 0.3, 'total_s': 6.1}
+00:24:51 h3      20261109 cfg 10 | AUC sel 0.917578 | {'dataset_s': 2.5, 'entrenamiento_s': 5.5, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:25:00 h3      20261109 cfg 11 | AUC sel 0.920581 | {'dataset_s': 2.6, 'entrenamiento_s': 6.3, 'prediccion_s': 0.3, 'total_s': 9.2}
+00:25:06 h3      20261109 cfg 12 | AUC sel 0.919890 | {'dataset_s': 2.6, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.6}
+00:25:18 h3      20261109 cfg 13 | AUC sel 0.920548 | {'dataset_s': 2.6, 'entrenamiento_s': 9.3, 'prediccion_s': 0.3, 'total_s': 12.2}
+00:25:31 h3      20261109 cfg 14 | AUC sel 0.916040 | {'dataset_s': 2.6, 'entrenamiento_s': 9.3, 'prediccion_s': 0.3, 'total_s': 12.2}
+00:25:39 h3      20261109 cfg 15 | AUC sel 0.919884 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.4, 'total_s': 8.4}
+00:25:49 h3      20261109 cfg 16 | AUC sel 0.921347 | {'dataset_s': 2.6, 'entrenamiento_s': 6.8, 'prediccion_s': 0.4, 'total_s': 9.8}
+00:25:59 h3      20261109 cfg 17 | AUC sel 0.922508 | {'dataset_s': 2.7, 'entrenamiento_s': 6.9, 'prediccion_s': 0.3, 'total_s': 9.9}
+00:26:06 h3      20261109 cfg 18 | AUC sel 0.920723 | {'dataset_s': 2.6, 'entrenamiento_s': 3.9, 'prediccion_s': 0.2, 'total_s': 6.7}
+00:26:14 h3      20261109 cfg 19 | AUC sel 0.919465 | {'dataset_s': 2.5, 'entrenamiento_s': 5.5, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:26:15 [h3_20261109] 185.4s | {'rss_mb': 4326.4, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:26:23 muestra 20261110: 126718 filas, 1367 positivos | matriz en 8.3s
+00:26:30 h3      20261110 cfg 00 | AUC sel 0.903628 | {'dataset_s': 2.6, 'entrenamiento_s': 4.3, 'prediccion_s': 0.2, 'total_s': 7.1}
+00:26:39 h3      20261110 cfg 01 | AUC sel 0.912901 | {'dataset_s': 2.6, 'entrenamiento_s': 6.4, 'prediccion_s': 0.3, 'total_s': 9.3}
+00:26:45 h3      20261110 cfg 02 | AUC sel 0.908134 | {'dataset_s': 2.6, 'entrenamiento_s': 2.5, 'prediccion_s': 0.2, 'total_s': 5.3}
+00:26:53 h3      20261110 cfg 03 | AUC sel 0.918836 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.8}
+00:27:03 h3      20261110 cfg 04 | AUC sel 0.918886 | {'dataset_s': 2.6, 'entrenamiento_s': 6.6, 'prediccion_s': 0.4, 'total_s': 9.6}
+00:27:14 h3      20261110 cfg 05 | AUC sel 0.916402 | {'dataset_s': 2.6, 'entrenamiento_s': 8.2, 'prediccion_s': 0.3, 'total_s': 11.1}
+00:27:22 h3      20261110 cfg 06 | AUC sel 0.921845 | {'dataset_s': 2.6, 'entrenamiento_s': 4.7, 'prediccion_s': 0.4, 'total_s': 7.7}
+00:27:30 h3      20261110 cfg 07 | AUC sel 0.911504 | {'dataset_s': 2.6, 'entrenamiento_s': 4.7, 'prediccion_s': 0.3, 'total_s': 7.6}
+00:27:41 h3      20261110 cfg 08 | AUC sel 0.913810 | {'dataset_s': 2.5, 'entrenamiento_s': 8.2, 'prediccion_s': 0.2, 'total_s': 10.9}
+00:27:47 h3      20261110 cfg 09 | AUC sel 0.916468 | {'dataset_s': 2.6, 'entrenamiento_s': 3.2, 'prediccion_s': 0.3, 'total_s': 6.1}
+00:27:55 h3      20261110 cfg 10 | AUC sel 0.910571 | {'dataset_s': 2.6, 'entrenamiento_s': 5.3, 'prediccion_s': 0.3, 'total_s': 8.2}
+00:28:04 h3      20261110 cfg 11 | AUC sel 0.917380 | {'dataset_s': 2.6, 'entrenamiento_s': 5.6, 'prediccion_s': 0.3, 'total_s': 8.5}
+00:28:10 h3      20261110 cfg 12 | AUC sel 0.918004 | {'dataset_s': 2.6, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.6}
+00:28:22 h3      20261110 cfg 13 | AUC sel 0.920094 | {'dataset_s': 2.6, 'entrenamiento_s': 9.8, 'prediccion_s': 0.3, 'total_s': 12.7}
+00:28:35 h3      20261110 cfg 14 | AUC sel 0.914248 | {'dataset_s': 2.6, 'entrenamiento_s': 9.4, 'prediccion_s': 0.4, 'total_s': 12.4}
+00:28:44 h3      20261110 cfg 15 | AUC sel 0.916035 | {'dataset_s': 2.7, 'entrenamiento_s': 5.4, 'prediccion_s': 0.4, 'total_s': 8.5}
+00:28:54 h3      20261110 cfg 16 | AUC sel 0.920098 | {'dataset_s': 2.6, 'entrenamiento_s': 6.9, 'prediccion_s': 0.4, 'total_s': 9.9}
+00:29:04 h3      20261110 cfg 17 | AUC sel 0.916832 | {'dataset_s': 2.6, 'entrenamiento_s': 6.8, 'prediccion_s': 0.3, 'total_s': 9.7}
+00:29:10 h3      20261110 cfg 18 | AUC sel 0.918765 | {'dataset_s': 2.6, 'entrenamiento_s': 3.5, 'prediccion_s': 0.2, 'total_s': 6.3}
+00:29:18 h3      20261110 cfg 19 | AUC sel 0.918163 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:29:19 [h3_20261110] 184.0s | {'rss_mb': 4861.0, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:29:27 muestra 20261111: 126718 filas, 1377 positivos | matriz en 8.2s
+00:29:34 h3      20261111 cfg 00 | AUC sel 0.906317 | {'dataset_s': 2.5, 'entrenamiento_s': 4.4, 'prediccion_s': 0.2, 'total_s': 7.1}
+00:29:44 h3      20261111 cfg 01 | AUC sel 0.916698 | {'dataset_s': 2.5, 'entrenamiento_s': 6.6, 'prediccion_s': 0.3, 'total_s': 9.4}
+00:29:49 h3      20261111 cfg 02 | AUC sel 0.907859 | {'dataset_s': 2.7, 'entrenamiento_s': 2.6, 'prediccion_s': 0.2, 'total_s': 5.5}
+00:29:57 h3      20261111 cfg 03 | AUC sel 0.923193 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.8}
+00:30:07 h3      20261111 cfg 04 | AUC sel 0.922561 | {'dataset_s': 2.6, 'entrenamiento_s': 6.6, 'prediccion_s': 0.3, 'total_s': 9.5}
+00:30:18 h3      20261111 cfg 05 | AUC sel 0.920795 | {'dataset_s': 2.6, 'entrenamiento_s': 7.9, 'prediccion_s': 0.3, 'total_s': 10.8}
+00:30:26 h3      20261111 cfg 06 | AUC sel 0.925193 | {'dataset_s': 2.6, 'entrenamiento_s': 4.6, 'prediccion_s': 0.4, 'total_s': 7.6}
+00:30:34 h3      20261111 cfg 07 | AUC sel 0.914958 | {'dataset_s': 2.6, 'entrenamiento_s': 4.9, 'prediccion_s': 0.3, 'total_s': 7.8}
+00:30:45 h3      20261111 cfg 08 | AUC sel 0.915969 | {'dataset_s': 2.6, 'entrenamiento_s': 8.2, 'prediccion_s': 0.2, 'total_s': 11.0}
+00:30:51 h3      20261111 cfg 09 | AUC sel 0.918264 | {'dataset_s': 2.6, 'entrenamiento_s': 3.2, 'prediccion_s': 0.3, 'total_s': 6.1}
+00:30:59 h3      20261111 cfg 10 | AUC sel 0.916848 | {'dataset_s': 2.6, 'entrenamiento_s': 5.4, 'prediccion_s': 0.3, 'total_s': 8.3}
+00:31:08 h3      20261111 cfg 11 | AUC sel 0.920557 | {'dataset_s': 2.6, 'entrenamiento_s': 5.7, 'prediccion_s': 0.3, 'total_s': 8.6}
+00:31:14 h3      20261111 cfg 12 | AUC sel 0.921455 | {'dataset_s': 2.7, 'entrenamiento_s': 2.8, 'prediccion_s': 0.2, 'total_s': 5.7}
+00:31:26 h3      20261111 cfg 13 | AUC sel 0.925653 | {'dataset_s': 2.6, 'entrenamiento_s': 9.3, 'prediccion_s': 0.3, 'total_s': 12.2}
+00:31:39 h3      20261111 cfg 14 | AUC sel 0.917793 | {'dataset_s': 2.6, 'entrenamiento_s': 9.6, 'prediccion_s': 0.3, 'total_s': 12.5}
+00:31:48 h3      20261111 cfg 15 | AUC sel 0.919098 | {'dataset_s': 2.6, 'entrenamiento_s': 5.5, 'prediccion_s': 0.4, 'total_s': 8.5}
+00:31:58 h3      20261111 cfg 16 | AUC sel 0.924167 | {'dataset_s': 2.6, 'entrenamiento_s': 6.8, 'prediccion_s': 0.4, 'total_s': 9.8}
+00:32:08 h3      20261111 cfg 17 | AUC sel 0.917887 | {'dataset_s': 2.6, 'entrenamiento_s': 6.9, 'prediccion_s': 0.3, 'total_s': 9.8}
+00:32:14 h3      20261111 cfg 18 | AUC sel 0.921913 | {'dataset_s': 2.6, 'entrenamiento_s': 3.6, 'prediccion_s': 0.2, 'total_s': 6.4}
+00:32:23 h3      20261111 cfg 19 | AUC sel 0.919112 | {'dataset_s': 2.6, 'entrenamiento_s': 5.3, 'prediccion_s': 0.3, 'total_s': 8.2}
+00:32:23 [h3_20261111] 184.2s | {'rss_mb': 4349.5, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:32:23 [resumen] 0.0s | {'rss_mb': 4350.9, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:32:23 delta mediana 0.000000 [-0.000081, 0.002227] | elige la ganadora de Control 7 de 10 | Spearman mediana 0.775
+00:32:23 Salida para ganancia_08: --corrida-07 /home/agustina/repo/experimentos/sampling_1/ledger/martin/07/07_sensibilidad_muestra_h3/20261109T235232_15814
+00:32:23 Fin (código 0) en 2391.4s

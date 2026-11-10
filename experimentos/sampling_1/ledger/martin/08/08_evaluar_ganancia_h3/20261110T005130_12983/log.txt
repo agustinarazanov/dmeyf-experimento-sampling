@@ -1,0 +1,22 @@
+00:51:30 Corrida /home/agustina/repo/experimentos/sampling_1/ledger/martin/08/08_evaluar_ganancia_h3/20261110T005130_12983 | completa
+00:51:30 referencia 4a42bc6: {'importe_baja2': True, 'costo_estimulo': True, 'aporte_solo_baja2_suma': True, 'desempate_argsort_estable': True, 'sql_macros_igual': True, 'sql_etiqueta_igual': True, 'sql_crudo_igual': True, 'baja2_es_la_de_ganancia': True, 'panel_ordenado_por_mes_y_cliente': True, 'constantes_esperadas': True}
+00:51:30 pruebas sintéticas: {'test_10_scores_del_grupo': True, 'baja1_cuesta': True, 'desempate_menor_cliente': True, 'propia_igual_al_grupo_con_empates': True, 'sin_ordenar_el_grupo_cambia': True, 'etiqueta_sql_grupo_igual_a_03': True}
+00:51:30 [referencia_y_pruebas] 0.3s | {'rss_mb': 310.0, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:51:30 Control cfg 6 | H3 {20261102: 16, 20261103: 3, 20261104: 6, 20261105: 6, 20261106: 6, 20261107: 6, 20261108: 6, 20261109: 6, 20261110: 6, 20261111: 13} | modelos distintos [3, 6, 13, 16]
+00:51:37   X_201908.npy: 131,072/131,775 filas (99%) en 4s
+00:51:38   X_201908.npy: 131,775/131,775 filas (100%) en 5s
+00:51:49 modelos verificados contra 07: {3: True, 6: True, 13: True, 16: True}
+00:51:49 [verificacion_modelos] 19.2s | {'rss_mb': 395.4, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:53:50 etiquetas del grupo vs 03: {201903: {'ambos': 125622, 'solo_grupo': 0, 'solo_03': 0, 'distintas': 0, 'baja2_grupo': 774, 'baja2_03': 774}, 201904: {'ambos': 126116, 'solo_grupo': 0, 'solo_03': 0, 'distintas': 0, 'baja2_grupo': 575, 'baja2_03': 575}, 201905: {'ambos': 126763, 'solo_grupo': 0, 'solo_03': 0, 'distintas': 0, 'baja2_grupo': 658, 'baja2_03': 658}, 201906: {'ambos': 128370, 'solo_grupo': 0, 'solo_03': 0, 'distintas': 0, 'baja2_grupo': 589, 'baja2_03': 589}, 201908: {'ambos': 131775, 'solo_grupo': 0, 'solo_03': 0, 'distintas': 0, 'baja2_grupo': 543, 'baja2_03': 543}, 201910: {'ambos': 135633, 'solo_grupo': 0, 'solo_03': 0, 'distintas': 0, 'baja2_grupo': 632, 'baja2_03': 632}}
+00:53:50 [etiquetas_grupo] 120.6s | {'rss_mb': 330.4, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:53:57   X_201910.npy: 131,072/135,633 filas (97%) en 4s
+00:53:57   X_201910.npy: 135,633/135,633 filas (100%) en 4s
+00:54:07 [carga_octubre] 16.5s | {'rss_mb': 1169.1, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:54:08 [prediccion_octubre] 1.2s | {'rss_mb': 1171.7, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:54:08 cfg 03 | ganancia 282,150,000 | BAJA+2 339 | BAJA+1 379 | CONTINUA 2582 | empates en el corte 1
+00:54:08 cfg 06 | ganancia 273,350,000 | BAJA+2 331 | BAJA+1 380 | CONTINUA 2589 | empates en el corte 1
+00:54:08 cfg 13 | ganancia 263,450,000 | BAJA+2 322 | BAJA+1 377 | CONTINUA 2601 | empates en el corte 1
+00:54:08 cfg 16 | ganancia 268,950,000 | BAJA+2 327 | BAJA+1 386 | CONTINUA 2587 | empates en el corte 1
+00:54:08 [ganancia] 0.3s | {'rss_mb': 1149.7, 'pico_working_set_mb': 0.0, 'pico_commit_privado_mb': 0.0}
+00:54:08 delta mediana 0 [-9,900,000, 8,800,000] | %: 0.000 [-3.622, 3.219]
+00:54:08 Fin en 158.4s

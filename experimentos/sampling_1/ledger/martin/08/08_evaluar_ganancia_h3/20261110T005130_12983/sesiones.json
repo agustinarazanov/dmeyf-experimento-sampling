@@ -1,0 +1,66 @@
+[
+  {
+    "pid": 12983,
+    "inicio": "2026-11-10T00:51:30",
+    "reanudacion": false,
+    "etapas": {
+      "referencia_y_pruebas": {
+        "segundos": 0.3,
+        "hora": "00:51:30",
+        "rss_mb": 310.0,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "verificacion_modelos": {
+        "segundos": 19.2,
+        "hora": "00:51:49",
+        "rss_mb": 395.4,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "etiquetas_grupo": {
+        "segundos": 120.6,
+        "hora": "00:53:50",
+        "rss_mb": 330.4,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "carga_octubre": {
+        "segundos": 16.5,
+        "hora": "00:54:07",
+        "rss_mb": 1169.1,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      },
+      "prediccion_octubre": {
+        "segundos": 1.2,
+        "hora": "00:54:08",
+        "rss_mb": 1171.7,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0,
+        "segundos_por_modelo": {
+          "3": 0.29,
+          "6": 0.32,
+          "13": 0.28,
+          "16": 0.33
+        }
+      },
+      "ganancia": {
+        "segundos": 0.3,
+        "hora": "00:54:08",
+        "rss_mb": 1149.7,
+        "pico_working_set_mb": 0.0,
+        "pico_commit_privado_mb": 0.0
+      }
+    },
+    "ajustes_nuevos": 0,
+    "fin": "2026-11-10T00:54:08",
+    "total_s": 158.4,
+    "temporales_borrados": true,
+    "memoria_fin": {
+      "rss_mb": 359.4,
+      "pico_working_set_mb": 0.0,
+      "pico_commit_privado_mb": 0.0
+    }
+  }
+]

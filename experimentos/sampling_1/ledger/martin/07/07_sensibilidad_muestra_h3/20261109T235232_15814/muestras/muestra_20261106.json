@@ -1,0 +1,14 @@
+{
+  "semilla": 20261106,
+  "generador": "default_rng(semilla).choice(n, k, replace=False), índices ordenados (comun.muestreo.indices_uniformes(n, 0.25, semilla))",
+  "filas": 126718,
+  "positivos": 1324,
+  "filas_por_mes": {
+    "201903": 31644,
+    "201904": 31408,
+    "201905": 31529,
+    "201906": 32137
+  },
+  "sha256_indices": "308a9b982bccc8413c0c0ec19bf663d32b554c224cd8149ae4a94b4f4b7102ac",
+  "sha256_claves": "5288c318c2b2d6c8284419061dd9d7c1299e7c3aabb77efcfc7189c0d0fe4b8a"
+}

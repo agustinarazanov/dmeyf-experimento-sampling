@@ -1,0 +1,161 @@
+{
+ "descripcion": "Procedencia de los archivos de resultados/: copias byte a byte de ledger/luis/ (salidas de las VMs n2-highmem-8 de la fase 6 con validacion.py --estrategia N, más los agregados de validacion.py --agregar y presupuesto.py hechos en la Mac). Panel de comun.datos; el panel de Luis (D7) va aparte, en ledger/luis/panel_luis.",
+ "commit_de_la_copia": "f9798f7ecfdb586abbc7804f0936b78269b76d64",
+ "archivos": {
+  "calibracion_ledger_e7.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_ledger_e7.json",
+   "sha256": "f3cfab34d2d97b5853efac5aefc60f17bb66fa55dbb158a50b72c62ca1081d3d"
+  },
+  "calibracion_original_e1.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e1.json",
+   "sha256": "9af111ff0c6ef95956eaacf794789bd7133d2ff4600271a6c9e5a4ee36317b43"
+  },
+  "calibracion_original_e2.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e2.json",
+   "sha256": "89381a634d1e22475e76ca178da0df90512f1049503f33035e1c2736370018a6"
+  },
+  "calibracion_original_e3.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e3.json",
+   "sha256": "ca64c3a9f377a97b9340e78fb3b5d07f38d1ccec7fd7668e27a5f38cc24d4cef"
+  },
+  "calibracion_original_e4.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e4.json",
+   "sha256": "7de1f3bed2d2d7b6cebc1488b65c9fb0e3fb16bb0782e35412d6cc75c81f2dbe"
+  },
+  "calibracion_original_e5.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e5.json",
+   "sha256": "bb856b9a2e34b8b12d9ca310bdffa59606cacd45dd1eaab94a250124918a9246"
+  },
+  "calibracion_original_e6.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e6.json",
+   "sha256": "0c6dc18916b4007e6be4bab49bbc59ff1c7bd8cf5acf7a9f6b8e6b2b80f30fd2"
+  },
+  "calibracion_original_e7.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e7.json",
+   "sha256": "2d5f715713d3345bfc99d4c87922a06d571fda3fd27801b47386f775d29e888d"
+  },
+  "calibracion_original_e8.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e8.json",
+   "sha256": "cee370caa4b943116753e41a5dac97199d5606c13792b6a824e57a7522ab4b6e"
+  },
+  "calibracion_original_e9.json": {
+   "origen": "experimentos/sampling_1/ledger/luis/calibracion_original_e9.json",
+   "sha256": "5a9e8ffb8bf97794be744578ea1e79c0715cdb133c8b0b6269a7604548721ab7"
+  },
+  "curva_k_201908_original.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/curva_k_201908_original.csv",
+   "sha256": "a3c529e7e180e792866128093f801410fd1620e4d09974a62ce0627e19c4d9a5"
+  },
+  "ensambles_201908_original.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_201908_original.csv",
+   "sha256": "db6e27ddd81e2b9ea0f6a6e440b5219da461c6114e450a5153d067d20cd2f788"
+  },
+  "ensambles_ledger_e7.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_ledger_e7.csv",
+   "sha256": "500bcf5a9fdb1c77be4ecfc31f8986e6161cf2e4b7e4dca1019d19c04cdb045b"
+  },
+  "ensambles_original_e1.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e1.csv",
+   "sha256": "333ee6b1d13635a72bf839a23eef5428f5831e29ce3445ca7494c298ea269fff"
+  },
+  "ensambles_original_e2.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e2.csv",
+   "sha256": "965873e4f2b9961ce99d23ab0a94b74994791bb37cad968fbf6b83fbe0bd62a8"
+  },
+  "ensambles_original_e3.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e3.csv",
+   "sha256": "1c79d8c45454f48b567cd1c0ca11ed80111996e34846e3aecaf9423f6b40b4d8"
+  },
+  "ensambles_original_e4.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e4.csv",
+   "sha256": "01489d5cd9509689c75a88abdfb4fd38e1efce7d9df5f97ba10df4acb46bdc4b"
+  },
+  "ensambles_original_e5.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e5.csv",
+   "sha256": "3632eff84c1c896af29e308878d7b7937af21624b79bde90da2cba570b649e41"
+  },
+  "ensambles_original_e6.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e6.csv",
+   "sha256": "3231296a379cb57a2c9ef3717854a82a1a5d1996f83938ecc49bd75c1b365134"
+  },
+  "ensambles_original_e7.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e7.csv",
+   "sha256": "f063d84e4c2764d3cf93a4e3878b3ce69c12f56fef9723cac9330936a516b38d"
+  },
+  "ensambles_original_e8.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e8.csv",
+   "sha256": "583f0e5713f5302dc9f2846949ddc51a692056e1d3e539617a116f1fe70caee5"
+  },
+  "ensambles_original_e9.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ensambles_original_e9.csv",
+   "sha256": "afd2783d5f078602b3126670539590e165b27112698cea72afced05bf284ea7e"
+  },
+  "presupuesto_original.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/presupuesto_original.csv",
+   "sha256": "5d45c359cf5a91cc82793e274f5c176a18d03f79d9efd11fff776e87b6294526"
+  },
+  "ranking_201908_original.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/ranking_201908_original.csv",
+   "sha256": "233bcbe1001ac149c7a300a5d38f0c5a95a3bf6b01f3983baae4578f38e95a79"
+  },
+  "reporte_50_semillas_original.html": {
+   "origen": "experimentos/sampling_1/ledger/luis/reporte_50_semillas_original.html",
+   "sha256": "fd79b3ce6d2b80569efecce43250194a7bc5d88924a19e555d78cdd986e235cf"
+  },
+  "resumen_50_semillas_original.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/resumen_50_semillas_original.csv",
+   "sha256": "b70cf8189fdbf0baff3131c5fb97ce0c12e8d19802198bae7af967c70ba48a0c"
+  },
+  "semillas_ledger_e7.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_ledger_e7.csv",
+   "sha256": "5324a2d5631baafd4cdcee900da02df2f58e1585f0b106dbbb3050eda0bbd915"
+  },
+  "semillas_original_e1.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e1.csv",
+   "sha256": "1134fca573796b488fdd70ee263ff8e0c7f238fbc28b078c80bc1ea335da65f6"
+  },
+  "semillas_original_e2.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e2.csv",
+   "sha256": "098232372609616b7a4944cb4ff4e7d478ec75292b4d86e0b73c07515071602e"
+  },
+  "semillas_original_e3.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e3.csv",
+   "sha256": "4780be6c5233c31336e7b5fbce7ad646ec6e4217b6243ec73b9560a62128b37c"
+  },
+  "semillas_original_e4.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e4.csv",
+   "sha256": "96a8b8896b963165d9a2ab91b5d60f657c6c08689e45aedcf46f8d09b9ef8859"
+  },
+  "semillas_original_e5.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e5.csv",
+   "sha256": "c498f59997283666959b7a32fe96a199fd8350b2f019203057a508dba38e5014"
+  },
+  "semillas_original_e6.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e6.csv",
+   "sha256": "77cdd0ac23db67264a5ea77e7447c94333cfbaad436b96dbe0c2620f45adebc8"
+  },
+  "semillas_original_e7.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e7.csv",
+   "sha256": "702b41357d2031e8a75a899653369c54137f3cd2ab22612f6182e9e76dd56363"
+  },
+  "semillas_original_e8.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e8.csv",
+   "sha256": "802504cbdee9304528ab5191b0f7163f490f8115a2df9955e99918c6c9618dfb"
+  },
+  "semillas_original_e9.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/semillas_original_e9.csv",
+   "sha256": "941bd0af01236c2027682237d525593c9aabe6444592813b209bb2409eaf0b75"
+  },
+  "tabla_201910_original.csv": {
+   "origen": "experimentos/sampling_1/ledger/luis/tabla_201910_original.csv",
+   "sha256": "0e6c11adc12fc08069c1320605825a42468f093491d0f002b38171565054c7da"
+  }
+ },
+ "versiones_agregados": {
+  "python": "3.14.8",
+  "plataforma": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "lightgbm": "4.7.0",
+  "numpy": "2.5.3",
+  "pandas": "3.0.6"
+ }
+}
