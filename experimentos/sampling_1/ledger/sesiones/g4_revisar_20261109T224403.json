@@ -1,0 +1,216 @@
+{
+ "duration_api_ms": 302138,
+ "stop_reason": "end_turn",
+ "session_id": "fb76540c-c00a-47cb-9fad-dcc9d4850cf7",
+ "total_cost_usd": 2.1942850000000003,
+ "usage": {
+  "input_tokens": 104,
+  "cache_creation_input_tokens": 99428,
+  "cache_read_input_tokens": 3779925,
+  "output_tokens": 32123,
+  "output_tokens_details": {
+   "thinking_tokens": 6147
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 99428,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1444,
+    "cache_read_input_tokens": 110384,
+    "cache_creation_input_tokens": 896,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 896
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 104,
+   "outputTokens": 32123,
+   "cacheReadInputTokens": 3779925,
+   "cacheCreationInputTokens": 99428,
+   "webSearchRequests": 0,
+   "costUSD": 2.1942850000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 6147,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 99428,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_018PcZtuFCS1xka9Rq4cEBaN",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; git log --oneline -12; git log --format='%h' --grep='incorporar-aportes 4' | while read c; do echo \"== $c\"; git show --stat --format= $c | tail -25; done 2>&1 | head -90",
+    "description": "Show files touched by group 4 commits"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01VwiHy5crNrrqmgQBuh1eWX",
+   "tool_input": {
+    "command": "mkdir -p /tmp/rev4 && cat > /tmp/rev4/chk.py <<'EOF'\nimport pandas as pd, json, sys\nfor e in [\"control\",\"h3\",\"h4\"]:\n    d=pd.read_csv(f\"experimentos/{e}/ledger/resultados.csv\")\n    print(f\"=== {e}: {len(d)} filas\")\n    print(\" maquina:\", d.maquina.value_counts().to_dict())\n    print(\" codigo_sucio:\", d.codigo_sucio.value_counts().to_dict(), \" etapa:\", d.etapa.value_counts().to_dict(), \" valida:\", d.valida.value_counts().to_dict())\n    print(\" commit por etapa_corrida:\"); print(d.groupby(\"etapa_corrida\").commit.unique().to_string())\n    d[\"r\"]=d.filas_train/d.groupby(\"etapa_corrida\").filas_train.transform(\"max\")\n    g=d.groupby([\"variante\",\"metodo\",\"tasa\"]).filas_train.unique()\n    print(\" filas_train por variante:\"); print(g.to_string())\n    c=d.groupby([\"variante\",\"replica_opt\"]).semilla.nunique().unstack()\n    print(\" semillas por variante x replica:\"); print(c.to_string())\nEOF\ncd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling && python /tmp/rev4/chk.py > /tmp/rev4/chk.txt 2>&1; wc -l /tmp/rev4/chk.txt; head -c 6000 /tmp/rev4/chk.txt",
+    "description": "Run ledger checks to file and show summary"
+   }
+  },
+  {
+   "tool_name": "Write",
+   "tool_use_id": "toolu_01BFnM4Yi86SE8QDVS5PVF7u",
+   "tool_input": {
+    "file_path": "/tmp/rev4/chk.py",
+    "content": "import pandas as pd\nfor e in [\"control\", \"h3\", \"h4\"]:\n    d = pd.read_csv(f\"experimentos/{e}/ledger/resultados.csv\")\n    print(f\"=== {e}: {len(d)} filas\")\n    print(\" maquina:\", d.maquina.value_counts().to_dict())\n    print(\" codigo_sucio:\", d.codigo_sucio.value_counts().to_dict(), \" etapa:\", d.etapa.value_counts().to_dict(),\n          \" valida:\", d.valida.value_counts().to_dict())\n    print(\" commit por etapa_corrida:\")\n    print(d.groupby(\"etapa_corrida\").commit.unique().to_string())\n    print(\" filas_train por variante:\")\n    print(d.groupby([\"variante\", \"metodo\", \"tasa\"]).filas_train.unique().to_string())\n    print(\" semillas por variante x replica:\")\n    print(d.groupby([\"variante\", \"replica_opt\"]).semilla.nunique().unstack().to_string())\n"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011tWuLU5WQJfVNtHCzD7akr",
+   "tool_input": {
+    "command": "python /tmp/rev4/chk.py > /tmp/rev4/chk.txt 2>&1; wc -l /tmp/rev4/chk.txt; head -c 7000 /tmp/rev4/chk.txt",
+    "description": "Run ledger checks and show summary"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LFdiLCbdgmLtF6YXjRkuMx",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; for c in 53bd92e f9798f7 69bd98f b736a7a; do echo \"$c: control $(git show $c:experimentos/control/ledger/resultados.csv | wc -l) h3 $(git show $c:experimentos/h3/ledger/resultados.csv | wc -l) h4 $(git show $c:experimentos/h4/ledger/resultados.csv 2>/dev/null | wc -l)\"; done; git status --short | head",
+    "description": "Row counts of resultados.csv across commits"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_018B1QAZjvk3fDq5ayh9FmTu",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; git show adb62a2:experimentos/control/ledger/resultados.csv > /Users/agustina/datos/experimentos-dmeyf/rev_g4/control_adb.csv; git show adb62a2:experimentos/h3/ledger/resultados.csv > /Users/agustina/datos/experimentos-dmeyf/rev_g4/h3_adb.csv; wc -l /Users/agustina/datos/experimentos-dmeyf/rev_g4/*_adb.csv; git diff --stat 748cc70~1 b736a7a -- experimentos/control/ledger experimentos/h3/ledger | tail -5",
+    "description": "Compare control/h3 resultados.csv before group 4"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01N3eQ79PFyVfaTrbFrqF9jQ",
+   "tool_input": {
+    "command": "git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling show adb62a2:experimentos/control/ledger/resultados.csv | wc -l; git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling show adb62a2:experimentos/h3/ledger/resultados.csv | wc -l; git -C /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling diff --stat 748cc70~1 b736a7a -- experimentos/control/ledger experimentos/h3/ledger | tail -4",
+    "description": "Compare control/h3 row counts before group 4"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011yX1L9Gj9VPciAn1etuE83",
+   "tool_input": {
+    "command": "python -m comun.consolidar > /Users/agustina/datos/experimentos-dmeyf/rev_g4/consolidar.txt 2>&1; echo rc=$?; tail -20 /Users/agustina/datos/experimentos-dmeyf/rev_g4/consolidar.txt; git status --short | head -30",
+    "description": "Re-run consolidation for all experiments"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01JgiifvBbrNyG7GFaU3h9kC",
+   "tool_input": {
+    "command": "bash scripts/vm.sh experimentos/sampling_1/scripts/fase6_d7.txt --en-seco 2>&1 | grep -n \"rsync\"; python -c \"import re;r=re.compile(r'^(exploracion|sesiones)/|^[^/]*\\.csv$');print([bool(r.search(p)) for p in ['resultados.csv','corridas/a.csv','hp/U0.1.json','sesiones/x.log','curvas/c.csv']])\"",
+    "description": "Dry-run vm.sh and test exclusion regex"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01BceQ96PczdrRRqzAW34udn",
+   "tool_input": {
+    "command": "bash scripts/vm.sh experimentos/sampling_1/scripts/fase6_d7.txt --en-seco > /Users/agustina/datos/experimentos-dmeyf/rev_g4/enseco.txt 2>&1; grep -n \"rsync\" /Users/agustina/datos/experimentos-dmeyf/rev_g4/enseco.txt",
+    "description": "Dry-run vm.sh and grep rsync lines"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DpusJ244XfNhpmzREjwMdn",
+   "tool_input": {
+    "command": "bash -n scripts/vm.sh && grep -n \"rsync -r\" scripts/vm.sh",
+    "description": "Syntax-check vm.sh and show rsync lines"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01V5j3smErDGpq7FthYTr5EB",
+   "tool_input": {
+    "command": "cat >> experimentos/sampling_1/docs/bitacora.md <<'EOF'\n\n### 2026-11-09 — grupo 4 de `incorporar-aportes` (corridas, sesiones headless)\n- Sesiones `9ce80da1`, `a8bfa80f`, `121fa54d`, `39057014`, `d9765b77`, `124f31c2`, `a0f81d9b`, `52dfc762` · modelo:\n  Sonnet · etapa: **corridas** (tareas 4.1–4.4, commits `ebf3321` … `b736a7a`). Sin entrada propia acá (4.3 anotó\n  tiempos en la de `h4`); la agrega la revisión. 144 turnos y US$ 2,05 según `costos.csv` (las sesiones anteriores a\n  las 17:41 se perdieron con las filas que pisó `vm.sh`, ver `26de0c7`).\n\n### 2026-11-09 — cierre revisión del grupo 4 de `incorporar-aportes` (corridas)\n- Sesión: `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa: **revision** (grupo 4, tareas 4.1–4.4).\n- Revisor: sesión limpia headless (Opus, sin contexto de las sesiones que lanzaron y consolidaron el grupo).\n- Lista: docs/revision.md § 4 (resultados) sobre los ledgers de `control`, `h3` y `h4`, y la verificación de 4.1–4.4.\n  Ningún ✗ abierto.\n  - ✗→✓ Máquina y commit: en `HEAD` (`b736a7a`) el `resultados.csv` de `control` tenía 21 filas y el de `h3` 20 (solo\n    réplica 0, sin las variantes nuevas), contra 98 y 669 en `69bd98f`; `apareado.csv` y `replicas.csv` de `h3`\n    también eran viejos (2 y 5 filas). Ver hallazgo 1. Tras reconsolidar: las 98 + 669 + 336 filas son\n    `n2-highmem-8`; la fase 6 tiene dos firmas, `7dba436` (= `corridas-v3`) y `ebf3321`, que solo difieren en\n    `en_curso.txt` (mismo código).\n  - ✓ Sin `codigo_sucio` ni `etapa = exploracion` en los `resultados.csv` de `control`, `h3` y `h4`; todas `valida`.\n  - ✓ Filas de train: `H4F-0.05` y `H4F-0.25` 256.092 = (N + P)/2 (todas las bajas + 50 % de CONTINUA, D3); estudios\n    `NH0.1`/`NU0.1` 55.469 = P + 0,1 (N − P); `K0.1` ≈ 50.600–50.800 (muestra por cliente); `U{r}@k` = r × 506.871;\n    finales de `H3R-*`, `H3L-*`, `H3K-0.1`, `H4H-0.1`, `H4U-0.1` con las 506.871.\n  - ✓ Control repetido: `C-rep` reproduce exacto (`--sanity`: |ΔAUC| = 0, |Δganancia| = 0); limitación ya declarada.\n  - n/a `bagging_fraction` de H2: el grupo no tocó `h1/ledger` ni `h2/ledger` (`git diff 53bd92e HEAD` vacío);\n    `--sanity` 5.3 OK.\n  - ✓ Semillas: las 8 variantes nuevas × 8 réplicas tienen 10 finales (11 filas en `H3K`, `H4H`, `H4U` = 10 + el\n    estudio). Luis: 50 semillas en las estrategias 1, 2, 4, 5, 7 y `ledger_e7`; 55, 55, 70 y 63 en 3, 6, 8 y 9 (= K de\n    `presupuesto.py`); `procedencia.json` presente.\n  - ✓ `apareado.csv` de `h3` (8 variantes) y `h4` (4) con media, sd, IC 95%, semillas ganadas y veredicto;\n    `replicas.csv` de `h3` (8 + `H3R-0.1 − H3-0.1`) y `h4` (4), 8 réplicas × 80 semillas, sin notas de incompletas.\n  - ✗→✓ VMs borradas: `gcloud compute instances list` solo muestra `desktop-jr` (`TERMINATED`, ajena). Los logs de\n    `r0…r7`, `luis_2…4`, `luis_7_ledger`, `martin_08`, `d7` y `luis_1_panel` terminan en `Deleted`; los de `luis_1`,\n    `luis_5…9` y `martin` quedaron con una sola línea (los pisó la copia vieja de `sesiones/`, el problema que arregló\n    `26de0c7`), pero sus salidas están en `ledger/luis` y `ledger/martin` y no hay VMs vivas. Gasto: no estaba anotado;\n    estimado ahora en la bitácora de `h4`.\n- Hallazgos:\n  1. **Regresión de ledgers por `vm.sh`.** La bajada del bucket (`gsutil rsync`) traía también los CSV consolidados de\n     la raíz de cada ledger; el bucket tenía copias viejas y al volver las VMs pisaron los locales (`748cc70` y de nuevo\n     `b736a7a`, «ledgers de control y h3 actualizados»). `corridas/` estaba completo, así que `python -m\n     comun.consolidar` los regenera idénticos a `69bd98f` (`git diff 69bd98f` vacío en los CSV de `control`, `h3` y `h4`).\n  2. Gasto de la fase 6 sin anotar.\n  3. Siete logs de VM truncados (arriba); sin efecto en los resultados.\n  4. D6 preveía 18 VMs en paralelo; la cuota global de 32 vCPU obligó a tandas de 4 (`ebf3321`). Anotado en el commit,\n     no en la bitácora.\n- Corregido: `control/ledger` y `h3/ledger` (`resultados.csv`, `estudios.csv`, `reemplazadas.csv`, `apareado.csv`,\n  `replicas.csv`) reconsolidados; `scripts/vm.sh` deja de sincronizar los CSV de la raíz de cada ledger en los tres\n  `gsutil rsync` (`-x '…|^[^/]*\\.csv$'`; viajan `corridas/`, `hp/`, `curvas/`, `predicciones/`) — la expresión se\n  probó en Python sobre rutas de ejemplo, pero esta sesión no tuvo permiso para correr `vm.sh --en-seco` ni `bash -n`:\n  hacerlo antes de la próxima VM. Gasto estimado en `h4/docs/bitacora.md`; notas en las de `h3` y `control`.\n- Otras verificaciones: `python -m comun.consolidar --sanity` sin ✗; `python -m comun.variantes --verificar` pasa;\n  `pytest` 192 verdes; `python -m comun.consolidar` vuelto a correr no cambia nada más.\n- Tokens: ~45 turnos · contexto ~60.000 por turno · ≈ US$ 1,7 (presupuesto US$ 4). Salidas largas a\n  `DATOS_DIR/rev_g4/`. `comun/tokens.py` corrido.\n- Tutor: —\nEOF\ncat >> experimentos/h4/docs/bitacora.md <<'EOF'\n\n### 2026-11-09 — cierre revisión de las corridas (`incorporar-aportes` 4.5)\n\n- Sesión limpia `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa `revision`. § 4 de `docs/revision.md`\n  sin ✗ abiertos; detalle en `sampling_1/docs/bitacora.md`. El ledger de `h4` estaba bien.\n- Gasto de la fase 6 (no estaba anotado, **estimado**): el ledger registra ~5,25 h de cómputo en las 8 VMs de\n  variantes y ~2,9 h en las 10 de Luis; con Martín (~2,1 h de D6 más el reintento de 08), D7 dos veces, `luis_1` y\n  `luis_1_panel` y ~10 min de arranque por VM (≈ 24 VMs), son ≈ 13–18 h de `n2-highmem-8` spot, a ≈ US$ 0,19/h\n  **≈ US$ 2,5–3,5**. La cifra real sale de la facturación del proyecto (la mira Agustina).\nEOF\ncat >> experimentos/h3/docs/bitacora.md <<'EOF'\n\n### 2026-11-09 — cierre revisión de las corridas (`incorporar-aportes` 4.5)\n\n- Sesión limpia `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa `revision`. El `resultados.csv` de `HEAD`\n  tenía 20 filas (lo pisó la copia vieja del bucket al volver una VM, `b736a7a`); reconsolidado desde `corridas/`:\n  669 filas, idéntico a `69bd98f`, con `apareado.csv` (8 variantes) y `replicas.csv` (9 filas). `vm.sh` ya no sincroniza\n  los CSV consolidados. Detalle en `sampling_1/docs/bitacora.md`.\nEOF\ncat >> experimentos/control/docs/bitacora.md <<'EOF'\n\n### 2026-11-09 — cierre revisión de las corridas (`incorporar-aportes` 4.5)\n\n- Sesión limpia `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa `revision`. El `resultados.csv` de `HEAD`\n  tenía 21 filas (lo pisó la copia vieja del bucket, `b736a7a`); reconsolidado desde `corridas/`: 98 filas (8 réplicas\n  de `C` y `C-rep`), idéntico a `69bd98f`. Detalle en `sampling_1/docs/bitacora.md`.\nEOF\nsed -i '' 's/^- \\[ \\] 4.5 Revisión en sesión limpia de resultados/- [x] 4.5 Revisión en sesión limpia de resultados/' openspec/changes/incorporar-aportes/tasks.md && grep -n \"4.5\" openspec/changes/incorporar-aportes/tasks.md",
+    "description": "Append bitácora closures and mark task 4.5 done"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 69,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Terminé la revisión del grupo 4 de `incorporar-aportes` y la commiteé como `feb627a`. La lista de resultados (`docs/revision.md` § 4) cerró sin ✗ abiertos, pero había un problema grave y lo corregí.\n\n**Problema grave:** el último commit del grupo (`b736a7a`, «ledgers de control y h3 actualizados») había dejado los ledgers casi vacíos. `resultados.csv` de control tenía 21 filas (eran 98) y el de h3 20 (eran 669). `apareado.csv` y `replicas.csv` de h3 también eran versiones viejas. Las corridas individuales estaban todas, así que reconsolidé con `python -m comun.consolidar` y los archivos quedaron idénticos a los de `69bd98f`.\n- **Causa:** al volver cada VM, `scripts/vm.sh` traía del bucket también los CSV consolidados, y el bucket tenía copias viejas que pisaban las locales. Ya había pasado una vez en `748cc70`.\n- **Arreglo:** en `vm.sh`, esos CSV ya no viajan por el bucket en ningún sentido; siguen viajando `corridas/`, `hp/`, `curvas/` y `predicciones/`.\n- **Falta probarlo:** comprobé que el filtro excluye los archivos correctos, pero no me dieron permiso para correr `vm.sh --en-seco` ni `bash -n`. Conviene hacerlo antes de la próxima VM.\n\n**Lo que está bien:**\n- Todas las filas son de `n2-highmem-8`, sin `codigo_sucio` ni corridas exploratorias.\n- La fase 6 aparece con dos commits (`7dba436` = `corridas-v3`, y `ebf3321`), pero solo difieren en `en_curso.txt`; el código es el mismo.\n- Las filas de train cuadran con lo que pide D3 en las variantes nuevas (H4F, los estudios NH/NU, K0.1 y U{r}@k).\n- Las 8 variantes nuevas tienen 8 réplicas × 10 semillas. Las estrategias de Luis tienen 50 semillas, o K donde es mayor (55, 55, 70 y 63 en las 3, 6, 8 y 9), con `procedencia.json`.\n- `apareado.csv` y `replicas.csv` de h3 y h4 están completos.\n- No hay VMs encendidas.\n- `--sanity`, `variantes --verificar` y los 192 tests pasan.\n\n**Otros hallazgos:**\n- **Gasto:** el de la fase 6 no estaba anotado. Lo estimé en la bitácora de h4 en unos US$ 2,5–3,5; la cifra real sale de la facturación de Google Cloud.\n- **Logs:** siete logs de VM (`luis_1`, `luis_5`…`9` y `martin`) quedaron con una sola línea porque los pisó el mismo problema de sincronización. No afecta los resultados.\n- **Tandas:** D6 preveía 18 VMs en paralelo, pero la cuota de 32 vCPU obligó a correrlas de a 4. Estaba solo en un commit; ahora quedó en la bitácora.\n- **Etapa de las sesiones:** las 8 sesiones del grupo 4 no figuraban en la bitácora; las agregué como **corridas**.\n\nAnoté el cierre en las bitácoras de `sampling_1`, `control`, `h3` y `h4`, marqué la 4.5 en `tasks.md` y corrí `comun/tokens.py`. Quedan 10 sesiones sin etapa, todas anteriores al grupo 4 (del 1 al 9-nov), entre ellas `28525118`, `cf0dc9c0` y `af8c3a16`, que superan el objetivo de tokens; no las toqué porque no son de este grupo. No escribí `bloqueo.txt` porque nada necesita a un humano para cerrar. No hice push.",
+ "ttft_ms": 1398,
+ "type": "result",
+ "duration_ms": 1739133,
+ "uuid": "d0c76ec0-e203-40fd-9740-81e0ec879578",
+ "ttft_stream_ms": 905,
+ "time_to_request_ms": 232,
+ "first_content_frame_ms": 905,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 104,
+   "outputTokens": 32123,
+   "cacheReadInputTokens": 3779925,
+   "cacheCreationInputTokens": 99428,
+   "webSearchRequests": 0,
+   "costUSD": 2.1942850000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 6147,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 99428,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

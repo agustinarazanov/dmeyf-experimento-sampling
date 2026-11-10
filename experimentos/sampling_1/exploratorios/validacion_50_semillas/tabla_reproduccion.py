@@ -1,5 +1,6 @@
-"""Tabla reportado / reproducido del README (tarea 5.2): cada número sale de `resultados/`, de `panel_d7.json` o de los
-`replicas.csv` y `estudios.csv` de los experimentos; nada se escribe a mano.
+"""Tabla reportado / reproducido del README (tarea 5.2): cada número sale de `resultados/`, de `panel_d7.json`, de
+`hp_original.json`, de `estrategias.py` o de los `replicas.csv`, `estudios.csv` y `apareado.csv` de los experimentos;
+nada se escribe a mano.
 
     python -m experimentos.sampling_1.exploratorios.validacion_50_semillas.tabla_reproduccion            # imprime
     python -m experimentos.sampling_1.exploratorios.validacion_50_semillas.tabla_reproduccion --escribir  # README
@@ -16,6 +17,8 @@ import sys
 from pathlib import Path
 
 from comun import rutas
+
+from . import estrategias as es
 
 AQUI = Path(__file__).resolve().parent
 RES = AQUI / "resultados"
@@ -63,6 +66,27 @@ def tiempo_final(exp: str, variante: str) -> float:
                      if r["variante"] == variante and r["etapa"] == "final" and r["valida"] == "True")
 
 
+def delta_pareado(e: int, ref: int = 1) -> tuple[float, float, float]:
+    """Δ de G en 201910 de la estrategia `e` contra `ref`, apareado por semilla: media e IC 95% normal."""
+    a = {r["semilla"]: float(r["g_201910"]) for r in leer(RES / f"semillas_original_e{ref}.csv")}
+    d = [float(r["g_201910"]) - a[r["semilla"]] for r in leer(RES / f"semillas_original_e{e}.csv") if r["semilla"] in a]
+    se = st.stdev(d) / len(d) ** 0.5
+    return st.mean(d), st.mean(d) - 1.96 * se, st.mean(d) + 1.96 * se
+
+
+def sd_201910(e: int, primeras: int | None = None) -> float:
+    filas = sorted(leer(RES / f"semillas_original_e{e}.csv"), key=lambda r: int(r["orden"]))[:primeras]
+    return st.stdev(float(r["g_201910"]) for r in filas)
+
+
+def hp_estudios(exp: str, prefijo: str, clave: str) -> float:
+    """Mediana entre réplicas de un hiperparámetro elegido por los estudios `prefijo` y `prefijo@k`."""
+    vistos = {r["estudio"]: json.loads(r["hp"])[clave] for r in leer(rutas.ledger(exp) / "estudios.csv")
+              if r["valida"] == "True" and (r["estudio"] == prefijo or r["estudio"].startswith(prefijo + "@"))}
+    assert len(vistos) == 8, (prefijo, sorted(vistos))
+    return st.median(vistos.values())
+
+
 def fila(nombre, reportado, reproducido, dif, expl):
     return f"| {nombre} | {reportado} | {reproducido} | {dif} | {expl} |"
 
@@ -79,8 +103,28 @@ def tabla() -> str:
     g_rep = lambda v, tab: float(tab[v]["g_media_replicas"])
     t_s = {e: media(None, e, "tiempo_s") for e in (1, 8, 9)}
     K = {e: int(pres[e]["k_presupuesto"]) for e in (8, 9)}
-    ens = {e: float(pres[e]["ens_k_201910"]) for e in (1, 8, 9)}
+    ens = {e: float(pres[e]["ens_k_201910"]) for e in (1, 2, 3, 5, 6, 8, 9)}
+    hp_o = json.loads((AQUI / "hp_original.json").read_text())
+    h1 = {r["variante"]: r for r in leer(rutas.ledger("h1") / "apareado.csv")}
+    d_h3 = {e: delta_pareado(e) for e in (2, 3, 4, 5, 6)}
+    se10, se50 = sd_201910(1, 10) / 10 ** 0.5, sd_201910(1) / 50 ** 0.5
     filas = [
+        fila("Optuna del control", "~13 minutos",
+             f"{n(hp_o['C']['t_opt'] / 60)} min (`t_opt` de `hp_original.json`, el de Luis); {n(t_c / 60)} min (mediana de 8 réplicas en la VM)",
+             f"{n(hp_o['C']['t_opt'] / 60 - 13)} min (el de Luis)", "el de Luis coincide; el de la VM es otra máquina, sin `FACTOR_VM`"),
+        fila("Error estándar de 10 a 50 semillas", "cayó a la mitad",
+             f"{m(se10)} M$ con las primeras 10 semillas y {m(se50)} M$ con 50 (estrategia 1, G en 201910): cociente {n(se50 / se10, 2)}",
+             f"{n(se50 / se10 - 0.5, 2)}", "consistente: con el mismo desvío el cociente es √(10/50) ≈ 0,45"),
+        fila("Todas las variantes de H3 le ganan al control (50 semillas)", "\"todas GANAN\"",
+             "; ".join(f"estrategia {e}: {m(d[0], True)} M$ [{m(d[1], True)}; {m(d[2], True)}]" for e, d in d_h3.items())
+             + " (Δ apareado por semilla en 201910, IC 95%)",
+             f"{sum(d[1] > 0 for d in d_h3.values())} de {len(d_h3)} con IC sobre cero",
+             "una sola búsqueda por estrategia: el IC no incluye la variabilidad de Optuna; veredictos con 8 réplicas (`h3`): "
+             + ", ".join(f"`{v}` {h3[v]['veredicto']}" for v in ("H3-0.05", "H3-0.1", "H3-0.25", "H3R-0.1", "H3R-0.25"))),
+        fila("Hiperparámetros de H3-0.05", "`feature_fraction = 0.34`, `min_data_in_leaf = 985`",
+             f"`feature_fraction = {n(hp_o['U0.05']['hp']['feature_fraction'], 2)}`, `min_data_in_leaf = {hp_o['U0.05']['hp']['min_data_in_leaf']}` (`hp_original.json`)",
+             "idéntico", "son los hiperparámetros fijados en su script, portados sin cambios"),
+        fila("`feature_fraction` del control", "0.985", f"{n(hp_o['C']['hp']['feature_fraction'], 3)} (`hp_original.json`)", "idéntico", "ídem"),
         fila("H3-0.05 sobre el control (ganancia media)", "+6,47 M$",
              f"{m(g10[4] - g10[1], True)} M$ (50 semillas, estrategia 4 contra 1, hiperparámetros de Luis); "
              f"{m(d3('H3-0.05', h3), True)} M$ (8 réplicas × 10 semillas, `h3`)", f"{m(g10[4] - g10[1] - 6.47e6, True)} M$ (50 semillas)",
@@ -97,6 +141,11 @@ def tabla() -> str:
         fila("H4 con negativos uniformes (reconstruido: `NU0.1`) sobre el control", "−2,31 M$",
              f"{m(d3('H4U-0.1', h4), True)} M$ (8 réplicas, `H4U-0.1`)", f"{m(d3('H4U-0.1', h4) + 2.31e6, True)} M$",
              "RECONSTRUIDO: mismo signo, mayor magnitud; con réplicas el IC queda por debajo del cero"),
+        fila("Hiperparámetros de H4 uniforme (reconstruido: `NU0.1`)", "`num_leaves = 226`, `feature_fraction > 0.70`",
+             f"`num_leaves = {n(hp_estudios('h4', 'NU0.1', 'num_leaves'), 0)}`, `feature_fraction = {n(hp_estudios('h4', 'NU0.1', 'feature_fraction'), 2)}` "
+             f"(medianas de 8 réplicas); `NH0.1`: `num_leaves = {n(hp_estudios('h4', 'NH0.1', 'num_leaves'), 0)}`, "
+             f"`feature_fraction = {n(hp_estudios('h4', 'NH0.1', 'feature_fraction'), 2)}`", "—",
+             "RECONSTRUIDO: la búsqueda no es la suya; se informa para ver si la uniforme elige árboles más complejos que la difícil"),
         fila("Fast-retrain: tiempo por semilla", "12,3 s",
              f"{n(t_s[8])} s y {n(t_s[9])} s (estrategias 8 y 9, medidos en la VM); {n(t_f_final)} s (mediana de `H4F-0.05`, solo entrenamiento)",
              f"{n(t_s[8] - 12.3)} s (estrategia 8)", "tiempo de máquina, sin `FACTOR_VM`; del mismo orden"),
@@ -109,6 +158,17 @@ def tabla() -> str:
              "RECONSTRUIDO: ídem; el ensamble de pocas semillas es muy variable"),
         fila("Control: tiempo por semilla", "35 s", f"{n(t_s[1])} s (estrategia 1); {n(t_c_final)} s (mediana de `C` en `control`, solo entrenamiento)",
              f"{n(t_s[1] - 35)} s", "tiempo de máquina, sin `FACTOR_VM`"),
+        fila("Control: semillas que entran en 15 minutos", "4", f"{pres[1]['k_presupuesto']} (estrategia 1)",
+             "idéntico" if int(pres[1]["k_presupuesto"]) == 4 else "distinto", "RECONSTRUIDO: misma fórmula que el fast-retrain"),
+        fila("Fast-retrain: fracción de CONTINUA y peso", "50 %, `w = 2`", f"{n(es.FRACCION_FAST * 100, 0)} %, `w = {n(1 / es.FRACCION_FAST, 0)}` (`estrategias.py`)",
+             "idéntico", "parámetro portado sin cambios"),
+        fila("Reescalado √(1/r): menos varianza entre semillas y mejor ensamble", "sin número",
+             f"desvío de G en 201910: {m(sd_201910(5))} contra {m(sd_201910(2))} M$ (0,25: estrategia 5 contra 2) y {m(sd_201910(6))} contra "
+             f"{m(sd_201910(3))} M$ (0,10: 6 contra 3); ensamble a 900 s: {m(ens[5])} contra {m(ens[2])} M$ y {m(ens[6])} contra {m(ens[3])} M$", "—",
+             "un solo ensamble y una sola búsqueda por estrategia; con réplicas, los contrastes `H3R` contra `H3` están en `h3`"),
+        fila("H1: muestreo uniforme también en el final (descarte)", "\"se desploma\" por debajo del 50 %",
+             "; ".join(f"`{v}`: {m(float(h1[v]['delta_g_media']), True)} M$, {h1[v]['veredicto']}" for v in ("U0.25", "U0.1", "U0.05"))
+             + " (`h1/ledger/apareado.csv`, 10 semillas)", "—", "mismo sentido; es la H1 de la primera ronda, sin réplicas de la búsqueda"),
         fila("Reescalado lineal peor que √(1/r) (reconstruido: `H3L-*`)", "\"cae drásticamente\"",
              f"`H3L-0.1` contra `H3R-0.1`: {m(g_rep('H3L-0.1', h3) - g_rep('H3R-0.1', h3), True)} M$; `H3L-0.25` contra `H3R-0.25`: "
              f"{m(g_rep('H3L-0.25', h3) - g_rep('H3R-0.25', h3), True)} M$ (diferencia de medias de réplicas)", "—",

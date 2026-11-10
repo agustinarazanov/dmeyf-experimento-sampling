@@ -118,21 +118,32 @@ Lo que dice el resumen original (campeón, descartes) se eligió mirando 201910 
 Cada número del resumen original de Luis (todos en 201910, como él los calculó) contra lo que da este repositorio.
 "RECONSTRUIDO" marca los que dependen de una pieza que el script no tenía (D2). Las diferencias son reproducido menos
 reportado; los tiempos son de la VM, sin `FACTOR_VM`. No se eligió ni descartó nada con estos números. Generado por
-`tabla_reproduccion.py` (`--verificar` comprueba que el README coincide con `resultados/`, `panel_d7.json` y los
-`replicas.csv` y `estudios.csv` de `h3`, `h4`, `h1` y `control`).
+`tabla_reproduccion.py` (`--verificar` comprueba que el README coincide con `resultados/`, `panel_d7.json`,
+`hp_original.json`, `estrategias.py`, los `replicas.csv` y `estudios.csv` de `h3`, `h4`, `h1` y `control`, y
+`h1/ledger/apareado.csv`).
 
 | número del resumen original | reportado | reproducido | diferencia | explicación |
 |---|---|---|---|---|
 <!-- tabla:inicio -->
+| Optuna del control | ~13 minutos | 12,5 min (`t_opt` de `hp_original.json`, el de Luis); 15,8 min (mediana de 8 réplicas en la VM) | -0,5 min (el de Luis) | el de Luis coincide; el de la VM es otra máquina, sin `FACTOR_VM` |
+| Error estándar de 10 a 50 semillas | cayó a la mitad | 1,20 M$ con las primeras 10 semillas y 0,55 M$ con 50 (estrategia 1, G en 201910): cociente 0,46 | -0,04 | consistente: con el mismo desvío el cociente es √(10/50) ≈ 0,45 |
+| Todas las variantes de H3 le ganan al control (50 semillas) | "todas GANAN" | estrategia 2: +4,55 M$ [+2,97; +6,14]; estrategia 3: +3,89 M$ [+2,18; +5,61]; estrategia 4: +5,61 M$ [+4,10; +7,12]; estrategia 5: +4,05 M$ [+2,69; +5,41]; estrategia 6: +3,87 M$ [+2,42; +5,32] (Δ apareado por semilla en 201910, IC 95%) | 5 de 5 con IC sobre cero | una sola búsqueda por estrategia: el IC no incluye la variabilidad de Optuna; veredictos con 8 réplicas (`h3`): `H3-0.05` no pierde, `H3-0.1` no pierde, `H3-0.25` no pierde, `H3R-0.1` no pierde, `H3R-0.25` no pierde |
+| Hiperparámetros de H3-0.05 | `feature_fraction = 0.34`, `min_data_in_leaf = 985` | `feature_fraction = 0,34`, `min_data_in_leaf = 985` (`hp_original.json`) | idéntico | son los hiperparámetros fijados en su script, portados sin cambios |
+| `feature_fraction` del control | 0.985 | 0,985 (`hp_original.json`) | idéntico | ídem |
 | H3-0.05 sobre el control (ganancia media) | +6,47 M$ | +5,61 M$ (50 semillas, estrategia 4 contra 1, hiperparámetros de Luis); +1,87 M$ (8 réplicas × 10 semillas, `h3`) | -0,86 M$ (50 semillas) | mismo sentido, menor magnitud; con réplicas el IC de Δ incluye el cero (veredicto "no pierde", no "gana") |
 | Optuna de H3-0.05 contra el control | 8,89 veces más rápido | 15,88 veces (mediana de 948 s contra 60 s, 8 réplicas, solo la optimización) | 6,99 | tiempos medidos en la VM, sin `FACTOR_VM`; no es una diferencia de ganancia, depende de la máquina |
 | H4 hard (reconstruido: `NH0.1`) sobre el control | +7,19 M$ | +5,48 M$ (50 semillas, estrategia 7 con los hiperparámetros de Luis); -2,13 M$ (`--hp ledger`, `NH0.1`); -8,61 M$ (8 réplicas, `H4H-0.1`) | -1,71 M$ (50 semillas, `original`) | RECONSTRUIDO: con los hiperparámetros de Luis da positivo; con la búsqueda reconstruida (`NH0.1`) da negativo, en 50 semillas y con réplicas; la ventaja no se sostiene al repetir la búsqueda |
 | H4 con negativos uniformes (reconstruido: `NU0.1`) sobre el control | −2,31 M$ | -5,54 M$ (8 réplicas, `H4U-0.1`) | -3,23 M$ | RECONSTRUIDO: mismo signo, mayor magnitud; con réplicas el IC queda por debajo del cero |
+| Hiperparámetros de H4 uniforme (reconstruido: `NU0.1`) | `num_leaves = 226`, `feature_fraction > 0.70` | `num_leaves = 236`, `feature_fraction = 0,65` (medianas de 8 réplicas); `NH0.1`: `num_leaves = 14`, `feature_fraction = 0,31` | — | RECONSTRUIDO: la búsqueda no es la suya; se informa para ver si la uniforme elige árboles más complejos que la difícil |
 | Fast-retrain: tiempo por semilla | 12,3 s | 11,9 s y 11,8 s (estrategias 8 y 9, medidos en la VM); 11,3 s (mediana de `H4F-0.05`, solo entrenamiento) | -0,4 s (estrategia 8) | tiempo de máquina, sin `FACTOR_VM`; del mismo orden |
 | Fast-retrain: semillas que entran en 900 s (reconstruido) | más de 60 | 70 (estrategia 8) y 63 (estrategia 9) | consistente | RECONSTRUIDO: K = ⌊(900 − T_opt) / T_final medio⌋ |
 | Fast-retrain: ensamble a 900 s | 283,25 M$ | 278,85 M$ y 282,15 M$ (201910, ensamble de las primeras K semillas) | -4,40 M$ y -1,10 M$ | RECONSTRUIDO: el ensamble depende de las semillas elegidas y de K; un solo ensamble por estrategia, sin IC |
 | Control: ensamble a 900 s | 276,65 M$ | 278,85 M$ (K = 4) | +2,20 M$ | RECONSTRUIDO: ídem; el ensamble de pocas semillas es muy variable |
 | Control: tiempo por semilla | 35 s | 31,3 s (estrategia 1); 31,2 s (mediana de `C` en `control`, solo entrenamiento) | -3,7 s | tiempo de máquina, sin `FACTOR_VM` |
+| Control: semillas que entran en 15 minutos | 4 | 4 (estrategia 1) | idéntico | RECONSTRUIDO: misma fórmula que el fast-retrain |
+| Fast-retrain: fracción de CONTINUA y peso | 50 %, `w = 2` | 50 %, `w = 2` (`estrategias.py`) | idéntico | parámetro portado sin cambios |
+| Reescalado √(1/r): menos varianza entre semillas y mejor ensamble | sin número | desvío de G en 201910: 4,12 contra 4,59 M$ (0,25: estrategia 5 contra 2) y 3,84 contra 4,02 M$ (0,10: 6 contra 3); ensamble a 900 s: 284,35 contra 281,05 M$ y 283,25 contra 279,95 M$ | — | un solo ensamble y una sola búsqueda por estrategia; con réplicas, los contrastes `H3R` contra `H3` están en `h3` |
+| H1: muestreo uniforme también en el final (descarte) | "se desploma" por debajo del 50 % | `U0.25`: -6,38 M$, pierde; `U0.1`: -16,94 M$, pierde; `U0.05`: -33,77 M$, pierde (`h1/ledger/apareado.csv`, 10 semillas) | — | mismo sentido; es la H1 de la primera ronda, sin réplicas de la búsqueda |
 | Reescalado lineal peor que √(1/r) (reconstruido: `H3L-*`) | "cae drásticamente" | `H3L-0.1` contra `H3R-0.1`: -3,22 M$; `H3L-0.25` contra `H3R-0.25`: -1,28 M$ (diferencia de medias de réplicas) | — | RECONSTRUIDO: el lineal queda por debajo del de raíz en ambas tasas; son diferencias de medias, no un contraste con IC |
 | Muestreo por cliente peor que por filas (reconstruido: `H3K-0.1`) | "peor rendimiento" | `H3K-0.1` contra `H3-0.1`: -1,02 M$ (diferencia de medias de réplicas) | — | RECONSTRUIDO: mismo sentido, diferencia chica; no es un contraste con IC |
 | Panel de Luis contra `comun.datos` (D7) | — | 765 columnas contra 755 (nuestro panel suma 10: `tmobile_app` y `cmobile_app_trx` con sus lags y deltas); filas por mes iguales; huellas de las 755 columnas comunes: 0 distintas; estrategia 1 con `--panel-luis`: 273,99 M$ contra 274,63 M$ en 201910 | -0,64 M$ | veredicto "distintos" por las columnas extra; el efecto sobre la ganancia es chico frente a la desviación entre semillas |

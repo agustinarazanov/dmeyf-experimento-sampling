@@ -1128,3 +1128,41 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `tabla_reproduccion.py` (`--verificar` comprueba el README contra las fuentes; test sin datos). Panel D7: distintos por
   10 columnas extra nuestras, huellas iguales en las comunes; estrategia 1 con `--panel-luis` da −0,64 M$ en 201910.
 - Falta 5.3 (revisión en sesión limpia).
+
+### 2026-11-10 — cierre revisión del grupo 5 de `incorporar-aportes` (replicación)
+- Sesión: `f4da4887-48b6-4d1d-95ab-0d0baacaf0fe` · modelo: Opus · etapa: **revision** (grupo 5, tareas 5.1 y 5.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 4 (resultados) sobre las salidas de Martín (`ledger/martin`) y de Luis
+  (`exploratorios/validacion_50_semillas`), y la verificación de 5.1 y 5.2. Ningún ✗ abierto.
+  - ✓ Máquina y commit: 07 y 08 de Martín en Linux GCP (`n2-highmem-8`, 4 hilos, LightGBM 4.7.0, numpy 2.5.2); el
+    `head` que registra 08 es `f2a5ce7`, descendiente de `corridas-v3` (`7dba436`) sin cambios en
+    `h3/sensibilidad_muestra` ni en `comun/`; el `commit` `4a42bc6` del reporte es la referencia fija del grupo que el
+    script de Martín copia (`referencia_grupo/*_4a42bc6.py`), no la versión corrida. 08 usa la 07 nueva
+    (`corrida_07 = 20261109T235232_15814`).
+  - n/a `codigo_sucio` / `exploracion` y filas de train: el grupo no agrega filas a ningún `resultados.csv`.
+  - ✓ Repetición independiente: `comparar_martin.py` da lo mismo que su README: `08_ganancia_por_semilla.csv` con el
+    mismo sha256; `07_resumen_por_semilla.csv` y `08_ganancia_por_configuracion.csv` con la misma forma y distintos
+    solo en columnas de tiempo. Cada fila de la tabla dice "idéntico" o "distinto" con su explicación.
+  - n/a `bagging_fraction` de H2.
+  - ✓ Semillas: ranking de Luis con 50 por estrategia y 55, 55, 70 y 63 en 3, 6, 8 y 9 (K del presupuesto).
+  - n/a `apareado.csv`: el grupo no genera contrastes nuevos; la tabla de Luis cita `replicas.csv` de `h3` y `h4`.
+  - ✓ VMs y gasto: el grupo no lanzó VMs; el gasto de las de la fase 6 quedó en `h4/docs/bitacora.md` (revisión 4).
+  - ✓ D9: las conclusiones salen del ranking en 201908; 201910 aparece solo en "Reproducción del resumen original".
+  - ✗→✓ Cada número de `resumen_original.md` en la tabla: faltaban ~13 min de Optuna del control, el error estándar
+    "a la mitad", "todas las variantes de H3 le ganan al control", los hiperparámetros citados (0,34 y 985 de
+    `H3-0.05`, 0,985 del control, 226 y > 0,70 de H4 uniforme), las 4 semillas del control en 15 min, el 50 % con
+    `w = 2` del fast-retrain, el reescalado de raíz (varianza y ensamble) y el descarte de H1.
+- Hallazgos:
+  1. La tabla reportado/reproducido no cubría todos los números ni todos los descartes del resumen (5.2 lo pide).
+  2. Con 50 semillas y una sola búsqueda, las 5 estrategias H3 tienen IC sobre cero en 201910 (Δ apareado); con 8
+     réplicas las cinco H3 de `h3` quedan en "no pierde": la afirmación de Luis no sobrevive a la variabilidad de Optuna.
+  3. `NU0.1` reconstruido elige `num_leaves` 236 y `feature_fraction` 0,65 (medianas), cerca de lo que reporta Luis;
+     `NH0.1` elige 14 y 0,31.
+- Corregido: `tabla_reproduccion.py` suma 10 filas generadas desde `hp_original.json`, `estrategias.py`,
+  `semillas_original_e*.csv` (Δ apareado por semilla con IC 95% y desvíos), `presupuesto_original.csv`,
+  `h4/ledger/estudios.csv` y `h1/ledger/apareado.csv`; README regenerado con `--escribir` y lista de fuentes
+  actualizada.
+- Otras verificaciones: `tabla_reproduccion --verificar` → "README coincide con las fuentes"; `pytest` del paquete
+  34 verdes.
+- Tokens: 43 turnos · contexto ~68.000 por turno · ≈ US$ 1,7 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —
