@@ -199,7 +199,7 @@ fijas de `requirements.txt`; las originales eran Python 3.12.0 en Windows 11), 4
 | `07_resumen_por_semilla.csv`: elecciones, AUC, delta, Spearman | no coincide | las 10 filas, iguales | idéntico | el archivo difiere solo en `tiempo_busqueda_s` y `tiempo_ajuste_completo_reutilizado_s` |
 | `07_resumen_por_semilla.csv`: tiempos | no coincide | — | distinto | dependen de la máquina (p. ej. búsqueda 167,0 s contra 378,2 s en la primera semilla); no se comparan |
 | `08_ganancia_por_semilla.csv` | coincide | — | idéntico | mismo sha256 |
-| `08_ganancia_por_configuracion.csv`: ganancias, envíos, empates | no coincide | las 5 filas, iguales | idéntico | difiere solo en `segundos_prediccion` |
+| `08_ganancia_por_configuracion.csv`: ganancias, envíos, empates | no coincide | las 4 filas, iguales | idéntico | difiere solo en `segundos_prediccion` |
 | `08_ganancia_por_configuracion.csv`: `segundos_prediccion` | — | — | distinto | tiempo de máquina; no se compara |
 
 Las elecciones, los AUC y las ganancias salieron idénticos pese al cambio de sistema, de Python y de procesador.
