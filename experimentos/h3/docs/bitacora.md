@@ -102,3 +102,10 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Sesión limpia `bf7f462e-3502-49bc-af4a-8fc438d913dc` · modelo: Opus · etapa `revision`. Lista de `docs/revision.md`
   § 1 y § 2 sin ✗ abiertos; detalle en `sampling_1/docs/bitacora.md`. Reglas 5 a 8 sin cambios. Corrección: la tanda
   de variantes suma ~5,9 h de VM (no ~5,8) en `docs/diseno.md` § Grilla de las extensiones.
+
+### 2026-11-09 — cierre revisión de las corridas (`incorporar-aportes` 4.5)
+
+- Sesión limpia `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa `revision`. El `resultados.csv` de `HEAD`
+  tenía 20 filas (lo pisó la copia vieja del bucket al volver una VM, `b736a7a`); reconsolidado desde `corridas/`:
+  669 filas, idéntico a `69bd98f`, con `apareado.csv` (8 variantes) y `replicas.csv` (9 filas). `vm.sh` ya no sincroniza
+  los CSV consolidados. Detalle en `sampling_1/docs/bitacora.md`.

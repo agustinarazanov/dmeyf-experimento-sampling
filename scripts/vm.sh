@@ -18,6 +18,9 @@
 # TEMPLATE (to-064ram-08vcpu), PERSONA (usuario de git). Cada línea es `python -m comun.correr`, desde la raíz del repo.
 # `ledger/sesiones/` (costos, en_curso.txt, logs de las VMs) no viaja por el bucket en ningún sentido: es estado de esta
 # máquina, y la copia vieja que llevaba cada VM pisaba al volver la versión nueva (el 9-nov se perdieron filas de costos).
+# Tampoco viajan los CSV de la raíz de cada ledger (`resultados.csv`, `apareado.csv`, `replicas.csv`, `estudios.csv`,
+# `reemplazadas.csv`, `tokens.csv`): los escribe `comun.consolidar` acá desde `corridas/`, y la copia vieja del bucket
+# dejó el 9-nov `resultados.csv` de control y h3 con 21 y 20 filas (b736a7a); viajan `corridas/`, `hp/`, `curvas/`, etc.
 # Cada corrida escribe en el ledger de quien es dueño de la variante (`comun/variantes.py`), así que se sincroniza cada
 # `experimentos/<exp>/ledger/` contra `$BUCKET/experimentos/<exp>/ledger/` (el `$BUCKET/ledger/` anterior a la separación
 # no se toca). Una VM nueva baja del bucket el panel, los SQLite de Optuna y los ledgers si existen, así que relanzar la
@@ -59,11 +62,11 @@ gsutil -q cp "$BUCKET/panel_2019.parquet" \$DATOS_DIR/ 2>/dev/null || true
 gsutil -q -m cp "$BUCKET/optuna/*.db" \$DATOS_DIR/optuna/ 2>/dev/null || true
 for e in \$(ls experimentos | grep -v ' '); do
   mkdir -p experimentos/\$e/ledger
-  gsutil -q -m rsync -r -x '^sesiones/' "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
+  gsutil -q -m rsync -r -x '^sesiones/|^[^/]*\.csv$' "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
 done
 subir() {
   for e in \$(ls experimentos | grep -v ' '); do
-    gsutil -q -m rsync -r -x '^(exploracion|sesiones)/' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
+    gsutil -q -m rsync -r -x '^(exploracion|sesiones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
   done
 }
 while read -r metodo tasa semilla etapa variante replica; do
@@ -158,7 +161,7 @@ echo "== trayendo los ledgers"
 tomar_candado
 for e in $EXPERIMENTOS; do
   mkdir -p "experimentos/$e/ledger"
-  gsutil -q -m rsync -r -x '^sesiones/' "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
+  gsutil -q -m rsync -r -x '^sesiones/|^[^/]*\.csv$' "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
 done
 # Lo que el bucket no alcanzó a recibir: los ledgers de la VM, sin exploración. Con DONE la VM ya subió todo y una VM
 # perdida no responde, así que solo se intenta con FALLO; no pisa nada de lo que vino del bucket.

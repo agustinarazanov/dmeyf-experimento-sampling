@@ -29,7 +29,7 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 - [x] 4.2 Con `NH0.1` ya en el ledger, correr la estrategia 7 de Luis con `--hp ledger`; verificar que no quedan VMs encendidas
 - [x] 4.3 Consolidar (`python -m comun.consolidar`); verificar que hay 8 réplicas × 10 semillas en las 8 variantes, todo en `n2-highmem-8` con `codigo_sucio = False`, y anotar tiempos reales contra D6 en la bitácora
 - [x] 4.4 `validacion.py --agregar` y `presupuesto.py`; copiar los CSV a `resultados/` con `procedencia.json`; verificar que hay 50 semillas (o K si es mayor) por estrategia
-- [ ] 4.5 Revisión en sesión limpia de resultados con la lista de `docs/revision.md` y cierre en las bitácoras
+- [x] 4.5 Revisión en sesión limpia de resultados con la lista de `docs/revision.md` y cierre en las bitácoras
 
 ## 5. Replicación (sesión: Sonnet)
 

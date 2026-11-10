@@ -34,3 +34,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Qué cambia de lo ya corrido: **nada**. El estudio `C`, sus finales y `C-rep` son la réplica 0, con los mismos `id`;
   N\* = 3.300 y δ = 5,52 M$ siguen saliendo de ella.
 - Las corridas esperan la revisión en sesión limpia de la etapa (1.3) y el tag `corridas-v2`.
+
+### 2026-11-09 — cierre revisión de las corridas (`incorporar-aportes` 4.5)
+
+- Sesión limpia `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa `revision`. El `resultados.csv` de `HEAD`
+  tenía 21 filas (lo pisó la copia vieja del bucket, `b736a7a`); reconsolidado desde `corridas/`: 98 filas (8 réplicas
+  de `C` y `C-rep`), idéntico a `69bd98f`. Detalle en `sampling_1/docs/bitacora.md`.

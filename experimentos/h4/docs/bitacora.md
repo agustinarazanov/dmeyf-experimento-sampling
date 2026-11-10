@@ -45,3 +45,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Tiempos reales contra D6 (preparación + optimización + entrenamiento, suma de las filas del ledger): ~5,25 h de cómputo
   en total contra ~5,9 h de D6; por réplica (una VM) entre 33 y 44 min contra ~45 min. Optimización: `NH0.1` 83–132 s
   (media ~104 s), `K0.1` 76–227 s, `NU0.1` 84–395 s (la más variable). D6 se cumplió, un poco por debajo.
+
+### 2026-11-09 — cierre revisión de las corridas (`incorporar-aportes` 4.5)
+
+- Sesión limpia `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa `revision`. § 4 de `docs/revision.md`
+  sin ✗ abiertos; detalle en `sampling_1/docs/bitacora.md`. El ledger de `h4` estaba bien.
+- Gasto de la fase 6 (no estaba anotado, **estimado**): el ledger registra ~5,25 h de cómputo en las 8 VMs de
+  variantes y ~2,9 h en las 10 de Luis; con Martín (~2,1 h según D6, más el reintento de 08), D7 dos veces, `luis_1` y
+  `luis_1_panel` y ~10 min de arranque por VM (≈ 24 VMs), son ≈ 13–18 h de `n2-highmem-8` spot; a ≈ US$ 0,19/h,
+  **≈ US$ 2,5–3,5**. La cifra real sale de la facturación del proyecto (la mira Agustina).

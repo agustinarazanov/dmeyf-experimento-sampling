@@ -1061,3 +1061,60 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   ~65.300 de contexto por turno, ≈ US$ 1,5 (presupuesto US$ 4); salidas largas (`--en-seco`, script original) a
   archivo en `DATOS_DIR`. `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-09 — grupo 4 de `incorporar-aportes` (corridas, sesiones headless)
+- Sesiones `9ce80da1-a8fd-45cb-827c-2ac99065cf7f`, `a8bfa80f-e286-4328-859f-a5028fbcca32`,
+  `121fa54d-a24f-4d1f-bf11-9aa17346767e`, `39057014-ad8d-4675-b80f-65ec5259d0aa`,
+  `d9765b77-df85-44bf-8e1c-031df18dbaf9`, `124f31c2-2579-47c9-9b6c-a2ce4ef5db1d`,
+  `a0f81d9b-dfe8-4591-882c-f648f78cc2a6`, `52dfc762-eff3-448c-a1a9-deb7fae47b71` · modelo: Sonnet · etapa: **corridas** (tareas 4.1–4.4, commits `ebf3321` … `b736a7a`). No dejaron entrada acá (4.3 anotó los
+  tiempos en la bitácora de `h4`); la agrega la revisión. 144 turnos y US$ 2,05 según `costos.csv`, que solo tiene
+  filas desde las 17:41: las anteriores se perdieron cuando `vm.sh` pisó `sesiones/` (ver `26de0c7`).
+
+### 2026-11-09 — cierre revisión del grupo 4 de `incorporar-aportes` (corridas)
+- Sesión: `fb76540c-c00a-47cb-9fad-dcc9d4850cf7` · modelo: Opus · etapa: **revision** (grupo 4, tareas 4.1–4.4).
+- Revisor: sesión limpia headless (Opus, sin contexto de las sesiones que lanzaron y consolidaron el grupo).
+- Lista: docs/revision.md § 4 (resultados) sobre los ledgers de `control`, `h3` y `h4`, y la verificación de 4.1–4.4.
+  Ningún ✗ abierto.
+  - ✗→✓ Máquina y commit: en `HEAD` (`b736a7a`) el `resultados.csv` de `control` tenía 21 filas y el de `h3` 20 (solo
+    la réplica 0, sin las variantes nuevas), contra 98 y 669 en `69bd98f`; `apareado.csv` y `replicas.csv` de `h3`
+    también eran viejos (2 y 5 filas). Ver el hallazgo 1. Tras reconsolidar, las 98 + 669 + 336 filas son
+    `n2-highmem-8`; la fase 6 tiene dos firmas, `7dba436` (= `corridas-v3`) y `ebf3321`, que solo difieren en
+    `en_curso.txt` (mismo código).
+  - ✓ Sin `codigo_sucio` ni `etapa = exploracion` en los `resultados.csv` de `control`, `h3` y `h4`; todas `valida`.
+  - ✓ Filas de train: `H4F-0.05` y `H4F-0.25` 256.092 = (N + P)/2 (todas las bajas + 50 % de CONTINUA, D3); estudios
+    `NH0.1` y `NU0.1` 55.469 = P + 0,1 (N − P); `K0.1` ≈ 50.600–50.800 (muestra por cliente); `U{r}@k` = r × 506.871;
+    los finales de `H3R-*`, `H3L-*`, `H3K-0.1`, `H4H-0.1` y `H4U-0.1` usan las 506.871.
+  - ✓ Control repetido: `C-rep` reproduce exacto (`--sanity`: |ΔAUC| = 0, |Δganancia| = 0); limitación ya declarada.
+  - n/a `bagging_fraction` de H2: el grupo no tocó `h1/ledger` ni `h2/ledger` (`git diff 53bd92e HEAD` vacío);
+    `--sanity` 5.3 OK.
+  - ✓ Semillas: las 8 variantes nuevas × 8 réplicas tienen 10 finales (11 filas en `H3K`, `H4H` y `H4U` = 10 + el
+    estudio). Luis: 50 semillas en las estrategias 1, 2, 4, 5 y 7 y en `ledger_e7`; 55, 55, 70 y 63 en 3, 6, 8 y 9
+    (= K de `presupuesto.py`); `procedencia.json` presente.
+  - ✓ `apareado.csv` de `h3` (8 variantes) y de `h4` (4) con media, sd, IC 95%, semillas ganadas y veredicto;
+    `replicas.csv` de `h3` (8 + `H3R-0.1 − H3-0.1`) y de `h4` (4), 8 réplicas × 80 semillas, sin notas de incompletas.
+  - ✗→✓ VMs borradas: `gcloud compute instances list` solo muestra `desktop-jr` (`TERMINATED`, ajena). Los logs de
+    `r0…r7`, `luis_2…4`, `luis_7_ledger`, `martin_08`, `d7` y `luis_1_panel` terminan en `Deleted`; los de `luis_1`,
+    `luis_5…9` y `martin` quedaron con una sola línea (los pisó la copia vieja de `sesiones/`, el problema que arregló
+    `26de0c7`), pero sus salidas están en `ledger/luis` y `ledger/martin` y no hay VMs vivas. Gasto: no estaba
+    anotado; queda estimado en la bitácora de `h4`.
+- Hallazgos:
+  1. **`vm.sh` pisaba los ledgers.** La bajada del bucket (`gsutil rsync`) traía también los CSV consolidados de la raíz
+     de cada ledger. El bucket tenía copias viejas, y al volver, las VMs pisaron los locales (`748cc70` y otra vez
+     `b736a7a`, «ledgers de control y h3 actualizados»). `corridas/` estaba completo, así que `python -m
+     comun.consolidar` los regenera idénticos a `69bd98f` (`git diff 69bd98f` vacío en los CSV de `control`, `h3` y
+     `h4`).
+  2. El gasto de la fase 6 no estaba anotado.
+  3. Siete logs de VM truncados (ver arriba); no afecta los resultados.
+  4. D6 preveía 18 VMs en paralelo; la cuota global de 32 vCPU obligó a correrlas en tandas de 4 (`ebf3321`). Quedó
+     en el commit, no en la bitácora.
+- Corregido: `control/ledger` y `h3/ledger` reconsolidados (`resultados.csv`, `estudios.csv`, `reemplazadas.csv`,
+  `apareado.csv`, `replicas.csv`). `scripts/vm.sh` deja de sincronizar los CSV de la raíz de cada ledger en los tres
+  `gsutil rsync` (`-x '…|^[^/]*\.csv$'`); siguen viajando `corridas/`, `hp/`, `curvas/` y `predicciones/`. La
+  expresión se probó en Python sobre rutas de ejemplo, pero esta sesión no tuvo permiso para correr `vm.sh --en-seco`
+  ni `bash -n`: **hay que hacerlo antes de la próxima VM**. Gasto estimado en `h4/docs/bitacora.md`; notas en las
+  bitácoras de `h3` y `control`.
+- Otras verificaciones: `python -m comun.consolidar --sanity` sin ✗; `python -m comun.variantes --verificar` pasa;
+  `pytest` 192 verdes.
+- Tokens: ~45 turnos · contexto ~60.000 por turno · ≈ US$ 1,8 (presupuesto US$ 4). Salidas largas a
+  `DATOS_DIR/rev_g4/`. `comun/tokens.py` corrido.
+- Tutor: —
