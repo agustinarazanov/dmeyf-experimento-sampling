@@ -109,3 +109,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   tenía 20 filas (lo pisó la copia vieja del bucket al volver una VM, `b736a7a`); reconsolidado desde `corridas/`:
   669 filas, idéntico a `69bd98f`, con `apareado.csv` (8 variantes) y `replicas.csv` (9 filas). `vm.sh` ya no sincroniza
   los CSV consolidados. Detalle en `sampling_1/docs/bitacora.md`.
+
+### 2026-11-10 — análisis e informe de las extensiones (`incorporar-aportes` 6.1)
+
+- Sesión headless del grupo 6 · modelo: Opus · etapa `informe`. Reglas 5 a 8 aplicadas tal como quedaron escritas: raíz
+  contra lineal gana la raíz en r = 0,1 y no cambia en r = 0,25; raíz contra nada en r = 0,25 no cambia; por cliente no
+  cambia; las cuatro variantes nuevas *no pierden* contra `C`. Sección "Extensiones del aporte de Luis" en
+  `informe/informe.md`, más test ya mirado y comparaciones múltiples en Limitaciones.
+- `replicas.csv` reconsolidado con las filas `H3R-0.25 - H3L-0.25`, `H3R-0.1 - H3L-0.1`, `H3R-0.25 - H3-0.25`
+  (apareadas) y `H3K-0.1 - H3-0.1` (Welch); el cambio en `comun/` está en la bitácora de `h4`.
+- Verificación: `python -m scripts.verificar_informe_h3`: 0 números sin fuente.

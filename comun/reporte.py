@@ -588,8 +588,9 @@ CAB_A = ("variante", "hipótesis", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ co
 
 
 def pares_replicas(rep: pd.DataFrame) -> list[list[str]]:
-    """Filas `a - b` de `replicas.csv` (diferencia apareada por réplica y semilla)."""
+    """Filas `a - b` de `replicas.csv`: apareadas por réplica y semilla (IC t) o sin aparear (IC de Welch)."""
     return [[v, _ic_txt((r["delta_g_media"], r["delta_g_ic_inf"], r["delta_g_ic_sup"])), f"{int(r['n_replicas'])}",
+             "Welch, sin aparear" if str(r.get("nota", "")).startswith("sin aparear") else "t, apareado",
              str(r["veredicto"])] for v, r in rep.iterrows() if " - " in v]
 
 
@@ -604,7 +605,7 @@ def varianza(rep: pd.DataFrame, ctx: Contexto) -> list[list[str]]:
 
 
 CAB_VAR = ("variante", "réplicas", "corridas", "sd entre réplicas (M$)", "sd entre semillas (M$)", "varianza entre réplicas")
-CAB_PARES = ("diferencia", "Δ [IC t entre réplicas] (M$)", "réplicas", "veredicto")
+CAB_PARES = ("diferencia", "Δ [IC entre réplicas] (M$)", "réplicas", "IC", "veredicto")
 AVISO_B = "Las cifras del bloque B no se comparan una a una con las del bloque A: otro protocolo, otra muestra o otro entorno."
 
 
@@ -664,7 +665,7 @@ def markdown_resultados(ctx: Contexto, a: dict, b: list[dict]) -> str:
         partes += ["### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
         pares = pares_replicas(a["rep"])
         if pares:
-            partes += ["### Diferencia apareada por réplica y semilla\n", tabla_md(CAB_PARES, pares)]
+            partes += ["### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares)]
     partes += ["## Bloque B: exploratorios\n", AVISO_B + "\n", tabla_md(CAB_B, filas_b(b)) if b else "No hay exploratorios declarados.\n"]
     return "\n".join(partes)
 
@@ -735,7 +736,7 @@ def html_resultados(ctx: Contexto, a: dict, b: list[dict], ap: pd.DataFrame, fig
                 fig_varianza(ctx, a, figuras)]
         pares = pares_replicas(a["rep"])
         if pares:
-            out += ["<h3>Diferencia apareada por réplica y semilla</h3>", html_tabla(CAB_PARES, pares)]
+            out += ["<h3>Diferencias entre variantes</h3>", html_tabla(CAB_PARES, pares)]
     out += ["<h3>Bloque B: exploratorios</h3>", f"<p>{html.escape(AVISO_B)}</p>",
             html_tabla(CAB_B, filas_b(b)) if b else "<p>No hay exploratorios declarados.</p>"]
     return "".join(out)

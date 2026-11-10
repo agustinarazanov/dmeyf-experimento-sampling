@@ -31,7 +31,15 @@ class Variante(NamedTuple):
 
 
 #: Variantes que comparten estudios y se comparan entre sí, apareadas por réplica y semilla: (a, b) es `a − b`.
-PARES_APAREADOS: list[tuple[str, str]] = [("H3R-0.1", "H3-0.1")]
+PARES_APAREADOS: list[tuple[str, str]] = [
+    ("H3R-0.1", "H3-0.1"),
+    # `incorporar-aportes` D4: raíz contra lineal y raíz contra nada en r = 0,25 (`h3/docs/hipotesis.md` reglas 5 y 6)
+    ("H3R-0.25", "H3L-0.25"), ("H3R-0.1", "H3L-0.1"), ("H3R-0.25", "H3-0.25"),
+]
+
+#: Variantes que no comparten estudios y se comparan entre sí sin aparear, con IC de Welch entre réplicas: `a − b`
+#: (`incorporar-aportes` D4: `h4/docs/hipotesis.md` regla 2 y `h3/docs/hipotesis.md` regla 7).
+PARES_WELCH: list[tuple[str, str]] = [("H4H-0.1", "H4U-0.1"), ("H3K-0.1", "H3-0.1")]
 
 
 def _t(tasa: float) -> str:

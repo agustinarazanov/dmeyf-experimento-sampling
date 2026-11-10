@@ -12,8 +12,10 @@ de esas fuentes.
 
 H3: optimizar con Optuna sobre una muestra uniforme (r_opt = 0,25 o 0,1) y entrenar el final con todo no pierde. Con el
 cambio `h3-semillas-optuna` se suman 8 réplicas de la optimización (k = 0…7, semilla de TPE y de la muestra = k), la
-variante `H3-0.05` y el reescalado de `min_data_in_leaf` (`H3R-0.1`). Texto completo y reglas pre-registradas en
-[`docs/hipotesis.md`](../docs/hipotesis.md) § H3 con réplicas; variantes y dependencias en `docs/diseno.md`.
+variante `H3-0.05` y el reescalado de `min_data_in_leaf` (`H3R-0.1`). Con el cambio `incorporar-aportes` se suman cuatro
+variantes del aporte de Luis (§ Extensiones del aporte de Luis). Texto completo y reglas pre-registradas en
+[`docs/hipotesis.md`](../docs/hipotesis.md) § H3 con réplicas y § Extensiones del aporte de Luis; variantes y
+dependencias en `docs/diseno.md`.
 
 ## Resultados de la réplica 0
 
@@ -51,9 +53,9 @@ N* = 3.300 quedan fijos. Filas copiadas de [`tabla_resultados.md`](../../samplin
 | H3-0.25 | 8 | 80 | 3.93 | 4.60 | 40 % |
 | H3R-0.1 | 8 | 80 | 2.99 | 3.81 | 35 % |
 
-| diferencia | Δ [IC t entre réplicas] (M$) | réplicas | veredicto |
-|---|---|---|---|
-| H3R-0.1 - H3-0.1 | -0.54 [-1.88; 0.81] | 8 | no cambia |
+| diferencia | Δ [IC entre réplicas] (M$) | réplicas | IC | veredicto |
+|---|---|---|---|---|
+| H3R-0.1 - H3-0.1 | -0.54 [-1.88; 0.81] | 8 | t, apareado | no cambia |
 
 ### Veredictos con las reglas de D4
 
@@ -88,13 +90,70 @@ No, si hay un solo estudio de Optuna. La descomposición de la varianza de G (su
 (`H3-0.25`) de la varianza de Ḡ con 10 semillas y el 94 % a 97 % con 50. El desvío de Ḡ con un estudio baja apenas, de
 2,69 a 2,43 M$ en `C` al pasar de 10 a 50 semillas. Para medir Δ hace falta repetir la optimización, no solo el final.
 
+## Extensiones del aporte de Luis (`incorporar-aportes`)
+
+Cuatro variantes del aporte de Luis María Laguinge, con reglas escritas antes de correr en
+[`docs/hipotesis.md`](../docs/hipotesis.md) § Extensiones del aporte de Luis: el reescalado √(1/r) en r = 0,25
+(`H3R-0.25`), el lineal 1/r en r = 0,25 y 0,1 (`H3L-0.25`, `H3L-0.1`) y la búsqueda sobre el 10 % de los clientes con
+todas sus filas (`H3K-0.1`, estudios `K0.1` / `K0.1@k`). Las cuatro con 8 réplicas × 10 semillas. Salen de mirar
+201910 (§ Limitaciones). Filas copiadas de [`tabla_resultados.md`](../../sampling_1/informe/tabla_resultados.md):
+
+| variante | hipótesis | Ḡ (M$) | Δ réplica 0 [IC] (M$) | Δ con réplicas [IC] (M$) | T mediana (s) | A | tiempo igual, réplicas [IC t] (M$) | tiempo igual, bootstrap de clientes [IC] (M$) | veredicto (fuente) |
+|---|---|---|---|---|---|---|---|---|---|
+| H3K-0.1 | H3 | 277.20 (R=8) | 5.17 [1.48; 8.86] | 1.28 [-3.42; 5.98] (R=8) | 118 | 8.30 | 2.38 [-4.22; 8.98] (R=8) | 10.06 [-0.44; 21.56] | no pierde (con réplicas (8)) |
+| H3L-0.1 | H3 | 274.46 (R=8) | -1.43 [-3.86; 1.00] | -1.46 [-4.73; 1.81] (R=8) | 120 | 8.19 | -0.65 [-3.47; 2.18] (R=8) | 3.09 [-6.05; 12.88] | no pierde (con réplicas (8)) |
+| H3L-0.25 | H3 | 276.17 (R=8) | 1.21 [-2.40; 4.82] | 0.25 [-2.02; 2.51] (R=8) | 212 | 4.61 | 0.87 [-2.48; 4.22] (R=8) | -1.36 [-9.57; 6.93] | no pierde (con réplicas (8)) |
+| H3R-0.25 | H3 | 277.45 (R=8) | 2.97 [-0.20; 6.14] | 1.53 [-1.92; 4.97] (R=8) | 214 | 4.58 | 3.07 [-1.88; 8.01] (R=8) | 9.18 [1.21; 17.82] | no pierde (con réplicas (8)) |
+
+| variante | réplicas | corridas | sd entre réplicas (M$) | sd entre semillas (M$) | varianza entre réplicas |
+|---|---|---|---|---|---|
+| H3K-0.1 | 8 | 80 | 5.40 | 3.76 | 65 % |
+| H3L-0.1 | 8 | 80 | 3.45 | 3.20 | 51 % |
+| H3L-0.25 | 8 | 80 | 1.45 | 3.68 | 13 % |
+| H3R-0.25 | 8 | 80 | 3.71 | 3.51 | 50 % |
+
+| diferencia | Δ [IC entre réplicas] (M$) | réplicas | IC | veredicto |
+|---|---|---|---|---|
+| H3R-0.25 - H3L-0.25 | 1.28 [-0.98; 3.54] | 8 | t, apareado | no cambia |
+| H3R-0.1 - H3L-0.1 | 3.22 [0.63; 5.81] | 8 | t, apareado | mejora |
+| H3R-0.25 - H3-0.25 | -0.29 [-2.28; 1.70] | 8 | t, apareado | no cambia |
+| H3K-0.1 - H3-0.1 | -1.02 [-5.91; 3.88] | 8 | Welch, sin aparear | no cambia |
+
+En la tabla de diferencias, "mejora" quiere decir que la primera variante supera a la segunda (cota inferior > 0).
+
+### Veredictos con las reglas pre-registradas
+
+5. **Raíz contra lineal: gana la raíz en r = 0,1; no cambia en r = 0,25.** `H3R-0.1` − `H3L-0.1` = 3,22 M$, IC t entre
+   réplicas [0,63; 5,81] (80 pares, 7 g.l.): la cota inferior es > 0. `H3R-0.25` − `H3L-0.25` = 1,28 M$, IC
+   [−0,98; 3,54]: contiene a 0. La predicción (gana la raíz con las dos tasas, lo que reportaba Luis) se cumple solo en
+   r = 0,1. La raíz no es mejor que no reescalar (reglas 4 y 6); la lineal con el factor × 10 queda con la Ḡ más baja
+   de las variantes de H3 (274,46 M$), aunque ninguna regla la compara directamente con no reescalar.
+6. **Raíz contra nada en r = 0,25: no cambia.** `H3R-0.25` − `H3-0.25` = −0,29 M$, IC [−2,28; 1,70]. La predicción
+   (*mejora*) no se cumple, igual que con `H3R-0.1` en r = 0,1 (regla 4).
+7. **Por cliente: no cambia.** D_K = −1,02 M$, IC de Welch [−5,91; 3,88]. La predicción (*empeora*, lo que reportaba
+   Luis) no se cumple. `H3K-0.1` es la variante con más varianza entre réplicas (65 %, sd 5,40 M$); una explicación
+   posible, que no se probó, es que sortear clientes enteros hace más distinta una muestra de otra que sortear filas.
+8. **Contra `C`, cada una *no pierde* con réplicas**: cotas inferiores del IC de Welch −1,92 (`H3R-0.25`), −2,02
+   (`H3L-0.25`), −4,73 (`H3L-0.1`) y −3,42 M$ (`H3K-0.1`), todas ≥ −5,52 M$. No cambia el veredicto de H3, que es el de la
+   regla 1.
+
+Las reglas 5 a 8 son secundarias: la respuesta al tutor se apoya en los contrastes principales fijados en
+[`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md) § Comparaciones múltiples. La única diferencia que sale distinta de
+0 (raíz contra lineal en r = 0,1) es una de las más de diez sin corrección por comparaciones múltiples.
+
 ## Limitaciones
 
 - **Estudios de `h1`**: la réplica 0 de H3 usa los estudios `U0.25`, `U0.1` y `U0.05` de `h1` (`h1/ledger/hp/`); las
   réplicas `@k` son de `h3`. Δ(H3-0.25) y Δ(U0.25) de la réplica 0 tienen la misma suerte de optimización y no son
   evidencia independiente entre sí. Sin `h1`, H3 no se puede correr ni consolidar.
 - `H3R-0.1` y `H3-0.1` comparten todos sus estudios: su diferencia aísla el reescalado y no es evidencia independiente
-  sobre H3.
+  sobre H3. Lo mismo vale para `H3R-0.25`, `H3L-0.25` y `H3-0.25`, y para `H3L-0.1`.
+- **Test ya mirado.** Las extensiones salen del aporte de Luis, que eligió el reescalado √(1/r) frente al lineal y
+  descartó el muestreo por cliente mirando su ganancia en 201910; no hay otro mes de test (consigna, Zulip 208135).
+  Entraron todas, con reglas escritas antes de correr, y ninguna se eligió ni se descartó acá por 201910, pero estos
+  contrastes no cuentan con un mes de test que no se haya mirado.
+- **Comparaciones múltiples.** Con `h4` son más de diez contrastes sin corrección: con un 5 % de error por contraste,
+  alguno puede salir significativo por azar. Las reglas 5 a 8 son secundarias.
 - 8 réplicas: el IC de Welch quedó lo bastante angosto para decidir *no pierde*, pero no para separar de cero una ventaja
   del tamaño de la medida (1,76 a 2,30 M$). R = 8 quedó cerrado antes de correr y no se agregan réplicas.
 - Los tiempos vienen de VMs `n2-highmem-8` distintas; T es la mediana entre réplicas.
@@ -106,5 +165,7 @@ No, si hay un solo estudio de Optuna. La descomposición de la varianza de G (su
 Optimizar sobre una muestra del 5 %, 10 % o 25 % y entrenar con todas las filas no pierde contra el control, también
 cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,53 a 11,82 veces. La ventaja que mostraba la réplica 0
 se achica a la mitad con réplicas y su IC contiene a 0: la regla da (B), aunque la suerte de la réplica 0 estaba más en H3 que en el control; no hay evidencia de que
-la muestra regularice. El reescalado de `min_data_in_leaf` no cambia nada. Comparación con las otras hipótesis y a tiempo
-igual: informe conjunto.
+la muestra regularice. El reescalado de `min_data_in_leaf` no cambia nada. De las extensiones del aporte de Luis, todas
+no pierden contra el control: la raíz no mejora a no reescalar (tampoco en r = 0,25), le gana a la lineal solo en
+r = 0,1, y buscar sobre el 10 % de los clientes no cambia contra buscar sobre el 10 % de las filas. Comparación con las
+otras hipótesis y a tiempo igual: informe conjunto.

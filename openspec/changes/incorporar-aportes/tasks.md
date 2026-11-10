@@ -39,7 +39,7 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 
 ## 6. Análisis e informes (sesión: Opus)
 
-- [ ] 6.1 Aplicar las reglas de D4 tal como quedaron escritas en 1.1 y 1.2; escribir `h4/informe/informe.md` y las extensiones en `h3/informe/informe.md`, con las limitaciones de la spec (test ya mirado, comparaciones múltiples); verificar con un script que cada número coincide con `replicas.csv` y `tabla_resultados.md`
+- [x] 6.1 Aplicar las reglas de D4 tal como quedaron escritas en 1.1 y 1.2; escribir `h4/informe/informe.md` y las extensiones en `h3/informe/informe.md`, con las limitaciones de la spec (test ya mirado, comparaciones múltiples); verificar con un script que cada número coincide con `replicas.csv` y `tabla_resultados.md`
 - [ ] 6.2 Regenerar `python -m comun.reporte --todos`; actualizar `sampling_1/informe/informe.md` (cuatro hipótesis, bloque B replicado, conclusiones con los contrastes principales), `guion.md` y el README de la raíz (D8); verificar que los enlaces existen y que el README no tiene números que no estén en `tabla_resultados.md`
 - [ ] 6.3 Revisión en sesión limpia de la etapa informe con la lista de `docs/revision.md`, cierre en las bitácoras de `h3`, `h4` y `sampling_1`, y `comun/tokens.py`
 

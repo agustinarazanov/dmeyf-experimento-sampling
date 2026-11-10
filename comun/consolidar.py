@@ -75,7 +75,7 @@ def consolidar(ledger: Path, control: Path | None = None, ledgers_estudios: Sequ
             tabla.to_csv(ledger / "apareado.csv", index=False)
             salida["apareado"] = tabla
         delta = lg.DELTA_REL * float(g0.loc[g0["variante"] == lg.CONTROL, "g"].mean())
-        tabla_r = lg.replicas(con_g, delta, propias, variantes.PARES_APAREADOS)
+        tabla_r = lg.replicas(con_g, delta, propias, variantes.PARES_APAREADOS, pares_welch=variantes.PARES_WELCH)
         if len(tabla_r):
             tabla_r.insert(1, "n_estrella", n_estrella)
             tabla_r.to_csv(ledger / "replicas.csv", index=False)

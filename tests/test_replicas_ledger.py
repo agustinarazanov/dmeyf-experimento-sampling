@@ -176,6 +176,24 @@ def test_veredicto_del_par(lo, hi, esperado):
     assert lg._veredicto_par(lo, hi) == esperado
 
 
+def test_diferencia_welch_h3k_menos_h3_sin_aparear(tmp_path):
+    (tmp_path / "curvas").mkdir()
+    rng = np.random.default_rng(8)
+    sintetico("C", tmp_path, range(4), range(5), 1000.0, 20.0, 10.0, rng)
+    gh = sintetico("H3-0.1", tmp_path, range(4), range(5), 1000.0, 20.0, 10.0, rng)
+    gk = {}
+    for (k, s), v in gh.items():
+        gk[(k, s)] = v - 30 + rng.normal(0, 15)
+        corrida(tmp_path, "H3K-0.1", s, k, gk[(k, s)] / N_ESTRELLA, estudio="K0.1", metodo="opt-muestra-cliente")
+    f = consolidar.consolidar(tmp_path)["replicas"].set_index("variante").loc["H3K-0.1 - H3-0.1"]
+    mk = [np.mean([gk[(k, s)] for s in range(5)]) for k in range(4)]
+    mh = [np.mean([gh[(k, s)] for s in range(5)]) for k in range(4)]
+    ic = stats.ttest_ind(mk, mh, equal_var=False).confidence_interval(0.95)
+    assert f["delta_g_media"] == pytest.approx(np.mean(mk) - np.mean(mh))
+    assert f["delta_g_ic_inf"] == pytest.approx(ic.low) and f["delta_g_ic_sup"] == pytest.approx(ic.high)
+    assert f["contra"] == "H3-0.1" and f["nota"].startswith("sin aparear")
+
+
 def test_par_sin_replicas_en_una_de_las_variantes_no_tiene_fila(tmp_path):
     (tmp_path / "curvas").mkdir()
     rng = np.random.default_rng(7)

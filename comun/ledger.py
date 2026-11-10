@@ -268,14 +268,16 @@ def _veredicto_par(lo: float, hi: float) -> str:
 
 
 def replicas(finales: pd.DataFrame, delta: float, propias: set[str] | None = None,
-             pares: Sequence[tuple[str, str]] = (), semillas_por_replica: int = 10) -> pd.DataFrame:
+             pares: Sequence[tuple[str, str]] = (), semillas_por_replica: int = 10,
+             pares_welch: Sequence[tuple[str, str]] = ()) -> pd.DataFrame:
     """Tabla de réplicas: una fila por variante con al menos dos réplicas y, salvo el control, su Δ con réplicas.
 
     `finales` ya trae `g` y `replica_opt`; `delta` es δ de la réplica 0 (no se recalcula). `propias` limita las filas a las
     variantes del experimento (por defecto, todas). Cada fila trae la descomposición de la varianza de G entre réplicas y
     entre semillas; Δ con réplicas = media de las medias por réplica menos la del control, con IC de Welch entre réplicas,
     y solo se calcula si el control también tiene dos réplicas. `pares` (a, b) suma una fila `a - b` apareada por réplica y
-    semilla, con IC t entre réplicas."""
+    semilla, con IC t entre réplicas; `pares_welch` (a, b), una fila `a - b` sin aparear (variantes que no comparten
+    estudios), con IC de Welch entre las medias por réplica de cada una."""
     finales = con_replica(finales[finales["variante"] != "C-rep"])
     por_variante = {v: d for v, d in finales.groupby("variante", sort=True) if d["replica_opt"].nunique() >= 2}
     ctrl = por_variante.get(CONTROL)
@@ -317,5 +319,19 @@ def replicas(finales: pd.DataFrame, delta: float, propias: set[str] | None = Non
             "delta_g_media": media, "delta_g_se": sd / np.sqrt(len(por_replica)), "delta_g_ic_inf": lo, "delta_g_ic_sup": hi,
             "veredicto": _veredicto_par(lo, hi),
             "nota": f"apareado por réplica y semilla; IC t entre réplicas ({len(por_replica) - 1} g.l.)",
+        })
+    for a, b in pares_welch:
+        if (propias is not None and a not in propias) or a not in por_variante or b not in por_variante:
+            continue
+        ga, gb = por_variante[a], por_variante[b]
+        dif, se, lo, hi = _welch(ga.groupby("replica_opt")["g"].mean().to_numpy(dtype=float),
+                                 gb.groupby("replica_opt")["g"].mean().to_numpy(dtype=float))
+        filas.append({
+            "variante": f"{a} - {b}", "contra": b, "n_replicas": int(ga["replica_opt"].nunique()),
+            "n_semillas": len(ga), "replicas": " ".join(str(k) for k in sorted(ga["replica_opt"].unique())),
+            "delta_g_media": dif, "delta_g_se": se, "delta_g_ic_inf": lo, "delta_g_ic_sup": hi,
+            "veredicto": _veredicto_par(lo, hi),
+            "nota": f"sin aparear; IC de Welch entre réplicas ({ga['replica_opt'].nunique()} y "
+                    f"{gb['replica_opt'].nunique()})",
         })
     return pd.DataFrame(filas)

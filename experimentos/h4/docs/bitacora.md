@@ -54,3 +54,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   variantes y ~2,9 h en las 10 de Luis; con Martín (~2,1 h según D6, más el reintento de 08), D7 dos veces, `luis_1` y
   `luis_1_panel` y ~10 min de arranque por VM (≈ 24 VMs), son ≈ 13–18 h de `n2-highmem-8` spot; a ≈ US$ 0,19/h,
   **≈ US$ 2,5–3,5**. La cifra real sale de la facturación del proyecto (la mira Agustina).
+
+### 2026-11-10 — análisis e informe (`incorporar-aportes` 6.1)
+
+- Sesión headless del grupo 6 · modelo: Opus · etapa `informe`. Reglas de `docs/hipotesis.md` aplicadas tal como
+  quedaron escritas: regla 1 refutada (`H4H-0.1` y `H4U-0.1` *pierden* con réplicas); regla 2 *no cambia*; regla 3
+  confirmada en `H4F-0.05` (no pierde, A mayor que la de `H3-0.05`, gana a tiempo igual) e indeterminada en `H4F-0.25`
+  (la cota inferior a tiempo igual queda debajo de 0). Informe en `informe/informe.md`.
+- `comun/`: `replicas.csv` suma las diferencias de D4 que faltaban (`PARES_WELCH` en `comun/variantes.py`: `H4H-0.1` −
+  `H4U-0.1` y `H3K-0.1` − `H3-0.1` con IC de Welch; pares apareados de las reglas 5 y 6 de `h3`); el reporte las muestra
+  en "Diferencias entre variantes" con el tipo de IC. Reconsolidado y `python -m comun.reporte --todos`.
+- Verificación: `python -m scripts.verificar_informe_h3 --informe experimentos/h4/informe/informe.md` (el verificador de
+  `h3` ahora acepta `--informe` y mira también los ledgers de `h4`): 0 números sin fuente.
