@@ -74,3 +74,25 @@ def test_corrida_07_nueva(tmp_path):
     nueva.mkdir()
     (nueva / "diseno.json").write_text("{}")
     assert rm.corrida_07_nueva(tmp_path, antes) == nueva
+
+
+def test_datos_con_otro_panel_usa_sus_columnas_en_su_orden(tmp_path):
+    from comun import baseline as bl
+    from experimentos.sampling_1.exploratorios.validacion_50_semillas import validacion as va
+    rng = np.random.default_rng(0)
+    filas = []
+    for m in bl.MESES_TRAIN + [bl.MES_VALIDACION, bl.MES_TEST]:
+        for i in range(60):
+            y = int(i % 10 == 0)
+            filas.append({"numero_de_cliente": i, "foto_mes": m, "clase_ternaria": "BAJA+2" if y else "CONTINUA",
+                          "y": y, "es_baja2": y, "zeta": rng.normal(), "alfa": rng.normal() + y})
+    panel = _panel(tmp_path / "luis.parquet", pd.DataFrame(filas))
+    d = va.Datos(panel=panel)
+    assert d.x_tr.shape == (240, 2) and d.x_va.shape == (60, 2) and d.x_te.shape == (60, 2)
+    assert np.allclose(d.x_tr[:, 1], pd.DataFrame(filas).query("foto_mes <= 201906")["alfa"])
+
+
+def test_panel_luis_escribe_aparte():
+    from experimentos.sampling_1.exploratorios.validacion_50_semillas import validacion as va
+    a = va.parsear(["--estrategia", "1", "--panel-luis"])
+    assert a.panel_luis and a.salida == va.SALIDA   # main escribe en SALIDA / "panel_luis", que --agregar no lee

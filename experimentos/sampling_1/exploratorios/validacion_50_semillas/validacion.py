@@ -17,6 +17,7 @@ import time
 from io import BytesIO
 from pathlib import Path
 
+import duckdb
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
@@ -30,6 +31,7 @@ from comun import muestreo
 from comun import rutas
 
 from . import estrategias as es
+from . import panel_luis as pl
 from . import presupuesto as pr
 
 log = logging.getLogger("validacion_50")
@@ -49,11 +51,16 @@ def _params_dataset() -> dict:
 class Datos:
     """Train (201903-201906), validación (201908) y test (201910) como matrices float32."""
 
-    def __init__(self, filas: int | None = None):
-        dt.asegurar_panel(filas)
-        train = dt.cargar_meses(bl.MESES_TRAIN, filas)
-        val = dt.cargar_meses([bl.MES_VALIDACION], filas)
-        test = dt.cargar_meses([bl.MES_TEST], filas)
+    def __init__(self, filas: int | None = None, panel: Path | None = None):
+        """`panel`: otro Parquet con las mismas columnas de control (el de Luis, D7); sus predictoras en su orden."""
+        if panel is None:
+            dt.asegurar_panel(filas)
+            cargar = lambda meses: dt.cargar_meses(meses, filas)
+        else:
+            cargar = lambda meses: cargar_de(panel, meses)
+        train = cargar(bl.MESES_TRAIN)
+        val = cargar([bl.MES_VALIDACION])
+        test = cargar([bl.MES_TEST])
         cols = dt.columnas_predictoras(train)
         self.x_tr, self.y_tr = dt.matriz(train, cols), train[dt.Y].to_numpy()
         self.x_va, self.y_va, self.b2_va = dt.matriz(val, cols), val[dt.Y].to_numpy(), val[dt.BAJA2].to_numpy()
@@ -62,6 +69,16 @@ class Datos:
         self.dtrain_full = lgb.Dataset(self.x_tr, label=self.y_tr, params=_params_dataset(), free_raw_data=False)
         self.dtrain_full.construct()
         self.t_construct_full = time.perf_counter() - t0
+
+
+def cargar_de(panel: Path, meses: list[int]) -> pd.DataFrame:
+    """Como `comun.datos.cargar_meses`, pero de otro Parquet (anota los meses igual)."""
+    log.info("MESES_LEIDOS %s (%s)", ",".join(str(m) for m in meses), panel.name)
+    dt.MESES_LEIDOS.extend(meses)
+    con = duckdb.connect()
+    df = con.execute(f"select * from read_parquet('{panel}') where {dt.MES} in ({', '.join(map(str, meses))})").df()
+    con.close()
+    return df
 
 
 def entrenar_semilla(e: es.Estrategia, hp: dict, semilla: int, d: Datos) -> tuple[np.ndarray, np.ndarray, float]:
@@ -283,6 +300,8 @@ def parsear(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--filas", type=int, default=None, help="smoke test: panel de ~N filas")
     p.add_argument("--salida", type=Path, default=SALIDA)
     p.add_argument("--agregar", action="store_true", help="junta los CSV de --salida y arma agregados y HTML (sin datos)")
+    p.add_argument("--panel-luis", action="store_true",
+                   help="D7: entrena con el panel de Luis (panel_luis.py) en vez de comun.datos; salida en <salida>/panel_luis")
     a = p.parse_args(argv)
     if not a.agregar and a.estrategia is None:
         p.error("falta --estrategia (o --agregar)")
@@ -298,13 +317,20 @@ def main(argv: list[str] | None = None) -> None:
         return
     e = es.estrategia(a.estrategia)
     hp, t_opt = es.hp_de(e, a.hp)
-    d = Datos(a.filas)
+    panel, salida = None, a.salida
+    if a.panel_luis:   # D7 dio "distintos": se mide cuánto pesa el panel, aparte de las salidas con comun.datos
+        panel = pl.ruta_panel_luis()
+        if not panel.exists():
+            pl.construir_panel_luis(dt.asegurar_crudo(), panel)
+        salida = a.salida / "panel_luis"
+    d = Datos(a.filas, panel)
     calib = calibracion(d)
     commit, sucio = correr.commit_y_sucio()   # procedencia: estas salidas no van al ledger de corridas
-    calib.update(commit=commit, codigo_sucio=sucio, maquina=correr.tipo_de_maquina())
+    calib.update(commit=commit, codigo_sucio=sucio, maquina=correr.tipo_de_maquina(),
+                 panel="luis" if a.panel_luis else "comun.datos")
     filas, ensambles = correr_estrategia(e, hp, t_opt, a.semillas, d, a.hp, a.presupuesto)
-    escribir_estrategia(a.salida, a.hp, e, filas, ensambles, calib)
-    print(f"estrategia {e.id}: {len(filas)} semillas en {a.salida}")
+    escribir_estrategia(salida, a.hp, e, filas, ensambles, calib)
+    print(f"estrategia {e.id}: {len(filas)} semillas en {salida}")
 
 
 if __name__ == "__main__":

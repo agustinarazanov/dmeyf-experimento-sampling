@@ -1,0 +1,4 @@
+# D7 dio "distintos" (panel_d7.json: al de Luis le faltan tmobile_app y cmobile_app_trx con sus lags y deltas, y el orden
+# de columnas es otro; filas y las 755 columnas comunes, idénticas). Como pide D7, estrategia 1 con --panel-luis para medir
+# cuánto pesa; misma línea que fase6_luis_1, salida en ledger/luis/panel_luis/. Cambio incorporar-aportes, D7.
+@ experimentos.sampling_1.exploratorios.validacion_50_semillas.validacion --estrategia 1 --hp original --semillas 50 --presupuesto 900 --panel-luis
