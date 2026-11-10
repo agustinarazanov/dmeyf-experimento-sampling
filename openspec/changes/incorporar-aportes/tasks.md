@@ -33,7 +33,7 @@ Requiere `renombrar-brazos` y `h3-semillas-optuna` archivados.
 
 ## 5. Replicación (sesión: Sonnet)
 
-- [ ] 5.1 Martín: comparar los sha256 de las salidas nuevas de 07 y 08 con `sha256_lf` de `procedencia.json` y completar en su README la tabla reportado/reproducido (D5) con las versiones de LightGBM y numpy; verificar que cada fila dice "idéntico", "igual salvo redondeo" o "distinto", con la explicación
+- [x] 5.1 Martín: comparar los sha256 de las salidas nuevas de 07 y 08 con `sha256_lf` de `procedencia.json` y completar en su README la tabla reportado/reproducido (D5) con las versiones de LightGBM y numpy; verificar que cada fila dice "idéntico", "igual salvo redondeo" o "distinto", con la explicación
 - [ ] 5.2 Luis: escribir las conclusiones del exploratorio con el ranking en 201908 (D9), y en una sección aparte, "Reproducción del resumen original", completar la tabla reportado/reproducido con cada número de `resumen_original.md` (incluidas las reconstrucciones, con su etiqueta, y los descartes contra las variantes de D3) y el resultado de la comparación de paneles (D7); verificar con un script que cada número de la tabla sale de `resultados/` o de `replicas.csv`
 - [ ] 5.3 Revisión en sesión limpia del grupo 5 con la lista de resultados y cierre en la bitácora
 

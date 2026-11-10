@@ -186,6 +186,24 @@ versiones. LightGBM corre con `deterministic=false` (default) y 4 hilos, de modo
 versión los valores pueden diferir en los últimos decimales. Si eso pasa, 07 lo informa en
 `control_evaluacion.json` → `reproduccion_06` y 08 se detiene en la verificación de modelos.
 
+## Reproducción en la VM (incorporar-aportes, D5)
+
+Corrida del 9–10-nov-2026 en una VM `n2-highmem-8` (Linux, Python 3.14.4, **LightGBM 4.7.0, numpy 2.5.2**, las versiones
+fijas de `requirements.txt`; las originales eran Python 3.12.0 en Windows 11), 4 hilos. 07 en
+`ledger/martin/07/.../20261109T235232_15814` y 08 sobre esa corrida en `ledger/martin/08/.../20261110T005130_12983`
+(el primer intento de 08 falló por falta de git). Se compara el sha256 con fin de línea LF contra `sha256_lf` de
+`resultados/procedencia.json`; el script es `python -m experimentos.sampling_1.exploratorios.comparar_martin`.
+
+| salida | sha256 del archivo | columnas sin tiempo | resultado | explicación |
+|---|---|---|---|---|
+| `07_resumen_por_semilla.csv`: elecciones, AUC, delta, Spearman | no coincide | las 10 filas, iguales | idéntico | el archivo difiere solo en `tiempo_busqueda_s` y `tiempo_ajuste_completo_reutilizado_s` |
+| `07_resumen_por_semilla.csv`: tiempos | no coincide | — | distinto | dependen de la máquina (p. ej. búsqueda 167,0 s contra 378,2 s en la primera semilla); no se comparan |
+| `08_ganancia_por_semilla.csv` | coincide | — | idéntico | mismo sha256 |
+| `08_ganancia_por_configuracion.csv`: ganancias, envíos, empates | no coincide | las 5 filas, iguales | idéntico | difiere solo en `segundos_prediccion` |
+| `08_ganancia_por_configuracion.csv`: `segundos_prediccion` | — | — | distinto | tiempo de máquina; no se compara |
+
+Las elecciones, los AUC y las ganancias salieron idénticos pese al cambio de sistema, de Python y de procesador.
+
 ## Protocolo (el de las corridas reportadas, sin cambios)
 
 - **Datos.** Solo 2019. Train 201903–201906 completo (506.871 filas, 5.313 positivos) y validación 201908
