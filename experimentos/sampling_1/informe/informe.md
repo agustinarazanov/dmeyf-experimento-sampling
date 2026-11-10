@@ -3,10 +3,10 @@
 Comisión lunes: Agustina Razanov, Martín López, Luis María Laguinge. Tutor: Joaquín I. Aramendía. Las tablas de
 § Resultados se copian de [`tabla_resultados.md`](tabla_resultados.md), que genera
 `python -m comun.reporte --experimento sampling_1` desde los ledgers (`apareado.csv` y `replicas.csv` de `control`, `h1`,
-`h2` y `h3`; `ledger/apareado_previo.csv` es la copia anterior a la separación, que cita por línea
+`h2`, `h3` y `h4`; `ledger/apareado_previo.csv` es la copia anterior a la separación, que cita por línea
 `informe/decisiones.md`). Las figuras están en `informe/reporte.html` e `informe/figuras/`. El informe de cada hipótesis
-está en [`h1`](../../h1/informe/informe.md), [`h2`](../../h2/informe/informe.md) y [`h3`](../../h3/informe/informe.md);
-acá va la comparación y lo que es común.
+está en [`h1`](../../h1/informe/informe.md), [`h2`](../../h2/informe/informe.md), [`h3`](../../h3/informe/informe.md) y
+[`h4`](../../h4/informe/informe.md); acá va la comparación y lo que es común.
 
 ## Hipótesis
 
@@ -21,6 +21,17 @@ proporción de clases (eso lo estudia Sampling_2).
   sigue sin perder; además se prueba si la ventaja viene de que la muestra regulariza (A) o de que el control tuvo mala
   suerte (B), una tasa más chica (`H3-0.05`) y el reescalado de `min_data_in_leaf` (`H3R-0.1`). Reglas en
   [`h3/docs/hipotesis.md`](../../h3/docs/hipotesis.md) § H3 con réplicas.
+- **H4** (cambio `incorporar-aportes`, pre-registrado el 9-nov): conservar **todas las bajas** en la muestra que acelera
+  (en la búsqueda de Optuna o en el modelo final) mantiene la ganancia y acelera. Cuatro variantes: búsqueda con todas
+  las bajas y el 10 % de CONTINUA, difícil (`H4H-0.1`) o uniforme (`H4U-0.1`), con final completo; y búsqueda como
+  `H3-0.05` o `H3-0.25` con final sobre todas las bajas y la mitad de CONTINUA con peso 2 (fast-retrain, `H4F-0.05` y
+  `H4F-0.25`). Reglas en [`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md).
+- **Extensiones de H3** (mismo cambio): reescalado √(1/r) en r = 0,25 (`H3R-0.25`), reescalado lineal 1/r
+  (`H3L-0.25`, `H3L-0.1`) y búsqueda sobre el 10 % de los clientes (`H3K-0.1`). Reglas en
+  [`h3/docs/hipotesis.md`](../../h3/docs/hipotesis.md) § Extensiones del aporte de Luis.
+- H4 y las extensiones vienen del aporte de Luis, que eligió y descartó estrategias **mirando 201910**: lo declaran sus
+  hipótesis y va en § Limitaciones. Los **contrastes principales**, fijados antes de correr, son `H3-0.1`, `H4H-0.1` y
+  `H4F-0.05` contra el control; el resto es secundario.
 - Una variante **vale la pena** si no pierde y además es al menos 2 veces más rápida (A ≥ 2).
 
 ## Diseño
@@ -39,6 +50,12 @@ semillas: 28 estudios nuevos y 37 celdas de finales, en 8 VMs paralelas desde el
 con réplicas es la diferencia de las medias entre réplicas con IC de Welch, y su veredicto reemplaza al de la réplica 0.
 δ y N* no cambian. Detalle en `docs/hipotesis.md`, `docs/diseno.md` y
 [`h3/docs/diseno.md`](../../h3/docs/diseno.md).
+
+La fase 6 (`incorporar-aportes`, desde el tag `corridas-v3`) suma las ocho variantes de H4 y de las extensiones de H3,
+todas con 8 réplicas × 10 semillas desde el principio, y los estudios `K0.1`, `NH0.1` y `NU0.1` (la sonda de `NH0.1`
+cuenta en T). Se comparan con el control con las mismas reglas. En las mismas VMs se replicaron los aportes de Martín y
+de Luis (bloque B). Diferencias entre variantes: apareadas por réplica y semilla si comparten estudios (IC t entre
+réplicas) y con IC de Welch entre réplicas si no. Detalle en [`h4/docs/diseno.md`](../../h4/docs/diseno.md).
 
 ## Resultados
 
@@ -61,8 +78,16 @@ Las cifras de las tablas están en el formato del reporte (punto decimal). N* = 
 | GOSS | H2 | 276.65 | 0.55 [-2.60; 3.70] | — | 1,088 | 0.72 | sin réplicas | no aplica (K<2) | no pierde (réplica 0) |
 | H3-0.05 | H3 | 277.79 (R=8) | 3.74 [1.77; 5.71] | 1.87 [-1.02; 4.76] (R=8) | 83 | 11.82 | 1.97 [-2.83; 6.76] (R=8) | 2.75 [-5.17; 12.54] | no pierde (con réplicas (8)) |
 | H3R-0.1 | H3 | 277.68 (R=8) | 3.30 [0.65; 5.95] | 1.76 [-1.21; 4.73] (R=8) | 117 | 8.34 | 3.34 [-0.14; 6.82] (R=8) | 8.14 [-1.32; 18.48] | no pierde (con réplicas (8)) |
+| H3K-0.1 | H3 | 277.20 (R=8) | 5.17 [1.48; 8.86] | 1.28 [-3.42; 5.98] (R=8) | 118 | 8.30 | 2.38 [-4.22; 8.98] (R=8) | 10.06 [-0.44; 21.56] | no pierde (con réplicas (8)) |
 | H3-0.1 | H3 | 278.22 (R=8) | 4.07 [-0.27; 8.41] | 2.30 [-0.88; 5.47] (R=8) | 118 | 8.30 | 4.03 [0.78; 7.27] (R=8) | 4.38 [-3.96; 13.42] | no pierde (con réplicas (8)) |
+| H3L-0.1 | H3 | 274.46 (R=8) | -1.43 [-3.86; 1.00] | -1.46 [-4.73; 1.81] (R=8) | 120 | 8.19 | -0.65 [-3.47; 2.18] (R=8) | 3.09 [-6.05; 12.88] | no pierde (con réplicas (8)) |
+| H3L-0.25 | H3 | 276.17 (R=8) | 1.21 [-2.40; 4.82] | 0.25 [-2.02; 2.51] (R=8) | 212 | 4.61 | 0.87 [-2.48; 4.22] (R=8) | -1.36 [-9.57; 6.93] | no pierde (con réplicas (8)) |
+| H3R-0.25 | H3 | 277.45 (R=8) | 2.97 [-0.20; 6.14] | 1.53 [-1.92; 4.97] (R=8) | 214 | 4.58 | 3.07 [-1.88; 8.01] (R=8) | 9.18 [1.21; 17.82] | no pierde (con réplicas (8)) |
 | H3-0.25 | H3 | 277.74 (R=8) | 4.18 [-0.60; 8.96] | 1.81 [-1.78; 5.41] (R=8) | 216 | 4.53 | 1.83 [-1.91; 5.57] (R=8) | 3.46 [-4.29; 11.77] | no pierde (con réplicas (8)) |
+| H4F-0.05 | H4 | 277.78 (R=8) | 4.40 [-0.07; 8.87] | 1.86 [-0.83; 4.54] (R=8) | 74 | 13.17 | 3.89 [0.35; 7.43] (R=8) | 7.18 [-1.33; 17.27] | no pierde (con réplicas (8)) |
+| H4H-0.1 | H4 | 267.31 (R=8) | -3.30 [-7.38; 0.78] | -8.61 [-12.78; -4.43] (R=8) | 117 | 8.35 | -4.63 [-8.07; -1.20] (R=8) | -4.12 [-13.09; 4.95] | pierde (con réplicas (8)) |
+| H4F-0.25 | H4 | 277.31 (R=8) | 3.52 [-1.66; 8.70] | 1.39 [-1.87; 4.65] (R=8) | 204 | 4.81 | 3.07 [-0.09; 6.23] (R=8) | 5.73 [-2.86; 14.96] | no pierde (con réplicas (8)) |
+| H4U-0.1 | H4 | 270.38 (R=8) | -2.42 [-7.11; 2.27] | -5.54 [-8.94; -2.14] (R=8) | 275 | 3.56 | 3.34 [0.77; 5.91] (R=8) | 2.72 [-7.70; 13.21] | pierde (con réplicas (8)) |
 
 Las variantes `U*`, `B*` y `GOSS` no tienen réplicas (pierden o no aceleran, y las réplicas no cambian eso).
 
@@ -72,11 +97,24 @@ Las variantes `U*`, `B*` y `GOSS` no tienen réplicas (pierden o no aceleran, y 
 | H3-0.05 | 8 | 80 | 2.84 | 3.96 | 33 % |
 | H3-0.1 | 8 | 80 | 3.30 | 4.00 | 38 % |
 | H3-0.25 | 8 | 80 | 3.93 | 4.60 | 40 % |
+| H3K-0.1 | 8 | 80 | 5.40 | 3.76 | 65 % |
+| H3L-0.1 | 8 | 80 | 3.45 | 3.20 | 51 % |
+| H3L-0.25 | 8 | 80 | 1.45 | 3.68 | 13 % |
 | H3R-0.1 | 8 | 80 | 2.99 | 3.81 | 35 % |
+| H3R-0.25 | 8 | 80 | 3.71 | 3.51 | 50 % |
+| H4F-0.05 | 8 | 80 | 2.48 | 4.02 | 25 % |
+| H4F-0.25 | 8 | 80 | 3.43 | 4.58 | 34 % |
+| H4H-0.1 | 8 | 80 | 4.71 | 4.70 | 49 % |
+| H4U-0.1 | 8 | 80 | 3.64 | 4.91 | 34 % |
 
-| diferencia | Δ [IC t entre réplicas] (M$) | réplicas | veredicto |
-|---|---|---|---|
-| H3R-0.1 - H3-0.1 | -0.54 [-1.88; 0.81] | 8 | no cambia |
+| diferencia | Δ [IC entre réplicas] (M$) | réplicas | IC | veredicto |
+|---|---|---|---|---|
+| H3R-0.1 - H3-0.1 | -0.54 [-1.88; 0.81] | 8 | t, apareado | no cambia |
+| H3R-0.25 - H3L-0.25 | 1.28 [-0.98; 3.54] | 8 | t, apareado | no cambia |
+| H3R-0.1 - H3L-0.1 | 3.22 [0.63; 5.81] | 8 | t, apareado | mejora |
+| H3R-0.25 - H3-0.25 | -0.29 [-2.28; 1.70] | 8 | t, apareado | no cambia |
+| H3K-0.1 - H3-0.1 | -1.02 [-5.91; 3.88] | 8 | Welch, sin aparear | no cambia |
+| H4H-0.1 - H4U-0.1 | -3.07 [-7.61; 1.47] | 8 | Welch, sin aparear | no cambia |
 
 Figuras: tiempo contra ganancia con el rango entre réplicas y descomposición de la varianza en
 [`reporte.html`](reporte.html); bandas de curvas por hipótesis en `figuras/bandas_H1.png`, `bandas_H2.png` y
@@ -96,16 +134,29 @@ Figuras: tiempo contra ganancia con el rango entre réplicas y descomposición d
   porque el control haya salido bajo.
 - **`H3-0.05`, confirmada**: no pierde con réplicas y A = 11,82 (≥ 8). En la réplica 0 salía *gana*; con réplicas no.
 - **`H3R-0.1`, no cambia**: reescalar `min_data_in_leaf` × √10 da −0,54 M$ [−1,88; 0,81] contra `H3-0.1`.
+- **Extensiones de H3** (secundarias; [`h3`](../../h3/informe/informe.md) § Extensiones): las cuatro no pierden contra
+  el control. La raíz no mejora a no reescalar tampoco en r = 0,25 (−0,29 M$ [−2,28; 1,70]); le gana a la lineal en
+  r = 0,1 (3,22 M$ [0,63; 5,81]) y no en r = 0,25 (1,28 M$ [−0,98; 3,54]); buscar sobre el 10 % de los clientes no
+  cambia contra el 10 % de las filas (−1,02 M$ [−5,91; 3,88], Welch).
+- **H4, búsqueda informada: refutada** ([`h4`](../../h4/informe/informe.md)). `H4H-0.1` y `H4U-0.1` *pierden* con
+  réplicas (−8,61 y −5,54 M$, medias debajo de −5,52 M$). Elegir negativos difíciles en vez de uniformes no cambia
+  (−3,07 M$ [−7,61; 1,47], Welch). Con una sola réplica no se veía: Δ réplica 0 era −3,30 y −2,42 M$.
+- **H4, fast-retrain**: `H4F-0.05` *confirmada*: no pierde (1,86 M$ [−0,83; 4,54]), acelera 13,17 veces (más que
+  `H3-0.05`, 11,82) y a tiempo igual *gana* (3,89 M$ [0,35; 7,43]). `H4F-0.25` no pierde y acelera 4,81 veces (más que
+  `H3-0.25`, 4,53), pero a tiempo igual queda *indeterminada* ([−0,09; 6,23] M$).
 - U0.25 y H3-0.25 comparten el estudio de Optuna de la réplica 0, o sea los mismos hiperparámetros. U0.25 pierde y
   H3-0.25 no, así que en H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una muestra.
-- **Vale la pena** (no pierde y A ≥ 2): las cuatro H3 (`H3-0.05`, `H3R-0.1`, `H3-0.1` y `H3-0.25`). Ninguna de H1 ni de
-  H2: las que no pierden (B0.25, B0.5, GOSS) tienen A < 2.
+- **Vale la pena** (no pierde y A ≥ 2): las ocho variantes de H3 (`H3-0.05`, `H3R-0.1`, `H3K-0.1`, `H3-0.1`,
+  `H3L-0.1`, `H3L-0.25`, `H3R-0.25` y `H3-0.25`) y las dos de fast-retrain (`H4F-0.05` y `H4F-0.25`). Ninguna de H1 ni
+  de H2 (las que no pierden, B0.25, B0.5 y GOSS, tienen A < 2) ni de la búsqueda informada de H4, que pierde.
 - **¿Alcanzan 50 semillas finales?** No, con un solo estudio de Optuna: entre el 25 % (`C`) y el 40 % (`H3-0.25`) de la
   varianza de G es suerte de la optimización, y esa parte no baja con más semillas finales. Cuentas en el informe de
   [`h3`](../../h3/informe/informe.md) § ¿Alcanzan 50 semillas finales?.
 - **A tiempo igual** (`decisiones.md` § A tiempo igual): cada variante gasta el tiempo que le sobra en un ensamble de K
-  semillas (K ≤ 10). Ahora tiene intervalo. Con réplicas, `H3-0.1` queda arriba del control (4,03 M$ [0,78; 7,27]); las
-  otras H3 tienen IC que contienen a 0. El bootstrap de clientes de 201910, que mide el ruido del mes de test, da IC de
+  semillas (K ≤ 10). Ahora tiene intervalo. Con réplicas, `H3-0.1` (4,03 M$ [0,78; 7,27]) y `H4F-0.05` (3,89 M$
+  [0,35; 7,43]) quedan arriba del control; `H4U-0.1` también (3,34 M$ [0,77; 5,91]) aunque pierda con réplicas, porque
+  el ensamble suma ganancia por sí solo. Las otras H3 y `H4F-0.25` tienen IC que contienen a 0, y `H4H-0.1` queda abajo
+  (−4,63 M$ [−8,07; −1,20]). El bootstrap de clientes de 201910, que mide el ruido del mes de test, da IC de
   unos ±8 M$ o más: solo U0.05 queda claramente abajo (−22,10 [−37,62; −7,59]), y U0.5 (5,42 [−2,97; 13,64]), que en el
   informe anterior era la que más subía, no se distingue de 0. Ensamblar el control casi no suma (275,55 M$ contra
   276,10 M$).
@@ -117,25 +168,43 @@ Las cifras del bloque B no se comparan una a una con las del bloque A: otro prot
 | carpeta | autor | pregunta | protocolo | cifras principales | advertencia |
 |---|---|---|---|---|---|
 | experimentos/h3/sensibilidad_muestra | Martín López | ¿Cuánto depende de la muestra la configuración que elige H3? | 20 configuraciones al azar, 10 muestras del 25 %, una semilla final, float64, 4 hilos | 08_ganancia_por_semilla.csv, delta: mediana 0 [-9,900,000; 8,800,000], n = 10; 08_ganancia_por_semilla.csv, delta_pct: mediana 0 [-3.622; 3.219], n = 10; 07_resumen_por_semilla.csv, delta: mediana 0 [-8.051e-05; 0.002227], n = 10; 07_resumen_por_semilla.csv, spearman_seleccion: mediana 0.7752 [0.6647; 0.8165], n = 10; 07_resumen_por_semilla.csv, tiempo_busqueda_s: mediana 487 [378; 1,064], n = 10 | 10 muestras pero 4 modelos distintos; un solo 201910; no comparable 1:1 con H3-0.25 |
+| experimentos/sampling_1/exploratorios/validacion_50_semillas | Luis María Laguinge | ¿Con 50 semillas finales, qué estrategias de las hipótesis 3 y 4 ganan al control y cuántas semillas entran en un presupuesto de 900 s? | 9 estrategias con hiperparámetros fijos, 50 semillas finales (10 oficiales + 110017 + i·19937), presupuesto de 900 s; ranking y curva según K en 201908, 201910 solo informado | resumen_50_semillas_original.csv, g_201908: mediana 201,850,000 [186,450,000; 216,150,000], n = 493; resumen_50_semillas_original.csv, gmax_201908: mediana 207,350,000 [196,625,000; 218,075,000], n = 493; resumen_50_semillas_original.csv, auc_201908: mediana 0.9274 [0.9236; 0.9311], n = 493; resumen_50_semillas_original.csv, g_201910: mediana 278,850,000 [266,750,000; 296,450,000], n = 493; resumen_50_semillas_original.csv, auc_201910: mediana 0.9328 [0.9304; 0.9357], n = 493; resumen_50_semillas_original.csv, tiempo_s: mediana 19.02 [11.33; 35.72], n = 493; ranking_201908_original.csv, puesto_201908: mediana 5 [1; 9], n = 9; ranking_201908_original.csv, g_201908: mediana 201,762,698 [196,690,000; 207,856,000], n = 9; ranking_201908_original.csv, g_201908_sd: mediana 4,037,318 [3,275,288; 4,559,427], n = 9; presupuesto_original.csv, k_presupuesto: mediana 40 [4; 70], n = 9; presupuesto_original.csv, ens_k_201908: mediana 205,150,000 [198,550,000; 210,650,000], n = 9; presupuesto_original.csv, ens_k_201910: mediana 281,050,000 [278,850,000; 284,350,000], n = 9 | origen: commit 9e1889e, script de Colab con su propio panel; el resumen original elige con 201910 (ya mirado) y hay piezas reconstruidas (presupuesto, resumen CSV, H4_Hard); no es una variante ni cambia el veredicto de ninguna hipótesis |
 
-- **Martín** ([`h3/sensibilidad_muestra/`](../../h3/sensibilidad_muestra/README.md)): con 10 muestras del 25 %, la
+- **Martín, replicado** ([`h3/sensibilidad_muestra/`](../../h3/sensibilidad_muestra/README.md) § Reproducción en la
+  VM): sus pasos 07 y 08 se volvieron a correr en `n2-highmem-8` con otras versiones de Python, LightGBM y numpy, y las
+  elecciones, los AUC y las ganancias salieron idénticos; solo cambian los tiempos. Con 10 muestras del 25 %, la
   configuración que elige H3 cambia con la muestra, y la ganancia en 201910 se mueve de −9,9 a +8,8 M$ contra la del
   control (mediana 0; es la columna `delta` de `08_ganancia_por_semilla.csv`, en $; la `delta` de
-  `07_resumen_por_semilla.csv` es diferencia de AUC, no de ganancia). Va en la misma dirección que las réplicas: la suerte de la optimización pesa tanto como la
-  diferencia que se quiere medir.
-- El exploratorio de Luis (50 semillas finales con hiperparámetros fijos) entra en este bloque cuando `incorporar-aportes`
-  lo porte y escriba su manifiesto.
+  `07_resumen_por_semilla.csv` es diferencia de AUC, no de ganancia). Va en la misma dirección que las réplicas: la
+  suerte de la optimización pesa tanto como la diferencia que se quiere medir.
+- **Luis, replicado** ([`validacion_50_semillas/`](../exploratorios/validacion_50_semillas/README.md)): el script se
+  portó al repo, con las piezas sin código reconstruidas y marcadas, y se corrió en `n2-highmem-8` con sus
+  hiperparámetros. Ordenadas por G en 201908 (como pide la consigna), el control queda primero y ninguna estrategia lo
+  supera; el "campeón" de su resumen, elegido en 201910, no gana en el mes que decide. Su README tiene la tabla
+  reportado/reproducido de cada número del resumen original: las ventajas que reportaba sobre el control van en el
+  mismo sentido con sus hiperparámetros, pero con una sola búsqueda por estrategia; al repetir la búsqueda (bloque A) la
+  búsqueda difícil pierde y H3 queda en *no pierde*. Su idea de producción, el fast-retrain, es la que se sostiene con
+  réplicas (`H4F-0.05`).
 
 ## Limitaciones
 
+- **Test ya mirado.** H4 y las extensiones de H3 salen del aporte de Luis, que eligió y descartó estrategias mirando su
+  ganancia en 201910, y no hay otro mes de test (la consigna lo reserva para la comparación). Entraron todas juntas, con
+  reglas escritas antes de correr, y ninguna se eligió ni se descartó acá por 201910; aun así, esos resultados no
+  cuentan con un mes de test que no se haya mirado.
+- **Comparaciones múltiples.** Entre H4 y las extensiones de H3 hay más de diez contrastes sin corrección: con un 5 % de
+  error por contraste, alguno puede salir significativo por azar. Las conclusiones se apoyan en los contrastes
+  principales fijados antes de correr (`H3-0.1`, `H4H-0.1` y `H4F-0.05` contra el control); el resto es secundario.
 - Las limitaciones propias de cada hipótesis (GOSS descriptivo y adaptación de `bagging_fraction` en H2, estudios
-  compartidos con `h1` y reescalado en H3) están en su informe.
-- Solo `C` y las H3 tienen réplicas de Optuna. Para `U*`, `B*` y `GOSS`, Δ sigue incluyendo la suerte de una sola
-  optimización; como pierden por mucho o no aceleran, no cambia la respuesta.
+  compartidos con `h1` y reescalado en H3, sonda y proporción de clases en H4) están en su informe.
+- Solo `C`, las H3 y las H4 tienen réplicas de Optuna. Para `U*`, `B*` y `GOSS`, Δ sigue incluyendo la suerte de una
+  sola optimización; como pierden por mucho o no aceleran, no cambia la respuesta.
 - 8 réplicas alcanzan para decidir *no pierde*, pero no para separar de 0 una ventaja de 1,76 a 2,30 M$. R = 8 quedó
   cerrado antes de correr.
-- U0.25/H3-0.25 y U0.1/H3-0.1 comparten el estudio de la réplica 0, y H3R-0.1/H3-0.1 todos: no son evidencia
-  independiente entre sí.
+- U0.25/H3-0.25 y U0.1/H3-0.1 comparten el estudio de la réplica 0; H3R, H3L y H3 de la misma tasa comparten todos, y
+  `H4F-0.05`/`H4F-0.25` comparten los de `H3-0.05`/`H3-0.25`: no son evidencia independiente entre sí.
+- H4 cambia la proporción de clases en la búsqueda (o en el final, con peso 2 para restituirla), el terreno de
+  Sampling_2; es la excepción declarada en `h4/docs/hipotesis.md`.
 - La réplica del control (C-rep) se corrió en otra VM de la misma cuenta, no por otra persona.
 - A N* fijo la ganancia se mueve en pasos de 1,1 M$, así que diferencias de uno o dos BAJA+2 no se distinguen del ruido.
   La comparación a tiempo igual necesitó repetir los finales guardando predicciones (fase 4): las ganancias salieron
@@ -144,7 +213,6 @@ Las cifras del bloque B no se comparan una a una con las del bloque A: otro prot
   que el de las réplicas. Los tiempos valen para `n2-highmem-8` (VMs distintas en la fase 5; T es la mediana entre
   réplicas) y en otra máquina solo se trasladan las aceleraciones relativas.
 - `num_iterations = 100` fijo y `force_col_wise`: T(C) no es el tiempo del baseline con la configuración automática.
-- H4 (submuestreo informado y pesos) no se corrió en esta grilla.
 
 ## Conclusiones
 
@@ -161,15 +229,27 @@ la réplica 0 estaba más en las H3 que en el control. La respuesta práctica no
 mejora de ganancia. Para comparar variantes con Optuna, más semillas finales no alcanzan: hay que repetir la
 optimización.
 
+Con los tres contrastes principales, fijados antes de correr H4:
+- **`H3-0.1` contra el control: no pierde** (2,30 M$ [−0,88; 5,47] con réplicas) y acelera 8,30 veces. Es la respuesta
+  de arriba.
+- **`H4H-0.1` contra el control: pierde** (−8,61 M$ [−12,78; −4,43]). Achicar la búsqueda conservando todas las bajas
+  y recortando CONTINUA rinde peor que achicarla al azar, elijan como se elijan los negativos. La ventaja que reportaba
+  el aporte de Luis no se sostiene al repetir la búsqueda.
+- **`H4F-0.05` contra el control: no pierde** (1,86 M$ [−0,83; 4,54]), acelera 13,17 veces y **a tiempo igual gana**
+  (3,89 M$ [0,35; 7,43]). Achicar también el final, conservando todas las bajas y la mitad de CONTINUA con peso 2,
+  agrega velocidad sin perder; con el tiempo que sobra se ensamblan más semillas. La cota inferior está cerca de 0, y
+  esta variante viene de una idea vista en 201910.
+
+La respuesta al tutor se amplía: vale la pena achicar la optimización (al azar, no informada por clase) y, si además se
+quiere el final más rápido, achicar CONTINUA conservando las bajas con peso. Ninguna de las dos es una mejora de ganancia
+por modelo; la ganancia extra, si la hay, viene de ensamblar con el tiempo ahorrado.
+
 ## Qué sigue
 
-- **H4 y los aportes** (cambio [`incorporar-aportes`](../../../openspec/changes/incorporar-aportes/proposal.md)): H4
-  conserva todas las bajas en la muestra de búsqueda (muestras informadas por clase y pesos), con el mismo control, las
-  réplicas de este cambio y el mismo ledger; porta y replica con el protocolo del repo el script de Luis (50 semillas
-  finales, fast-retrain) y vuelve a correr los pasos 07 y 08 de Martín.
-- Si H4 se suma con Optuna, correrla con réplicas desde el principio: la suerte de la optimización es del mismo orden
-  que las diferencias entre variantes.
-- Otro mes de test, para separar el ruido de 201910 del efecto de las variantes.
+- Otro mes de test, para separar el ruido de 201910 del efecto de las variantes y para tener uno que no se haya mirado
+  al elegir H4 y las extensiones de H3.
+- Fast-retrain sobre otras búsquedas (por ejemplo, `H3-0.1`) y con otras fracciones de CONTINUA, con réplicas desde el
+  principio: la suerte de la optimización es del mismo orden que las diferencias entre variantes.
 
 ## Bibliografía (para postear en Zulip)
 

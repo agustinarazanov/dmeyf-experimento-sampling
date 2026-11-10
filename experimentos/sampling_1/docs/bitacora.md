@@ -1166,3 +1166,20 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   34 verdes.
 - Tokens: 43 turnos · contexto ~68.000 por turno · ≈ US$ 1,7 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-10 — informe con cuatro hipótesis (`incorporar-aportes` 6.1 y 6.2)
+
+- Sesión headless del grupo 6 · modelo: Opus · etapa `informe`.
+- 6.1: reglas de D4 aplicadas (detalle en las bitácoras de `h3` y `h4`); `h4/informe/informe.md` nuevo y extensiones en
+  `h3/informe/informe.md`. Cambio en `comun/` (anunciado en `b8e38bd`): `PARES_WELCH` y tres pares apareados nuevos, para
+  que `replicas.csv` y la tabla del reporte tengan las diferencias entre variantes de las reglas de D4.
+- 6.2: `python -m comun.reporte --todos` y `--experimento sampling_1 --figuras informe/figuras` (suma `varianza.png`).
+  `informe/informe.md` con cuatro hipótesis, bloque A con las ocho variantes nuevas, bloque B con Martín y Luis
+  replicados, limitaciones (test ya mirado, comparaciones múltiples, proporción de clases en H4) y conclusiones con los
+  contrastes principales (`H3-0.1` no pierde; `H4H-0.1` pierde; `H4F-0.05` no pierde y gana a tiempo igual).
+  `guion.md` con cuatro hipótesis y los aportes como "lo que motivó la segunda ronda". README con resultados, `h4` en el
+  mapa y los aportes como replicados.
+- Verificaciones: `python -m scripts.verificar_readme` sin ✗ (números en `tabla_resultados.md`, enlaces existen); enlaces
+  de los informes de `sampling_1`, `h3`, `h4` y del guion, todos existen; las filas de tabla del informe conjunto están
+  en `tabla_resultados.md`.
+- Pendiente: revisión en sesión limpia de la etapa informe (6.3).

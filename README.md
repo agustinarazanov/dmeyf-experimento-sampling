@@ -16,6 +16,11 @@ es 8,30 veces más rápido. Se sostiene con 8 réplicas de la optimización, que
 optimización (4,07 M$) era en buena parte suerte de esa optimización. Entrenar el final con menos filas sí pierde: al azar
 desde r = 0,25 y dentro de LightGBM con `bagging_fraction` = 0,1.
 
+Con la segunda ronda (H4): achicar la búsqueda conservando todas las bajas pierde (`H4H-0.1`, Δ con réplicas = −8,61 M$,
+IC [−12,78; −4,43]), pero achicar el final conservando las bajas y la mitad de CONTINUA con peso 2, sobre la búsqueda
+del 5 % (`H4F-0.05`), no pierde, es 13,17 veces más rápido y, gastando el tiempo ahorrado en ensamblar, le gana al
+control (3,89 M$, IC [0,35; 7,43]).
+
 ## Resultados
 
 La comparación está en dos bloques en
@@ -23,17 +28,20 @@ La comparación está en dos bloques en
 `python -m comun.reporte --experimento sampling_1` desde los ledgers, y comentada en
 [`experimentos/sampling_1/informe/informe.md`](experimentos/sampling_1/informe/informe.md) § Resultados:
 
-- **Bloque A, mismo protocolo**: una fila por variante con Δ de la réplica 0, Δ con réplicas (en `C` y las H3, 8
-  réplicas), T, A, tiempo igual con intervalo (entre réplicas y por bootstrap de clientes de 201910) y el veredicto con
-  su fuente. Las cuatro H3 (`H3-0.05`, `H3R-0.1`, `H3-0.1`, `H3-0.25`) no pierden con réplicas y valen la pena; de H1 y
-  H2 ninguna.
-- **Bloque B, exploratorios**: el estudio de Martín, con su propio protocolo; sus cifras no se comparan una a una con las
-  del bloque A.
+- **Bloque A, mismo protocolo**: una fila por variante con Δ de la réplica 0, Δ con réplicas (en `C`, las H3 y las H4,
+  8 réplicas), T, A, tiempo igual con intervalo (entre réplicas y por bootstrap de clientes de 201910) y el veredicto con
+  su fuente. Las ocho variantes de H3 y las dos de fast-retrain de H4 (`H4F-0.05`, `H4F-0.25`) no pierden con réplicas
+  y valen la pena; de H1, H2 y la búsqueda informada de H4 (`H4H-0.1`, `H4U-0.1`, que pierden) ninguna.
+- **Bloque B, exploratorios**: los estudios de Martín y de Luis, replicados, con su propio protocolo; sus cifras no se
+  comparan una a una con las del bloque A.
 
 Δ es la diferencia de ganancia en 201910 contra el control `C`, al corte N\* = 3.300 envíos; A es cuántas veces más
 rápida es la variante que el control (optimización más un modelo final). `U` es submuestreo uniforme del train (H1), `B`
-y `GOSS` muestrean dentro de LightGBM (H2) y `H3` optimiza con una muestra y entrena con todo. Las limitaciones, las
-conclusiones y las figuras están en el informe y en [`reporte.html`](experimentos/sampling_1/informe/reporte.html).
+y `GOSS` muestrean dentro de LightGBM (H2), `H3` optimiza con una muestra y entrena con todo (`H3R` y `H3L` reescalan
+`min_data_in_leaf`, `H3K` muestrea clientes) y `H4` conserva todas las bajas en la búsqueda (`H4H`, `H4U`) o en el final
+(`H4F`). H4 y las extensiones de H3 salen de ideas que se eligieron mirando 201910 y suman más de diez contrastes sin
+corrección: las conclusiones se apoyan en `H3-0.1`, `H4H-0.1` y `H4F-0.05`, fijados antes de correr. Las limitaciones,
+las conclusiones y las figuras están en el informe y en [`reporte.html`](experimentos/sampling_1/informe/reporte.html).
 
 ## Experimentos
 
@@ -42,8 +50,9 @@ conclusiones y las figuras están en el informe y en [`reporte.html`](experiment
 | [`control`](experimentos/control/) | el control `C` (y su réplica `C-rep`) y las reglas comunes (G, Δ, δ, T, A, N\*, veredictos) | ¿cuál es el punto de comparación de todas las hipótesis? | reporte |
 | [`h1`](experimentos/h1/) | submuestreo uniforme del train | ¿cuánto se gana en tiempo y se pierde en ganancia con r ∈ {0,5, 0,25, 0,1, 0,05}? | [informe](experimentos/h1/informe/informe.md): ni confirmada ni refutada |
 | [`h2`](experimentos/h2/) | bagging y GOSS | ¿alcanza con submuestrear dentro de LightGBM? | [informe](experimentos/h2/informe/informe.md): refutada |
-| [`h3`](experimentos/h3/) | optimizar con muestra y entrenar completo | ¿se puede optimizar rápido y entrenar con todo? (la réplica 0 reusa los estudios de `h1`; las réplicas `@k` son suyas) | [informe](experimentos/h3/informe/informe.md): confirmada, también con réplicas |
-| [`sampling_1`](experimentos/sampling_1/) | el experimento conjunto: compara a `h1`–`h3` contra `control`, informe y video | ¿vale la pena el tradeoff velocidad-performance? | [informe](experimentos/sampling_1/informe/informe.md) |
+| [`h3`](experimentos/h3/) | optimizar con muestra y entrenar completo | ¿se puede optimizar rápido y entrenar con todo? (la réplica 0 reusa los estudios de `h1`; las réplicas `@k` son suyas) | [informe](experimentos/h3/informe/informe.md): confirmada, también con réplicas; extensiones sin cambios contra no reescalar |
+| [`h4`](experimentos/h4/) | muestras informadas por clase: todas las bajas en la búsqueda o en el final | ¿conviene que la muestra que acelera conserve todas las bajas? (usa estudios de `h1` y `h3`) | [informe](experimentos/h4/informe/informe.md): búsqueda informada refutada; fast-retrain confirmado con 5 % |
+| [`sampling_1`](experimentos/sampling_1/) | el experimento conjunto: compara a `h1`–`h4` contra `control`, informe y video | ¿vale la pena el tradeoff velocidad-performance? | [informe](experimentos/sampling_1/informe/informe.md) |
 
 Cada experimento tiene `docs/` (hipótesis, diseño, bitácora), `ledger/` e `informe/`. Declara en `## Dependencias` de su
 `docs/diseno.md` de quién lee (`control` como mínimo) y no toca carpetas ni ledgers ajenos. Para agregar una hipótesis
@@ -56,26 +65,22 @@ en carpetas están en [`experimentos/sampling_1/README.md`](experimentos/samplin
   **cuánto depende de la muestra la configuración que elige H3**. Repitió la búsqueda de H3 con diez muestras distintas
   y midió en 201910 la ganancia de cada modelo elegido. En 7 de 10 muestras H3 eligió la misma configuración que el
   control, y las otras tres quedan dentro del ruido de una semilla. Es exploratorio, con su propio protocolo: no es una
-  variante y no cambia el veredicto de `h3`; aparece en el bloque B de la comparación. Sigue las convenciones del repo;
-  falta volver a correr sus pasos 07 y 08, que hace `incorporar-aportes`.
-- **Luis** ([`experimentos/sampling_1/exploratorios/validacion_50_semillas/`](experimentos/sampling_1/exploratorios/validacion_50_semillas/resumen_original.md))
-  preguntó **si las H3 le ganan al control con 50 semillas finales** y probó muestras de búsqueda que conservan todas
-  las bajas (lo que pasa a ser H4). Por ahora es un script de Colab con su resumen, fuera del método: rutas de Drive,
-  hiperparámetros escritos a mano, sin ledger, y elige estrategias mirando 201910, que la consigna reserva para la
-  comparación. `incorporar-aportes` lo porta a `experimentos/sampling_1/exploratorios/`, reconstruye lo que no tiene
-  código y lo replica con el protocolo del repo.
+  variante y no cambia el veredicto de `h3`; aparece en el bloque B de la comparación. **Replicado**: sus pasos 07 y 08
+  se volvieron a correr en la VM y las elecciones, los AUC y las ganancias salieron idénticos (README § Reproducción en
+  la VM).
+- **Luis** ([`experimentos/sampling_1/exploratorios/validacion_50_semillas/`](experimentos/sampling_1/exploratorios/validacion_50_semillas/README.md))
+  preguntó **si las H3 le ganan al control con 50 semillas finales** y probó muestras que conservan todas las bajas (lo
+  que pasó a ser H4). **Replicado**: su script de Colab se portó al repo, con las piezas sin código reconstruidas y
+  marcadas, y se corrió en la VM; su README compara cada número del resumen original con el reproducido. Ordenadas en
+  201908, como pide la consigna, ninguna estrategia supera al control. Sus ideas entraron como variantes con réplicas
+  (`h4` y las extensiones de `h3`): la búsqueda con negativos difíciles pierde y el fast-retrain se sostiene.
 
 ## Qué sigue
 
-[`h3-semillas-optuna`](openspec/changes/h3-semillas-optuna/proposal.md) ya corrió: 8 réplicas de la optimización para
-`C` y las H3, dos variantes nuevas (`H3-0.05` y `H3R-0.1`, que reescala `min_data_in_leaf`) y la comparación en dos
-bloques. Separó las dos explicaciones de la ventaja de H3 y la respuesta fue que la única optimización del control había
-caído en una configuración peor que la mediana, no que la muestra regularice.
-
-Sigue [`incorporar-aportes`](openspec/changes/incorporar-aportes/proposal.md): replica los aportes de Martín y Luis y crea
-el experimento `h4` (muestras informadas por clase, que conservan todas las bajas), que usa las réplicas de
-`h3-semillas-optuna`. El grupo queda con cuatro hipótesis. Ese cambio actualiza las secciones de resultados,
-experimentos, aportes y qué sigue de este README.
+[`h3-semillas-optuna`](openspec/changes/archive/2026-11-09-h3-semillas-optuna/proposal.md) sumó 8 réplicas de la optimización y la
+comparación en dos bloques; [`incorporar-aportes`](openspec/changes/incorporar-aportes/proposal.md) replicó los aportes
+de Martín y Luis y sumó `h4` y las extensiones de `h3`: el grupo queda con cuatro hipótesis. Lo que falta es otro mes de
+test, que separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4.
 
 ## Estructura
 
@@ -88,7 +93,8 @@ experimentos, aportes y qué sigue de este README.
 - `docs/`: [`metodo.md`](docs/metodo.md) (cómo se trabaja) y [`revision.md`](docs/revision.md) (listas de revisión).
 - `scripts/`: `vm.sh`, `lanzar_fase.sh`, `etapa.sh`, `etapas.sh`, `separar_ledger.py` y los scripts del cambio
   `renombrar-brazos` (`renombrar_columna.py` y otros), para cualquier experimento o cambio; `verificar_readme.py` y
-  `verificar_informe_h3.py` comprueban que los números de este README y del informe de `h3` salen de las tablas.
+  `verificar_informe_h3.py` comprueban que los números de este README y de los informes de `h3` y `h4` (`--informe`)
+  salen de las tablas.
 - `openspec/`: planes de cambio (proposal, specs, design, tasks); los cerrados en `openspec/changes/archive/` y las
   specs vigentes en `openspec/specs/`.
 
