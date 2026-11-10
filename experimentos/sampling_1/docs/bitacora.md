@@ -1118,3 +1118,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Tokens: ~45 turnos · contexto ~60.000 por turno · ≈ US$ 1,8 (presupuesto US$ 4). Salidas largas a
   `DATOS_DIR/rev_g4/`. `comun/tokens.py` corrido.
 - Tutor: —
+
+## 2026-11-09 — incorporar-aportes, grupo 5 (replicación)
+
+- 5.1 Martín: 08 por semilla idéntico (sha256_lf); 07 y 08 por configuración idénticos salvo columnas de tiempo
+  (`comparar_martin.py`); tabla y versiones (LightGBM 4.7.0, numpy 2.5.2, Python 3.14.4, Linux) en el README de
+  `h3/sensibilidad_muestra`.
+- 5.2 Luis: conclusiones con el ranking en 201908 y sección "Reproducción del resumen original" generadas por
+  `tabla_reproduccion.py` (`--verificar` comprueba el README contra las fuentes; test sin datos). Panel D7: distintos por
+  10 columnas extra nuestras, huellas iguales en las comunes; estrategia 1 con `--panel-luis` da −0,64 M$ en 201910.
+- Falta 5.3 (revisión en sesión limpia).

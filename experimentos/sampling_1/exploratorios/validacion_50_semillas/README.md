@@ -81,24 +81,66 @@ Las VMs se lanzan con `scripts/lanzar_fase.sh fase6_luis_<estrategia>` (una list
 `experimentos/sampling_1/scripts/`; el modo `--hp ledger` es la lista `fase6_luis_7_ledger`, que va después de que `NH0.1`
 esté en el ledger).
 
-## Tabla reportado / reproducido
+## Conclusiones
 
-Vacía hasta las corridas (tarea 4 del cambio). "Reconstruido" marca los números que dependen de una pieza reconstruida.
+Salen solo del ranking en **201908** al corte fijo N\* = 3.300 (D9); 201910 no interviene. Corrida del 9–10-nov-2026 en
+`n2-highmem-8`, hiperparámetros de Luis (`--hp original`), 50 semillas por estrategia (55, 70 y 63 donde el presupuesto
+de 900 s pide más). Generado por `tabla_reproduccion.py`; no editar a mano.
+
+<!-- ranking:inicio -->
+| puesto | estrategia | n | G 201908 (M$) | desvío (M$) | G máx. 201908 (M$) | AUC 201908 | tiempo (s) |
+|---|---|---|---|---|---|---|---|
+| 1 | 1 Control_C (Full 100%) | 50 | 207,86 | 3,28 | 210,24 | 0,9300 | 31,3 |
+| 2 | 4 H3-0.05 (Campeon 5%) | 50 | 203,17 | 3,90 | 209,18 | 0,9269 | 20,4 |
+| 3 | 8 IdeaC_FastRetrain_U0.05_H4_50pct | 70 | 202,32 | 3,44 | 207,53 | 0,9269 | 11,9 |
+| 4 | 7 IdeaB_OptH4_HardNeg_Full | 50 | 201,85 | 4,41 | 208,35 | 0,9270 | 32,1 |
+| 5 | 9 IdeaC_FastRetrain_U0.25_H4_50pct | 63 | 201,76 | 4,48 | 208,21 | 0,9290 | 11,8 |
+| 6 | 5 IdeaA_H3-0.25_SqrtScale(x2) | 50 | 201,54 | 4,04 | 208,30 | 0,9290 | 19,8 |
+| 7 | 2 H3-0.25 (Original 25%) | 50 | 199,72 | 4,50 | 208,28 | 0,9287 | 20,2 |
+| 8 | 3 H3-0.10 (Original 10%) | 55 | 197,11 | 4,56 | 203,28 | 0,9252 | 14,9 |
+| 9 | 6 IdeaA_H3-0.10_SqrtScale(x3.2) | 55 | 196,69 | 3,94 | 202,72 | 0,9257 | 14,9 |
+<!-- ranking:fin -->
+
+1. **El control es el primero en 201908** y ninguna estrategia lo supera: la más cercana es `H3-0.05` (estrategia 4),
+   que queda por debajo. El "campeón" del resumen original no gana en el mes que decide el protocolo.
+2. Las estrategias de re-entrenamiento rápido (8 y 9, ≈ 12 s por semilla contra ≈ 31 s del control) quedan en el medio
+   de la tabla: pierden ganancia por semilla, pero entran más del doble de semillas en el presupuesto de 900 s.
+3. Las de tasa 0,10 (3 y 6) son las últimas; el reescalado de raíz no las rescata. Con 0,25 la raíz (5) queda por encima
+   del reescalado nulo (2).
+4. Estos desvíos entre estrategias son del orden de la desviación entre semillas (3–5 M$): el ranking de una sola
+   réplica de búsqueda por estrategia no distingue entre las del medio. Las comparaciones con réplicas de la búsqueda
+   están en los informes de `h3` y `h4`.
+
+Lo que dice el resumen original (campeón, descartes) se eligió mirando 201910 y queda solo en `resumen_original.md`.
+
+## Reproducción del resumen original
+
+Cada número del resumen original de Luis (todos en 201910, como él los calculó) contra lo que da este repositorio.
+"RECONSTRUIDO" marca los que dependen de una pieza que el script no tenía (D2). Las diferencias son reproducido menos
+reportado; los tiempos son de la VM, sin `FACTOR_VM`. No se eligió ni descartó nada con estos números. Generado por
+`tabla_reproduccion.py` (`--verificar` comprueba que el README coincide con `resultados/`, `panel_d7.json` y los
+`replicas.csv` y `estudios.csv` de `h3`, `h4`, `h1` y `control`).
 
 | número del resumen original | reportado | reproducido | diferencia | explicación |
 |---|---|---|---|---|
-| H3-0.05 sobre el control (ganancia media) | +6,47 M$ | | | |
-| Optuna de H3-0.05 contra el control | 8,89 veces más rápido | | | |
-| H4 hard (reconstruido: `NH0.1`) sobre el control | +7,19 M$ | | | |
-| H4 con negativos uniformes (reconstruido: `NU0.1`) | −2,31 M$ | | | |
-| Fast-retrain: tiempo por semilla | 12,3 s | | | |
-| Fast-retrain: semillas que entran en 900 s (reconstruido) | más de 60 | | | |
-| Fast-retrain: ensamble a 900 s | 283,25 M$ | | | |
-| Control: ensamble a 900 s | 276,65 M$ | | | |
-| Control: tiempo por semilla | 35 s | | | |
-| Reescalado lineal peor que √(1/r) (reconstruido: `H3L-*`) | "cae drásticamente" | | | |
-| Muestreo por cliente peor que por filas (reconstruido: `H3K-0.1`) | "peor rendimiento" | | | |
+<!-- tabla:inicio -->
+| H3-0.05 sobre el control (ganancia media) | +6,47 M$ | +5,61 M$ (50 semillas, estrategia 4 contra 1, hiperparámetros de Luis); +1,87 M$ (8 réplicas × 10 semillas, `h3`) | -0,86 M$ (50 semillas) | mismo sentido, menor magnitud; con réplicas el IC de Δ incluye el cero (veredicto "no pierde", no "gana") |
+| Optuna de H3-0.05 contra el control | 8,89 veces más rápido | 15,88 veces (mediana de 948 s contra 60 s, 8 réplicas, solo la optimización) | 6,99 | tiempos medidos en la VM, sin `FACTOR_VM`; no es una diferencia de ganancia, depende de la máquina |
+| H4 hard (reconstruido: `NH0.1`) sobre el control | +7,19 M$ | +5,48 M$ (50 semillas, estrategia 7 con los hiperparámetros de Luis); -2,13 M$ (`--hp ledger`, `NH0.1`); -8,61 M$ (8 réplicas, `H4H-0.1`) | -1,71 M$ (50 semillas, `original`) | RECONSTRUIDO: con los hiperparámetros de Luis da positivo; con la búsqueda reconstruida (`NH0.1`) da negativo, en 50 semillas y con réplicas; la ventaja no se sostiene al repetir la búsqueda |
+| H4 con negativos uniformes (reconstruido: `NU0.1`) sobre el control | −2,31 M$ | -5,54 M$ (8 réplicas, `H4U-0.1`) | -3,23 M$ | RECONSTRUIDO: mismo signo, mayor magnitud; con réplicas el IC queda por debajo del cero |
+| Fast-retrain: tiempo por semilla | 12,3 s | 11,9 s y 11,8 s (estrategias 8 y 9, medidos en la VM); 11,3 s (mediana de `H4F-0.05`, solo entrenamiento) | -0,4 s (estrategia 8) | tiempo de máquina, sin `FACTOR_VM`; del mismo orden |
+| Fast-retrain: semillas que entran en 900 s (reconstruido) | más de 60 | 70 (estrategia 8) y 63 (estrategia 9) | consistente | RECONSTRUIDO: K = ⌊(900 − T_opt) / T_final medio⌋ |
+| Fast-retrain: ensamble a 900 s | 283,25 M$ | 278,85 M$ y 282,15 M$ (201910, ensamble de las primeras K semillas) | -4,40 M$ y -1,10 M$ | RECONSTRUIDO: el ensamble depende de las semillas elegidas y de K; un solo ensamble por estrategia, sin IC |
+| Control: ensamble a 900 s | 276,65 M$ | 278,85 M$ (K = 4) | +2,20 M$ | RECONSTRUIDO: ídem; el ensamble de pocas semillas es muy variable |
+| Control: tiempo por semilla | 35 s | 31,3 s (estrategia 1); 31,2 s (mediana de `C` en `control`, solo entrenamiento) | -3,7 s | tiempo de máquina, sin `FACTOR_VM` |
+| Reescalado lineal peor que √(1/r) (reconstruido: `H3L-*`) | "cae drásticamente" | `H3L-0.1` contra `H3R-0.1`: -3,22 M$; `H3L-0.25` contra `H3R-0.25`: -1,28 M$ (diferencia de medias de réplicas) | — | RECONSTRUIDO: el lineal queda por debajo del de raíz en ambas tasas; son diferencias de medias, no un contraste con IC |
+| Muestreo por cliente peor que por filas (reconstruido: `H3K-0.1`) | "peor rendimiento" | `H3K-0.1` contra `H3-0.1`: -1,02 M$ (diferencia de medias de réplicas) | — | RECONSTRUIDO: mismo sentido, diferencia chica; no es un contraste con IC |
+| Panel de Luis contra `comun.datos` (D7) | — | 765 columnas contra 755 (nuestro panel suma 10: `tmobile_app` y `cmobile_app_trx` con sus lags y deltas); filas por mes iguales; huellas de las 755 columnas comunes: 0 distintas; estrategia 1 con `--panel-luis`: 273,99 M$ contra 274,63 M$ en 201910 | -0,64 M$ | veredicto "distintos" por las columnas extra; el efecto sobre la ganancia es chico frente a la desviación entre semillas |
+<!-- tabla:fin -->
 
-## Conclusiones
-
-Pendientes: salen del ranking en 201908 (tarea 5.2).
+**Comparación de paneles (D7).** El panel que arma el SQL de Luis y `comun.datos` tienen las mismas filas por mes y la
+misma huella en las columnas que comparten, pero el nuestro suma las columnas de `mobile_app` con sus lags y deltas. El
+veredicto es "distintos" y se corrió la estrategia 1 con `--panel-luis` (`ledger/luis/panel_luis`, `panel_d7.json`):
+la diferencia de ganancia es la última fila de la tabla. Por eso las diferencias con el resumen se atribuyen sobre todo
+a que Luis usó un solo ensamble o una sola búsqueda por estrategia, a los tiempos, al entorno y, en las filas
+RECONSTRUIDAS, a que la pieza no es la suya; el panel pesa poco.
