@@ -73,3 +73,5 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-09T22:54,4,aplicar,claude-sonnet-5-5,17,0.2541,52dfc762-eff3-448c-a1a9-deb7fae47b71,success,0,incorporar-aportes
 2026-11-09T23:23,4,revisar,claude-opus-5-5,69,2.1943,fb76540c-c00a-47cb-9fad-dcc9d4850cf7,success,0,incorporar-aportes
 2026-11-09T23:49,5,aplicar,claude-sonnet-5-5,63,1.0223,93c6296d-8326-4f6f-a407-d54daa39c94c,success,0,incorporar-aportes
+2026-11-10T00:07,5,revisar,claude-opus-5-5,61,1.8341,f4da4887-48b6-4d1d-95ab-0d0baacaf0fe,success,0,incorporar-aportes
+2026-11-10T00:30,6,aplicar,claude-opus-5-5,127,4.5849,78cd9468-85fd-4591-b5ea-30c531766d42,success,0,incorporar-aportes

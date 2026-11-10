@@ -165,7 +165,7 @@ Las reglas 5 a 8 son secundarias: la respuesta al tutor se apoya en los contrast
 Optimizar sobre una muestra del 5 %, 10 % o 25 % y entrenar con todas las filas no pierde contra el control, también
 cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,53 a 11,82 veces. La ventaja que mostraba la réplica 0
 se achica a la mitad con réplicas y su IC contiene a 0: la regla da (B), aunque la suerte de la réplica 0 estaba más en H3 que en el control; no hay evidencia de que
-la muestra regularice. El reescalado de `min_data_in_leaf` no cambia nada. De las extensiones del aporte de Luis, todas
+la muestra regularice. El reescalado √(1/r) de `min_data_in_leaf` no cambia contra no reescalar. De las extensiones del aporte de Luis, todas
 no pierden contra el control: la raíz no mejora a no reescalar (tampoco en r = 0,25), le gana a la lineal solo en
 r = 0,1, y buscar sobre el 10 % de los clientes no cambia contra buscar sobre el 10 % de las filas. Comparación con las
 otras hipótesis y a tiempo igual: informe conjunto.

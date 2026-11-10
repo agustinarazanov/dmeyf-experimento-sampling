@@ -119,3 +119,10 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `replicas.csv` reconsolidado con las filas `H3R-0.25 - H3L-0.25`, `H3R-0.1 - H3L-0.1`, `H3R-0.25 - H3-0.25`
   (apareadas) y `H3K-0.1 - H3-0.1` (Welch); el cambio en `comun/` está en la bitácora de `h4`.
 - Verificación: `python -m scripts.verificar_informe_h3`: 0 números sin fuente.
+
+### 2026-11-10 — revisión del informe (`incorporar-aportes` 6.3)
+
+- Revisión en sesión limpia de la etapa informe (lista `docs/revision.md` § 5), sin ✗ abiertos; detalle en
+  `sampling_1/docs/bitacora.md`. Reglas 5 a 8 bien aplicadas. Corregido: la conclusión decía que el reescalado "no
+  cambia nada"; ahora dice que √(1/r) no cambia contra no reescalar (la regla 5 da *gana la raíz* contra la lineal en
+  r = 0,1). `verificar_informe_h3`: 0 sin fuente.

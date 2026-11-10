@@ -1183,3 +1183,41 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   de los informes de `sampling_1`, `h3`, `h4` y del guion, todos existen; las filas de tabla del informe conjunto están
   en `tabla_resultados.md`.
 - Pendiente: revisión en sesión limpia de la etapa informe (6.3).
+
+### 2026-11-10 — cierre revisión del grupo 6 de `incorporar-aportes` (informe)
+- Sesión: `7be709c8-c7b4-4abf-9874-317b84561cc7` · modelo: Opus · etapa: **revision** (grupo 6, tareas 6.1 y 6.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 5 (informe) sobre `informe/informe.md`, `informe/guion.md`, `h3/informe/informe.md`,
+  `h4/informe/informe.md` y el README de la raíz (D8). Ningún ✗ abierto.
+  - ✓ Reglas escritas: H4 con las reglas 1–3 de `h4/docs/hipotesis.md` (búsqueda informada refutada: `H4H-0.1` y
+    `H4U-0.1` con media < −5,52 M$; D_HU *no cambia*; `H4F-0.05` confirmada con (a), (b) y (c); `H4F-0.25`
+    indeterminada por (c)); extensiones de H3 con las reglas 5–8 de `h3/docs/hipotesis.md`; "vale la pena" con la regla
+    de siempre (no pierde y A ≥ 2). Sin reglas nuevas. D_HU recalculado aparte desde `h4/ledger/resultados.csv` y las
+    curvas a N* = 3.300: −3,07 M$ [−7,61; 1,47], igual que `replicas.csv`.
+  - ✓ Citas: `verificar_informe_h3` da 0 números sin fuente en `h3` y `h4`; en el informe conjunto todas las filas de
+    tabla están textuales en `tabla_resultados.md` (bloque B incluido) y los 41 números que el verificador no reconoce
+    son el id de Zulip, años de la bibliografía, cifras con separador de miles copiadas de la tabla, el delta de Martín
+    pasado a M$ (−9,9 y +8,8), 748 s de `control/ledger/estudios.csv` (estudio `C`: 747,9 s) y conteos de diseño de
+    fases anteriores. `python -m comun.reporte --todos` regenera `tabla_resultados.md` sin cambios (los `reporte.html`
+    solo cambian hora y commit). `verificar_readme`: sin ✗.
+  - ✓ Refutaciones con el mismo peso: la búsqueda difícil (lo que Luis daba como ganador) se informa como refutada en la
+    conclusión y en el guion; las predicciones no cumplidas de las reglas 2, 5, 6 y 7 se nombran.
+  - ✓ Limitaciones: test ya mirado, comparaciones múltiples, semillas y réplicas (R = 8, 50 semillas no alcanzan), un
+    solo mes de test, adaptación de H2 (remite a su informe), proporción de clases en H4.
+  - ✓ Guion: 10:00 justos, hipótesis → lo que motivó la segunda ronda (D8) → diseño → limitaciones → resultados →
+    conclusión; no explica el baseline.
+  - ✓ Bibliografía lista para Zulip.
+  - ✓ D8: README con resultados, `h4` en el mapa y Martín y Luis como **Replicado**; enlaces existen.
+- Hallazgos:
+  1. El guion decía "reescalar `min_data_in_leaf` no cambia nada" y la conclusión de `h3` "el reescalado no cambia
+     nada", pero la regla 5 da *gana la raíz* contra la lineal en r = 0,1: impreciso.
+  2. `comun/tokens.py` no tenía la etapa de los grupos de `incorporar-aportes`; las sesiones headless del cambio salían
+     "sin-etapa".
+  3. La sesión que implementó el grupo 6 (`78cd9468`, 73 turnos) promedia ~130.000 tokens de contexto, sobre el
+     objetivo de 100.000: no hay una salida grande (la mayor, ~4.300 tokens) sino lecturas completas de informes,
+     `design.md` y README acumuladas en dos tareas (6.1 y 6.2) en una sola sesión.
+- Corregido: guion y conclusión de `h3` dicen que la raíz no cambia contra no reescalar (y el guion, que le gana a la
+  lineal solo en 0,1); `verificar_informe_h3` sigue en 0 sin fuente. `comun/tokens.py` mapea los grupos de
+  `incorporar-aportes` (1 hipotesis, 2–3 codigo, 4–5 corridas, 6 informe) y se volvió a correr.
+- Tokens: ~45 turnos · contexto ~75.000 por turno · ≈ US$ 2 (presupuesto US$ 4). `comun/tokens.py` corrido.
+- Tutor: —

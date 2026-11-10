@@ -66,3 +66,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   en "Diferencias entre variantes" con el tipo de IC. Reconsolidado y `python -m comun.reporte --todos`.
 - Verificación: `python -m scripts.verificar_informe_h3 --informe experimentos/h4/informe/informe.md` (el verificador de
   `h3` ahora acepta `--informe` y mira también los ledgers de `h4`): 0 números sin fuente.
+
+### 2026-11-10 — revisión del informe (`incorporar-aportes` 6.3)
+
+- Revisión en sesión limpia de la etapa informe (lista `docs/revision.md` § 5), sin ✗ abiertos ni correcciones en
+  `informe/informe.md`; detalle en `sampling_1/docs/bitacora.md`. Reglas 1 a 3 aplicadas tal como quedaron escritas;
+  D_HU recalculado aparte (−3,07 M$ [−7,61; 1,47]). `verificar_informe_h3 --informe`: 0 sin fuente.

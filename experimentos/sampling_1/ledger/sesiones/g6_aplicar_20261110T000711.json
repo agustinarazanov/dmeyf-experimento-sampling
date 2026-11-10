@@ -1,0 +1,180 @@
+{
+ "duration_api_ms": 509147,
+ "stop_reason": "end_turn",
+ "session_id": "78cd9468-85fd-4591-b5ea-30c531766d42",
+ "total_cost_usd": 4.5849422,
+ "usage": {
+  "input_tokens": 146,
+  "cache_creation_input_tokens": 189861,
+  "cache_read_input_tokens": 9279051,
+  "output_tokens": 60483,
+  "output_tokens_details": {
+   "thinking_tokens": 8084
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 189861,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1399,
+    "cache_read_input_tokens": 203119,
+    "cache_creation_input_tokens": 202,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 202
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 146,
+   "outputTokens": 60483,
+   "cacheReadInputTokens": 9279051,
+   "cacheCreationInputTokens": 189861,
+   "webSearchRequests": 0,
+   "costUSD": 4.5849422,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 8084,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 189861,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01F9vUKLwf7JjSd54jxXFd1v",
+   "tool_input": {
+    "command": "cd openspec/changes/incorporar-aportes; grep -n \"\" tasks.md | sed -n '/## 6/,$p'; openspec instructions apply --change incorporar-aportes --json | python -c \"import json,sys;d=json.load(sys.stdin);print(d.get('instruction'));print(d.get('context','')[:1500]);print(d.get('operationGuidance'))\"",
+    "description": "Show group 6 tasks and instructions"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LmK5TpDW2oVh3uNBs2akSG",
+   "tool_input": {
+    "command": "wc -l design.md proposal.md specs/*/spec.md ../../../docs/metodo.md ../../../experimentos/h4/docs/*.md ../../../experimentos/h3/docs/*.md ../../../experimentos/h3/informe/* ../../../experimentos/h4/informe/* ../../../experimentos/sampling_1/informe/* ../../../README.md; ls ../../../experimentos/h4 ../../../experimentos/h4/* ../../../comun",
+    "description": "Size of relevant docs"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Vp47x3P2G5GefCRTuPGjjo",
+   "tool_input": {
+    "command": "perl -pi -e 's/Diferencia apareada por réplica y semilla/Diferencias entre variantes/ if $. == 668 || $. == 739; s/^CAB_PARES = \\(\"diferencia\", \"Δ \\[IC t entre réplicas\\] \\(M\\$\\)\", \"réplicas\", \"veredicto\"\\)/CAB_PARES = (\"diferencia\", \"Δ [IC entre réplicas] (M\\$)\", \"réplicas\", \"IC\", \"veredicto\")/' comun/reporte.py && grep -n \"CAB_PARES =\\|Diferencias entre variantes\" comun/reporte.py",
+    "description": "Rename pair section and header in reporte"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011k7WNcUpZpfot25YjmhjL4",
+   "tool_input": {
+    "command": "pytest -q > /tmp/pytest_g6.log 2>&1; tail -5 /tmp/pytest_g6.log",
+    "timeout": 600000,
+    "description": "Run the test suite"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DaYhZFAqqH3gXV33FYssyN",
+   "tool_input": {
+    "command": "python -m comun.consolidar --experimento h3 > /tmp/g6_cons_h3.log 2>&1; python -m comun.consolidar --experimento h4 > /tmp/g6_cons_h4.log 2>&1; tail -3 /tmp/g6_cons_h3.log /tmp/g6_cons_h4.log",
+    "timeout": 600000,
+    "description": "Consolidate h3 and h4 ledgers"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019LD4e8UATrUGpgjQGmuutF",
+   "tool_input": {
+    "command": "python -m comun.reporte --todos > /tmp/g6_reporte.log 2>&1; echo $?",
+    "timeout": 600000,
+    "description": "Regenerate all reports to a log"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Nxi1w2E8SPpunghxUG6VeY",
+   "tool_input": {
+    "command": "python -m comun.reporte --todos > /tmp/g6_reporte.log 2>&1",
+    "timeout": 600000,
+    "description": "Regenerate all reports to a log"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 127,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Terminé el grupo 6: marqué y commiteé 6.1 (`b8e38bd`) y 6.2 (`e3bc636`). La 6.3 (revisión en sesión limpia) queda sin hacer y sin marcar, para la sesión de revisión. No hice push.\n\n**Lo que dan las reglas pre-registradas**\n- **H4, búsqueda con todas las bajas (regla 1): refutada.** `H4H-0.1` pierde (Δ con réplicas −8,61 M$ [−12,78; −4,43]) y `H4U-0.1` también, pero apenas: −5,54 M$, a 0,02 del umbral de −5,52.\n- **Negativos difíciles contra uniformes (regla 2):** no cambia (−3,07 M$ [−7,61; 1,47]). Luis predecía que ayudaba.\n- **Fast-retrain (regla 3):**\n  - `H4F-0.05`: confirmada. No pierde, acelera 13,17× (más que `H3-0.05`, 11,82×) y a tiempo igual le gana al control (+3,89 M$ [0,35; 7,43]), aunque la cota inferior queda cerca de 0.\n  - `H4F-0.25`: indeterminada. A tiempo igual da [−0,09; 6,23].\n- **Extensiones de H3:**\n  - Raíz contra lineal: gana la raíz en r = 0,1 (+3,22 M$ [0,63; 5,81]); en r = 0,25 no cambia.\n  - Raíz contra no reescalar en r = 0,25: no cambia.\n  - Muestreo por cliente contra por filas: no cambia. Luis predecía que empeoraba.\n  - Las cuatro variantes no pierden contra el control.\n\n**Cambio en `comun/`, anunciado en el commit:** `replicas.csv` no tenía las diferencias entre variantes que piden las reglas 5–7 de h3 y la 2 de h4. Sumé tres pares apareados y `PARES_WELCH` (`H4H-0.1 − H4U-0.1`, `H3K-0.1 − H3-0.1`), con un test nuevo. El reporte las muestra en \"Diferencias entre variantes\", con una columna que dice qué intervalo usa cada fila. Las reglas y los umbrales no cambiaron. Volví a consolidar h3 y h4 y regeneré todos los reportes.\n\n**Verificación**\n- Los 195 tests pasan.\n- `scripts/verificar_informe_h3` ahora acepta `--informe` y lee también los ledgers de h4. En los informes de h3 y h4 no quedó ningún número sin fuente.\n- `verificar_readme` no marca ningún error y `comun.variantes --verificar` no reporta ningún `PROBLEMA`.\n- Los enlaces de los informes y del guion existen.\n\n**Lo que cambió en los textos**\n- Escribí `h4/informe/informe.md` y agregué al de h3 la sección de extensiones, con el test ya mirado y las comparaciones múltiples entre las limitaciones.\n- El informe conjunto quedó con cuatro hipótesis, el bloque B con Martín y Luis replicados y conclusiones apoyadas en los tres contrastes principales. También actualicé `guion.md` y el README.\n- El enlace del README a `h3-semillas-optuna` estaba roto y lo apunté al cambio archivado.\n\n**Cosas a tener en cuenta**\n- `pytest` a secas usa otro intérprete y no encuentra `comun`, así que corrí los tests con `python -m pytest`.\n- La regeneración no produjo `bandas_H4.png`, así que el guion no lo usa.\n- El script de números marca 41 cifras del informe conjunto sin fuente. Son las dos filas del bloque B, que confirmé idénticas a las de `tabla_resultados.md` por otra vía, y texto anterior a esta sesión (bibliografía, conteos de fases).\n- No commiteé `costos.csv` ni `g5_revisar_*.json`, que son del loop.",
+ "ttft_ms": 1345,
+ "type": "result",
+ "duration_ms": 1396653,
+ "uuid": "8d80201e-0fd5-4dca-b0f6-94aacf30bd54",
+ "ttft_stream_ms": 872,
+ "time_to_request_ms": 204,
+ "first_content_frame_ms": 872,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 146,
+   "outputTokens": 60483,
+   "cacheReadInputTokens": 9279051,
+   "cacheCreationInputTokens": 189861,
+   "webSearchRequests": 0,
+   "costUSD": 4.5849422,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 8084,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 189861,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
