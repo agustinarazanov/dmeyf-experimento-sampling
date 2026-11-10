@@ -1,0 +1,3 @@
+# Martín, solo 08 (D5): en fase6_martin, 07 terminó y subió al bucket, pero 08 falló porque lee el commit 4a42bc6 con git
+# y la VM no tenía historia. vm.sh ahora clona un bundle en ~/repo_git y el runner se lo pasa a 08. Cambio incorporar-aportes, D5.
+@ experimentos.sampling_1.exploratorios.replicacion_martin --corrida-07 experimentos/sampling_1/ledger/martin/07/07_sensibilidad_muestra_h3/20261109T235232_15814

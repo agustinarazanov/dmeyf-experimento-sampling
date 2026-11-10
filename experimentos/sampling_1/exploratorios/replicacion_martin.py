@@ -6,9 +6,11 @@
 3. `ganancia_08 --corrida-07 <la nueva>`.
 
 Solo agrega lo que la VM necesita: las salidas van a `ledger/martin/` de `sampling_1` (07 y 08, cada una con su
-`<marca>`), así suben al bucket, y la corrida nueva de 07 se busca ahí para pasársela a 08.
+`<marca>`), así suben al bucket, y la corrida nueva de 07 se busca ahí para pasársela a 08. 08 lee commits viejos con
+git y la VM recibe el repo sin `.git`: se le pasa `--repo-grupal ~/repo_git` (el clon que arma `scripts/vm.sh`).
+`--corrida-07 <carpeta>` saltea 07 y corre 08 sobre esa corrida (la del 9-nov se hizo así: 08 había fallado sin git).
 
-    python -m experimentos.sampling_1.exploratorios.replicacion_martin [--en-seco]
+    python -m experimentos.sampling_1.exploratorios.replicacion_martin [--corrida-07 <carpeta>] [--en-seco]
 """
 
 from __future__ import annotations
@@ -33,32 +35,38 @@ def corrida_07_nueva(salida_07: Path, antes: set[Path]) -> Path:
 
 
 REQUISITOS = Path(__file__).resolve().parents[2] / "h3" / "sensibilidad_muestra" / "requirements.txt"
+REPO_GIT = Path.home() / "repo_git"
 
 
-def pasos(salida: Path) -> list[list[str]]:
+def pasos(salida: Path, corrida_07: Path | None = None, repo_git: Path = REPO_GIT) -> list[list[str]]:
     s07 = salida / "07"
+    git = ["--repo-grupal", str(repo_git)] if repo_git.is_dir() else []
     return [
         ["pip", "install", "-q", "-r", str(REQUISITOS)],
         [f"{PAQUETE}.insumos"],
         [f"{PAQUETE}.insumos", "--solo-verificar"],
-        [f"{PAQUETE}.sensibilidad_07", "--salida", str(s07)],
-        [f"{PAQUETE}.ganancia_08", "--corrida-07", "<la nueva de 07>", "--salida", str(salida / "08")],
+        *([] if corrida_07 else [[f"{PAQUETE}.sensibilidad_07", "--salida", str(s07)]]),
+        [f"{PAQUETE}.ganancia_08", "--corrida-07", str(corrida_07 or "<la nueva de 07>"), "--salida", str(salida / "08"),
+         *git],
     ]
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     p.add_argument("--salida", type=Path, default=SALIDA)
+    p.add_argument("--corrida-07", type=Path, help="corrida de 07 ya hecha: saltea 07 y corre 08 sobre ella")
     p.add_argument("--en-seco", action="store_true", help="imprime los pasos y sale")
     a = p.parse_args()
     s07 = a.salida / "07"
     if a.en_seco:
-        for paso in pasos(a.salida):
+        for paso in pasos(a.salida, a.corrida_07):
             print("python -m", " ".join(paso))
         return
     s07.mkdir(parents=True, exist_ok=True)
     antes = {d.parent for d in s07.glob("*/*/diseno.json")}
-    for paso in pasos(a.salida):
+    if a.corrida_07 and not (a.corrida_07 / "diseno.json").exists():
+        raise FileNotFoundError(f"{a.corrida_07} no es una corrida de 07")
+    for paso in pasos(a.salida, a.corrida_07):
         if "<la nueva de 07>" in paso:
             paso = [str(corrida_07_nueva(s07, antes)) if x == "<la nueva de 07>" else x for x in paso]
         print("== python -m", " ".join(paso), flush=True)

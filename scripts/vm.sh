@@ -48,6 +48,8 @@ cat > /tmp/remoto-$COMMIT.sh <<REMOTO
 #!/usr/bin/env bash
 set -uo pipefail
 cd ~ && rm -rf repo && mkdir repo && tar xzf repo-$COMMIT.tgz -C repo && cd repo
+# Historia de git aparte (~/repo_git), para quien lee commits viejos (ganancia_08 de Martín); ~/repo queda sin .git.
+rm -rf ~/repo_git; [ -f ~/repo-$COMMIT.bundle ] && git clone -q ~/repo-$COMMIT.bundle ~/repo_git || true
 python3 -m venv ~/venv && . ~/venv/bin/activate && pip install -q -r requirements.txt || { echo FALLO > ~/estado; exit 1; }
 export PERSONA="$PERSONA" COMMIT_REPO="$COMMIT"
 export DATOS_DIR=\${DATOS_DIR:-\$HOME/datos}; mkdir -p \$DATOS_DIR/optuna
@@ -82,7 +84,7 @@ REMOTO
 if [ -n "$EN_SECO" ]; then
   echo "== en seco: no se ejecuta gcloud ni gsutil"
   echo "VM: $NOMBRE (n2-highmem-8, Ice Lake, spot) en $ZONA, proyecto $PROYECTO, template $TEMPLATE"
-  echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM"
+  echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM; historia: git bundle -> ~/repo_git"
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
   echo "corridas (una por línea de la lista):"
   grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante replica; do
@@ -129,7 +131,8 @@ for i in $(seq 30); do $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command=tr
 
 echo "== copiando el repo @ $COMMIT"
 git archive --format=tar.gz -o /tmp/repo-$COMMIT.tgz HEAD
-$G scp /tmp/repo-$COMMIT.tgz "$NOMBRE":~/ --zone="$ZONA" "${SCPF[@]}"
+git bundle create /tmp/repo-$COMMIT.bundle HEAD 2>/dev/null
+$G scp /tmp/repo-$COMMIT.tgz /tmp/repo-$COMMIT.bundle "$NOMBRE":~/ --zone="$ZONA" "${SCPF[@]}"
 $G scp "$LISTA" "$NOMBRE":~/configuraciones.txt --zone="$ZONA" "${SCPF[@]}"
 $G scp /tmp/remoto-$COMMIT.sh "$NOMBRE":~/remoto.sh --zone="$ZONA" "${SCPF[@]}"
 # La corrida va en una unidad transitoria de systemd, no en la sesión ssh: el 1-nov una actualización automática
