@@ -36,3 +36,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   veredicto único de H4 (se informan las reglas 1 y 3 por variante) y H4 declara que toca la proporción de clases
   (terreno de Sampling_2) como excepción; en `docs/diseno.md`, ~5,9 h para la tanda de variantes. Ninguna regla ni
   umbral cambia.
+
+### 2026-11-09 — 4.3 consolidación de las corridas (`incorporar-aportes`)
+
+- `python -m comun.consolidar` y `--sanity` sin ✗. Las 8 variantes nuevas (`H3R-0.25`, `H3L-0.25`, `H3L-0.1`, `H3K-0.1`,
+  `H4F-0.05`, `H4F-0.25`, `H4H-0.1`, `H4U-0.1`) tienen 8 réplicas × 10 semillas = 80 finales cada una (640 en total);
+  todo en `n2-highmem-8` y con `codigo_sucio = False` (h3: 669 corridas válidas, h4: 336, sin reemplazadas en h4).
+- Tiempos reales contra D6 (preparación + optimización + entrenamiento, suma de las filas del ledger): ~5,25 h de cómputo
+  en total contra ~5,9 h de D6; por réplica (una VM) entre 33 y 44 min contra ~45 min. Optimización: `NH0.1` 83–132 s
+  (media ~104 s), `K0.1` 76–227 s, `NU0.1` 84–395 s (la más variable). D6 se cumplió, un poco por debajo.

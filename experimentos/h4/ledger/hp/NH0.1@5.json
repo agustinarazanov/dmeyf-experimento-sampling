@@ -1,0 +1,25 @@
+{
+  "estudio": "NH0.1@5",
+  "replica_opt": 5,
+  "variante": "H4H-0.1",
+  "metodo": "clase-dificil",
+  "tasa": 0.1,
+  "hp": {
+    "num_leaves": 16,
+    "learning_rate": 0.03790609300623982,
+    "min_data_in_leaf": 66,
+    "feature_fraction": 0.621653382675135,
+    "bagging_fraction": 0.35979827419938126
+  },
+  "auc_val": 0.9112427983336675,
+  "n_trials": 40,
+  "tiempo_trials_s": 92.51441022900002,
+  "tiempo_dataset_s": 1.4033003689999646,
+  "tiempo_sonda_s": 5.163866911000014,
+  "tiempo_optimizacion_s": 99.081577509,
+  "filas_train": 55469,
+  "hash_muestra": "4a5be1450b698333",
+  "commit": "ebf3321",
+  "codigo_sucio": false,
+  "fecha": "2026-11-09T21:53:42"
+}
