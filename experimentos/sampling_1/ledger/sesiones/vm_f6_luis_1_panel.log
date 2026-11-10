@@ -7,3 +7,7 @@ NAME                      ZONE                       MACHINE_TYPE  PREEMPTIBLE  
 sampling-f6-luis-1-panel  northamerica-northeast2-b  n2-highmem-8  true         10.188.0.41  34.130.71.193  RUNNING
 == copiando el repo @ 8b95b84
 == corriendo; seguimiento: gcloud compute --project=proj-uba-261012163242176 ssh sampling-f6-luis-1-panel --zone=northamerica-northeast2-b --command='tail -f ~/corrida.log'
+== estado: DONE
+== trayendo los ledgers
+== borrando sampling-f6-luis-1-panel
+Deleted [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f6-luis-1-panel].

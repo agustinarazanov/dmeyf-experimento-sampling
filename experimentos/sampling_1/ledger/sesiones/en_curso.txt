@@ -1,2 +1,0 @@
-EN_CURSO (4.1 y 4.2): 4.3 y 4.4 hechas y marcadas (commits f9798f7 y 69bd98f). Falta la VM sampling-f6-luis-1-panel (fase6_luis_1_panel, D7: estrategia 1 con --panel-luis), lanzada el 2026-11-09.
-Espero: pgrep -f vm.sh vacio y ledger/luis/panel_luis/ con la salida. Entonces: verificar que no quedan VMs (log vm_f6_luis_1_panel.log termina en Deleted), marcar 4.1 y 4.2 (los ledgers de luis_7_ledger, martin 07/08 y D7 ya estan), y commitear. No relanzar nada mas. Su resultado va a la tabla de Luis (5.2) como "cuanto pesa el panel".
