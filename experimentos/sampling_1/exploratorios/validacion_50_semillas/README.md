@@ -15,7 +15,7 @@ la **raíz del repo**; el paquete importa solo de `comun/` y de esta carpeta.
 ## Protocolo de Luis
 
 - Nueve estrategias, cada una con **50 semillas finales**: las 10 oficiales y `110017 + i·19937` (i = 0…39).
-- Hiperparámetros fijos, escritos a mano en el script (acá en [`hp_original.json`](hp_original.json)); no repite la
+- Hiperparámetros fijos, escritos a mano en el script (acá en [`hp_original.json`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/sampling_1/exploratorios/validacion_50_semillas/hp_original.json)); no repite la
   optimización.
 - Mide la ganancia al corte N\* = 3.300, el máximo de la curva, el AUC, el tiempo por semilla, los ensambles de 10 y 50
   semillas y la ganancia según K.

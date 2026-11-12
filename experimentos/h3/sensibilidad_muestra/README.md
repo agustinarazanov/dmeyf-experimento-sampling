@@ -13,7 +13,7 @@ Todo se corre desde la **raíz del repo**. El paquete importa solo de `comun/` y
 ## Resultados
 
 Corridas reportadas: 07 `20261103T191818_13788` (220 ajustes: 20 de Control y 200 de H3, una sola sesión de
-7.230 s) y 08 `20261103T213646_2332`. Los CSV agregados están en [`resultados/`](resultados/): copias byte a byte de
+7.230 s) y 08 `20261103T213646_2332`. Los CSV agregados están en [`resultados/`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/tree/main/experimentos/h3/sensibilidad_muestra/resultados): copias byte a byte de
 las salidas, con sha256 en `procedencia.json`. Los agregados que no figuran en los CSV, como el tiempo de los 20
 ajustes de Control, están en `resumen.json`.
 
@@ -71,7 +71,7 @@ ajustes de Control, están en `resumen.json`.
 ## Requisitos
 
 - Python 3.12. Las corridas reportadas usaron 3.12.0 en Windows 11, con 8 núcleos lógicos y 15,7 GB de RAM.
-- Los paquetes de `requirements.txt` de la raíz y los de [`requirements.txt`](requirements.txt) de esta carpeta. Esta
+- Los paquetes de `requirements.txt` de la raíz y los de [`requirements.txt`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/h3/sensibilidad_muestra/requirements.txt) de esta carpeta. Esta
   carpeta fija las versiones de las corridas (LightGBM 4.7.0, numpy 2.5.2, pandas 3.0.5, duckdb 1.5.5,
   scikit-learn 1.9.0, scipy 1.18.1) y agrega `psutil`. El protocolo compara huellas sha256 de matrices float64,
   probabilidades y parámetros efectivos, así que con otras versiones esas comparaciones pueden fallar.
@@ -213,7 +213,7 @@ Las elecciones, los AUC y las ganancias salieron idénticos pese al cambio de si
   - El lag es la k-ésima observación previa del cliente, como en el panel del grupo.
   - BIGINT pasa a float64 de forma exacta (|x| ≤ 2^53, verificado) y DOUBLE queda igual.
   - NULL pasa a NaN, sin imputar. **Nunca float32.**
-- **Grilla.** [`referencia/grilla_06.json`](referencia/grilla_06.json): las 20 configuraciones de 06, en su orden.
+- **Grilla.** [`referencia/grilla_06.json`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/h3/sensibilidad_muestra/referencia/grilla_06.json): las 20 configuraciones de 06, en su orden.
   - Generador: `SeedSequence(20261102).spawn(2)[1]`.
   - Espacio: `num_leaves` en [8, 64], `learning_rate` log-uniforme en [0,01; 0,10], `min_data_in_leaf`
     log-uniforme en [100, 2000], y `feature_fraction` y `bagging_fraction` en [0,5; 1,0].

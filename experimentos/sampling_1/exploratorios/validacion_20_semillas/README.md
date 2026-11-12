@@ -2,7 +2,7 @@
 
 **Autor:** Luis María Laguinge. **Fecha del aporte:** 2026-11-10. **Origen:** commit `ffe5cae` ("Add files via upload"),
 que traía `experimentos/Informes 20 semillas/reporte_h1.html` … `reporte_h4.html`. Se conservan sin cambios en
-[`originales/`](originales/). En el mismo push llegó (commit `d8f04b2`) el HTML original de su validación de 50 semillas,
+[`originales/`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/tree/main/experimentos/sampling_1/exploratorios/validacion_20_semillas/originales). En el mismo push llegó (commit `d8f04b2`) el HTML original de su validación de 50 semillas,
 que quedó en [`../validacion_50_semillas/reporte_original.html`](../validacion_50_semillas/reporte_original.html).
 
 Es **exploratorio**: no es una variante de `comun/variantes.py`, no escribe en ningún `ledger/` y no cambia el veredicto
