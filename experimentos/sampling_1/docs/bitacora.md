@@ -1552,3 +1552,28 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   en la raíz sigue sin trackear; no lo toqué.
 - Tokens: ~30 turnos · contexto ~45.000 por turno · ≈ US$ 1,2. `comun/tokens.py` corrido.
 - Tutor: —
+
+### 12-nov-2026 · final-con-julio-agosto · cierre del orquestador y chequeo de Zulip
+
+- Grupos 1–4 cerrados. Validación del orquestador: `pytest` 242 passed, `comun.variantes --verificar` sin errores,
+  `openspec validate final-con-julio-agosto` válido, `verificar_readme.py` y `verificar_informe_h3.py` (y con
+  `--informe` de h3) sin ✗, las 48 filas de `tabla_resultados.md` están en `informe.md`, ΔAUC en el bloque A, y
+  `comparacion_rondas.md` con las 20 variantes de la ronda anterior.
+- Grupo 4: la primera vuelta cerró solo la 4.1 (tope de US$ 3 de la sesión de aplicar); la segunda, con
+  `PRESUPUESTO_APLICAR=8`, hizo la 4.2 y la 4.3. Salió BLOQUEADO (2) por el chequeo de Zulip, que hizo este orquestador.
+- Sesiones headless del cambio: US$ 14,85 (9 sesiones). VM: ver la entrada de las corridas. Sin VMs `sampling-*`.
+- **Chequeo de Zulip** (archivo actualizado el 12-nov a las 19:15; hilo `Baseline + Entregables` sin mensajes después
+  de 211210). Posteriores a 211718:
+  - 211719 y 212043 (Tschopp, tópico `Meses`): "Misma respuesta. SIEMRPE OP!!!" y "Correcto, continuar con eso.
+    Pero siempre hacer OP completa." Repiten 211718, que el diseño ya declara (H3 no reoptimiza el final porque es la
+    hipótesis, `H4O-0.5` y `F0.5` responden). **No sumo un requisito nuevo, pero Agustina debería confirmar que
+    "OP completa" es compatible con las hipótesis que buscan sobre una muestra (H3, H4F).** No lo decidí.
+  - 212124 (Aramendía, `sampling_1`): pregunta si H4 dialoga con H1 (¿mismos cortes? ¿se ve alguna diferencia?) y
+    recuerda medir tiempos de forma confiable. Es una pregunta al grupo, sin responder; no cambia el baseline.
+  - 212249 (Toyos, `Meses`), sin respuesta del tutor: el baseline "optimiza con train 3-6 y valida en 8, y reentrena
+    con 5-8 para el test en 10" (captura en 211591). Eso apunta a la ventana 201905–201908, no a 201903–201908. Es el
+    escenario del "Workflow follow-up" de `tasks.md`: si el tutor lo confirma, es otra ronda y otro cambio.
+  - Ninguno fue anotado como incumplimiento ni se reabrió la 4.3: dejo la decisión a Agustina. `bloqueo.txt`
+    queda en su lugar hasta que lo resuelva.
+- `comun/tokens.py`: dos sesiones sin etapa superan el objetivo de 100.000 (87 turnos, ~186.600 de contexto; 69 turnos,
+  ~133.800). Una es la de este orquestador, inflada por los lanzamientos y esperas de la fase 7.
