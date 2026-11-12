@@ -82,6 +82,20 @@ comparación en dos bloques; [`incorporar-aportes`](openspec/changes/archive/202
 de Martín y Luis y sumó `h4` y las extensiones de `h3`: el grupo queda con cuatro hipótesis. Lo que falta es otro mes de
 test, que separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4.
 
+## Ver el sitio localmente
+
+Los informes, reportes, hipótesis, método y bitácoras se leen como sitio en
+<https://agustinarazanov.github.io/dmeyf-experimento-sampling/>. Para verlo antes de pushear (hace falta Ruby y
+Bundler):
+
+```bash
+bundle install
+scripts/sitio.sh serve    # construye, verifica los enlaces internos y sirve en http://localhost:4000
+```
+
+Sin `serve`, `scripts/sitio.sh` solo construye y verifica. Los `reporte.html` son páginas del sitio: abiertos como
+archivo suelto se ven sin estilo.
+
 ## Estructura
 
 - `comun/`: datos (panel con lags y deltas), baseline, ganancia, ledger, registro de variantes (`variantes.py`),

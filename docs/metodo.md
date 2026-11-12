@@ -105,6 +105,30 @@ plantilla/                la estructura vacía de un experimento
    comparación conjunta (hay que regenerar ese reporte, no editarlo a mano). Para probar sin pisar el reporte versionado,
    `python -m comun.reporte --experimento sampling_1 --salida /tmp/reporte.html` (fuera de `informe/` los enlaces
    relativos a los otros reportes no abren; para revisar el contenido alcanza).
+9. Sumar el experimento al sitio: copiar en `defaults:` de `_config.yml` las entradas de otra hipótesis (por ejemplo las
+   de `h4`) cambiando la ruta y los títulos. La sección del sitio y el orden salen de `parent` y `nav_order`. Para una
+   hipótesis ficticia `h9`, el informe es el padre de su reporte, su hipótesis, su diseño y su bitácora:
+
+   ```yaml
+     - scope:
+         path: experimentos/h9/informe/informe.md
+       values: {title: "H9", parent: "Experimentos", nav_order: 6, has_children: true}
+     - scope:
+         path: experimentos/h9/informe/reporte.html
+       values: {title: "Reporte", parent: "H9", grand_parent: "Experimentos", nav_order: 1}
+     - scope:
+         path: experimentos/h9/docs/hipotesis.md
+       values: {title: "Hipótesis", parent: "H9", grand_parent: "Experimentos", nav_order: 2}
+     - scope:
+         path: experimentos/h9/docs/diseno.md
+       values: {title: "Diseño", parent: "H9", grand_parent: "Experimentos", nav_order: 3}
+     - scope:
+         path: experimentos/h9/docs/bitacora.md
+       values: {title: "Bitácora de h9", parent: "Proceso", nav_order: 8}
+   ```
+
+   Después `scripts/sitio.sh` (construye y verifica enlaces; con `serve` lo deja en `localhost:4000`). Si se olvida
+   este paso, las páginas igual aparecen, pero en el primer nivel de la barra lateral.
 
 ### 3. Usar un estudio de otra hipótesis
 
