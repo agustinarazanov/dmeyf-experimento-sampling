@@ -1246,3 +1246,19 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - `experimentos/h3/sensibilidad_muestra/README.md`: `resultados/`, `requirements.txt` y `referencia/grilla_06.json`;
   - `experimentos/sampling_1/exploratorios/validacion_20_semillas/README.md`: `originales/`;
   - `experimentos/sampling_1/exploratorios/validacion_50_semillas/README.md`: `hp_original.json`.
+
+## 2026-11-12 — final-con-julio-agosto, grupo 1 (hipótesis y diseño, sesión headless, Opus)
+
+- **Zulip 211210** (9-nov, hilo del baseline): Luis Suárez preguntó si para el test en el mes 10 se reentrena incluyendo
+  07 y 08; Bolaños respondió "Yes". El final pasa a entrenar con 201903–201908; Optuna sigue con 201903–201906 y
+  validación 201908. Ventana elegida por Agustina (seis meses, no 201905–201908); si el tutor aclara otra cosa, es otra
+  ronda y otro cambio.
+- **Zulip 211718**: Tschopp pide reoptimizar siempre que cambia el dataset ("siempre OP"). En `h3` no se aplica porque
+  es la hipótesis (justificado en `h3/docs/diseno.md`); en `h4` da lugar a la variante `H4O-0.5` (estudio `F0.5`, 8
+  réplicas), contrastada con `H4F-0.05`.
+- Escrito antes del tag `corridas-v4`: `control/docs/hipotesis.md` § Ronda 201903–201908 (N\* = 3.300 fijo, 20 semillas
+  en orden, apartamientos 208135 y 211210 con su justificación, predicción y regla de la ronda) y
+  `h4/docs/hipotesis.md` § `H4O-0.5` (reglas 4 y 5). Sección de la ronda en el `diseno.md` de `control`, `h1`–`h4` y
+  fase 7 en `sampling_1/docs/diseno.md` (121 celdas × 20 semillas + 8 estudios, ~24 h de cómputo, ~7 h de pared, ≈ US$ 5
+  en spot).
+- Pendiente: revisión en sesión limpia (tarea 1.3). Ninguna corrida real antes de ese cierre.

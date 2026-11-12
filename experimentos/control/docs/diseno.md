@@ -119,6 +119,26 @@ Todo sale del `ledger/apareado.csv` de cada experimento; nada se calcula a mano.
     rehacer la media hora de preparación;
   - las **filas de `ledger/corridas/` y `ledger/curvas/`** se suben al terminar cada corrida.
 
+## Ronda 201903–201908 (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Definición, apartamientos con su id y predicción: [`docs/hipotesis.md`](hipotesis.md) § Ronda 201903–201908. Lo de
+arriba sigue valiendo para la ronda anterior, que no se borra ni se pisa.
+
+- **Optimización**: ninguna nueva. Los estudios `C` y `C@1…7` se reusan; siguen entrenando con 201903–201906 y eligiendo
+  por AUC en 201908.
+- **Finales**: `C` y `C@1…7` × 20 semillas = 160 corridas, y `C-rep` × 20 = 20 corridas, todas con train 201903–201908 y
+  la lista de 20 semillas de `hipotesis.md` (las 10 de arriba primero, en el mismo orden). Predicen solo 201910:
+  `auc_val` y la curva de 201908 quedan vacíos, porque esa predicción sería dentro de la muestra.
+- **Panel**: suma 201907 con su clase (sale de 201908 y 201909 del crudo). 201909 no se usa para entrenar, validar ni
+  evaluar.
+- **Consolidado**: N\* = 3.300 fijo (no se recalcula); δ = 0,02 · Ḡ_C con los `C` de esta ronda; Δ con IC t de 19 g.l.
+  Cada fila final lleva `meses_final = 201903-201908` y el id la ventana; el consolidado no mezcla rondas.
+- **Apartamientos de los que se hace cargo este diseño** (detalle en `hipotesis.md`): ganancia como métrica que decide,
+  con ΔAUC al lado (Zulip 208135); ventana del final de seis meses (Zulip 211210). Solo el uso sin cambios de los
+  hiperparámetros de cuatro meses en un final de seis queda como limitación.
+- **Ejecución**: fase 7 de `sampling_1`, tag `corridas-v4` (listas, horas y costo en
+  [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases).
+
 ## Dependencias
 
 Ninguna: el control no lee de otro experimento.

@@ -21,6 +21,14 @@ anterior.
 - **Optimización**: 4 estudios (`B0.5`, `B0.25`, `B0.1`, `GOSS`) × 40 trials.
 - **Finales**: 4 variantes × 10 semillas = 40 corridas.
 
+### Ronda 201903–201908 (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Sin estudios nuevos: `B0.5`, `B0.25`, `B0.1` y `GOSS` se reusan. Los finales se repiten con train 201903–201908 y las 20
+semillas de [`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda 201903–201908: 4 variantes × 20 =
+80 corridas, en la lista `fase7_r0` de la fase 7 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md)
+§ Reparto y fases). La ronda anterior se conserva. Los apartamientos (208135, 211210) están justificados en el diseño
+del control.
+
 ## Fuera de la grilla
 
 - **Respuesta del tutor sobre H2**: si pide mantener `bagging_fraction` optimizado, salen `B0.5`, `B0.25` y `B0.1`, y

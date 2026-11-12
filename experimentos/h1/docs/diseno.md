@@ -29,6 +29,14 @@ Los estudios `U0.25` y `U0.1` son de `h1` (su `ledger/hp/`); `h3` los lee de ac�
 - **Optimización**: 4 estudios (`U0.5`, `U0.25`, `U0.1`, `U0.05`) × 40 trials.
 - **Finales**: 4 variantes × 10 semillas = 40 corridas.
 
+### Ronda 201903–201908 (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Sin estudios nuevos: `U0.5`, `U0.25`, `U0.1` y `U0.05` se reusan. Los finales se repiten con train 201903–201908 (la
+muestra de tasa r se sortea sobre los seis meses con la semilla final) y las 20 semillas de
+[`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda 201903–201908: 4 variantes × 20 = 80 corridas,
+en la lista `fase7_r0` de la fase 7 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases).
+La ronda anterior se conserva. Los apartamientos (208135, 211210) están justificados en el diseño del control.
+
 ## Dependencias
 
 - `control`: finales de `C`, N\* y δ.

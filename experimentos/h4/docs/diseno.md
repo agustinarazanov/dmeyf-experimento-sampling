@@ -102,6 +102,41 @@ Fase 6 de `sampling_1`: una VM por réplica k (listas `fase6_r<k>`), cada una co
 `K0.1` de esa réplica y los finales de las 8 variantes nuevas de `h3` y `h4`. Todo desde el tag `corridas-v3`, después
 del cierre de la revisión de hipótesis y diseño.
 
+## `H4O-0.5` (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Predicción y reglas (4 y 5): [`docs/hipotesis.md`](hipotesis.md) § `H4O-0.5`. Solo en la ronda 201903–201908
+([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda 201903–201908).
+
+**Por qué existe (Zulip 211718).** El tutor pidió reoptimizar siempre que cambia el dataset ("siempre OP", Tschopp).
+`H4F-*` no lo cumple: busca sobre una muestra uniforme (`U0.05`, `U0.25`) y entrena con todas las bajas + 50 % de
+CONTINUA con peso 2. En vez de declararlo como limitación, lo convertimos en un contraste: `H4O-0.5` optimiza sobre la
+misma receta con la que entrena, y el informe de `h4` da `H4O-0.5` contra `H4F-0.05` (regla 5) como resultado.
+
+| variante | estudio (k = 0 / k ≥ 1) | dueño del estudio | método | final |
+|---|---|---|---|---|
+| `H4O-0.5` | `F0.5` / `F0.5@k` | `h4` | `fast-retrain-opt` | todas las bajas + 50 % de CONTINUA, peso 2, sobre 201903–201908 |
+
+- **Estudio `F0.5@k`** (k = 0…7, 8 réplicas): muestra de búsqueda = todos los positivos + 50 % de los negativos de
+  train 201903–201906, sorteados con la semilla k, con peso 2 en los negativos en el `Dataset` de cada trial. 40
+  trials, TPE con semilla k, maximiza el AUC en 201908 completo y sin pesos. Hiperparámetros a
+  `experimentos/h4/ledger/hp/F0.5@k.json` (`F0.5.json` en k = 0).
+- **Final**: la misma receta sobre 201903–201908, sorteada con la semilla final; los hiperparámetros se usan sin
+  reescalar (0,5 es la fracción de CONTINUA, no una r de búsqueda).
+- **T**: suma de los 40 trials de `F0.5@k` más la media del final, como en el control; A con T como mediana entre las 8
+  réplicas.
+- `PARES_WELCH` suma (`H4O-0.5`, `H4F-0.05`) para D_OF.
+
+## Ronda 201903–201908
+
+Las cinco variantes de `h4` (`H4H-0.1`, `H4U-0.1`, `H4F-0.05`, `H4F-0.25`, `H4O-0.5`) × 8 réplicas × 20 semillas =
+**40 celdas, 800 finales**, y **8 estudios** nuevos (`F0.5`, `F0.5@1…7`), que van primero en cada lista `fase7_r<k>` de
+la fase 7 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases). `NH0.1`, `NU0.1` y los
+`U{r}@k` se reusan; las sondas de `NH0.1` no se repiten. Las finales de `H4F-*` y `H4O-0.5` sortean la mitad de CONTINUA
+sobre los seis meses. La ronda anterior (4 variantes, 10 semillas) se conserva.
+
+Estudio `F0.5@k`: con algo más de la mitad de las filas del train, se estima entre la mitad y dos tercios del estudio
+`C` (748 s con el train completo), unos 7 a 10 min por réplica en `n2-highmem-8`; ≤ 1,3 h los ocho.
+
 ## Fuera de la grilla
 
 - Otras fracciones de CONTINUA, otros tamaños de pozo u otra sonda: no están en el aporte.

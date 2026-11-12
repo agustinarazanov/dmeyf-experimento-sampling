@@ -105,6 +105,24 @@ Con las ~2,6 h de `h4` ([`h4/docs/diseno.md`](../../h4/docs/diseno.md) § Grilla
 variantes del cambio. R = 8 queda cerrado, como en § Grilla con réplicas. La ejecución (fase 6, una VM por réplica,
 desde `corridas-v3`) está en [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases.
 
+### Ronda 201903–201908 (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Sin estudios nuevos: todos los `U{r}`, `U{r}@k`, `K0.1` y `K0.1@k` se reusan tal como están (Optuna con 201903–201906 y
+AUC en 201908). Los finales de las 8 variantes de `h3` (`H3-0.25`, `H3-0.1`, `H3-0.05`, `H3R-0.1`, `H3R-0.25`,
+`H3L-0.25`, `H3L-0.1`, `H3K-0.1`) se repiten con train 201903–201908 y las 20 semillas de
+[`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda 201903–201908: 8 variantes × 8 réplicas × 20
+semillas = **64 celdas, 1.280 finales**, repartidos en las listas `fase7_r0` … `fase7_r7` (una por réplica k) de la fase
+7 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases). Los reescalados de `H3R` y `H3L`
+siguen calculándose con la r del estudio, sin cambios. La ronda anterior se conserva.
+
+**Por qué `H3` no reoptimiza para el final (Zulip 211718).** El tutor pidió reoptimizar siempre que cambia el dataset
+("siempre OP", Tschopp). En `H3` el dataset de la búsqueda (una muestra de tasa r de 201903–201906) y el del final
+(201903–201908 completo) difieren a propósito: esa diferencia **es la hipótesis**. H3 pregunta si los hiperparámetros
+elegidos sobre una muestra sirven para entrenar con todo; reoptimizar con el set del final convertiría a `H3` en el
+control y dejaría la pregunta sin respuesta. Por eso no es un apartamiento a corregir ni una limitación: queda
+justificado acá, y el informe no lo lista en § Limitaciones. El caso de `h4`, donde 211718 sí da lugar a una variante
+(`H4O-0.5`), está en [`h4/docs/diseno.md`](../../h4/docs/diseno.md) § `H4O-0.5`.
+
 ## Grilla de la réplica 0
 
 - **Optimización**: ninguna propia (los estudios `U0.25`, `U0.1` y `U0.05` de `h1`).

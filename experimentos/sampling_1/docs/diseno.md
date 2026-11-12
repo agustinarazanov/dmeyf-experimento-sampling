@@ -136,6 +136,36 @@ exploratorios.
 - El detalle de los exploratorios (paquete de Luis, replicación de Martín, panel) está en `openspec/changes/
   incorporar-aportes/design.md` D1, D5 y D7 hasta que se archive el cambio.
 
+**Fase 7: ronda 201903–201908 (agregada el 12-nov, cambio `final-con-julio-agosto`, D8).** Repite todos los finales
+con train 201903–201908 (Zulip 211210) y 20 semillas, y suma `H4O-0.5` con sus 8 estudios `F0.5@k` (Zulip 211718).
+Definición de la ronda, semillas y predicción: [`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda
+201903–201908; por hipótesis, la sección de la ronda en el `diseno.md` de [`control`](../../control/docs/diseno.md),
+[`h1`](../../h1/docs/diseno.md), [`h2`](../../h2/docs/diseno.md), [`h3`](../../h3/docs/diseno.md) y
+[`h4`](../../h4/docs/diseno.md). No se repite ningún estudio existente; la ronda anterior queda en el ledger, marcada con
+`meses_final = 201903-201906`.
+
+- **Quién**: todo lo lanza Agustina, desde su cuenta, con `scripts/lanzar_fase.sh`. Las sesiones solo usan `--en-seco`.
+- **Commit**: todas las VMs salen del tag `corridas-v4`, después del cierre de la revisión de hipótesis y diseño y del de
+  código.
+- **Listas**, una por réplica k, todas con `--semilla todas` (las 20). Cada una empieza por el estudio `F0.5@k` (`F0.5`
+  en k = 0) y sigue con los finales de la réplica k:
+
+  | lista | celdas (variante × réplica) |
+  |---|---|
+  | `fase7_r0` | `C`, las 8 de `h3`, las 5 de `h4` en k = 0; más `U0.5`, `U0.25`, `U0.1`, `U0.05` (`h1`), `B0.5`, `B0.25`, `B0.1`, `GOSS` (`h2`) y `C-rep`: 23 |
+  | `fase7_r1` … `fase7_r7` | `C@k`, las 8 de `h3` y las 5 de `h4` en la réplica k: 14 cada una |
+
+  Son 23 + 7 × 14 = **121 celdas × 20 semillas = 2.420 finales** y **8 estudios** `F0.5@k`.
+- **Carga**: unas **24 h de cómputo**. `fase7_r0` lleva 460 finales y las otras 280, así que `r0` tarda ~4,5 h y cada
+  una de las otras ~2,8 h.
+- **Cuota y tandas**: `CPUS_ALL_REGIONS` 32 permite 4 VMs de 8 vCPU a la vez. Dos tandas: `r0`–`r3` y después
+  `r4`–`r7`; unas **7 h de pared**. Antes de lanzar se verifican la cuota y el crédito del trial (vence el 9-ene-2027).
+- **Costo**: ≈ **US$ 5** en spot. En el peor caso de § Estimación de horas y costo (a demanda, US$ 0,52/h con un 15 %
+  extra), 24 h más media hora de arranque por VM (8 VMs) dan ≈ US$ 17, más disco y bucket, dentro del crédito.
+- **Antes de lanzar**: el ledger del bucket migrado con `scripts/agregar_meses_final.py` y verificado bajándolo de
+  nuevo. Una VM que se cae se retoma como en § Corridas perdidas (`existe_fila` retoma por semilla).
+- **Al terminar**: ninguna VM encendida; horas y costo reales a la bitácora.
+
 **Orden entre fases.**
 
 - Todo espera al cierre de la compuerta de código (`docs/revision.md` § 3) y al tag `corridas-v1`.

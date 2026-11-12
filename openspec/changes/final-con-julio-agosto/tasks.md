@@ -14,7 +14,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
   `h4/docs/hipotesis.md`: `H4O-0.5` con su predicción y regla contra `C` y contra `H4F-0.05`, declarando que viene de
   211718 (D11). Verificar con un grep que cada apartamiento tiene su id y cada regla, umbral numérico.
-- [ ] 1.2 `control/docs/diseno.md`, el `docs/diseno.md` de cada hipótesis y `sampling_1/docs/diseno.md`:
+- [x] 1.2 `control/docs/diseno.md`, el `docs/diseno.md` de cada hipótesis y `sampling_1/docs/diseno.md`:
   - la ronda nueva;
   - la fase 7 (D8) con horas y costo;
   - en `h3`, por qué `H3` no reoptimiza para el final (es la hipótesis, 211718);
