@@ -1221,3 +1221,18 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `incorporar-aportes` (1 hipotesis, 2–3 codigo, 4–5 corridas, 6 informe) y se volvió a correr.
 - Tokens: ~45 turnos · contexto ~75.000 por turno · ≈ US$ 2 (presupuesto US$ 4). `comun/tokens.py` corrido.
 - Tutor: —
+
+## 2026-11-12 — merge de lo que subió Luis el 10-nov (sesión interactiva, Opus)
+
+- Llegó a `origin/main` en dos commits ("Add files via upload"): `d8f04b2`, el HTML original de su validación de 50
+  semillas, dentro de `experimentos/Experimentos h3 y h4/` (carpeta que `incorporar-aportes` ya había migrado), y
+  `ffe5cae`, cuatro reportes por hipótesis con 20 semillas en `experimentos/Informes 20 semillas/`, sin código ni ledger.
+- Merge sin rebase ni squash: los ledgers, `procedencia.json`, las calibraciones de Luis y las bitácoras citan por hash
+  casi todos los commits locales (`dcd06d6`, `7dba436`, `ebf3321`, … hasta `9c42b8a`); reescribirlos dejaría la
+  procedencia apuntando a commits que no existen en el remoto.
+- El HTML de 50 semillas quedó como `validacion_50_semillas/reporte_original.html`. Los de 20 semillas, como exploratorio
+  nuevo `sampling_1/exploratorios/validacion_20_semillas/` (originales sin cambios, `extraer.py` a CSV, README con la
+  comparación contra nuestra réplica 0 y las diferencias con el protocolo: hp fijos en `H4_HardNeg`, reglas reescritas
+  después de los resultados, tiempos de `h2` no medidos). No cambia ningún veredicto. Bloque B regenerado y copiado al
+  informe. Enlaces del README y de `validacion_50_semillas` al cambio archivado corregidos.
+- Pendiente: código y lista de semillas de Luis para reproducir las 20 semillas, o correrlas con nuestro protocolo.

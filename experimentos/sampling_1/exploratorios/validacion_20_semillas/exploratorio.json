@@ -1,0 +1,11 @@
+{
+  "autor": "Luis María Laguinge",
+  "fecha": "2026-11-10",
+  "pregunta": "¿Cambian los veredictos de H1 a H4 si el control y cada variante se evalúan con 20 semillas finales en lugar de 10?",
+  "protocolo": "20 semillas finales por variante (lista no publicada), una búsqueda por estudio, reportes por hipótesis hechos con una versión anterior de comun/reporte.py y editados a mano; sin código ni ledger",
+  "advertencia": "solo los HTML (commits d8f04b2 y ffe5cae): no se puede reproducir; H4_HardNeg usa los hiperparámetros fijos del script de Luis (no es H4H-0.1); los tiempos de h2 no coinciden con los medidos; no cambia ningún veredicto",
+  "tablas": [
+    {"csv": "resultados/reportado_20_semillas.csv", "columnas": ["delta_media", "tiempo_s"]},
+    {"csv": "resultados/comparacion_10_semillas.csv", "columnas": ["diferencia_delta"]}
+  ]
+}

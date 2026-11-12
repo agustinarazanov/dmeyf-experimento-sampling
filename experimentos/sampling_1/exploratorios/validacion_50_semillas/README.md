@@ -3,11 +3,13 @@
 **Autor:** Luis María Laguinge. **Fecha del aporte:** 2026-11-06. **Origen:** commit `9e1889e` ("Add files via upload"),
 que traía `script_de_validaci_n_50_semillas.py` (un script de Colab de unas 390 líneas) y
 `resumen_completo_de_experimentos.md`. El script original no se conserva como archivo: está en la historia de git. El
-resumen sigue acá, sin cambios, como [`resumen_original.md`](resumen_original.md).
+resumen sigue acá, sin cambios, como [`resumen_original.md`](resumen_original.md). El HTML que acompañaba el resumen (5-nov, subido
+aparte en el commit `d8f04b2`) está sin cambios en [`reporte_original.html`](reporte_original.html); no confundir con
+`resultados/reporte_50_semillas_original.html`, que es el reporte que genera `--agregar --hp original`.
 
 Es **exploratorio**: no es una variante de `comun/variantes.py` y no cambia el veredicto de ninguna hipótesis. Las ideas
 que prueba (reescalado de `min_data_in_leaf`, hard negatives, fast-retrain, muestreo por cliente) entran al protocolo
-como variantes con réplicas en `h3` y `h4` (`openspec/changes/incorporar-aportes/design.md` D3 y D4). Todo se corre desde
+como variantes con réplicas en `h3` y `h4` (`openspec/changes/archive/2026-11-10-incorporar-aportes/design.md` D3 y D4). Todo se corre desde
 la **raíz del repo**; el paquete importa solo de `comun/` y de esta carpeta.
 
 ## Protocolo de Luis

@@ -1,0 +1,14 @@
+experimento,variante_luis,variante,delta_luis_20,veredicto_luis_20,tiempo_luis_s,delta_nuestro_10,ic_nuestro_10,veredicto_nuestro_10,tiempo_nuestro_s,diferencia_delta
+h1,U0.5,U0.5,-0.6,no pierde,355.0,-1.32,"[-6.77, +4.13]",indeterminado,344.0,0.72
+h1,U0.25,U0.25,-5.45,indeterminado,166.0,-6.38,"[-11.21, -1.55]",pierde,160.0,0.93
+h1,U0.1,U0.1,-16.83,pierde,81.0,-16.94,"[-23.35, -10.53]",pierde,80.0,0.11
+h1,U0.05,U0.05,-30.75,pierde,70.0,-33.77,"[-39.84, -27.70]",pierde,69.0,3.02
+h2,B0.5,B0.5,-0.82,no pierde,786.0,-0.11,"[-4.46, +4.24]",no pierde,1003.0,-0.71
+h2,B0.25,B0.25,-3.46,indeterminado,768.0,0.66,"[-2.86, +4.18]",no pierde,645.0,-4.12
+h2,B0.1,B0.1,-10.39,pierde,758.0,-7.81,"[-12.27, -3.35]",pierde,423.0,-2.58
+h2,GOSS,GOSS,1.76,gana,781.0,0.55,"[-2.60, +3.70]",no pierde,1088.0,1.21
+h3,H3-0.25,H3-0.25,5.39,gana,175.0,4.18,"[-0.60, +8.96]",no pierde,175.0,1.21
+h3,H3-0.1,H3-0.1,4.95,gana,92.0,4.07,"[-0.27, +8.41]",no pierde,93.0,0.88
+h3,H3-0.05,H3-0.05,4.89,gana,89.0,3.74,"[+1.77, +5.71]",gana,87.0,1.15
+h4,H4_HardNeg,H4H-0.1,6.38,gana,207.0,-3.3,"[-7.38, +0.78]",indeterminado,121.0,9.68
+h4,FastRetrain_H4_50pct,H4F-0.05,4.73,gana,86.0,4.4,"[-0.07, +8.87]",no pierde,78.0,0.33
