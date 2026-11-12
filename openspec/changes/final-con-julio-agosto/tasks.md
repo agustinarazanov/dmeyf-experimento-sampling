@@ -66,7 +66,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   con réplicas, par de Welch con `H4F-0.05` (D11). Tests sin datos: la muestra de búsqueda tiene todas las bajas y la
   mitad de las CONTINUA, los pesos llegan al `Dataset` de cada trial y la validación no lleva pesos. Verificar que
   `pytest` y `python -m comun.variantes --verificar` pasan.
-- [ ] 2.7 Smoke en la Mac con `--filas 20000`:
+- [x] 2.7 Smoke en la Mac con `--filas 20000`:
   - panel reconstruido;
   - huellas por columna de 201903–201906, 201908 y 201910 iguales a las del panel viejo (D2);
   - un final de `C` y uno de `H4F-0.05` con dos semillas en una salida temporal, con `meses_final = 201903-201908` y sin
