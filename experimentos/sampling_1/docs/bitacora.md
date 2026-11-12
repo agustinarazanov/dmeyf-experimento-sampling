@@ -1496,3 +1496,26 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   tenía permiso para esos comandos; los verificadores son de la 4.2 y el conteo de tokens va en el cierre de la 4.3).
 - Tokens: ~20 turnos · contexto ~45.000 por turno · ≈ US$ 0,7.
 - Tutor: —
+
+### 2026-11-12 — `final-con-julio-agosto` 4.2: informes, guion y README en la ronda 201903–201908
+- Sesión: aplicación headless del grupo 4 · modelo: Opus · etapa: **informe**.
+- Hecho: `informe.md` de `h1`–`h4` y de `sampling_1`, `guion.md`, `README.md` y un párrafo nuevo en el README de
+  `validacion_20_semillas` (§ La ronda 201903–201908), todo con las cifras de la ronda vigente (20 semillas, N\* = 3.300,
+  δ = 5,65 M$). Cada informe nombra los apartamientos con su id (208135, 211210, 211718) y remite a la justificación de
+  su diseño; § Limitaciones deja solo los no justificados (ventana en duda y hiperparámetros de cuatro meses en un final
+  de seis). ΔAUC al lado de Δ de ganancia, con frase donde van en direcciones distintas (H3, `H4F-0.05`, `H4O-0.5`,
+  B0.25, GOSS). En `h4`, reglas 4 y 5 (`H4O-0.5` contra `C` y contra `H4F-0.05`). En `sampling_1`, § Tabla de rondas.
+- Cambios de lectura respecto del informe anterior (todos salen de las reglas escritas): H1 pasa a tener frontera en
+  r = 0,5 (U0.5 *no pierde* y vale la pena); GOSS *indeterminado*; regla 2 de H3 (A contra B) da "mecanismo sin
+  resolver" porque Ḡ_{C,0} = 282,48 M$ queda arriba de la mediana de `C` (282,40 M$); `H4F-0.25` confirmada (a tiempo
+  igual *gana*). Las reglas 1–3 de `h4` se aplicaron con el δ de la ronda (5,65 M$), como dice la regla de δ.
+- Copia de los bloques A y B y de la tabla de rondas: pegadas por script desde `tabla_resultados.md` y
+  `comparacion_rondas.md`, y comprobadas idénticas.
+- Verificado: `python -m scripts.verificar_readme` ✓ (39 números, 26 enlaces); `python -m scripts.verificar_informe_h3`
+  ✓ (0 sin fuente) y `--informe experimentos/h4/informe/informe.md` ✓ (0 sin fuente). Para eso los dos verificadores
+  aceptan ahora los meses de las ventanas y los ids de Zulip 211210/211718 como constantes, no como resultados.
+- `python -m pytest`: 241 pasan, 1 falla, la misma de antes: `test_readme_coincide_con_fuentes` de
+  `validacion_50_semillas` (el README dice +2,08 M$ de la ronda nueva con la etiqueta "8 réplicas × 10 semillas" y el
+  generador da +1,87 M$ de la ronda anterior). No es de la 4.2: hay que decidir qué ronda lee ese generador.
+- Pendiente: 4.3 (revisión en sesión limpia con `docs/revision.md` § 5 y `comun/tokens.py`).
+- Tutor: —

@@ -69,6 +69,20 @@ El control de Luis da G = 274,01 M$ con 20 semillas y T = 791 s; el nuestro, 276
 4. Para que esto pase a ser evidencia hace falta el código y la lista de semillas, o correr nuestro protocolo con 20
    semillas (`comun.correr --semilla` con una lista de 20), con la predicción escrita antes.
 
+## La ronda 201903–201908: nuestro protocolo con 20 semillas
+
+El punto 4 lo hizo el cambio `final-con-julio-agosto`: la ronda vigente del bloque A vuelve a correr todos los finales
+con 20 semillas publicadas (las 10 oficiales y 110017 + i · 19937, i = 0…9, en el orden de
+[`control/docs/hipotesis.md`](../../../control/docs/hipotesis.md) § Ronda 201903–201908), desde los ledgers, con 8
+réplicas de Optuna donde las hay y con la predicción escrita antes de correr. La pregunta de Luis (¿cambian los
+veredictos con 20 semillas?) tiene ahí su respuesta: ningún veredicto cambia de lado; los que se mueven lo hacen un
+escalón por semilla (por ejemplo, `H3-0.25` pasa a "gana"), y con réplicas no cambia ninguno
+([`comparacion_rondas.md`](../../informe/comparacion_rondas.md)). No es una comparación uno a uno con sus reportes: la
+ronda nueva además entrena el final con 201903–201908 (Zulip 211210), así que mezcla el efecto de las semillas con el de
+la ventana; como las primeras 10 semillas son las de la ronda anterior, se puede reconsolidar con 10 para separarlos. Lo
+que confirma es el punto 1: más semillas angostan el IC por semilla, pero el de réplicas casi no se mueve, porque la
+suerte de Optuna no depende de las semillas finales.
+
 ## Cómo se corre
 
 ```

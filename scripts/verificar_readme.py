@@ -22,8 +22,9 @@ README = RAIZ / "README.md"
 TABLA = RAIZ / "experimentos/sampling_1/informe/tabla_resultados.md"
 
 # año del curso y de los datos, mensaje de Zulip, versión de Python, fases de las VMs, pasos 07 y 08 de Martín y las 50
-# semillas de la pregunta de Luis
-NO_RESULTADOS = {"2026", "2019", "208986", "3,14", "1", "4", "5", "07", "08", "50"}
+# semillas de la pregunta de Luis; desde `final-con-julio-agosto` 4.2, el mensaje de Zulip de la ventana del final y los
+# meses de las ventanas (la de la ronda anterior y la corrida que queda como duda)
+NO_RESULTADOS = {"2026", "2019", "208986", "3,14", "1", "4", "5", "07", "08", "50", "211210", "201905", "201906"}
 
 NUM_TABLA = re.compile(r"\d[\d,]*(?:\.\d+)?")
 NUM_TEXTO = re.compile(r"(?<![\w.,@−-])[−-]?\d+(?:\.\d{3})*(?:,\d+)?(?![\w@])")

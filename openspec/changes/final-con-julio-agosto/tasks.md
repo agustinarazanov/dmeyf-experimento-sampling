@@ -96,7 +96,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 - [x] 4.1 `python -m comun.reporte --todos` y `scripts/comparar_rondas.py`. Aplicar la regla de D7 y escribir el
   resultado en la bitácora de `control`. Verificar que `comparacion_rondas.md` tiene una fila por variante de la
   ronda anterior (sin `H4O-0.5`, que solo está en la nueva).
-- [ ] 4.2 Actualizar `informe.md` de `h1`–`h4` y de `sampling_1`, el guion y el README a la ronda nueva:
+- [x] 4.2 Actualizar `informe.md` de `h1`–`h4` y de `sampling_1`, el guion y el README a la ronda nueva:
   - los apartamientos con su id y justificación en cada diseño, y § Limitaciones solo con los no justificados;
   - ΔAUC al lado de Δ de ganancia, con una frase donde van en direcciones distintas;
   - el contraste `H4O-0.5` contra `H4F-0.05` en el informe de `h4`;

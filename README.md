@@ -11,15 +11,20 @@ baseline oficial de Bolaños (2019, LightGBM con Optuna), medimos cuánto tiempo
 
 **Respuesta corta: vale la pena achicar la optimización, no el entrenamiento del modelo final.** Si Optuna busca sobre
 el 10% de las filas y el modelo final se entrena con todas (`H3-0.1`), no pierde ganancia contra el control y el proceso
-es 8,30 veces más rápido. Se sostiene con 8 réplicas de la optimización, que miden la suerte de Optuna: Δ con réplicas
-= 2,30 M$, IC [−0,88; 5,47]. No es una mejora de ganancia: el IC contiene a 0 y la ventaja que mostraba una sola
-optimización (4,07 M$) era en buena parte suerte de esa optimización. Entrenar el final con menos filas sí pierde: al azar
-desde r = 0,25 y dentro de LightGBM con `bagging_fraction` = 0,1.
+es 7,76 veces más rápido. Se sostiene con 8 réplicas de la optimización, que miden la suerte de Optuna: Δ con réplicas
+= 1,71 M$, IC [−1,07; 4,49]. No es una mejora de ganancia: el IC contiene a 0, y una sola optimización puede mostrar
+más o menos ventaja según su suerte. Entrenar el final con menos filas sí pierde: al azar desde r = 0,25 y dentro de
+LightGBM con `bagging_fraction` = 0,1.
 
-Con la segunda ronda (H4): achicar la búsqueda conservando todas las bajas pierde (`H4H-0.1`, Δ con réplicas = −8,61 M$,
-IC [−12,78; −4,43]), pero achicar el final conservando las bajas y la mitad de CONTINUA con peso 2, sobre la búsqueda
-del 5 % (`H4F-0.05`), no pierde, es 13,17 veces más rápido y, gastando el tiempo ahorrado en ensamblar, le gana al
-control (3,89 M$, IC [0,35; 7,43]).
+Con la segunda ronda (H4): achicar la búsqueda conservando todas las bajas pierde (`H4H-0.1`, Δ con réplicas = −11,41 M$,
+IC [−15,80; −7,03]), pero achicar el final conservando las bajas y la mitad de CONTINUA con peso 2, sobre la búsqueda
+del 5 % (`H4F-0.05`), no pierde, es 12,50 veces más rápido y, gastando el tiempo ahorrado en ensamblar, le gana al
+control (4,63 M$, IC [0,77; 8,50]).
+
+Todos los números son de la **ronda vigente**: el modelo final entrena con 201903–201908 (Bolaños, Zulip 211210) y se
+evalúa en 201910 con 20 semillas; N\* = 3.300 queda fijo. La ronda anterior (final 201903–201906, 10 semillas) se compara
+en [`comparacion_rondas.md`](experimentos/sampling_1/informe/comparacion_rondas.md): ningún veredicto cambia de lado. El
+veredicto sale de la ganancia; el AUC en 201910 va al lado (ΔAUC) y en varias variantes va en otra dirección.
 
 ## Resultados
 
@@ -29,9 +34,10 @@ La comparación está en dos bloques en
 [`experimentos/sampling_1/informe/informe.md`](experimentos/sampling_1/informe/informe.md) § Resultados:
 
 - **Bloque A, mismo protocolo**: una fila por variante con Δ de la réplica 0, Δ con réplicas (en `C`, las H3 y las H4,
-  8 réplicas), T, A, tiempo igual con intervalo (entre réplicas y por bootstrap de clientes de 201910) y el veredicto con
-  su fuente. Las ocho variantes de H3 y las dos de fast-retrain de H4 (`H4F-0.05`, `H4F-0.25`) no pierden con réplicas
-  y valen la pena; de H1, H2 y la búsqueda informada de H4 (`H4H-0.1`, `H4U-0.1`, que pierden) ninguna.
+  8 réplicas), ΔAUC, T, A, tiempo igual con intervalo (entre réplicas y por bootstrap de clientes de 201910) y el
+  veredicto con su fuente. Las ocho variantes de H3 y las tres de fast-retrain de H4 (`H4F-0.05`, `H4F-0.25` y
+  `H4O-0.5`, que reoptimiza sobre el set del final) no pierden con réplicas y valen la pena, y de H1 también U0.5; de
+  H2 y de la búsqueda informada de H4 (`H4H-0.1`, `H4U-0.1`, que pierden) ninguna.
 - **Bloque B, exploratorios**: los estudios de Martín y de Luis, replicados, con su propio protocolo; sus cifras no se
   comparan una a una con las del bloque A.
 
@@ -39,7 +45,7 @@ La comparación está en dos bloques en
 rápida es la variante que el control (optimización más un modelo final). `U` es submuestreo uniforme del train (H1), `B`
 y `GOSS` muestrean dentro de LightGBM (H2), `H3` optimiza con una muestra y entrena con todo (`H3R` y `H3L` reescalan
 `min_data_in_leaf`, `H3K` muestrea clientes) y `H4` conserva todas las bajas en la búsqueda (`H4H`, `H4U`) o en el final
-(`H4F`). H4 y las extensiones de H3 salen de ideas que se eligieron mirando 201910 y suman más de diez contrastes sin
+(`H4F`, y `H4O` también en la búsqueda). H4 y las extensiones de H3 salen de ideas que se eligieron mirando 201910 y suman más de diez contrastes sin
 corrección: las conclusiones se apoyan en `H3-0.1`, `H4H-0.1` y `H4F-0.05`, fijados antes de correr. Las limitaciones,
 las conclusiones y las figuras están en el informe y en [`reporte.html`](experimentos/sampling_1/informe/reporte.html).
 
@@ -50,8 +56,8 @@ las conclusiones y las figuras están en el informe y en [`reporte.html`](experi
 | [`control`](experimentos/control/) | el control `C` (y su réplica `C-rep`) y las reglas comunes (G, Δ, δ, T, A, N\*, veredictos) | ¿cuál es el punto de comparación de todas las hipótesis? | reporte |
 | [`h1`](experimentos/h1/) | submuestreo uniforme del train | ¿cuánto se gana en tiempo y se pierde en ganancia con r ∈ {0,5, 0,25, 0,1, 0,05}? | [informe](experimentos/h1/informe/informe.md): ni confirmada ni refutada |
 | [`h2`](experimentos/h2/) | bagging y GOSS | ¿alcanza con submuestrear dentro de LightGBM? | [informe](experimentos/h2/informe/informe.md): refutada |
-| [`h3`](experimentos/h3/) | optimizar con muestra y entrenar completo | ¿se puede optimizar rápido y entrenar con todo? (la réplica 0 reusa los estudios de `h1`; las réplicas `@k` son suyas) | [informe](experimentos/h3/informe/informe.md): confirmada, también con réplicas; extensiones sin cambios contra no reescalar |
-| [`h4`](experimentos/h4/) | muestras informadas por clase: todas las bajas en la búsqueda o en el final | ¿conviene que la muestra que acelera conserve todas las bajas? (usa estudios de `h1` y `h3`) | [informe](experimentos/h4/informe/informe.md): búsqueda informada refutada; fast-retrain confirmado con 5 % |
+| [`h3`](experimentos/h3/) | optimizar con muestra y entrenar completo | ¿se puede optimizar rápido y entrenar con todo? (la réplica 0 reusa los estudios de `h1`; las réplicas `@k` son suyas) | [informe](experimentos/h3/informe/informe.md): confirmada, también con réplicas; mecanismo sin resolver; extensiones sin cambios contra no reescalar |
+| [`h4`](experimentos/h4/) | muestras informadas por clase: todas las bajas en la búsqueda o en el final | ¿conviene que la muestra que acelera conserve todas las bajas? (usa estudios de `h1` y `h3`) | [informe](experimentos/h4/informe/informe.md): búsqueda informada refutada; fast-retrain confirmado con 5 % y 25 %; reoptimizar sobre el set del final no cambia |
 | [`sampling_1`](experimentos/sampling_1/) | el experimento conjunto: compara a `h1`–`h4` contra `control`, informe y video | ¿vale la pena el tradeoff velocidad-performance? | [informe](experimentos/sampling_1/informe/informe.md) |
 
 Cada experimento tiene `docs/` (hipótesis, diseño, bitácora), `ledger/` e `informe/`. Declara en `## Dependencias` de su
@@ -79,8 +85,11 @@ en carpetas están en [`experimentos/sampling_1/README.md`](experimentos/samplin
 
 [`h3-semillas-optuna`](openspec/changes/archive/2026-11-09-h3-semillas-optuna/proposal.md) sumó 8 réplicas de la optimización y la
 comparación en dos bloques; [`incorporar-aportes`](openspec/changes/archive/2026-11-10-incorporar-aportes/proposal.md) replicó los aportes
-de Martín y Luis y sumó `h4` y las extensiones de `h3`: el grupo queda con cuatro hipótesis. Lo que falta es otro mes de
-test, que separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4.
+de Martín y Luis y sumó `h4` y las extensiones de `h3`: el grupo queda con cuatro hipótesis.
+[`final-con-julio-agosto`](openspec/changes/final-con-julio-agosto/proposal.md) volvió a correr todos los finales con
+201903–201908 y 20 semillas, sumó `H4O-0.5` y el AUC al lado de la ganancia. Lo que falta es otro mes de test, que
+separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4, y la ventana corrida
+201905–201908 si el tutor confirma que es esa.
 
 ## Ver el sitio localmente
 
