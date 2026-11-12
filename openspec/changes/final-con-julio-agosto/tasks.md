@@ -105,7 +105,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
   Verificar con `verificar_readme.py`, `verificar_informe_h3.py --informe` y la copia idéntica del bloque A y B desde
   `tabla_resultados.md`.
-- [ ] 4.3 Revisión en sesión limpia de la etapa informe con `docs/revision.md` § 5 (incluye "toda adaptación declarada"
+- [x] 4.3 Revisión en sesión limpia de la etapa informe con `docs/revision.md` § 5 (incluye "toda adaptación declarada"
   y el escenario de aclaración nueva en Zulip) y cierre en las bitácoras. Correr `comun/tokens.py`.
 
 ## Workflow follow-up

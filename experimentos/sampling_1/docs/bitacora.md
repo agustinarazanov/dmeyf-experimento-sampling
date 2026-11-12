@@ -1519,3 +1519,36 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   generador da +1,87 M$ de la ronda anterior). No es de la 4.2: hay que decidir qué ronda lee ese generador.
 - Pendiente: 4.3 (revisión en sesión limpia con `docs/revision.md` § 5 y `comun/tokens.py`).
 - Tutor: —
+
+### 2026-11-12 — cierre revisión del grupo 4 de `final-con-julio-agosto` (informe)
+- Sesión: revisión headless del grupo 4 (segunda vuelta) · modelo: Opus · etapa: **revision** (grupo 4, tareas 4.1–4.2).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que aplicó la 4.2).
+- Lista: docs/revision.md § 5 sobre `informe.md` de `h1`–`h4` y `sampling_1`, `guion.md` y los README, ronda
+  `meses_final = 201903-201908`. Ningún ✗ abierto después de las correcciones.
+  - ✓ Reglas de `hipotesis.md`: H1 (U0.5 no pierde, U0.25 pierde) cae en el caso intermedio escrito en
+    `h1/docs/hipotesis.md` (frontera observada en r = 0,5), sin regla nueva. Las demás las cubren los verificadores.
+  - ✓ Citas: `verificar_readme.py` ✓ (39 números, 26 enlaces); `verificar_informe_h3.py --informe
+    experimentos/h3/informe/informe.md` ✓ (22 filas copiadas, 216 números, 0 sin fuente). Las 48 filas de tabla de
+    `tabla_resultados.md` (bloques A y B) y las 23 de `comparacion_rondas.md` están idénticas en `informe.md`.
+  - ✗ → ✓ README de `validacion_50_semillas`: `test_readme_coincide_con_fuentes` fallaba. El generador
+    `tabla_reproduccion.py` ya lee los ledgers de la ronda vigente (20 semillas) pero los rotulaba "10 semillas" y "H1 de
+    la primera ronda", y el README tenía las cifras de la ronda anterior (+1,87 M$, 11,3 s, 31,2 s). Corregido (ver abajo).
+  - ✓ Refutaciones y empates con el mismo peso: `H4H-0.1` *pierde*, GOSS *indeterminado*, H1 ninguna de las dos, regla 2
+    de H3 sin resolver, todos en conclusiones y en el guion.
+  - ✓ Limitaciones: semillas/réplicas, un solo mes de test y la adaptación de H2 (esta remitida al informe de `h2`, como
+    pide la spec de apartamientos: § Limitaciones de `sampling_1` lista solo los no justificados).
+  - ✓ Apartamientos con id: 208135, 211210 y 211718 en § Diseño con su justificación; `H4O-0.5` contra `H4F-0.05` sale
+    como resultado en `h4`, no como limitación.
+  - ✓ Guion: estructura de Bolaños (hipótesis, diseño, limitaciones, resultados, conclusiones), ~750 palabras habladas,
+    entra en 10 minutos; nombra el baseline sin explicarlo.
+  - ✓ Bibliografía lista para Zulip (`informe.md` § Bibliografía).
+  - sin verificar: escenario "Aclaración nueva en Zulip". Esta sesión no tuvo permiso para consultar la base `zulip`
+    (Docker) ni `../zulip/`; solo constan las aclaraciones ya registradas. Queda en `ledger/sesiones/bloqueo.txt`.
+- Corregido: `exploratorios/validacion_50_semillas/tabla_reproduccion.py` (rótulos 20 semillas y ronda vigente) y su README
+  regenerado con `--escribir` (H3-0.05 +2,08 M$ con 8 réplicas × 20 semillas; tiempos 15,7 s y 43,0 s). Ninguna de esas
+  cifras se cita en `informe.md`, el guion ni el README de `sampling_1`. `pytest` de `validacion_50_semillas`: 34 verdes.
+- Hallazgos: `comun/tokens.py` lista dos sesiones sin etapa (`99905ac1`, 69 turnos, ~134.000 por turno, supera el
+  objetivo; `d072a59b`): no son de esta revisión y no las puedo clasificar sin quien las corrió. `Experimentos guion.md`
+  en la raíz sigue sin trackear; no lo toqué.
+- Tokens: ~30 turnos · contexto ~45.000 por turno · ≈ US$ 1,2. `comun/tokens.py` corrido.
+- Tutor: —

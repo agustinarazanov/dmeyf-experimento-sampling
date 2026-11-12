@@ -127,7 +127,7 @@ def tabla() -> str:
         fila("`feature_fraction` del control", "0.985", f"{n(hp_o['C']['hp']['feature_fraction'], 3)} (`hp_original.json`)", "idéntico", "ídem"),
         fila("H3-0.05 sobre el control (ganancia media)", "+6,47 M$",
              f"{m(g10[4] - g10[1], True)} M$ (50 semillas, estrategia 4 contra 1, hiperparámetros de Luis); "
-             f"{m(d3('H3-0.05', h3), True)} M$ (8 réplicas × 10 semillas, `h3`)", f"{m(g10[4] - g10[1] - 6.47e6, True)} M$ (50 semillas)",
+             f"{m(d3('H3-0.05', h3), True)} M$ (8 réplicas × 20 semillas, `h3`)", f"{m(g10[4] - g10[1] - 6.47e6, True)} M$ (50 semillas)",
              "mismo sentido, menor magnitud; con réplicas el IC de Δ incluye el cero (veredicto \"no pierde\", no \"gana\")"),
         fila("Optuna de H3-0.05 contra el control", "8,89 veces más rápido",
              f"{n(t_c / t_005, 2)} veces (mediana de {n(t_c, 0)} s contra {n(t_005, 0)} s, 8 réplicas, solo la optimización)",
@@ -168,7 +168,7 @@ def tabla() -> str:
              "un solo ensamble y una sola búsqueda por estrategia; con réplicas, los contrastes `H3R` contra `H3` están en `h3`"),
         fila("H1: muestreo uniforme también en el final (descarte)", "\"se desploma\" por debajo del 50 %",
              "; ".join(f"`{v}`: {m(float(h1[v]['delta_g_media']), True)} M$, {h1[v]['veredicto']}" for v in ("U0.25", "U0.1", "U0.05"))
-             + " (`h1/ledger/apareado.csv`, 10 semillas)", "—", "mismo sentido; es la H1 de la primera ronda, sin réplicas de la búsqueda"),
+             + " (`h1/ledger/apareado.csv`, 20 semillas)", "—", "mismo sentido; es la H1 de la ronda vigente (final 201903–201908), sin réplicas de la búsqueda"),
         fila("Reescalado lineal peor que √(1/r) (reconstruido: `H3L-*`)", "\"cae drásticamente\"",
              f"`H3L-0.1` contra `H3R-0.1`: {m(g_rep('H3L-0.1', h3) - g_rep('H3R-0.1', h3), True)} M$; `H3L-0.25` contra `H3R-0.25`: "
              f"{m(g_rep('H3L-0.25', h3) - g_rep('H3R-0.25', h3), True)} M$ (diferencia de medias de réplicas)", "—",
