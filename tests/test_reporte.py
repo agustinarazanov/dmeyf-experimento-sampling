@@ -101,3 +101,10 @@ def test_bootstrap_de_clientes_identico_en_dos_corridas(tmp_path):
     a = reporte.bootstrap_tiempo_igual(fin, datos, 300, n_boot=50)
     b = reporte.bootstrap_tiempo_igual(fin, datos, 300, n_boot=50)
     assert a == b and a["U0.5"][1] <= a["U0.5"][0] <= a["U0.5"][2]
+
+
+@pytest.mark.parametrize("exp", EXPERIMENTOS)
+def test_es_una_pagina_jekyll(exp):
+    pagina = reporte.generar(exp)
+    assert pagina.startswith("---")
+    assert "<html" not in pagina and "<style" not in pagina

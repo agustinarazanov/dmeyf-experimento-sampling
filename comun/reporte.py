@@ -7,7 +7,8 @@ Un reporte por experimento. Para `control`: su sección de `docs/hipotesis.md` y
 hipótesis, la tabla de sus variantes contra el control y las bandas de curvas. Para `sampling_1`: todas las variantes de
 todas las hipótesis registradas en `comun/variantes.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.
 Lee `resultados.csv`, `apareado.csv` y las curvas de los ledgers de `experimentos/*/` (los finales de C salen de
-`control`). Un único HTML con las figuras embebidas (PNG en base64), sin servidor. Las variantes sin datos salen como
+`control`). Una única página del sitio Jekyll (encabezado YAML y cuerpo HTML, sin `<html>`, `<head>` ni `<style>`; estilos en
+`_sass/custom/custom.scss`) con las figuras embebidas (PNG en base64). Se ve con `scripts/sitio.sh serve`. Las variantes sin datos salen como
 pendientes; ningún número se escribe a mano. Con `--figuras` además guarda cada figura como PNG (para el video).
 """
 
@@ -766,11 +767,9 @@ def commit() -> str:
         return "desconocido"
 
 
-CSS = """body{font-family:system-ui,sans-serif;max-width:1100px;margin:2em auto;padding:0 1em;color:#222;line-height:1.45}
-table{border-collapse:collapse;margin:1em 0;font-size:.9em}th,td{border:1px solid #ccc;padding:.25em .5em;text-align:left}
-th{background:#f3f3f3}td.pierde{background:#f8d7d0}td.ok{background:#d6ecd9}td.ind{background:#fbefc8}
-.pend{color:#888;font-style:italic}img{max-width:100%}code{background:#f3f3f3;padding:0 .2em}
-details{margin:.5em 0}summary{cursor:pointer;font-weight:600}footer{margin-top:3em;color:#666;font-size:.85em}"""
+# Encabezado YAML mínimo: el título y la navegación los pone `_config.yml` (defaults); las reglas de veredicto
+# (td.pierde, td.ok, td.ind), .pend e img están en `_sass/custom/custom.scss`.
+ENCABEZADO = "---\nrender_with_liquid: false\n---\n"
 
 
 def _leer(exp: str, nombre: str) -> dict[str, str]:
@@ -786,7 +785,7 @@ def enlaces(exp: str, exps: list[str]) -> str:
 
 
 def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str | None]:
-    """(HTML del reporte, `tabla_resultados.md` del agregador o None para los demás experimentos)."""
+    """(página Jekyll del reporte: encabezado YAML + cuerpo HTML, sin <html>, <head> ni <style>; `tabla_resultados.md` del agregador o None para los demás experimentos)."""
     ctx = Contexto(exp)
     fin, ap = cargar([reg.CONTROL, *ctx.exps])
     hip, dis = _leer(exp, "hipotesis"), _leer(exp, "diseno")
@@ -820,8 +819,7 @@ def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str |
     cuerpo += enlaces(exp, [e for e in reg.duenos() if e != reg.CONTROL])
     cuerpo += (f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
                f"finales (réplica 0), {completos}/{len(ctx.variantes) + 1} variantes con {N_SEMILLAS} semillas</footer>")
-    return (f"<!doctype html><html lang='es'><head><meta charset='utf-8'><title>{html.escape(titulo)} — reporte"
-            f"</title><style>{CSS}</style></head><body>{cuerpo}</body></html>\n"), md
+    return f"{ENCABEZADO}{cuerpo}\n", md
 
 
 def generar(exp: str, figuras: Path | None = None) -> str:
@@ -833,7 +831,7 @@ def main() -> None:
     g = p.add_mutually_exclusive_group(required=True)
     g.add_argument("--experimento", help="carpeta de experimentos/ (control, h1, ..., sampling_1)")
     g.add_argument("--todos", action="store_true", help="un reporte por cada experimento del registro")
-    p.add_argument("--salida", type=Path, help="HTML de salida (solo con --experimento)")
+    p.add_argument("--salida", type=Path, help="página de salida (solo con --experimento)")
     p.add_argument("--figuras", type=Path, help="además guarda las figuras como PNG en este directorio")
     a = p.parse_args()
     exps = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR] if a.todos else [a.experimento]
