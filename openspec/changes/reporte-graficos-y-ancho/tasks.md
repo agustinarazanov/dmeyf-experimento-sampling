@@ -52,6 +52,12 @@ pasando: `python -m pytest tests/test_reporte.py`.
 - [x] 4.3 Bloque B en tarjetas en el HTML y en lista por estudio en `tabla_resultados.md`. El exploratorio sin CSV
   sigue saliendo pendiente con el nombre del archivo; ajustar
   `test_exploratorio_sin_csv_sale_pendiente_con_el_nombre_del_archivo`.
+> **En espera (12-nov, decisión de Agustina):** 4.4 y 7.1 se hacen después del 4.1 de `final-con-julio-agosto`.
+> Con la ronda vigente (`201903-201908`) el generador deja todo pendiente hasta que el control tenga sus semillas, así
+> que regenerar antes vaciaría los reportes publicados. La otra sesión avisa al terminar su 4.1. Entonces: regenerar,
+> recopiar el bloque B en `informe.md` y verificar 7.1 contra los números nuevos. El invariante del bloque A ya se
+> verificó contra la ronda `201903-201906` (ver 1.2).
+
 - [ ] 4.4 Recopiar el bloque B de `tabla_resultados.md` en `experimentos/sampling_1/informe/informe.md`. Verificar:
   - el bloque A, la varianza y las diferencias de `tabla_resultados.md` son idénticos a la foto de 1.2 (`diff`);
   - `python -m scripts.verificar_readme` pasa;
