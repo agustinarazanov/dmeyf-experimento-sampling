@@ -1262,3 +1262,44 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   fase 7 en `sampling_1/docs/diseno.md` (121 celdas × 20 semillas + 8 estudios, ~24 h de cómputo, ~7 h de pared, ≈ US$ 5
   en spot).
 - Pendiente: revisión en sesión limpia (tarea 1.3). Ninguna corrida real antes de ese cierre.
+
+## 2026-11-12 — cierre revisión de sitio-github-pages (tarea 5.1)
+
+- Revisor: subagente `general-purpose` sin contexto (Opus), lanzado desde la sesión
+  `a64f46d7-3dd1-4ba9-9792-1a2406232007`; sus tokens cuentan en esa sesión.
+- Lista: docs/revision.md § 3 (código) sobre `comun/reporte.py`, `scripts/sitio.sh`, `.github/workflows/pages.yml`,
+  `_sass/custom/custom.scss` y `comun/tokens.py`; § 5 (informe) sobre `index.md`. **Quedan dos ✗: 5.1 sigue abierta.**
+- § 3:
+  - n/a: smoke test, 201910 en `optimizar`, columnas del ledger, `codigo_sucio`, filas de train, `consolidar.py` y
+    `vm.sh`. El cambio no toca el entrenamiento ni el ledger.
+  - ✓ Determinismo: `h1`, `sampling_1` y `control` regenerados en el scratchpad con `--salida`. Las tablas coinciden
+    con las commiteadas (3, 5 y 2 tablas); cambia solo el pie.
+  - ✓ Sin datos: no hay datos versionados. `_site/` pesa 6,6 MB, sin `.py`, `.csv`, `.md` crudos, `ledger/`,
+    `openspec/changes/` ni `comun/`.
+  - ✓ `reporte.py` (D4): la salida empieza con `---\nrender_with_liquid: false\n---` y no tiene `<html`, `<head>` ni
+    `<style`. Lo verifica `tests/test_reporte.py`. Las reglas de veredicto están en `custom.scss` y llegan al CSS
+    compilado. `python -m pytest -q`: 203 tests pasan.
+  - ✓ `sitio.sh` (D6): `scripts/sitio.sh` y `scripts/sitio.sh --baseurl /dmeyf-experimento-sampling` terminan en 0,
+    con 431 enlaces internos y ninguno roto. El bit de ejecución está commiteado. Observación menor:
+    `--baseurl ""` aborta por `${2:?}`, pero en un sitio de proyecto `base_path` nunca viene vacío.
+  - ✓ `tokens.py`: `sitio-github-pages` está mapeado (1–4 `codigo`, 5 `informe`) y tiene test.
+  - ✗ **Workflow (D1).** `ruby/setup-ruby@v1` corre sin `ruby-version`, y el repo no tiene `.ruby-version`,
+    `.tool-versions` ni `mise.toml`. En ese caso setup-ruby lanza «input ruby-version needs to be specified if no
+    .ruby-version or .tool-versions file exists» (`index.js`). El primer run fallaría y no publicaría. Arreglo: sumar
+    `.ruby-version` (3.4, la de la Mac) o `ruby-version: '3.4'` en el paso. Lo demás coincide con D1 y la spec:
+    disparadores, permisos, `concurrency`, `configure-pages`, `scripts/sitio.sh --baseurl`, upload, y `deploy` con
+    `needs: build` (si el build falla no se publica). `actionlint` no está instalado: el resto se revisó a ojo.
+- § 5 (portada `index.md`):
+  - ✓ Sin reglas nuevas.
+  - ✓ Sin números nuevos: 5 %, 10 %, 25 %, 4,53, 11,82, r = 0,25 y f = 0,1 están textuales en el informe conjunto,
+    § Conclusiones.
+  - ✓ Enlaces: el botón lleva al informe conjunto; también enlaza la tabla, Experimentos, Método y el README en
+    github.com. Resuelven con y sin baseurl, y el recuadro sale como `<p class="conclusion">`.
+  - ✗ **Coherencia y peso de las refutaciones.** La portada copia solo el primer párrafo de § Conclusiones.
+    «Entrenar el final con menos filas sí pierde» queda como regla general. Pero el informe dice que «la respuesta al
+    tutor se amplía»: `H4F-0.05` achica el final conservando las bajas con peso, no pierde, acelera 13,17 veces y a
+    tiempo igual gana. Además, `H4H-0.1` (búsqueda informada) pierde. Arreglo: sumar al recuadro esas dos frases,
+    tomadas de § Conclusiones.
+  - n/a: limitaciones, guion, baseline y bibliografía. La portada no es el informe y enlaza al conjunto, que los tiene.
+- Pendiente: los dos ✗ (`.ruby-version` o `ruby-version` en el workflow, y la ampliación del recuadro de la portada).
+  Después, repetir la revisión de esos dos puntos y marcar 5.1.
