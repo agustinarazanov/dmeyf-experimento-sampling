@@ -1,0 +1,168 @@
+{
+ "duration_api_ms": 116317,
+ "stop_reason": "end_turn",
+ "session_id": "2fcaf5d7-dda1-458a-a570-2b5a994f460c",
+ "total_cost_usd": 0.9389244000000002,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 55208,
+  "cache_read_input_tokens": 1291302,
+  "output_tokens": 11940,
+  "output_tokens_details": {
+   "thinking_tokens": 1789
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 55208,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1108,
+    "cache_read_input_tokens": 66554,
+    "cache_creation_input_tokens": 506,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 506
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 50,
+   "outputTokens": 11940,
+   "cacheReadInputTokens": 1291302,
+   "cacheCreationInputTokens": 55208,
+   "webSearchRequests": 0,
+   "costUSD": 0.9389244000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1789,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 55208,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01L2RCAchcgGHJUrca2V2JZp",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; ls openspec/changes/; f=$(ls -d openspec/changes/*final-con-julio-agosto* experimentos/sampling_1/openspec/changes/*final* 2>/dev/null); echo $f; grep -n \"^## \\|^- \\[\" $f/tasks.md 2>/dev/null | head -60; grep -n \"^#\" docs/revision.md",
+    "description": "Locate change tasks and revision checklist"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DUjHmijsLSN91Br2zYyFML",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; sed -n '1403,$p' experimentos/sampling_1/docs/bitacora.md | cut -c1-350",
+    "description": "Read group-3 runs log"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_015Rfged5gXypkNzNtFM3Yvv",
+   "tool_input": {
+    "command": "mkdir -p ~/datos/experimentos-dmeyf/rev_fcja_g3 && cat > ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.py <<'EOF'\nimport pandas as pd, glob, json\nfor e in ['control','h1','h2','h3','h4']:\n    d=f'experimentos/{e}/ledger/'\n    r=pd.read_csv(d+'resultados.csv',dtype=str)\n    print(f'== {e}: filas {len(r)}')\n    for c in ['etapa','meses_final','maquina','codigo_sucio','valida','persona']:\n        print(' ',c,dict(r[c].value_counts(dropna=False)))\n    f=r[r.etapa=='final']\n    print('  commits por meses_final', f.groupby('meses_final').commit.unique().to_dict())\n    nueva=f[f.meses_final=='201903-201908']\n    g=nueva.groupby('variante').agg(n=('semilla','nunique'),tasa=('tasa','first'),metodo=('metodo','first'),\n        ft_min=('filas_train','min'),ft_max=('filas_train','max'),rep=('replica_opt','nunique'))\n    print(g.to_string())\n    print('  curva_201908 no vacia en nueva:', nueva.curva_201908.notna().sum(), ' auc_val no vacio:', nueva.auc_val.notna().sum())\n    for x in ['apareado.csv','replicas.csv','estudios.csv']:\n        try:\n            a=pd.read_csv(d+x); print(' ',x,len(a),'filas; n_estrella',a['n_estrella'].unique() if 'n_estrella' in a else '-')\n            if x=='apareado.csv':\n                print(a[['variante','n_semillas','delta_g_media','delta_g_sd','delta_g_ic_inf','delta_g_ic_sup','semillas_ganadas','veredicto']].isna().sum().to_dict())\n                print(a[['variante','n_semillas','nota']].to_string())\n        except FileNotFoundError: pass\nEOF\npython ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.py > ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.txt 2>&1; wc -l ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.txt",
+    "description": "Run ledger verification script to file"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01FbrMxtqLjgm6WR4GGssPgn",
+   "tool_input": {
+    "command": "python ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.py > ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.txt 2>&1; wc -l ~/datos/experimentos-dmeyf/rev_fcja_g3/chk.txt",
+    "description": "Run ledger verification, output to file"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DMDKThyovrBTEdYXbADJPP",
+   "tool_input": {
+    "command": "O=/Users/agustina/datos/experimentos-dmeyf/rev_fcja_g3; python -m comun.consolidar > $O/consolidar.txt 2>&1; echo cons=$?; git status --short; python -m comun.consolidar --sanity > $O/sanity.txt 2>&1; echo san=$?; grep -ci \"✗\\|fall\" $O/sanity.txt; tail -5 $O/sanity.txt; gcloud compute instances list 2>&1 | tail -5",
+    "description": "Reconsolidate, run sanity, list VMs"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01WHiRgfwSpqdvhu6UVon8hj",
+   "tool_input": {
+    "command": "python -m comun.consolidar > /Users/agustina/datos/experimentos-dmeyf/rev_fcja_g3/consolidar.txt 2>&1; echo cons=$?; git status --short; python -m comun.consolidar --sanity > /Users/agustina/datos/experimentos-dmeyf/rev_fcja_g3/sanity.txt 2>&1; echo san=$?; grep -ci \"✗\\|fall\" /Users/agustina/datos/experimentos-dmeyf/rev_fcja_g3/sanity.txt; tail -5 /Users/agustina/datos/experimentos-dmeyf/rev_fcja_g3/sanity.txt; gcloud compute instances list 2>&1 | tail -5",
+    "description": "Reconsolidate, run sanity, list VMs"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 27,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Revisé el grupo 3 contra la lista de `docs/revision.md` § 4 y pasan los ocho ítems, así que no hubo nada que corregir. El cierre quedó en `experimentos/sampling_1/docs/bitacora.md`, la tarea 3.4 está marcada y lo commiteé (`d611c80`, sin Co-Authored-By). No escribí `bloqueo.txt` porque no quedó nada que necesite a una persona.\n\n**Ítems de § 4:**\n- **Máquina y commit:** las 3.619 filas son `n2-highmem-8`. Los 2.420 finales nuevos llevan dos commits, `6a5dade` y `33daa55`. Entre ellos cambian solo `reporte.py`, `vm.sh`, el sitio, los tests y la documentación, nada que se use en una corrida.\n- **Sin `codigo_sucio` ni corridas exploratorias:** ninguna en los cinco ledgers, y todas las filas son válidas.\n- **Filas de train:** cada corrida coincide con su tasa sobre las 768.499 filas de 201903–201908 (por ejemplo, `U0.05` tiene 38.425).\n- **Control repetido:** `C-rep` reproduce a `C` con diferencia 0 en AUC y en ganancia. Las dos corridas son del mismo tipo de máquina; eso ya figura como limitación.\n- **H2:** `bagging_fraction` no aparece entre los hiperparámetros optimizados.\n- **Semillas:** 121 celdas × 20 semillas, sin duplicados, y están los 8 estudios `F0.5`.\n- **`apareado.csv` y `replicas.csv`:** tienen todos los campos completos, `n_estrella = 3300`, e incluyen la comparación `H4O-0.5` contra `H4F-0.05`.\n- **VMs y gasto:** no queda ninguna VM `sampling-*`; solo aparece `desktop-jr`, apagada, que no es del experimento. El gasto está anotado.\n\n**Lo que corrí:** `consolidar` vuelve a generar los ledgers sin ningún cambio y `--sanity` da los 8 chequeos OK. `variantes --verificar` pasa y `comun/tokens.py` también se corrió.\n\n**Hallazgos anotados en la bitácora (ninguno bloquea):**\n1. Las ~31 h de VM y los US$ 6–8 son una estimación, porque los logs de `vm.sh` no guardan la hora. La cifra real está en la factura de Google Cloud.\n2. Los finales nuevos quedaron repartidos entre esos dos commits.\n3. En `pytest` pasan 241 tests y falla 1: `test_readme_coincide_con_fuentes` de `validacion_50_semillas`. Es el problema que la sesión de corridas ya había dejado pendiente para el grupo 4.\n\nLas salidas largas están en `~/datos/experimentos-dmeyf/rev_fcja_g3/`. No toqué `Experimentos guion.md`, que sigue sin commitear.",
+ "ttft_ms": 1514,
+ "type": "result",
+ "duration_ms": 1199729,
+ "uuid": "554b8ff1-63b5-4bfc-bcd9-968ae1c89fdc",
+ "ttft_stream_ms": 998,
+ "time_to_request_ms": 201,
+ "first_content_frame_ms": 998,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 50,
+   "outputTokens": 11940,
+   "cacheReadInputTokens": 1291302,
+   "cacheCreationInputTokens": 55208,
+   "webSearchRequests": 0,
+   "costUSD": 0.9389244000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1789,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 55208,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
