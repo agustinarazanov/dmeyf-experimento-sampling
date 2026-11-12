@@ -30,7 +30,6 @@ No requiere corridas ni datos. Cada grupo es una sesión (Sonnet salvo que diga 
 
 - [ ] 5.1 Revisión en sesión limpia (Opus o subagente `general-purpose`) con `docs/revision.md` § 3 (código) para `reporte.py`, `sitio.sh` y el workflow, y § 5 (informe) para la portada; cierre en la bitácora de `sampling_1` y `comun/tokens.py`; verificar que no quedan ✗ abiertos
 - [ ] 5.2 Agustina: activar Pages con origen «GitHub Actions» (Settings → Pages o `gh api -X POST repos/agustinarazanov/dmeyf-experimento-sampling/pages -f build_type=workflow`) y pushear `main`; verificar que el run del workflow termina en verde, que la portada abre en `https://agustinarazanov.github.io/dmeyf-experimento-sampling/` y que desde el informe de h1 el enlace `reporte.html` abre el reporte dentro del sitio
-- [ ] 5.3 Postear el enlace en el tópico de Zulip `Experimentos - Lunes > sampling_1` (lo decide y lo hace Agustina); anotar la fecha en la bitácora
 
 ## Workflow follow-up
 
