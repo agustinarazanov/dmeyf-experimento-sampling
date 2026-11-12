@@ -1236,3 +1236,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   después de los resultados, tiempos de `h2` no medidos). No cambia ningún veredicto. Bloque B regenerado y copiado al
   informe. Enlaces del README y de `validacion_50_semillas` al cambio archivado corregidos.
 - Pendiente: código y lista de semillas de Luis para reproducir las 20 semillas, o correrlas con nuestro protocolo.
+
+## 2026-11-12 — sitio-github-pages, grupo 1 (esqueleto del sitio)
+
+- `_config.yml` y `scripts/sitio.sh` creados. `bundle exec jekyll build` da `_site/` de 6 MB, sin `.py`, `.csv`, `.md`
+  crudos ni cambios de OpenSpec; los README de `h3/sensibilidad_muestra/` y de los exploratorios salen como `index.html`.
+- `scripts/sitio.sh` informa 47 fallas de html-proofer. 42 son el enlace del tema a `/` (falta `index.md`, se resuelve
+  en 3.2). Las 5 de documentos, que se arreglan en 3.3 con URL de github.com:
+  - `experimentos/h3/sensibilidad_muestra/README.md`: `resultados/`, `requirements.txt` y `referencia/grilla_06.json`;
+  - `experimentos/sampling_1/exploratorios/validacion_20_semillas/README.md`: `originales/`;
+  - `experimentos/sampling_1/exploratorios/validacion_50_semillas/README.md`: `hp_original.json`.
