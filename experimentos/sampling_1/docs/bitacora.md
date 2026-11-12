@@ -1465,3 +1465,34 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   pasa. Salidas en `DATOS_DIR/rev_fcja_g3/`.
 - Tokens: ~20 turnos · contexto ~40.000 por turno · ≈ US$ 0,8. `comun/tokens.py` corrido.
 - Tutor: —
+
+### 2026-11-12 — revisión del grupo 4 de `final-con-julio-agosto` (informes): no se cierra
+- Sesión: revisión headless del grupo 4 · modelo: Opus · etapa: **revision** (grupo 4).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión `69ce4b17-fce0-4af5-bfb8-1ba9db55d9e4` que aplicó el
+  grupo).
+- Estado del grupo: 4.1 hecha (commit `8eb94b9`); **4.2 sin empezar** (la sesión de aplicar la frenó por presupuesto,
+  sin tocar ningún archivo de 4.2). La lista § 5 revisa justamente lo que produce la 4.2, así que la etapa no se puede
+  cerrar y la 4.3 queda sin marcar.
+- Lista: docs/revision.md § 5 (informe) sobre `informe.md` de `h1`–`h4` y `sampling_1`, guion y README:
+  - ✗ Regla de `hipotesis.md`: los informes deciden con la ronda 201903–201906; la regla de D7 y las de `H4O-0.5`
+    (contra `C` y contra `H4F-0.05`) no aparecen. `grep` de `201903-201908`, `H4O-0.5`, `ΔAUC` y `211210`: 0
+    coincidencias en los cinco `informe.md`.
+  - ✗ Citas a `apareado.csv`: los `apareado.csv` se reconsolidaron en `cd4149d` (20 semillas, N\* = 3300) y los informes
+    siguen citando las cifras de 10 semillas.
+  - ✗ Copia del bloque A y B: `tabla_resultados.md` cambió 135 líneas en `8eb94b9` y `sampling_1/informe/informe.md` no
+    se tocó desde `5da6486`, así que la copia del bloque A ya no es idéntica.
+  - ✗ Limitaciones con solo los apartamientos no justificados, ΔAUC al lado de Δ de ganancia, contraste
+    `H4O-0.5` − `H4F-0.05` en `h4`, tabla de rondas y párrafo de `validacion_20_semillas`: pendientes de la 4.2.
+  - ✗ Guion (10 minutos, estructura de Bolaños, sin explicar el baseline) y bibliografía: el guion sigue en la ronda
+    vieja; se revisan cuando esté actualizado.
+- Hallazgos:
+  1. La 4.2 está entera pendiente; sigue abierta la falla de `test_readme_coincide_con_fuentes` de
+     `validacion_50_semillas` (README con 10 semillas y +2,08 M$ de la ronda anterior), anotada en el cierre del grupo 3.
+  2. `Experimentos guion.md` en la raíz del repo, sin trackear: no es de este cambio; no lo toqué.
+- Corregido: nada. La 4.2 es trabajo de la sesión de aplicar, no de la revisión. No hace falta una persona: la vuelta
+  cerró la 4.1, así que `scripts/etapas.sh` vuelve a correr el grupo 4 y la próxima sesión de aplicar empieza por la 4.2.
+  No escribí `bloqueo.txt`.
+- No corrido: `verificar_readme.py`, `verificar_informe_h3.py --informe` y `comun/tokens.py` (la sesión headless no
+  tenía permiso para esos comandos; los verificadores son de la 4.2 y el conteo de tokens va en el cierre de la 4.3).
+- Tokens: ~20 turnos · contexto ~45.000 por turno · ≈ US$ 0,7.
+- Tutor: —
