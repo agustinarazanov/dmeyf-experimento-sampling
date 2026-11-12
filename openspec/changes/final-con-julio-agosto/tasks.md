@@ -47,7 +47,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   - `optimizar` no lee 201907 ni 201910.
 
   Verificar que `pytest` pasa.
-- [ ] 2.3 `scripts/agregar_meses_final.py --aplicar/--verificar` (D4). Aplicarlo a los ledgers de los cinco experimentos.
+- [x] 2.3 `scripts/agregar_meses_final.py --aplicar/--verificar` (D4). Aplicarlo a los ledgers de los cinco experimentos.
   Verificar con `--verificar` que todos los finales previos quedan en `201903-201906` y que el resto de cada archivo no
   cambia.
 - [ ] 2.4 `comun/consolidar.py --meses-final` (D3, D4):
