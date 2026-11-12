@@ -15,7 +15,9 @@ pierde en 201910 cuando se usan menos filas, sin cambiar la proporción de clase
 
 El tradeoff vale la pena si lo que se achica es la **optimización**, no el entrenamiento del modelo final. Optimizar
 sobre el 5 %, 10 % o 25 % de las filas y entrenar con todas no pierde contra el control, y es de 4,53 a 11,82 veces más
-rápido. Entrenar el final con menos filas sí pierde, al azar desde r = 0,25 y dentro de LightGBM con f = 0,1. No es una
+rápido. Entrenar el final con menos filas sí pierde, al azar desde r = 0,25 y dentro de LightGBM con f = 0,1. Achicar también el final
+conservando todas las bajas y la mitad de CONTINUA con peso 2 (`H4F-0.05`) no pierde, acelera 13,17 veces y a tiempo igual
+gana; achicar la búsqueda conservando todas las bajas y recortando CONTINUA (`H4H-0.1`, búsqueda informada) pierde. No es una
 mejora de ganancia: lo que se gana es velocidad.
 {: .conclusion }
 
