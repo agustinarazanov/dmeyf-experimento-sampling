@@ -57,11 +57,19 @@ pasando: `python -m pytest tests/test_reporte.py`.
 > que regenerar antes vaciaría los reportes publicados. La otra sesión avisa al terminar su 4.1. Entonces: regenerar,
 > recopiar el bloque B en `informe.md` y verificar 7.1 contra los números nuevos. El invariante del bloque A ya se
 > verificó contra la ronda `201903-201906` (ver 1.2).
+>
+> Retomado el 12-nov tras `final-con-julio-agosto` 4.1–4.3 (0f1e170): esa corrida ya regeneró los reportes con este
+> generador y copió el bloque B (lista) en `informe.md`, así que regenerar acá solo cambió la fecha de los HTML.
 
-- [ ] 4.4 Recopiar el bloque B de `tabla_resultados.md` en `experimentos/sampling_1/informe/informe.md`. Verificar:
+- [x] 4.4 Recopiar el bloque B de `tabla_resultados.md` en `experimentos/sampling_1/informe/informe.md`. Verificar:
   - el bloque A, la varianza y las diferencias de `tabla_resultados.md` son idénticos a la foto de 1.2 (`diff`);
   - `python -m scripts.verificar_readme` pasa;
   - las líneas copiadas en `informe.md` coinciden con la tabla.
+
+  Con la ronda nueva, la foto de comparación es la salida del generador de 6438a0d (antes de este cambio) sobre la
+  misma ronda, en un worktree con los `ledger/predicciones` y `exploracion` enlazados (sin ellos el ensamble sale
+  pendiente): el `diff` solo toca el bloque B (línea 81 en adelante). El bloque B de `informe.md` (líneas 208–254) es
+  idéntico al de la tabla.
 
 ## 5. Resaltado (D8)
 
@@ -90,7 +98,7 @@ pasando: `python -m pytest tests/test_reporte.py`.
 
 ## 7. Integración y cierre
 
-- [ ] 7.1 `python -m comun.reporte --todos --figuras`. Verificar:
+- [x] 7.1 `python -m comun.reporte --todos --figuras`. Verificar:
   - `python -m pytest`;
   - `python -m comun.variantes --verificar`;
   - `python -m scripts.verificar_readme`;
@@ -98,6 +106,9 @@ pasando: `python -m pytest tests/test_reporte.py`.
   - el diff de `tabla_resultados.md` contra 1.2 solo cambia el bloque B.
 
   Commitear anunciando el cambio en `comun/`.
+
+  12-nov: `--figuras` pide un directorio; los PNG fueron al scratchpad. Regeneración en 1 min 19 s. pytest 242 pasan,
+  `variantes --verificar`, `verificar_readme` y `scripts/sitio.sh` (build y htmlproofer) pasan; el diff, en 4.4.
 - [ ] 7.2 Revisión en sesión limpia según `docs/revision.md`. Anotar el cierre en la bitácora de `sampling_1` y correr
   `comun/tokens.py`.
 
