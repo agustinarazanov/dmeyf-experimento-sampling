@@ -16,7 +16,7 @@ from experimentos.sampling_1.exploratorios.validacion_50_semillas import validac
 
 def test_semillas_son_las_de_luis():
     s = es.semillas(50)
-    assert s[:10] == bl.SEMILLAS_FINALES
+    assert s[:10] == bl.SEMILLAS_OFICIALES
     assert s[10:] == [110017 + i * 19937 for i in range(40)]
     assert len(set(s)) == 50
 
@@ -25,7 +25,7 @@ def test_semillas_extendidas_siguen_la_formula_y_conservan_las_50():
     s = es.semillas(70)
     assert s[:50] == es.semillas(50)
     assert s[50:] == [110017 + i * 19937 for i in range(40, 60)]
-    assert es.semillas(4) == bl.SEMILLAS_FINALES[:4]
+    assert es.semillas(4) == bl.SEMILLAS_OFICIALES[:4]
 
 
 def test_nueve_estrategias_numeradas_de_1():
@@ -162,7 +162,7 @@ def test_correr_estrategia_no_calcula_maximo_ni_curva_en_201910(monkeypatch):
     d, rng = _datos_falsos()
     monkeypatch.setattr(va, "entrenar_semilla", lambda e, hp, s, d_: (rng.random(60), rng.random(70), 1.5))
     filas, ens = va.correr_estrategia(es.estrategia(1), {}, 100.0, 3, d)
-    assert len(filas) == 3 and [f["semilla"] for f in filas] == bl.SEMILLAS_FINALES[:3]
+    assert len(filas) == 3 and [f["semilla"] for f in filas] == bl.SEMILLAS_OFICIALES[:3]
     assert not any(c.startswith("gmax_201910") for c in filas[0])
     assert {"g_201908", "gmax_201908", "auc_201908", "g_201910", "auc_201910"} <= set(filas[0])
     assert [e["k"] for e in ens] == [1, 2, 3]

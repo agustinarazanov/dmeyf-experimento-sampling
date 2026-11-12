@@ -34,7 +34,7 @@ from comun import rutas
 
 log = logging.getLogger("panel_luis")
 
-#: Meses del panel de Luis (MESES_HISTORIA + MESES_TRAIN + validación y test en su script); son los nuestros.
+#: Meses del panel de Luis (MESES_HISTORIA + MESES_TRAIN + validación y test en su script); son los de la ronda 201903-201906 (sin 201907).
 MESES_PANEL = [201901, 201902, 201903, 201904, 201905, 201906, 201908, 201910]
 SALIDA = rutas.ledger("sampling_1") / "luis"
 
@@ -173,7 +173,8 @@ def main() -> None:
     p.add_argument("--salida", type=Path, default=SALIDA)
     a = p.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s")
-    assert MESES_PANEL == bl.MESES_PANEL, "los meses de Luis dejaron de ser los nuestros"
+    assert MESES_PANEL == sorted(set(bl.MESES_HISTORIA + bl.MESES_TRAIN_OPT + [bl.MES_VALIDACION, bl.MES_TEST])), (
+        "los meses de Luis dejaron de ser los de la ronda 201903-201906")
     nuestro, _ = dt.asegurar_panel()
     t0 = time.perf_counter()
     luis = construir_panel_luis(dt.asegurar_crudo(), ruta_panel_luis())

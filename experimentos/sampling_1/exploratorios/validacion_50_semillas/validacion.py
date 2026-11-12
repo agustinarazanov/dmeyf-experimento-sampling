@@ -58,7 +58,7 @@ class Datos:
             cargar = lambda meses: dt.cargar_meses(meses, filas)
         else:
             cargar = lambda meses: cargar_de(panel, meses)
-        train = cargar(bl.MESES_TRAIN)
+        train = cargar(bl.MESES_TRAIN_OPT)
         val = cargar([bl.MES_VALIDACION])
         test = cargar([bl.MES_TEST])
         cols = dt.columnas_predictoras(train)

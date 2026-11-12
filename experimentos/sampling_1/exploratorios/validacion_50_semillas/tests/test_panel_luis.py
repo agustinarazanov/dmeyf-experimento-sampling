@@ -81,7 +81,7 @@ def test_datos_con_otro_panel_usa_sus_columnas_en_su_orden(tmp_path):
     from experimentos.sampling_1.exploratorios.validacion_50_semillas import validacion as va
     rng = np.random.default_rng(0)
     filas = []
-    for m in bl.MESES_TRAIN + [bl.MES_VALIDACION, bl.MES_TEST]:
+    for m in bl.MESES_TRAIN_OPT + [bl.MES_VALIDACION, bl.MES_TEST]:
         for i in range(60):
             y = int(i % 10 == 0)
             filas.append({"numero_de_cliente": i, "foto_mes": m, "clase_ternaria": "BAJA+2" if y else "CONTINUA",

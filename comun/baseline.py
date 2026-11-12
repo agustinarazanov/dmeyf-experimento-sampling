@@ -12,11 +12,14 @@ from pathlib import Path
 
 #: Solo historia para los lags; sin target en el panel.
 MESES_HISTORIA: list[int] = [201901, 201902]
-MESES_TRAIN: list[int] = [201903, 201904, 201905, 201906]
+#: Meses con los que `optimizar` busca hiperparámetros (D1). No incluye 201907: la validación es 201908.
+MESES_TRAIN_OPT: list[int] = [201903, 201904, 201905, 201906]
+#: Meses con los que entrena el `final` (D1): los de optimización más 201907 y 201908. Registrados en el ledger como `meses_final`.
+MESES_TRAIN_FINAL: list[int] = [201903, 201904, 201905, 201906, 201907, 201908]
 MES_VALIDACION: int = 201908
 MES_TEST: int = 201910
 #: Meses que quedan en el panel (el target de 201910 mira hasta 201912 en el crudo, pero esos meses no se usan).
-MESES_PANEL: list[int] = MESES_HISTORIA + MESES_TRAIN + [MES_VALIDACION, MES_TEST]
+MESES_PANEL: list[int] = sorted(set(MESES_HISTORIA + MESES_TRAIN_FINAL + [MES_VALIDACION, MES_TEST]))
 #: Meses del crudo que alcanzan para lags (desde 201901) y para el target de 201910 (hasta 201912).
 CRUDO_DESDE: int = 201901
 CRUDO_HASTA: int = 201912
@@ -34,7 +37,13 @@ URL_CRUDO: str = "https://storage.googleapis.com/open-courses/dmeyf2026-9c6f/com
 # --- corrida -----------------------------------------------------------------
 
 SEMILLA_OPTUNA: int = 0  # también sortea la muestra de optimización; ninguna semilla final la usa
-SEMILLAS_FINALES: list[int] = [100003, 200003, 300007, 400009, 500009, 600011, 700001, 800011, 900001, 999983]
+#: Las 10 oficiales de la ronda 201903-201906 y, a continuación, 10 más (110017 + i·19937; 110017 … 289450, sin choques).
+#: El orden importa: las primeras 10 son las de la ronda anterior (D5).
+SEMILLAS_OFICIALES: list[int] = [100003, 200003, 300007, 400009, 500009, 600011, 700001, 800011, 900001, 999983]
+SEMILLAS_FINALES: list[int] = SEMILLAS_OFICIALES + [110017 + i * 19937 for i in range(10)]
+#: Corte de envíos fijo para δ y la ganancia de la ronda 201903-201908 (D3): el N* de la ronda anterior, calculado en
+#: validación (201908) con la media de las curvas de los `C`. Los finales nuevos no predicen 201908 fuera de muestra.
+N_ESTRELLA: int = 3300
 N_TRIALS: int = 40
 NUM_THREADS: int = 8
 

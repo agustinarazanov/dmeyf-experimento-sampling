@@ -26,7 +26,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
 ## 2. Código y migración (sesión: Sonnet)
 
-- [ ] 2.1 `comun/baseline.py`:
+- [x] 2.1 `comun/baseline.py`:
   - `MESES_TRAIN_OPT` y `MESES_TRAIN_FINAL` (D1);
   - `MESES_PANEL` con 201907;
   - `N_ESTRELLA = 3300`;

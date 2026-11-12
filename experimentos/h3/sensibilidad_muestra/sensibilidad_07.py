@@ -64,7 +64,7 @@ from experimentos.h3.sensibilidad_muestra import carga as B05
 from experimentos.h3.sensibilidad_muestra import rutas
 
 NOMBRE = "07_sensibilidad_muestra_h3"
-PARTICIONES = {"train": list(bl.MESES_TRAIN), "validacion": [bl.MES_VALIDACION]}
+PARTICIONES = {"train": list(bl.MESES_TRAIN_OPT), "validacion": [bl.MES_VALIDACION]}
 MESES_RESERVADOS = {201909: "reservado para un eventual acuerdo grupal", bl.MES_TEST: "test"}
 SEMILLA_PARTICION = 20261102
 SEMILLA_MODELO = 20261102

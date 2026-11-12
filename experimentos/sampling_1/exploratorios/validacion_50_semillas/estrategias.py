@@ -19,7 +19,7 @@ from comun import baseline as bl
 from comun import rutas
 
 AQUI = Path(__file__).resolve().parent
-SEMILLAS_10_OFICIALES = list(bl.SEMILLAS_FINALES)
+SEMILLAS_10_OFICIALES = list(bl.SEMILLAS_OFICIALES)
 N_SEMILLAS = 50
 #: Corte de envíos de Luis: el N* de 201908 del control.
 N_ESTRELLA = 3300

@@ -102,7 +102,7 @@ def construir_panel(filas: int | None = None, destino: Path | None = None) -> Pa
         from crudo k
         left join crudo p1 on p1.{ID} = k.{ID} and p1.{MES} = mes_mas(k.{MES}, 1)
         left join crudo p2 on p2.{ID} = k.{ID} and p2.{MES} = mes_mas(k.{MES}, 2)
-        where k.{MES} in ({_lista(bl.MESES_TRAIN + [bl.MES_VALIDACION, bl.MES_TEST])})
+        where k.{MES} in ({_lista(bl.MESES_TRAIN_FINAL + [bl.MES_VALIDACION, bl.MES_TEST])})
     """)
     cols = [f"c.{x}::FLOAT as {x}" for x in numericas]
     for n in range(1, bl.LAGS + 1):
@@ -129,10 +129,20 @@ def construir_panel(filas: int | None = None, destino: Path | None = None) -> Pa
     return destino
 
 
+def _tiene_meses(ruta: Path) -> bool:
+    """Un panel sin alguno de `MESES_PANEL` (p. ej. el viejo, sin 201907) se reconstruye (D2)."""
+    con = duckdb.connect()
+    try:
+        meses = {r[0] for r in con.execute(f"select distinct {MES} from read_parquet('{ruta}')").fetchall()}
+    finally:
+        con.close()
+    return set(bl.MESES_PANEL) <= meses
+
+
 def asegurar_panel(filas: int | None = None) -> tuple[Path, float]:
     """Devuelve (ruta del panel, segundos que costó prepararlo); 0,0 si ya existía."""
     ruta = ruta_panel(filas)
-    if ruta.exists():
+    if ruta.exists() and _tiene_meses(ruta):
         return ruta, 0.0
     t0 = time.perf_counter()
     construir_panel(filas)
