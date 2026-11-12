@@ -37,7 +37,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   - un panel sin 201907 se reconstruye.
 
   Verificar que `pytest` pasa.
-- [ ] 2.2 `comun/correr.py`:
+- [x] 2.2 `comun/correr.py`:
   - `optimizar` con `MESES_TRAIN_OPT` y un guard que falla si lee 201907;
   - `final` con `MESES_TRAIN_FINAL`, sin predecir 201908 (`auc_val` y `curva_201908` vacíos);
   - `meses_final` en la fila e id con la ventana (D4).

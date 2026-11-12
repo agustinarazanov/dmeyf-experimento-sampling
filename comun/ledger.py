@@ -18,14 +18,17 @@ from scipy import stats
 #: Columnas obligatorias de cada fila (`specs/ledger-resultados`). Sin valor se escribe vacío, pero la columna tiene que
 #: estar: una fila a la que le falta una no se escribe.
 COLUMNAS: list[str] = [
-    "id", "fecha", "variante", "metodo", "tasa", "semilla", "replica_opt", "etapa", "etapa_corrida", "estudio", "hp",
+    "id", "fecha", "variante", "metodo", "tasa", "semilla", "replica_opt", "etapa", "etapa_corrida", "estudio", "meses_final", "hp",
     "filas_train", "hash_muestra", "auc_val", "auc_test", "ganancia_max_201910", "envios_max_201910",
     "curva_201908", "curva_201910", "predicciones_201910",
     "tiempo_preparacion_s", "tiempo_optimizacion_s", "tiempo_entrenamiento_s", "tiempo_lgbtrain_s",
     "memoria_max_mb", "maquina", "cpu", "hilos", "load_avg", "commit", "codigo_sucio", "persona", "valida",
 ]
 #: Sin `commit`: la misma semilla no puede contar dos veces; una repetición con código más nuevo reemplaza a la anterior.
-CLAVE: list[str] = ["variante", "metodo", "tasa", "replica_opt", "semilla", "etapa"]
+#: `meses_final` separa las rondas: un final de 201903-201908 no reemplaza a uno de 201903-201906 (D4).
+CLAVE: list[str] = ["variante", "metodo", "tasa", "replica_opt", "semilla", "etapa", "meses_final"]
+#: Ventana de train de los finales anteriores al cambio `final-con-julio-agosto`.
+MESES_FINAL_VIEJA = "201903-201906"
 CONTROL = "C"
 #: Variantes que no entran en Δ: el control y su réplica (`docs/diseno.md` § Grilla).
 SIN_DELTA = {"C", "C-rep"}
@@ -40,6 +43,8 @@ def escribir_fila(directorio: Path, fila: dict) -> Path:
     sobran = [c for c in fila if c not in COLUMNAS]
     if sobran:
         raise ValueError(f"fila de ledger con columna que no es del esquema: {', '.join(sobran)}")
+    if fila["etapa_corrida"] == "final" and (fila["meses_final"] is None or str(fila["meses_final"]).strip() in ("", "nan")):
+        raise ValueError("fila final de ledger sin `meses_final`: la ventana de train del final es obligatoria")
     directorio.mkdir(parents=True, exist_ok=True)
     destino = directorio / f"{fila['id']}.csv"
     parcial = destino.with_suffix(".csv.tmp")

@@ -13,7 +13,7 @@ def corrida(led, variante, semilla, escala, etapa="final", estudio=None):
         pd.DataFrame({"envios": envios, "ganancia": [escala * e for e in envios]}).to_csv(led / "curvas" / f"{id_}_{mes}.csv", index=False)
     f = {c: "" for c in lg.COLUMNAS}
     f.update(id=id_, fecha="2026-11-01T10:00:00", variante=variante, metodo="uniforme", tasa=1 if variante == "C" else 0.5,
-             semilla=semilla, etapa=etapa, etapa_corrida=etapa, estudio=estudio or variante, valida=True,
+             semilla=semilla, etapa=etapa, etapa_corrida=etapa, meses_final=lg.MESES_FINAL_VIEJA if etapa == "final" else "", estudio=estudio or variante, valida=True,
              tiempo_optimizacion_s=50.0 if etapa == "optimizar" else 0.0, commit="abc",
              auc_test=0.9, tiempo_entrenamiento_s=10.0, maquina="n2", cpu="ice", hilos=8,
              curva_201908=f"curvas/{id_}_201908.csv", curva_201910=f"curvas/{id_}_201910.csv")

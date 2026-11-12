@@ -13,8 +13,8 @@ optimización usan la semilla k y el estudio se llama `<estudio>@k`; las semilla
 optimización de siempre.
 
 `optimizar` corre Optuna (40 trials, AUC en 201908, una semilla) y guarda los mejores hiperparámetros en
-`<ledger del estudio>/hp/<estudio>.json`; no carga 201910. `final` entrena con ese JSON y evalúa en 201908 y 201910 (curvas) para cada
-semilla pedida; saltea las que ya tienen fila válida. Con `--filas N` (o con `--trials` distinto de 40, o con el árbol
+`<ledger del estudio>/hp/<estudio>.json`; no carga 201910. `final` entrena con ese JSON sobre 201903-201908 (`MESES_TRAIN_FINAL`) y evalúa en 201910 (curva) para cada
+semilla pedida, sin predecir 201908 (`auc_val` y `curva_201908` vacíos) y registrando `meses_final`; saltea las que ya tienen fila válida. Con `--filas N` (o con `--trials` distinto de 40, o con el árbol
 sucio) la corrida es exploratoria y va a `<ledger>/exploracion/`, fuera de los resultados.
 """
 
@@ -139,6 +139,8 @@ class Contexto:
         self.db = bl.DATOS_DIR / "optuna" / f"{self.estudio}{sufijo}.db"
 
     def id(self, semilla: int, etapa: str) -> str:
+        if etapa == "final":  # el id del final lleva la ventana de train: nunca choca con uno de otra ronda (D4)
+            etapa = f"final-{ventana_corta(bl.MESES_TRAIN_FINAL)}"
         base = f"{variantes.nombre_estudio(self.variante, self.replica)}_{self.metodo}_{self.a.tasa:g}_{semilla}_{etapa}_{self.commit}"
         if self.valida:
             return base
@@ -159,6 +161,16 @@ class Contexto:
         return Path(self.a.hp) if self.a.hp else self.base_hp / "hp" / f"{self.estudio}.json"
 
 
+def ventana(meses: list[int]) -> str:
+    """`201903-201908`: primero y último mes de la ventana de train."""
+    return f"{meses[0]}-{meses[-1]}"
+
+
+def ventana_corta(meses: list[int]) -> str:
+    """`0308`: la ventana en el id de un final."""
+    return f"{str(meses[0])[4:]}{str(meses[-1])[4:]}"
+
+
 def _dataset_params() -> dict:
     return {**bl.PARAMS_DATASET, "num_threads": bl.NUM_THREADS}
 
@@ -174,10 +186,12 @@ def optimizar(cx: Contexto) -> None:
         return
     t0 = time.perf_counter()
     _, t_panel = dt.asegurar_panel(a.filas)
-    train = dt.cargar_meses(bl.MESES_TRAIN, a.filas)
+    train = dt.cargar_meses(bl.MESES_TRAIN_OPT, a.filas)
     val = dt.cargar_meses([bl.MES_VALIDACION], a.filas)
     if bl.MES_TEST in dt.MESES_LEIDOS:  # el test no se toca al elegir hiperparámetros
         raise RuntimeError(f"la etapa optimizar leyó {bl.MES_TEST}")
+    if 201907 in dt.MESES_LEIDOS:  # 201907 solo entra en el train del final (D1)
+        raise RuntimeError("la etapa optimizar leyó 201907")
     cols = dt.columnas_predictoras(train)
     t_sonda = 0.0  # H4H: la sonda que arma el pozo de negativos difíciles cuenta como tiempo de optimización
     if cx.metodo == "clase-dificil":
@@ -260,11 +274,9 @@ def final(cx: Contexto) -> None:
 
     t0 = time.perf_counter()
     _, t_panel = dt.asegurar_panel(a.filas)
-    train = dt.cargar_meses(bl.MESES_TRAIN, a.filas)
-    val = dt.cargar_meses([bl.MES_VALIDACION], a.filas)
+    train = dt.cargar_meses(bl.MESES_TRAIN_FINAL, a.filas)  # incluye 201908: el final no predice la validación
     test = dt.cargar_meses([bl.MES_TEST], a.filas)
     cols = dt.columnas_predictoras(train)
-    x_va, y_va, b2_va = dt.matriz(val, cols), val[dt.Y].to_numpy(), val[dt.BAJA2].to_numpy()
     x_te, y_te, b2_te = dt.matriz(test, cols), test[dt.Y].to_numpy(), test[dt.BAJA2].to_numpy()
     t_carga = t_panel + (time.perf_counter() - t0)
 
@@ -285,13 +297,11 @@ def final(cx: Contexto) -> None:
         t_lgb = time.perf_counter() - t1
         p_te = modelo.predict(x_te)
         t_ent = time.perf_counter() - t0
-        p_va = modelo.predict(x_va)  # solo hace falta para N*: no entra en T
+        # 201908 está en el train del final: su AUC y su curva serían dentro de la muestra, no se calculan (D3)
 
-        curva_va = gn.curva_de_corte(p_va, b2_va)
         curva_te = gn.curva_de_corte(p_te, b2_te)
         (cx.base / "curvas").mkdir(parents=True, exist_ok=True)
-        r_va, r_te = f"{cx.rel}curvas/{id_}_{bl.MES_VALIDACION}.csv", f"{cx.rel}curvas/{id_}_{bl.MES_TEST}.csv"
-        curva_va.to_csv(cx.raiz / r_va, index=False)
+        r_te = f"{cx.rel}curvas/{id_}_{bl.MES_TEST}.csv"
         curva_te.to_csv(cx.raiz / r_te, index=False)
         # D12: predicciones de test en el orden del mes, para ensamblar semillas en la comparación a tiempo igual
         (cx.base / "predicciones").mkdir(parents=True, exist_ok=True)
@@ -301,9 +311,10 @@ def final(cx: Contexto) -> None:
         }).to_parquet(cx.raiz / r_pred, index=False)
         envios, g_max = gn.ganancia_maxima(curva_te)
         lg.escribir_fila(cx.base / "corridas", cx.fila(
-            id=id_, semilla=semilla, etapa_corrida="final", hp=json.dumps(hp), filas_train=len(datos),
-            hash_muestra=muestreo.hash_muestra(idx, len(train)), auc_val=auc(y_va, p_va), auc_test=auc(y_te, p_te),
-            ganancia_max_201910=g_max, envios_max_201910=envios, curva_201908=r_va, curva_201910=r_te,
+            id=id_, semilla=semilla, etapa_corrida="final", meses_final=ventana(bl.MESES_TRAIN_FINAL), hp=json.dumps(hp),
+            filas_train=len(datos), hash_muestra=muestreo.hash_muestra(idx, len(train)), auc_val=None,
+            auc_test=auc(y_te, p_te), ganancia_max_201910=g_max, envios_max_201910=envios, curva_201908=None,
+            curva_201910=r_te,
             predicciones_201910=r_pred, tiempo_preparacion_s=round(t_prep, 3), tiempo_optimizacion_s=0.0, tiempo_entrenamiento_s=round(t_ent, 3),
             tiempo_lgbtrain_s=round(t_lgb, 3), memoria_max_mb=memoria_max_mb(),
         ))
@@ -318,7 +329,7 @@ def parsear(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     p.add_argument("--metodo", required=True)
     p.add_argument("--tasa", type=float, required=True, help="r (uniforme, opt-muestra) o fracción f (bagging)")
-    p.add_argument("--semilla", default="0", help="un entero, lista separada por comas o `todas` (10 semillas finales)")
+    p.add_argument("--semilla", default="0", help="un entero, lista separada por comas o `todas` (las 20 semillas finales)")
     p.add_argument("--etapa", required=True, choices=["optimizar", "final"])
     p.add_argument("--hp", help="JSON de hiperparámetros (por defecto <ledger del dueño del estudio>/hp/<estudio>.json)")
     p.add_argument("--filas", type=int, help="smoke test: panel de ~N filas, corrida exploratoria")
