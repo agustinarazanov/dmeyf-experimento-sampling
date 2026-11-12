@@ -36,7 +36,8 @@ def _absolutas(finales: pd.DataFrame, base: Path) -> pd.DataFrame:
     """Rutas de curvas absolutas, para mezclar finales de dos ledgers y leerlas igual."""
     f = finales.copy()
     for col in ("curva_201908", "curva_201910"):
-        f[col] = f[col].map(lambda r: str(base / r))
+        # Los finales de la ronda 201903-201908 no predicen 201908: su curva_201908 queda vacía y se deja vacía.
+        f[col] = f[col].map(lambda r: str(base / r) if isinstance(r, str) and r else r)
     return f
 
 
@@ -162,10 +163,12 @@ def sanity(r: dict[str, pd.DataFrame], meses_final: str = bl.VENTANA_FINAL) -> l
     if rep.empty:
         chk("5.4 el control se reproduce (C-rep)", False, "faltan las corridas C-rep")
     else:
-        dauc = abs(c["auc_val"].mean() - rep["auc_val"].mean())
+        # Los finales de la ronda 201903-201908 no tienen auc_val (no predicen 201908): se compara el AUC en 201910.
+        col_auc = "auc_val" if c["auc_val"].notna().any() else "auc_test"
+        dauc = abs(c[col_auc].mean() - rep[col_auc].mean())
         dg = abs(c["ganancia_max_201910"].mean() - rep["ganancia_max_201910"].mean())
         ee_g = c["ganancia_max_201910"].std(ddof=1) * (2 / len(c)) ** 0.5
-        ee_a = c["auc_val"].std(ddof=1) * (2 / len(c)) ** 0.5
+        ee_a = c[col_auc].std(ddof=1) * (2 / len(c)) ** 0.5
         chk("5.4 el control se reproduce (C-rep, ≤ 2 errores estándar)", dg <= 2 * ee_g and dauc <= 2 * ee_a,
             f"|ΔAUC|={dauc:.5f} (2 EE = {2 * ee_a:.5f}) |Δganancia|={dg:,.0f} (2 EE = {2 * ee_g:,.0f})")
     return out

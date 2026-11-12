@@ -65,3 +65,15 @@ def test_falla_si_la_ronda_no_tiene_c(tmp_path):
         corrida(tmp_path, "U0.5", s, 101.0, NUEVA, False)
     with pytest.raises(ValueError, match="no tiene finales del control"):
         consolidar.consolidar(tmp_path)
+
+
+def test_absolutas_deja_vacia_la_curva_que_no_existe():
+    import numpy as np
+    import pandas as pd
+    from pathlib import Path
+    from comun import consolidar as cons
+
+    f = pd.DataFrame({"curva_201908": [np.nan, ""], "curva_201910": ["a.csv", "b.csv"]})
+    out = cons._absolutas(f, Path("/x"))
+    assert out["curva_201908"].isna().iloc[0] and out["curva_201908"].iloc[1] == ""
+    assert list(out["curva_201910"]) == ["/x/a.csv", "/x/b.csv"]
