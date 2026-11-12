@@ -89,7 +89,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   - 121 celdas × 20 semillas y 8 estudios `F0.5@k`;
   - todo en `n2-highmem-8`, con `codigo_sucio = False` y `meses_final = 201903-201908`;
   - `n_estrella = 3300` en todas las tablas.
-- [ ] 3.4 Revisión en sesión limpia de las corridas con `docs/revision.md` § 4 y cierre en la bitácora.
+- [x] 3.4 Revisión en sesión limpia de las corridas con `docs/revision.md` § 4 y cierre en la bitácora.
 
 ## 4. Informes (sesión: Opus)
 

@@ -1433,3 +1433,35 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `--sanity` sin fallas (C-rep contra C: |Δganancia| = 0, |ΔAUC| = 0).
 - Abierto para el grupo 4: `test_readme_coincide_con_fuentes` de `validacion_50_semillas` falla porque su README se
   genera desde los ledgers vigentes (ronda nueva) y dice "10 semillas" y +2,08 M$ de la ronda anterior.
+
+### 2026-11-12 — cierre revisión del grupo 3 de `final-con-julio-agosto` (corridas)
+- Sesión: `2fcaf5d7-dda1-458a-a570-2b5a994f460c` · modelo: Opus · etapa: **revision** (grupo 3, tareas 3.1–3.3).
+- Revisor: sesión limpia headless (Opus, sin contexto de las sesiones que lanzaron y consolidaron el grupo).
+- Lista: docs/revision.md § 4 (resultados) sobre los ledgers de `control`, `h1`, `h2`, `h3` y `h4`, ronda
+  `meses_final = 201903-201908`. Ningún ✗ abierto.
+  - ✓ Máquina y commit: las 3.619 filas de los cinco `resultados.csv` son `n2-highmem-8`. Los 2.420 finales de la fase 7
+    llevan dos commits, `6a5dade` y `33daa55`; entre ellos solo cambian `comun/reporte.py`, `scripts/vm.sh`, el sitio
+    (`_config.yml`, `_sass/`), tests y docs, nada que entre en una corrida. Ya estaba anotado por el orquestador.
+  - ✓ Sin `codigo_sucio` (todas `False`), sin `etapa = exploracion` y todas `valida = True`.
+  - ✓ Filas de train de la ronda nueva (total 768.499 = 201903–201908): `U0.05` 38.425, `U0.1` 76.850, `U0.25`
+    192.125 y `U0.5` 384.250 (= r × 768.499); `B*`, `GOSS`, `H3*`, `H4H-0.1`, `H4U-0.1`, `C` y `C-rep` usan las 768.499;
+    `H4F-*` y `H4O-0.5` 388.132 = (N + P)/2. `--sanity` 5.2 OK.
+  - ✓ Control repetido: `C-rep` contra `C` da |ΔAUC| = 0 y |Δganancia| = 0 (misma máquina; limitación ya declarada).
+  - ✓ H2: `bagging_fraction` no está en los hp de `B0.1`, `B0.25`, `B0.5` ni `GOSS` (lo fija el método); `--sanity` 5.3 OK.
+  - ✓ Semillas: 121 celdas × 20 semillas = 2.420 finales, sin duplicados de (variante, réplica, semilla) ni de id; las
+    variantes con 8 réplicas tienen 160 filas. Los 8 estudios `H4O-0.5@0…7` (`F0.5`) están en `h4/ledger/estudios.csv`.
+  - ✓ `apareado.csv` de `h1` (4), `h2` (4), `h3` (8) y `h4` (5) con media, sd, IC 95%, semillas ganadas, veredicto y
+    ΔAUC con IC, sin NaN, `n_estrella = 3300`, 20 semillas; `replicas.csv` de `control`, `h3` y `h4` con 8 réplicas,
+    incluido el par de Welch `H4O-0.5 − H4F-0.05`.
+  - ✓ VMs borradas: `gcloud compute instances list` solo muestra `desktop-jr` (`TERMINATED`, ajena). Gasto anotado
+    arriba: ~31 h de VM, US$ 6–8 estimados.
+- Hallazgos (ninguno bloquea):
+  1. El gasto y las horas son estimados: los logs de `vm.sh` no llevan hora. La cifra real es la factura de Google Cloud.
+  2. Los finales de la ronda nueva quedaron repartidos en dos commits (ver arriba): mismo código de corrida.
+  3. `pytest`: 241 verdes y 1 falla, `validacion_50_semillas/tests/test_tabla_reproduccion.py::test_readme_coincide_con_fuentes`;
+     es la que el orquestador dejó abierta para el grupo 4 (el README se genera desde los ledgers de la ronda nueva).
+- Corregido: nada. `python -m comun.consolidar` vuelve a escribir los ledgers idénticos (`git status` limpio).
+- Otras verificaciones: `python -m comun.consolidar --sanity` 8 OK sin fallas; `python -m comun.variantes --verificar`
+  pasa. Salidas en `DATOS_DIR/rev_fcja_g3/`.
+- Tokens: ~20 turnos · contexto ~40.000 por turno · ≈ US$ 0,8. `comun/tokens.py` corrido.
+- Tutor: —
