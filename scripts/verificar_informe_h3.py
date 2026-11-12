@@ -37,8 +37,10 @@ INFORME = EXP / "h3/informe/informe.md"
 TABLA = EXP / "sampling_1/informe/tabla_resultados.md"
 
 # N*, R, k = 0…7, 10 y 50 semillas, 80 pares, 7 g.l., IC 95%, meses y año, tasas (en % y en fracción), √10, el mensaje
-# de Zulip de la consigna
-CONSTANTES = [3300, 8, 0, 7, 10, 50, 80, 95, 2019, 201908, 201910, 5, 25, 0.05, 0.1, 0.25, 208135]
+# de Zulip de la consigna; desde `final-con-julio-agosto` 4.2, 20 semillas, los meses de las ventanas del final y los
+# mensajes de Zulip de los apartamientos (211210 ventana, 211718 reoptimizar)
+CONSTANTES = [3300, 8, 0, 7, 10, 50, 80, 95, 2019, 201908, 201910, 5, 25, 0.05, 0.1, 0.25, 208135,
+              20, 201903, 201905, 201906, 211210, 211718]
 
 NUM_TABLA = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 NUM_TEXTO = re.compile(r"(?<![\w.,@−-])[−-]?\d+(?:\.\d{3})*(?:,\d+)?(?![\w@])")
