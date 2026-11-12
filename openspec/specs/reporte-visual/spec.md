@@ -54,13 +54,24 @@ mostrar las curvas de ganancia (banda entre semillas) de sus variantes junto al 
 - **WHEN** se registra un experimento nuevo con variantes (por ejemplo `h4`)
 - **THEN** el reporte de `sampling_1` lo incluye en la tabla y en el gráfico sin cambiar el generador
 
-### Requirement: Legible sin servidor y compartible
-El reporte SHALL ser un único archivo HTML con las figuras embebidas, que se abre desde el repo sin servidor ni
-dependencias, y SHALL poder publicarse tal cual para el tutor y el grupo.
+### Requirement: Página del sitio, compartible
+El reporte SHALL ser una página del sitio de informes: un único archivo con encabezado YAML y cuerpo HTML, con las
+figuras embebidas y sin dependencias fuera del sitio, que toma la barra lateral, la búsqueda y los estilos del sitio.
+Los colores de veredicto (no pierde, pierde, indeterminado) SHALL verse igual que antes. El reporte SHALL NOT llevar
+`<html>`, `<head>` ni estilos propios.
+
+#### Scenario: Abrir desde el sitio
+- **WHEN** alguien abre el reporte de `sampling_1` en el sitio publicado
+- **THEN** ve el reporte completo con sus figuras, la barra lateral del sitio y las celdas de veredicto coloreadas
 
 #### Scenario: Abrir desde un clon limpio
-- **WHEN** alguien clona el repo y abre `informe/reporte.html`
-- **THEN** ve el reporte completo con sus figuras, sin instalar nada
+- **WHEN** alguien clona el repo y quiere ver `informe/reporte.html`
+- **THEN** lo ve completo con sus figuras usando la vista previa local del sitio, sin instalar nada fuera de lo que pide
+  el README
+
+#### Scenario: Mismos números después del cambio de formato
+- **WHEN** se regeneran los reportes con el formato de página del sitio
+- **THEN** cada tabla de cada `reporte.html` coincide celda por celda con la del reporte anterior al cambio
 
 ### Requirement: Informe escrito por hipótesis
 Cada experimento de hipótesis SHALL tener un `informe/informe.md` con su resultado, sus limitaciones propias y su
