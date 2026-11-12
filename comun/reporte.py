@@ -34,10 +34,13 @@ import pandas as pd
 from comun import variantes as reg
 from comun import ledger as lg
 from comun import rutas
+from comun import baseline as bl
 from comun.baseline import SEMILLAS_FINALES
 from comun.ganancia import aporte, ganancia
 
-N_SEMILLAS = 10
+N_SEMILLAS = len(SEMILLAS_FINALES)  # 20 en la ronda vigente (D5)
+#: Ronda que lee el reporte (`meses_final`); la vigente salvo que se pida otra.
+VENTANA = bl.VENTANA_FINAL
 MES = 201910
 SIN_REPORTE = {"C", "C-rep"}  # variantes del control: no tienen Δ, van en la fila C
 PALETA = ["#2a6fb0", "#c4501b", "#2e8b57", "#8e5ea2", "#b8860b", "#c0392b"]
@@ -138,6 +141,11 @@ def _absolutas(fin: pd.DataFrame, base: Path) -> pd.DataFrame:
     return fin
 
 
+def _ronda(resultados: pd.DataFrame) -> pd.DataFrame:
+    """Los finales de la ronda vigente (`baseline.VENTANA_FINAL`): las tablas no mezclan rondas (D9)."""
+    return resultados[(resultados["etapa"] == "final") & (resultados["meses_final"] == VENTANA)]
+
+
 def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(finales de los ledgers `exps`, apareado de todos los dueños de variantes). Las rutas de curvas y predicciones
     salen absolutas."""
@@ -146,7 +154,7 @@ def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
         f = rutas.ledger(e) / "resultados.csv"
         if f.exists():
             r = lg.leer_csv(f)
-            finales.append(_absolutas(r[r["etapa"] == "final"], rutas.ledger(e)))
+            finales.append(_absolutas(_ronda(r), rutas.ledger(e)))
     fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=["variante"])
     if "replica_opt" in fin:  # lo de siempre es la réplica 0; las demás las lee `cargar_replicas`
         fin = fin[lg.con_replica(fin)["replica_opt"] == 0]
@@ -163,7 +171,7 @@ def cargar_replicas(exps: list[str], n_est: int) -> tuple[pd.DataFrame, pd.DataF
         led = rutas.ledger(e)
         if (led / "resultados.csv").exists():
             r = lg.leer_csv(led / "resultados.csv")
-            finales.append(_absolutas(r[r["etapa"] == "final"], led))
+            finales.append(_absolutas(_ronda(r), led))
         if (led / "estudios.csv").exists():
             estudios.append(lg.leer_csv(led / "estudios.csv"))
         if (led / "replicas.csv").exists():
@@ -276,23 +284,34 @@ def _m(x: float) -> str:
     return f"{x / 1e6:,.2f}"
 
 
+def _a(x: float) -> str:
+    return f"{x:+.4f}"
+
+
+def _auc_ic(r) -> str:
+    """ΔAUC en 201910 con su IC 95%; `pendiente` si la tabla no lo trae (ledger de una ronda anterior)."""
+    if r is None or pd.isna(r.get("delta_auc_media", float("nan"))) or pd.isna(r.get("delta_auc_ic_inf", float("nan"))):
+        return "pendiente"
+    return f"{_a(r['delta_auc_media'])} [{_a(r['delta_auc_ic_inf'])}; {_a(r['delta_auc_ic_sup'])}]"
+
+
 def tabla_variantes(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
     cab = ("variante", "hipótesis", "semillas", "G media (M$)", "Δ media (M$)", "IC 95% de Δ (M$)", "semillas ganadas",
-           "T (s)", "A", "veredicto", "vale la pena")
+           "ΔAUC [IC 95%]", "T (s)", "A", "veredicto", "vale la pena")
     filas = []
     if not ap.empty:
-        filas.append(["C", "control", estado("C", fin)[0], _m(ap["g_control"].iloc[0]), "—", "—", "—",
+        filas.append(["C", "control", estado("C", fin)[0], _m(ap["g_control"].iloc[0]), "—", "—", "—", "—",
                       f"{ap['tiempo_total_control_s'].iloc[0]:,.0f}", "1,00", "—", "—"])
     for b in ctx.variantes:
         r, n = fila(ap, b), estado(b, fin)[0]
         if r is None:
-            filas.append([b, ctx.hip_de[b], n] + ["pendiente"] * 8)
+            filas.append([b, ctx.hip_de[b], n] + ["pendiente"] * 9)
             continue
         v = veredicto(ap, fin, b)
         vale = "sí" if v in ("no pierde", "gana") and r["aceleracion"] >= A_VALE else "no"
         filas.append([b, ctx.hip_de[b], int(r["n_semillas"]), _m(r["g_control"] + r["delta_g_media"]),
                       _m(r["delta_g_media"]), f"[{_m(r['delta_g_ic_inf'])}, {_m(r['delta_g_ic_sup'])}]",
-                      f"{int(r['semillas_ganadas'])}/{int(r['n_semillas'])}", f"{r['tiempo_total_s']:,.0f}",
+                      f"{int(r['semillas_ganadas'])}/{int(r['n_semillas'])}", _auc_ic(r), f"{r['tiempo_total_s']:,.0f}",
                       f"{r['aceleracion']:.2f}", v, vale if not v.startswith("pendiente") else "pendiente"])
     return html_tabla(cab, filas)
 
@@ -512,12 +531,16 @@ def fila_bloque_a(ctx: Contexto, b: str, fin: pd.DataFrame, ap: pd.DataFrame, re
     """Una fila del bloque A, con todo lo que muestran la tabla HTML y `tabla_resultados.md`."""
     r, rr = fila(ap, b), (rep.loc[b] if b in rep.index else None)
     con_rep = rr is not None and pd.notna(rr.get("delta_g_media"))
-    out = {"variante": b, "hipotesis": ctx.hip_de[b], "d0": None, "dR": None, "G": None, "T": None, "A": None,
+    out = {"variante": b, "hipotesis": ctx.hip_de[b], "d0": None, "dR": None, "G": None, "T": None, "A": None, "dauc": "pendiente",
            "ti_rep": ti_rep, "ti_boot": ti_boot, "k0": k0, "nota": ""}
     if r is not None:
         out.update(G=float(r["g_control"] + r["delta_g_media"]), T=float(r["tiempo_total_s"]), A=float(r["aceleracion"]),
                    d0=(float(r["delta_g_media"]), float(r["delta_g_ic_inf"]), float(r["delta_g_ic_sup"])))
+    if r is not None:
+        out["dauc"] = _auc_ic(r) + " (réplica 0)"
     if con_rep:
+        if pd.notna(rr.get("delta_auc_media", float("nan"))):
+            out["dauc"] = _auc_ic(rr) + f" (R={int(rr['n_replicas'])})"
         out["dR"] = (float(rr["delta_g_media"]), float(rr["delta_g_ic_inf"]), float(rr["delta_g_ic_sup"]), int(rr["n_replicas"]))
         out["G"] = float(rr["g_media_replicas"])
         if ti_rep and ti_rep["T"] == ti_rep["T"] and ti_rep["T"] > 0:
@@ -558,7 +581,8 @@ AVISO_A = ("Ḡ, T y A salen de la réplica 0 en las variantes sin réplicas; en
 
 
 def referencia_control(a: dict) -> str:
-    txt = f"N* = {a['n_est']:,} envíos; Ḡ_C (réplica 0) = {_m(a['g_c1'])} M$"
+    txt = (f"Final entrenado con {VENTANA}, {N_SEMILLAS} semillas por réplica; N* = {a['n_est']:,} envíos; "
+           f"Ḡ_C (réplica 0) = {_m(a['g_c1'])} M$")
     if a.get("g_cR") is not None:
         txt += f"; Ḡ_C con réplicas = {_m(a['g_cR'])} M$ (R={a['n_cR']})"
     if a["g_c10"] is not None:
@@ -579,12 +603,12 @@ def celdas_bloque_a(f: dict) -> list[str]:
     ti_boot = _ic_txt(tb) if tb else ("no aplica (K<2)" if k0 and k0[2] < 2 else "pendiente")
     dR = f"{_ic_txt(f['dR'][:3])} (R={f['dR'][3]})" if f["dR"] else "—"
     g = (_m(f["G"]) + (f" (R={f['dR'][3]})" if f["dR"] else "")) if f["G"] is not None else "pendiente"
-    return [f["variante"], f["hipotesis"], g, _ic_txt(f["d0"]), dR,
+    return [f["variante"], f["hipotesis"], g, _ic_txt(f["d0"]), dR, f["dauc"],
             f"{f['T']:,.0f}" if f["T"] is not None else "pendiente", f"{f['A']:.2f}" if f["A"] is not None else "pendiente",
             ti_rep, ti_boot, f"{f['veredicto']} ({f['fuente']})"]
 
 
-CAB_A = ("variante", "hipótesis", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "T mediana (s)", "A",
+CAB_A = ("variante", "hipótesis", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "ΔAUC en 201910 [IC]", "T mediana (s)", "A",
          "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)", "veredicto (fuente)")
 
 
@@ -750,12 +774,12 @@ def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: p
     for b in variantes:
         r = fila(ap, b)
         filas.append([b, veredicto(ap, fin, b)] + ([f"{_m(r['delta_g_media'])}",
-                      f"[{_m(r['delta_g_ic_inf'])}, {_m(r['delta_g_ic_sup'])}]", f"{r['aceleracion']:.2f}"]
-                                                  if r is not None else ["pendiente"] * 3))
+                      f"[{_m(r['delta_g_ic_inf'])}, {_m(r['delta_g_ic_sup'])}]", _auc_ic(r), f"{r['aceleracion']:.2f}"]
+                                                  if r is not None else ["pendiente"] * 4))
     return (f"<section><h2>{h} — {html.escape(titulo)}</h2>"
             f"<details open><summary>Predicción y regla (de <code>docs/hipotesis.md</code>)</summary>"
             f"{markdown(md_h, 1)}</details>"
-            + html_tabla(("variante", "veredicto", "Δ media (M$)", "IC 95% (M$)", "A"), filas)
+            + html_tabla(("variante", "veredicto", "Δ media (M$)", "IC 95% (M$)", "ΔAUC [IC 95%]", "A"), filas)
             + fig_bandas(ctx, h, fin, ap, figuras) + "</section>")
 
 
@@ -798,7 +822,7 @@ def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str |
         intro = (markdown("## Variantes\n" + seccion(dis, "Variantes"))
                  + "<p>Las reglas, G, Δ, δ, T, A y N* están en <code>control/docs/hipotesis.md</code> "
                    "(<a href='../../control/informe/reporte.html'>reporte del control</a>).</p>")
-    n_est = f"N* = {int(ap['n_estrella'].iloc[0]):,} envíos (de 201908); δ = {_m(ap['delta_g_margen'].iloc[0])} M$" \
+    n_est = f"Final entrenado con {VENTANA}, {N_SEMILLAS} semillas; N* = {int(ap['n_estrella'].iloc[0]):,} envíos (fijo, de la ronda anterior); δ = {_m(ap['delta_g_margen'].iloc[0])} M$" \
         if not ap.empty else "N* pendiente"
     completos = sum(estado(b, fin)[1] for b in ["C", *ctx.variantes])
     titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)

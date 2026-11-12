@@ -299,6 +299,12 @@ def replicas(finales: pd.DataFrame, delta: float, propias: set[str] | None = Non
             fila.update(contra=CONTROL, delta_g_media=dif, delta_g_se=se, delta_g_ic_inf=lo, delta_g_ic_sup=hi,
                         delta_g_margen=delta, veredicto=veredicto(dif, lo, delta),
                         n_replicas_control=int(ctrl["replica_opt"].nunique()), n_semillas_control=len(ctrl))
+            # ΔAUC con réplicas (D10): igual que Δ de ganancia, con el AUC en 201910; el veredicto no lo usa
+            if "auc_test" in g.columns:
+                auc_v = g.groupby("replica_opt")["auc_test"].mean().to_numpy(dtype=float)
+                auc_c = ctrl.groupby("replica_opt")["auc_test"].mean().to_numpy(dtype=float)
+                d_auc, _, lo_a, hi_a = _welch(auc_v, auc_c)
+                fila.update(delta_auc_media=d_auc, delta_auc_ic_inf=lo_a, delta_auc_ic_sup=hi_a)
             if set(g["replica_opt"]) != set(ctrl["replica_opt"]):
                 notas.append("réplicas distintas a las del control")
             if ctrl.groupby("replica_opt").size().lt(semillas_por_replica).any():

@@ -28,6 +28,8 @@ def test_agregador_lista_todos_los_variantes_de_las_hipotesis():
 def test_hipotesis_nueva_aparece_sin_tocar_el_generador(monkeypatch):
     nuevo = reg.Variante("X1", "h1", "uniforme", 0.7, "U0.5")
     monkeypatch.setitem(reg.VARIANTES, "X1", nuevo)
+    monkeypatch.setattr(reporte, "N_SEMILLAS", 10)
+    monkeypatch.setattr(reporte, "VENTANA", "201903-201906")  # hasta que haya finales de la ronda nueva
     assert "X1" in reporte.Contexto(reg.AGREGADOR).variantes
     assert "X1" in reporte.generar(reg.AGREGADOR)
 
@@ -62,7 +64,7 @@ def test_variante_de_una_replica_lleva_la_nota_sin_replicas():
     f = reporte.fila_bloque_a(ctx, "U0.1", fin, ap, pd.DataFrame(), None, None, None)
     assert f["nota"] == "sin réplicas" and f["fuente"] == "réplica 0" and f["dR"] is None
     celdas = reporte.celdas_bloque_a(f)
-    assert celdas[4] == "—" and celdas[7] == "sin réplicas"
+    assert celdas[4] == "—" and celdas[8] == "sin réplicas"
 
 
 def test_variante_con_replicas_marca_su_g_y_la_referencia_del_control():
@@ -96,7 +98,7 @@ def _predicciones(tmp_path, variante, semilla_azar, k):
 
 def test_bootstrap_de_clientes_identico_en_dos_corridas(tmp_path):
     import pandas as pd
-    fin = pd.DataFrame(_predicciones(tmp_path, "C", 1, 10) + _predicciones(tmp_path, "U0.5", 2, 10))
+    fin = pd.DataFrame(_predicciones(tmp_path, "C", 1, 20) + _predicciones(tmp_path, "U0.5", 2, 20))
     datos = {"U0.5": (10.0, 5.0, 3, 1.0)}
     a = reporte.bootstrap_tiempo_igual(fin, datos, 300, n_boot=50)
     b = reporte.bootstrap_tiempo_igual(fin, datos, 300, n_boot=50)

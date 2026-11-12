@@ -56,7 +56,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
   Antes de cambiar nada, copiar `apareado.csv` y `replicas.csv` de cada experimento a `ledger/ronda_201903-201906/`.
   Verificar que `consolidar --meses-final 201903-201906` las reproduce byte a byte.
-- [ ] 2.5 `comun/ledger.py`: ΔAUC con réplicas en `replicas.csv` (D10). `comun/reporte.py`: rotula la ventana del final y
+- [x] 2.5 `comun/ledger.py`: ΔAUC con réplicas en `replicas.csv` (D10). `comun/reporte.py`: rotula la ventana del final y
   la cantidad de semillas, y suma la columna de ΔAUC con su IC al bloque A y a los reportes por hipótesis. Test con
   ledgers sintéticos: ΔAUC con réplicas coincide con un cálculo a mano y el veredicto no cambia con el AUC.
   Además: `scripts/comparar_rondas.py` escribe
