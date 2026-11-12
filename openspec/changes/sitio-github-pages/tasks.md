@@ -10,9 +10,9 @@ No requiere corridas ni datos. Cada grupo es una sesión (Sonnet salvo que diga 
 
 ## 2. Reporte como página del sitio (sesión: Sonnet; cambio en `comun/`)
 
-- [ ] 2.1 Foto previa: guardar las tablas de los seis `reporte.html` actuales en el scratchpad (mismo método que `scripts/foto_renombre.py`); verificar que hay seis archivos con las tablas
-- [ ] 2.2 `comun/reporte.py` (D4): `generar_con_tabla` devuelve el encabezado YAML mínimo más `cuerpo`, sin `<!doctype>`, `<html>`, `<head>`, `<title>` ni `<style>`; quitar `CSS` y pasar las reglas de veredicto, `.pend` e `img` a `_sass/custom/custom.scss`; actualizar el docstring y la ayuda; sumar a `tests/test_reporte.py` que la salida empieza con `---` y no contiene `<html` ni `<style`; verificar que `pytest` pasa
-- [ ] 2.3 Regenerar `python -m comun.reporte --todos` y comparar las tablas con la foto de 2.1; verificar diferencia 0 en todas las celdas salvo la fecha de generación, y que en `scripts/sitio.sh serve` las celdas de veredicto del reporte de `sampling_1` salen coloreadas; commitear con «Cambio en comun/: reporte.py emite una página Jekyll»
+- [x] 2.1 Foto previa: guardar las tablas de los seis `reporte.html` actuales en el scratchpad (mismo método que `scripts/foto_renombre.py`); verificar que hay seis archivos con las tablas
+- [x] 2.2 `comun/reporte.py` (D4): `generar_con_tabla` devuelve el encabezado YAML mínimo más `cuerpo`, sin `<!doctype>`, `<html>`, `<head>`, `<title>` ni `<style>`; quitar `CSS` y pasar las reglas de veredicto, `.pend` e `img` a `_sass/custom/custom.scss`; actualizar el docstring y la ayuda; sumar a `tests/test_reporte.py` que la salida empieza con `---` y no contiene `<html` ni `<style`; verificar que `pytest` pasa
+- [x] 2.3 Regenerar `python -m comun.reporte --todos` y comparar las tablas con la foto de 2.1; verificar diferencia 0 en todas las celdas salvo la fecha de generación, y que en `scripts/sitio.sh serve` las celdas de veredicto del reporte de `sampling_1` salen coloreadas; commitear con «Cambio en comun/: reporte.py emite una página Jekyll»
 
 ## 3. Navegación, portada y enlaces (sesión: Sonnet; la portada la revisa Opus en 5.1)
 
