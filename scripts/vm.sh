@@ -128,10 +128,25 @@ borrar() {
 }
 trap borrar EXIT
 
-echo "== creando $NOMBRE (n2-highmem-8, Ice Lake, spot) en $ZONA"
-$G instances create "$NOMBRE" --zone="$ZONA" \
-  --source-instance-template="projects/$PROYECTO/regions/$REGION/instanceTemplates/$TEMPLATE" \
-  --machine-type=n2-highmem-8 --min-cpu-platform="Intel Ice Lake"
+# A pedido por defecto: las spot se reclaman a los minutos cuando falta capacidad y se pierde lo no traído.
+# PROVISIONING=SPOT usa el template del curso tal cual. El template fija preemptible=true y gcloud no deja pisarlo, así que
+# la VM a pedido repite sus propiedades (imagen labo-family, disco 256 GB, red, cuenta, etiquetas, shielded) sin el scheduling.
+PROVISIONING=${PROVISIONING:-STANDARD}
+echo "== creando $NOMBRE (n2-highmem-8, Ice Lake, $PROVISIONING) en $ZONA"
+if [ "$PROVISIONING" = SPOT ]; then
+  $G instances create "$NOMBRE" --zone="$ZONA" \
+    --source-instance-template="projects/$PROYECTO/regions/$REGION/instanceTemplates/$TEMPLATE" \
+    --machine-type=n2-highmem-8 --min-cpu-platform="Intel Ice Lake"
+else
+  $G instances create "$NOMBRE" --zone="$ZONA" --machine-type=n2-highmem-8 --min-cpu-platform="Intel Ice Lake" \
+    --provisioning-model=STANDARD --maintenance-policy=MIGRATE \
+    --image-family=labo-family --image-project=machinae --boot-disk-size=256GB --boot-disk-type=pd-standard \
+    --network=default --service-account=411419693023-compute@developer.gserviceaccount.com --scopes=cloud-platform \
+    --tags=https-server,http-server,jupyter-server,rdp-server \
+    --shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring \
+    --metadata=startup-script="#!/bin/bash
+sudo -u ds gcloud config set project $PROYECTO"
+fi
 for i in $(seq 30); do $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command=true >/dev/null 2>&1 && break; sleep 10; done
 
 echo "== copiando el repo @ $COMMIT"
