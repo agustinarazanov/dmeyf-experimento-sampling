@@ -1,0 +1,81 @@
+title: Sampling_1 · DMEyF 2026
+description: Experimento Sampling_1 (comisión lunes). ¿Vale la pena el tradeoff entre velocidad y pérdida de performance?
+theme: just-the-docs
+lang: es
+
+plugins:
+  - jekyll-optional-front-matter
+  - jekyll-relative-links
+  - jekyll-titles-from-headings
+  - jekyll-readme-index
+
+optional_front_matter:
+  remove_originals: true
+
+readme_index:
+  enabled: true
+  remove_originals: true
+
+relative_links:
+  enabled: true
+  collections: false
+
+titles_from_headings:
+  enabled: true
+  strip_title: true
+  collections: false
+
+exclude:
+  - comun
+  - scripts
+  - tests
+  - plantilla
+  - openspec/changes
+  - experimentos/*/ledger
+  - experimentos/*/scripts
+  - experimentos/*/src
+  - vendor
+  - CLAUDE.md
+  - README.md
+  - requirements.txt
+  - Gemfile
+  - Gemfile.lock
+  - "*.py"
+  - "*.sh"
+  - "*.csv"
+  - "*.log"
+  - "*.jsonl"
+  - "*.json"
+  - "*.txt"
+  - "*.gitkeep"
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+  - scope:
+      path: experimentos
+    values:
+      render_with_liquid: false
+  - scope:
+      path: docs
+    values:
+      render_with_liquid: false
+  - scope:
+      path: openspec
+    values:
+      render_with_liquid: false
+
+search_enabled: true
+
+aux_links:
+  Repositorio: https://github.com/agustinarazanov/dmeyf-experimento-sampling
+
+callouts:
+  conclusion:
+    title: Conclusión
+    color: green
+  limitacion:
+    title: Limitación
+    color: yellow
