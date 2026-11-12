@@ -1,0 +1,16 @@
+# Fase 7, réplica 6: estudio F0.5@6 y finales de la ronda 201903-201908 (20 semillas) de todas las variantes con réplicas. Cambio final-con-julio-agosto, D8.
+fast-retrain-opt 0.5 0 optimizar - 6
+uniforme 1 todas final - 6
+opt-muestra 0.25 todas final - 6
+opt-muestra 0.1 todas final - 6
+opt-muestra 0.05 todas final - 6
+opt-muestra-reescalado 0.1 todas final - 6
+opt-muestra-reescalado 0.25 todas final - 6
+opt-muestra-lineal 0.25 todas final - 6
+opt-muestra-lineal 0.1 todas final - 6
+opt-muestra-cliente 0.1 todas final - 6
+clase-dificil 0.1 todas final - 6
+clase-uniforme 0.1 todas final - 6
+fast-retrain 0.05 todas final - 6
+fast-retrain 0.25 todas final - 6
+fast-retrain-opt 0.5 todas final - 6
