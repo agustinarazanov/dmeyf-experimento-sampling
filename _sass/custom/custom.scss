@@ -4,3 +4,119 @@ td.ok { background: #d6ecd9; }
 td.ind { background: #fbefc8; }
 .pend { color: #888; font-style: italic; }
 img { max-width: 100%; }
+
+// Página a lo ancho (reporte-graficos-y-ancho D6). No se toca $content-width: el tema también arma con él los
+// breakpoints md y lg y el centrado. En escritorio el contenido ocupa todo lo que deja la barra lateral, y el texto
+// corrido queda en ~75 caracteres por línea; tablas y figuras sin tope.
+@include mq(md) {
+  .main { max-width: none; }
+}
+
+@include mq(lg) {
+  .side-bar { width: $nav-width; }
+  .side-bar + .main { margin-left: $nav-width; }
+}
+
+.main-content {
+  p, ul, ol, blockquote, dl, details > summary { max-width: 75ch; }
+  .tarjetas, .table-wrapper { max-width: none; }
+}
+
+// Figuras: SVG en línea al ancho del contenido; en pantallas angostas no bajan de 40rem y se desplazan dentro de su
+// recuadro, como las tablas. El SVG sale sin <style>: la regla de matplotlib para los trazos va acá.
+.fig {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+
+  svg {
+    display: block;
+    width: 100%;
+    min-width: 40rem;
+    height: auto;
+  }
+
+  svg * { stroke-linejoin: round; stroke-linecap: butt; }
+}
+
+// Resultados resaltados (D8): las reglas salen del generador; acá solo los colores, los mismos de veredicto que td.*.
+.pill {
+  display: inline-block;
+  padding: 0.05em 0.6em;
+  border-radius: 1em;
+  background: #eeeeee;
+  white-space: nowrap;
+
+  &.pierde { background: #f8d7d0; color: #8a2a1e; }
+  &.ok { background: #d6ecd9; color: #1f5e3a; }
+  &.ind { background: #fbefc8; color: #7a5a00; }
+  &.pend { background: #eeeeee; color: #666666; font-style: italic; }
+}
+
+td .v { white-space: nowrap; }
+
+td.sig-pos .v { font-weight: 700; color: #2e8b57; }
+td.sig-neg .v { font-weight: 700; color: #c0392b; }
+td.mejor .v { font-weight: 700; }
+
+.ic {
+  display: block;
+  font-size: 0.75em;
+  color: #777777;
+  white-space: nowrap;
+}
+
+// Barra del IC: --l y --r son los extremos y --z el 0, en % de una escala común a la columna.
+.icbar {
+  position: relative;
+  display: block;
+  min-width: 5rem;
+  height: 6px;
+  margin-top: 3px;
+  background: #f1f1f1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    left: var(--l);
+    width: calc(var(--r) - var(--l));
+    background: #9a9a9a;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    left: var(--z);
+    width: 1px;
+    background: #333333;
+  }
+}
+
+td.sig-pos .icbar::before { background: #2e8b57; }
+td.sig-neg .icbar::before { background: #c0392b; }
+
+p.nota { font-size: 0.85em; color: #666666; margin-top: 0.25rem; }
+
+// Bloque B: una tarjeta por exploratorio.
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+
+  article {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow-wrap: anywhere;
+  }
+
+  h4 { margin-top: 0; }
+  .autor { color: #666666; margin: 0 0 0.5rem; }
+  dt { font-weight: 700; margin-top: 0.5rem; }
+  dd { margin-left: 0; }
+  .advertencia { color: #7a5a00; }
+}

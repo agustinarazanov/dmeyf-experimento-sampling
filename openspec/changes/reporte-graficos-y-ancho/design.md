@@ -95,8 +95,9 @@ Bloque B:
 - en el markdown, una lista `### carpeta` con viñetas.
 
 ### D6. Ancho y largo de línea con CSS, sin tocar el tema
-- En `_sass/custom/setup.scss`, `$content-width: 100%` (o un tope grande, como 120rem, si el tema rompe con 100%). Eso
-  libera `.main`.
+- ~~En `_sass/custom/setup.scss`, `$content-width: 100%`~~. Al implementar (12-nov) se vio que el tema arma con
+  `$content-width` los breakpoints `md` y `lg` y el centrado, así que cambiarlo rompe el layout. En su lugar, en
+  `custom.scss`: `.main { max-width: none }` desde `md` y la barra lateral de ancho fijo desde `lg`.
 - En `custom.scss`, `.main-content > p, li, blockquote, dl { max-width: 75ch; }`.
 - Tablas y figuras sin tope. El tema ya envuelve las tablas en `.table-wrapper` con `overflow-x: auto`. Las tablas
   generadas por `reporte.py` se envuelven igual, con `<div class="table-wrapper">`.

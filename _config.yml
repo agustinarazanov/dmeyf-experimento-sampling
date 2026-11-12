@@ -382,6 +382,12 @@ defaults:
       parent: "Especificaciones"
       nav_order: 6
   - scope:
+      path: openspec/specs/sitio-informes/spec.md
+    values:
+      title: "sitio-informes"
+      parent: "Especificaciones"
+      nav_order: 7
+  - scope:
       path: experimentos/sampling_1/README.md
     values:
       title: "Sampling_1 (README)"

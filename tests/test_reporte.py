@@ -52,7 +52,8 @@ def test_exploratorio_sin_csv_sale_pendiente_con_el_nombre_del_archivo(tmp_path)
     (fila,) = reporte.bloque_b(tmp_path)
     assert fila["cifras"] == ["pendiente: falta resultados/falta.csv"]
     assert fila["advertencia"] == "w"
-    assert "pendiente" in reporte.tabla_md(reporte.CAB_B, reporte.filas_b([fila]))
+    assert "  - pendiente: falta resultados/falta.csv" in reporte.lista_b([fila])
+    assert "<li class='pend'>pendiente: falta resultados/falta.csv</li>" in reporte.tarjetas_b([fila])
 
 
 def test_variante_de_una_replica_lleva_la_nota_sin_replicas():
@@ -110,3 +111,128 @@ def test_es_una_pagina_jekyll(exp):
     pagina = reporte.generar(exp)
     assert pagina.startswith("---")
     assert "<html" not in pagina and "<style" not in pagina
+
+
+@pytest.fixture
+def ronda_anterior(monkeypatch):
+    """La ronda 201903-201906 de 10 semillas, completa en el ledger: con ella hay figuras y tablas con números."""
+    monkeypatch.setattr(reporte, "VENTANA", "201903-201906")
+    monkeypatch.setattr(reporte, "N_SEMILLAS", 10)
+
+
+@pytest.fixture(scope="module")
+def pagina_s1():
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(reporte, "VENTANA", "201903-201906")
+        mp.setattr(reporte, "N_SEMILLAS", 10)
+        return reporte.generar(reg.AGREGADOR)
+
+
+@pytest.mark.parametrize("exp", ["h3", reg.AGREGADOR])
+def test_con_figuras_dos_veces_da_lo_mismo_en_svg(ronda_anterior, exp):
+    pagina = reporte.generar(exp)
+    assert "<svg" in pagina and "data:image/png" not in pagina
+    assert "<html" not in pagina and "<style" not in pagina
+    assert sin_fecha(pagina) == sin_fecha(reporte.generar(exp))
+
+
+def test_figuras_guarda_png(ronda_anterior, tmp_path):
+    reporte.generar("h1", tmp_path)
+    assert {p.suffix for p in tmp_path.iterdir()} == {".png"}
+
+
+def _figura(pagina: str, nombre: str) -> str:
+    m = re.search(rf'<figure class="fig" id="fig-{nombre}".*?</figure>', pagina, re.S)
+    assert m, f"falta la figura {nombre}"
+    return m.group(0)
+
+
+def _textos(svg: str) -> list[str]:
+    return re.findall(r"<text[^>]*>([^<]*)</text>", svg)
+
+
+@pytest.mark.parametrize("exp, nombre", [(reg.AGREGADOR, "tradeoff"), ("h1", "tradeoff_h1")])
+def test_tradeoff_una_variante_por_fila_y_el_titulo(ronda_anterior, exp, nombre):
+    pagina = reporte.generar(exp)
+    textos = _textos(_figura(pagina, nombre))
+    assert any(t.startswith("Tradeoff por variante") for t in textos)
+    ctx = reporte.Contexto(exp)
+    ap = reporte.cargar([reg.CONTROL, *ctx.exps])[1]
+    for b in ctx.variantes:  # las que tienen Δ, una fila cada una; las pendientes no se dibujan
+        assert textos.count(f"{b} ({ctx.hip_de[b]})") == (1 if b in ap.index else 0)
+    # va antes de las tablas de resultados (las generadas; las de los docs vienen antes, en la introducción)
+    assert pagina.index(f'id="fig-{nombre}"') < pagina.index("<div class='table-wrapper'>")
+
+
+def test_fraccion_sin_familias_de_dos_tasas_sale_pendiente(monkeypatch):
+    for k, v in list(reg.VARIANTES.items()):
+        monkeypatch.setitem(reg.VARIANTES, k, v._replace(tasa=1.0))
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    f = dict(variante="U0.1", hipotesis="H1", dR=None, d0=(1.0, 0.0, 2.0))
+    assert "pendiente" in reporte.fig_fraccion(ctx, {"filas": [f, dict(f, variante="U0.5")], "delta": 1.0}, None)
+
+
+def test_desplazador_separa_etiquetas_en_el_mismo_punto():
+    (x1, y1), (x2, y2) = reporte.desplazar([(0.5, 0.5), (0.5, 0.5)], alto=0.07, ancho=0.2)
+    assert abs(y1 - y2) >= 0.07 - 1e-9
+    # tres etiquetas pegadas cerca del techo se apilan hacia abajo y quedan dentro del panel
+    pos = reporte.desplazar_dentro([(0.5, 0.9), (0.5, 0.9), (0.52, 0.91)], alto=0.07, ancho=0.2)
+    assert max(y for _, y in pos) <= 0.97 and len({round(y, 6) for _, y in pos}) == 3
+
+
+def test_sin_replicas_los_tres_graficos_salen_pendientes(ronda_anterior, monkeypatch):
+    import pandas as pd
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    a = {"filas": [], "rep": pd.DataFrame(), "g_rep": {}}
+    for fig in (reporte.fig_replicas, reporte.fig_varianza, reporte.fig_diferencias):
+        assert "class='pend'" in fig(ctx, a, None)
+    cargar = reporte.cargar_replicas
+    monkeypatch.setattr(reporte, "cargar_replicas",
+                        lambda exps, n: (*cargar(exps, n)[:2], pd.DataFrame(columns=["variante"]).set_index("variante")))
+    pagina = reporte.generar(reg.AGREGADOR)
+    assert "pendiente: ninguna variante tiene réplicas" in pagina and 'id="fig-tradeoff"' in pagina
+
+
+def _tabla(pagina: str, primera: str) -> str:
+    m = re.search(rf"<table><tr><th>{re.escape(primera)}</th>.*?</table>", pagina, re.S)
+    assert m
+    return m.group(0)
+
+
+def _filas(tabla: str) -> dict[str, list[str]]:
+    filas = re.findall(r"<tr>(.*?)</tr>", tabla, re.S)[1:]
+    celdas = [re.findall(r"<td[^>]*>.*?</td>", f, re.S) for f in filas]
+    return {re.sub(r"<[^>]+>", "", c[0]): c for c in celdas}
+
+
+def test_resumen_corto(pagina_s1):
+    resumen = re.search(r"<table><tr><th>variante</th><th>hipótesis</th><th>R</th>.*?</table>", pagina_s1, re.S).group(0)
+    assert len(re.findall(r"<th>", resumen.split("</tr>")[0])) <= 6
+    for celdas in _filas(resumen).values():
+        assert all(c.count("class='ic'") <= 1 for c in celdas)
+    assert "<details><summary>Detalle del bloque A</summary>" in pagina_s1
+    assert "(R=" not in resumen and "no aplica" not in resumen and "sin réplicas" not in resumen
+
+
+def test_resaltado(pagina_s1):
+    resumen = re.search(r"<table><tr><th>variante</th><th>hipótesis</th><th>R</th>.*?</table>", pagina_s1, re.S).group(0)
+    filas = _filas(resumen)
+    assert "class='sig-neg'" in filas["U0.05"][3]
+    assert "<span class='pill pierde'>pierde</span>" in filas["U0.05"][5]
+    for j in (3, 4):
+        assert sum("mejor" in c[j] for c in filas.values()) == 1
+    assert "mejor" in filas["H4F-0.05"][4]
+
+
+def test_regenerar_resalta_igual(pagina_s1, ronda_anterior):
+    clases = lambda p: re.findall(r"class='([^']*)'", p)
+    assert clases(pagina_s1) == clases(reporte.generar(reg.AGREGADOR))
+
+
+def test_tabla_de_resultados_conserva_el_bloque_a(ronda_anterior):
+    """El bloque A de `tabla_resultados.md` sigue saliendo de `celdas_bloque_a`, con su (R=n) y sus notas en texto."""
+    md = reporte.generar_con_tabla(reg.AGREGADOR)[1]
+    bloque_a = md.split("## Bloque B")[0]
+    assert "| " + " | ".join(reporte.CAB_A) + " |" in bloque_a
+    assert "(R=8)" in bloque_a and "sin réplicas" in bloque_a
+    assert "### experimentos/" in md.split("## Bloque B")[1]
