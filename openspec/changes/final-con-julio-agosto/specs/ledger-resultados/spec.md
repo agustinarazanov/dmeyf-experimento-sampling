@@ -18,6 +18,7 @@ optimización y entrenamiento, memoria máxima, tipo de máquina, hilos, commit,
 Para cada variante con al menos dos réplicas, y con el control también en al menos dos, el sistema SHALL derivar:
 - la ganancia media de cada réplica, promediando sus semillas finales;
 - **Δ con réplicas**: la media de esas ganancias menos la del control, con IC 95% de Welch entre réplicas;
+- **ΔAUC con réplicas**: lo mismo con el AUC en 201910 de cada réplica, promediando sus semillas finales;
 - el veredicto con las reglas comunes de `control`: δ y N\* fijos, sin recalcular;
 - la descomposición de la varianza de G en una parte entre réplicas y otra entre semillas finales dentro de cada
   réplica.
@@ -39,6 +40,11 @@ en el `ledger/replicas.csv` de cada experimento, solo con sus variantes.
 - **WHEN** `C` tiene 8 réplicas de 20 semillas
 - **THEN** `replicas.csv` tiene, para `C`, el desvío entre réplicas y el desvío medio entre semillas dentro de una
   réplica, y su suma de cuadrados reproduce la varianza total de las 160 ganancias
+
+#### Scenario: AUC con réplicas
+- **WHEN** se consolida `h4` con 8 réplicas de `H4O-0.5` y de `C`
+- **THEN** `replicas.csv` tiene, para `H4O-0.5`, la media de ΔAUC en 201910 y su IC de Welch entre réplicas, junto a Δ
+  de ganancia
 
 ## ADDED Requirements
 

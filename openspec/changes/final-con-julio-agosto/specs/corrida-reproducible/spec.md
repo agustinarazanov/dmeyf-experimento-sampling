@@ -69,6 +69,22 @@ validar ni evaluar.
 - **WHEN** el panel guardado en la máquina no tiene filas de 201907
 - **THEN** el comando lo reconstruye desde el crudo antes de entrenar el final
 
+### Requirement: Búsqueda sobre el set del final
+La variante `H4O-0.5` de `h4` SHALL optimizar y entrenar su final con la misma receta: todas las bajas y el 50 % de las
+CONTINUA, con peso 2 en las CONTINUA. En `optimizar` la receta se aplica a 201903–201906 con la semilla de la réplica y
+el AUC se mide en 201908 completo; en el final, a 201903–201908 con la semilla final. Su estudio SHALL ser `F0.5`
+(`F0.5@k`), con dueño `h4`, y su tiempo de optimización SHALL ser el de ese estudio.
+
+#### Scenario: Optimización de H4O-0.5
+- **WHEN** se corre la optimización de `H4O-0.5` con `--replica 2`
+- **THEN** el estudio `F0.5@2` entrena cada trial con todas las bajas y el 50 % de las CONTINUA sorteadas con semilla 2,
+  con peso 2, y guarda los hiperparámetros en `experimentos/h4/ledger/hp/F0.5@2.json`
+
+#### Scenario: Final de H4O-0.5
+- **WHEN** se corre el final de `H4O-0.5` en la réplica 2 con la semilla 100003
+- **THEN** lee `F0.5@2`, entrena con todas las bajas de 201903–201908 y el 50 % de sus CONTINUA sorteadas con 100003,
+  con peso 2, y evalúa en 201910
+
 ### Requirement: Corte N* fijo entre rondas
 N\* SHALL ser 3.300 envíos en toda ronda cuyo final entrene con 201908. Es el valor calculado en validación (201908) en la
 ronda con final 201903–201906, con modelos que no vieron 201908. Ninguna curva de 201908 de un final que entrenó con

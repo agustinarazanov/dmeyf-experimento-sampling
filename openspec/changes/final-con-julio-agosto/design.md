@@ -20,14 +20,18 @@ El motivo está en `proposal.md`. Estado actual del código:
 **Goals:**
 - Una ronda nueva de finales, con train del final 201903–201908 y 20 semillas, para todas las celdas que hoy tienen
   finales, sin tocar estudios ni hiperparámetros.
+- Una sola variante con estudio nuevo, `H4O-0.5` (D11).
+- ΔAUC en test al lado de Δ de ganancia en todas las tablas (D10).
 - Que la ronda anterior se pueda seguir consolidando y comparar con la nueva.
 
 **Non-Goals:**
-- Volver a optimizar o cambiar el espacio de búsqueda.
+- Volver a optimizar las variantes que ya tienen estudio, o cambiar el espacio de búsqueda.
 - Volver a correr los exploratorios (Luis 50 semillas, Martín, Luis 20 semillas). Quedan con su protocolo y su
   advertencia.
 - Ventana corrida 201905–201908. Si el tutor dice que es esa, es otro cambio.
-- Cambiar el spec `reporte-visual`, que lo está tocando `sitio-github-pages`.
+- Tocar el requisito de `reporte-visual` que cambia `sitio-github-pages` («Legible sin servidor y compartible»). Este
+  cambio solo modifica «Comparación limpia en dos bloques»; el que se archive segundo sincroniza el spec completo.
+- Un veredicto por AUC. La regla escrita antes de correr decide por ganancia (D10).
 
 ## Decisions
 
@@ -96,6 +100,8 @@ idea ya está en `H3R` y `H3L`.
 Antes del tag de corridas, `control/docs/hipotesis.md` suma una predicción y una regla para la ronda:
 - ningún veredicto cambia de *gana* o *no pierde* a *pierde*, ni al revés;
 - el IC por semilla se angosta del orden de √2;
+- la predicción y la regla de `H4O-0.5` contra `C` y contra `H4F-0.05` se escriben en `h4/docs/hipotesis.md`
+  (tarea 1.1), con umbral numérico, antes del tag;
 - con réplicas, el ancho baja menos, porque entre el 33 y el 40 % de la varianza de `H3` es entre réplicas.
 
 Un veredicto que cambie no se descarta: se informa en la tabla de rondas (D9).
@@ -103,9 +109,10 @@ Un veredicto que cambie no se descarta: se informa en la tabla de rondas (D9).
 ### D8. Ejecución
 
 - Listas `experimentos/sampling_1/scripts/fase7_r0.txt` … `fase7_r7.txt`, una por réplica, todas con `--semilla todas`.
-  `r0` suma `h1`, `h2` y `C-rep`. Son 113 celdas × 20 = 2.260 finales.
+  `r0` suma `h1`, `h2` y `C-rep`. Cada lista empieza por el estudio `F0.5@k` y sigue con los finales, `H4O-0.5`
+  incluido. Son 121 celdas × 20 = 2.420 finales y 8 estudios.
 - Todo sale de un tag nuevo, `corridas-v4`, con 4 VMs a la vez (dos tandas).
-- Estimado: ~22 h de cómputo, ~6 h de pared, ≈ US$ 4–5 en spot.
+- Estimado: ~24 h de cómputo, ~7 h de pared, ≈ US$ 5 en spot.
 - Lo lanza Agustina con `scripts/lanzar_fase.sh`. Las sesiones solo usan `--en-seco`.
 
 ### D9. Informes
@@ -114,9 +121,36 @@ Un veredicto que cambie no se descarta: se informa en la tabla de rondas (D9).
 - Un script `scripts/comparar_rondas.py` escribe `experimentos/sampling_1/informe/comparacion_rondas.md`: por variante,
   Δ y veredicto en la ronda anterior y en la nueva, sin números a mano.
 - `informe.md`, el guion y el README pasan a la ronda nueva.
-- § Limitaciones suma las tres adaptaciones del spec de `protocolo-experimental`.
+- Los diseños de `control`, `h3` y `h4` escriben cada apartamiento con su id (208135 métrica, 211718 reoptimizar, 211210
+  ventana) y su justificación. § Limitaciones lista solo los que quedan sin justificar.
 - Un párrafo en el README de `validacion_20_semillas` remite a la ronda nueva, que corre nuestro protocolo con 20
   semillas.
+
+### D10. AUC al lado de la ganancia
+
+`apareado.csv` ya tiene `delta_auc_media` y su IC por semilla. Se agregan:
+- en `replicas.csv`, ΔAUC con réplicas (media de AUC en 201910 por réplica, Welch entre réplicas), igual que Δ de
+  ganancia;
+- en el bloque A y en los reportes por hipótesis, una columna de ΔAUC con su IC;
+- en el informe, una frase por hipótesis cuando AUC y ganancia van en direcciones distintas.
+
+El veredicto sigue siendo el de ganancia porque así está escrita la regla, y δ está definido en pesos. Un umbral de
+AUC sería una regla nueva escrita después de haber visto los AUC de la ronda anterior.
+
+### D11. `H4O-0.5`
+
+- Método nuevo `fast-retrain-opt`. En `optimizar`, la muestra es la receta de `fast_retrain` (todas las bajas + 50 % de
+  CONTINUA) con la semilla de la réplica, y los pesos de `pesos` se aplican al `Dataset` de cada trial. La validación es
+  201908 completo, sin pesos.
+- En el final, la misma receta sobre 201903–201908 con la semilla final.
+- Registro: `Variante("H4O-0.5", "h4", "fast-retrain-opt", 0.5, "F0.5", replicas=True)`, estudio `F0.5` con dueño `h4`.
+  `PARES_WELCH` suma `("H4O-0.5", "H4F-0.05")`.
+- La tasa 0,5 es la fracción f de CONTINUA, no una r de muestra de búsqueda. `ajustar_hp` no reescala.
+- `h4/docs/hipotesis.md` suma la predicción y la regla antes del tag (D7) y declara que la idea viene del "siempre OP" del
+  tutor (211718), no de mirar 201910.
+
+*Alternativa:* reoptimizar también `H4F-0.25`. Se descarta: con `F0.5` alcanza para ver si reoptimizar sobre el set del
+final cambia algo, y la búsqueda de `H4O` no depende de r.
 
 ## Risks / Trade-offs
 
@@ -129,6 +163,8 @@ Un veredicto que cambie no se descarta: se informa en la tabla de rondas (D9).
 - **[Interrupción de VMs spot]** → `existe_fila` retoma por semilla, igual que en las fases anteriores.
 - **[El bucket queda con el formato viejo de ledger]** → La migración de D4 corre también sobre la copia del bucket, y se
   verifica bajándola de nuevo (como en `renombrar-brazos` 2.5).
+- **[`H4O-0.5` solo existe en la ronda nueva]** → No entra en la tabla de rondas; su comparación es contra `C` y
+  `H4F-0.05` de la misma ronda.
 - **[La ventana correcta era 201905–201908]** → Las listas y el código no dependen de que sea 03–08: es una constante y
   una ronda más. Se declara en limitaciones hasta que haya respuesta.
 

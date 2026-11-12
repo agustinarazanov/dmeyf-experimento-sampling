@@ -9,13 +9,16 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   - N\* = 3.300 fijo (D3);
   - la lista de 20 semillas en orden (D5);
   - la predicción y la regla de la ronda (D7);
-  - las tres adaptaciones del spec de `protocolo-experimental`, con sus ids de Zulip.
+  - cada apartamiento con su id y su justificación: la decisión por ganancia con AUC al lado (208135, D10) y la ventana
+    del final (211210).
 
-  Verificar con un grep que cada adaptación tiene su id y que la regla tiene umbral numérico.
+  `h4/docs/hipotesis.md`: `H4O-0.5` con su predicción y regla contra `C` y contra `H4F-0.05`, declarando que viene de
+  211718 (D11). Verificar con un grep que cada apartamiento tiene su id y cada regla, umbral numérico.
 - [ ] 1.2 `control/docs/diseno.md`, el `docs/diseno.md` de cada hipótesis y `sampling_1/docs/diseno.md`:
   - la ronda nueva;
   - la fase 7 (D8) con horas y costo;
-  - en `h3` y `h4`, la nota de que `H3` y `H4F` no reoptimizan para el final (211718).
+  - en `h3`, por qué `H3` no reoptimiza para el final (es la hipótesis, 211718);
+  - en `h4`, `H4O-0.5` y su estudio `F0.5` con 8 réplicas, como respuesta a 211718 para `H4F`.
 
   Anotar 211210 y 211718 en la bitácora de `sampling_1`. Verificar que los enlaces existen.
 - [ ] 1.3 Revisión en sesión limpia de hipótesis y diseño con `docs/revision.md` § 1 y § 2, y cierre en la bitácora.
@@ -53,19 +56,27 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
   Antes de cambiar nada, copiar `apareado.csv` y `replicas.csv` de cada experimento a `ledger/ronda_201903-201906/`.
   Verificar que `consolidar --meses-final 201903-201906` las reproduce byte a byte.
-- [ ] 2.5 `comun/reporte.py` rotula la ventana del final y la cantidad de semillas. `scripts/comparar_rondas.py` escribe
+- [ ] 2.5 `comun/ledger.py`: ΔAUC con réplicas en `replicas.csv` (D10). `comun/reporte.py`: rotula la ventana del final y
+  la cantidad de semillas, y suma la columna de ΔAUC con su IC al bloque A y a los reportes por hipótesis. Test con
+  ledgers sintéticos: ΔAUC con réplicas coincide con un cálculo a mano y el veredicto no cambia con el AUC.
+  Además: `scripts/comparar_rondas.py` escribe
   `sampling_1/informe/comparacion_rondas.md` (D9). Verificar con un test sobre ledgers sintéticos de dos rondas que la
   tabla no mezcla rondas y muestra los dos δ.
-- [ ] 2.6 Smoke en la Mac con `--filas 20000`:
+- [ ] 2.6 `comun/metodos.py` y `comun/variantes.py`: método `fast-retrain-opt`, variante `H4O-0.5` y estudio `F0.5`
+  con réplicas, par de Welch con `H4F-0.05` (D11). Tests sin datos: la muestra de búsqueda tiene todas las bajas y la
+  mitad de las CONTINUA, los pesos llegan al `Dataset` de cada trial y la validación no lleva pesos. Verificar que
+  `pytest` y `python -m comun.variantes --verificar` pasan.
+- [ ] 2.7 Smoke en la Mac con `--filas 20000`:
   - panel reconstruido;
   - huellas por columna de 201903–201906, 201908 y 201910 iguales a las del panel viejo (D2);
   - un final de `C` y uno de `H4F-0.05` con dos semillas en una salida temporal, con `meses_final = 201903-201908` y sin
-    curva de 201908.
+    curva de 201908;
+  - una optimización de `F0.5@2` con `--trials 3` y un final de `H4O-0.5` que la lee.
 
   Verificar las tres cosas en la salida.
-- [ ] 2.7 Listas `sampling_1/scripts/fase7_r0.txt` … `fase7_r7.txt` (D8). Verificar con `lanzar_fase.sh --en-seco` que
-  cubren las 113 celdas sin repetir, con `--semilla todas`.
-- [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3 y cierre en la bitácora. Crear el tag
+- [ ] 2.8 Listas `sampling_1/scripts/fase7_r0.txt` … `fase7_r7.txt` (D8). Verificar con `lanzar_fase.sh --en-seco` que
+  cubren las 121 celdas y los 8 estudios `F0.5@k` sin repetir, con `--semilla todas`.
+- [ ] 2.9 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3 y cierre en la bitácora. Crear el tag
   `corridas-v4` (lo pushea Agustina).
 
 ## 3. Corridas (VM, todas las lanza Agustina)
@@ -75,7 +86,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 - [ ] 3.2 Verificar la cuota de vCPU y el crédito. Lanzar `fase7_r0` … `fase7_r7` en dos tandas de 4 VMs. Verificar al
   terminar que no quedan VMs encendidas (`gcloud compute instances list`) y anotar horas y costo en la bitácora.
 - [ ] 3.3 `python -m comun.consolidar` (ronda vigente) y `--sanity`. Verificar:
-  - 113 celdas × 20 semillas;
+  - 121 celdas × 20 semillas y 8 estudios `F0.5@k`;
   - todo en `n2-highmem-8`, con `codigo_sucio = False` y `meses_final = 201903-201908`;
   - `n_estrella = 3300` en todas las tablas.
 - [ ] 3.4 Revisión en sesión limpia de las corridas con `docs/revision.md` § 4 y cierre en la bitácora.
@@ -83,10 +94,12 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 ## 4. Informes (sesión: Opus)
 
 - [ ] 4.1 `python -m comun.reporte --todos` y `scripts/comparar_rondas.py`. Aplicar la regla de D7 y escribir el
-  resultado en la bitácora de `control`. Verificar que `comparacion_rondas.md` tiene las 113 celdas, o una fila por
-  variante con réplicas agregadas.
+  resultado en la bitácora de `control`. Verificar que `comparacion_rondas.md` tiene una fila por variante de la
+  ronda anterior (sin `H4O-0.5`, que solo está en la nueva).
 - [ ] 4.2 Actualizar `informe.md` de `h1`–`h4` y de `sampling_1`, el guion y el README a la ronda nueva:
-  - § Limitaciones con las tres adaptaciones y sus ids;
+  - los apartamientos con su id y justificación en cada diseño, y § Limitaciones solo con los no justificados;
+  - ΔAUC al lado de Δ de ganancia, con una frase donde van en direcciones distintas;
+  - el contraste `H4O-0.5` contra `H4F-0.05` en el informe de `h4`;
   - la tabla de rondas;
   - un párrafo en el README de `validacion_20_semillas`.
 
