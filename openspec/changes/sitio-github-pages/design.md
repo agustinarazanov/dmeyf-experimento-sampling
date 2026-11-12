@@ -42,9 +42,22 @@ El workflow (`.github/workflows/pages.yml`) corre en cada push a `main` y a mano
 
 Usa `concurrency: pages` y los permisos `pages: write` e `id-token: write`.
 
-El `Gemfile` pide `jekyll ~> 4.3`, `just-the-docs` y los plugins `jekyll-optional-front-matter` (los `.md` sin
-encabezado se vuelven páginas), `jekyll-relative-links` (los enlaces a `.md` apuntan al `.html` generado) y
-`jekyll-titles-from-headings`. En un grupo `:test` pide `html-proofer`. El `Gemfile.lock` se commitea.
+El `Gemfile` pide `jekyll ~> 4.3`, `just-the-docs ~> 0.10` (resuelve 0.12.0) y estos plugins:
+- `jekyll-optional-front-matter`: los `.md` sin encabezado se vuelven páginas;
+- `jekyll-relative-links`: los enlaces a `.md` apuntan al `.html` generado;
+- `jekyll-titles-from-headings`;
+- `jekyll-readme-index`, ver D2.
+
+En un grupo `:test` pide `html-proofer ~> 5.0`. El `Gemfile.lock` se commitea con las plataformas `arm64-darwin` y
+`x86_64-linux`, esta última para el runner de CI. Ya está hecho (tarea 1.1).
+
+Configuración que la prueba del 12-nov mostró necesaria en `_config.yml`:
+- `optional_front_matter: {remove_originals: true}`. Sin eso, el sitio publica además una copia cruda de cada `.md`
+  junto a su página.
+- `readme_index: {enabled: true, remove_originals: true}`. `jekyll-optional-front-matter` ignora a propósito los
+  archivos llamados `README` (y `LICENSE`, `CONTRIBUTING`, …), así que sin este plugin los README de
+  `h3/sensibilidad_muestra/` y de los exploratorios no se publican. Con él, cada README pasa a ser el `index.html` de su
+  carpeta (URL `experimentos/h3/sensibilidad_muestra/`).
 
 - *Alternativa: build clásico desde la rama, con el gem `github-pages`.* Sin workflow, pero queda en Jekyll 3.10, con
   plugins limitados a una lista blanca, el tema por `remote_theme` y sin un paso donde fallar por enlaces rotos (que la
@@ -56,10 +69,17 @@ encabezado se vuelven páginas), `jekyll-relative-links` (los enlaces a `.md` ap
 
 El sitio se construye desde la raíz porque el contenido vive en `experimentos/`, `docs/` y `openspec/specs/`, y la
 regla de una carpeta por experimento no se toca. `_config.yml` excluye:
-- carpetas: `comun/`, `scripts/`, `tests/`, `plantilla/`, `openspec/changes/`, `.claude/`, `experimentos/*/ledger/`,
-  `experimentos/*/scripts/`, `experimentos/*/src/`, `vendor/`;
-- archivos: `CLAUDE.md`, `README.md` (la portada es `index.md`, ver D5), `requirements.txt`, `Gemfile*`;
-- extensiones: `*.py`, `*.sh`, `*.csv`, `*.log`, `*.jsonl`, `*.json`, `*.txt`.
+- carpetas: `comun`, `scripts`, `tests`, `plantilla`, `openspec/changes`, `experimentos/*/ledger`,
+  `experimentos/*/scripts`, `experimentos/*/src`, `vendor`. `.claude/` y `.github/` ya quedan fuera por empezar con
+  punto;
+- archivos: `CLAUDE.md`, `README.md` (la portada es `index.md`, ver D5), `requirements.txt`, `Gemfile`,
+  `Gemfile.lock`;
+- extensiones: `"*.py"`, `"*.sh"`, `"*.csv"`, `"*.log"`, `"*.jsonl"`, `"*.json"`, `"*.txt"`, `"*.gitkeep"`.
+
+**Sin barra final en los patrones con `*`.** Jekyll compara cada entrada con `File.fnmatch`, y
+`experimentos/*/ledger/` no coincide con la carpeta `experimentos/h1/ledger`. En la prueba se publicaron los ~4.000
+CSV y `_site/` pesó 2 GB; sin la barra pesa 6 MB. Las rutas sin `*` funcionan con o sin barra, pero van sin barra por
+uniformidad. Verificación: `du -sh _site` en el orden de MB y el `find` de la tarea 1.2 vacío.
 
 Lo que no tiene encabezado y no es `.md` se copia tal cual. Así quedan publicados, por ejemplo, los PNG de `figuras/` y
 los HTML originales de los exploratorios de Luis, que sus README enlazan.
@@ -105,8 +125,14 @@ Las páginas de sección (`sitio/*.md`) son nuevas, cortas, y solo dicen qué ha
 La sección se llama «Experimentos» y no «Hipótesis», porque cada experimento tiene una página hija «Hipótesis» y Just
 the Docs resuelve `parent` por título: un mismo título en dos niveles confunde la jerarquía.
 
-Defaults globales: `layout: default`, `render_with_liquid: false`. Ningún documento usa Liquid, y una tabla con `{{`
-no debe romper el build. `index.md` lo reactiva en su propio encabezado si lo necesita.
+Defaults:
+- global (`path: ""`): `layout: default`;
+- `render_with_liquid: false` solo para `experimentos`, `docs` y `openspec`, en tres entradas de `defaults`. Ningún
+  documento usa Liquid, y una tabla con `{{` no debe romper el build.
+
+**No va en el default global.** Los estilos del tema (`assets/css/just-the-docs-*.scss`) son páginas con Liquid
+(`{% include css/just-the-docs.scss.liquid %}`), y con Liquid apagado Sass falla («expected end of rule»).
+`index.md` y `sitio/*.md` quedan con Liquid encendido.
 
 - *Alternativa: un plugin Ruby (`_plugins/`) que derive la navegación de la ruta.* Sumar un experimento quedaría
   automático, pero es otro lenguaje para mantener por cinco entradas de YAML por experimento. Descartada. El paso
@@ -173,6 +199,11 @@ Es el único cambio a documentos. Un enlace a GitHub funciona igual en github.co
 - **[Riesgo] Un experimento nuevo queda fuera de la barra lateral si nadie toca `_config.yml`.** → Just the Docs
   muestra las páginas sin `parent` en el primer nivel, así que no se pierden. El paso queda en `docs/metodo.md`
   § Agregar una hipótesis.
+- **[Riesgo] Los enlaces `…/README.md` tienen que llevar a la página índice de la carpeta.** No está verificado que
+  `jekyll-relative-links` resuelva un README convertido por `jekyll-readme-index`. → Lo detecta `scripts/sitio.sh`.
+  Si falla, el enlace se escribe a la carpeta (`sensibilidad_muestra/`), que funciona en GitHub y en el sitio.
+- **[Riesgo] Archivos sin seguimiento en la copia local** (por ejemplo `Experimentos guion.md` en la raíz) salen en el
+  build local y no en CI. → Se compara contra CI solo lo commiteado. No se agrega un exclude para archivos ajenos.
 - **[Riesgo] `jekyll-relative-links` y `jekyll-optional-front-matter` no son plugins por defecto de Jekyll 4.** → Van
   en el `Gemfile` y en `plugins:`. La tarea 1.x verifica que un `.md` sin encabezado sale como `.html` con el layout.
 - **[Riesgo] La bitácora de `sampling_1` (1.223 líneas) es pesada para la búsqueda (`search.json`).** → Just the Docs

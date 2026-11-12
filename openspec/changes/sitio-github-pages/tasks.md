@@ -4,8 +4,8 @@ No requiere corridas ni datos. Cada grupo es una sesión (Sonnet salvo que diga 
 
 ## 1. Esqueleto del sitio (sesión: Sonnet)
 
-- [ ] 1.1 Crear `Gemfile` (D1: `jekyll ~> 4.3`, `just-the-docs`, `jekyll-optional-front-matter`, `jekyll-relative-links`, `jekyll-titles-from-headings`; `html-proofer` en el grupo `:test`), correr `bundle install` y commitear `Gemfile.lock`; sumar `_site/`, `.jekyll-cache/` y `vendor/` a `.gitignore`; verificar que `bundle exec jekyll -v` imprime 4.x
-- [ ] 1.2 Crear `_config.yml` con el tema, `plugins:`, `exclude:` de D2, defaults globales (`layout: default`, `render_with_liquid: false`), `search_enabled`, `callouts:` (`conclusion`, `limitacion`) y `aux_links` al repo; verificar con `bundle exec jekyll build` que `_site/` tiene `experimentos/h3/docs/hipotesis.html` con el layout del tema y que `find _site -name '*.py' -o -name '*.csv' -o -path '*openspec/changes*' -o -path '*ledger*'` no devuelve nada
+- [x] 1.1 Crear `Gemfile` (D1: `jekyll ~> 4.3`, `just-the-docs`, `jekyll-optional-front-matter`, `jekyll-relative-links`, `jekyll-titles-from-headings`, `jekyll-readme-index`; `html-proofer` en el grupo `:test`), correr `bundle install` y commitear `Gemfile.lock` con la plataforma `x86_64-linux`; sumar `_site/`, `.jekyll-cache/`, `.sass-cache/`, `vendor/` y `.bundle/` a `.gitignore`; verificar que `bundle exec jekyll -v` imprime 4.x (hecho el 12-nov: Jekyll 4.4.1, Just the Docs 0.12.0)
+- [ ] 1.2 Crear `_config.yml` con el tema, `plugins:`, `exclude:` de D2, `optional_front_matter.remove_originals`, `readme_index` (D1), defaults de D3 (`layout: default` global; `render_with_liquid: false` solo en `experimentos`, `docs` y `openspec`), `search_enabled`, `callouts:` (`conclusion`, `limitacion`) y `aux_links` al repo; verificar con `bundle exec jekyll build` que `_site/` tiene `experimentos/h3/docs/hipotesis.html` con el layout del tema y que `find _site -name '*.py' -o -name '*.csv' -o -path '*openspec/changes*' -o -path '*ledger*'` no devuelve nada, que no hay `.md` crudos en `_site/` (`find _site -name '*.md'` vacío), que existen `_site/experimentos/h3/sensibilidad_muestra/index.html` y los `index.html` de los exploratorios, y que `du -sh _site` da del orden de MB (con 2 GB los excludes con barra final no están andando, ver D2)
 - [ ] 1.3 Crear `scripts/sitio.sh` (D6: build + `htmlproofer` con `--disable-external` y los `--ignore-files` de los originales de Luis; subcomando `serve`; acepta `--baseurl`); verificar que corre y listar en la bitácora de `sampling_1` los enlaces rotos que informa (se arreglan en 3.3)
 
 ## 2. Reporte como página del sitio (sesión: Sonnet; cambio en `comun/`)
@@ -29,7 +29,7 @@ No requiere corridas ni datos. Cada grupo es una sesión (Sonnet salvo que diga 
 ## 5. Revisión y puesta en línea
 
 - [ ] 5.1 Revisión en sesión limpia (Opus o subagente `general-purpose`) con `docs/revision.md` § 3 (código) para `reporte.py`, `sitio.sh` y el workflow, y § 5 (informe) para la portada; cierre en la bitácora de `sampling_1` y `comun/tokens.py`; verificar que no quedan ✗ abiertos
-- [ ] 5.2 Agustina: activar Pages con origen «GitHub Actions» (Settings → Pages o `gh api -X POST repos/agustinarazanov/dmeyf-experimento-sampling/pages -f build_type=workflow`) y pushear `main`; verificar que el run del workflow termina en verde, que la portada abre en `https://agustinarazanov.github.io/dmeyf-experimento-sampling/` y que desde el informe de h1 el enlace `reporte.html` abre el reporte dentro del sitio
+- [ ] 5.2 Pushear `main` (lo hace Agustina; Pages ya está activado con origen «GitHub Actions» desde el 12-nov); verificar que el run del workflow termina en verde, que la portada abre en `https://agustinarazanov.github.io/dmeyf-experimento-sampling/` y que desde el informe de h1 el enlace `reporte.html` abre el reporte dentro del sitio
 
 ## Workflow follow-up
 
