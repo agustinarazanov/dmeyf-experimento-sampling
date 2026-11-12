@@ -1303,3 +1303,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - n/a: limitaciones, guion, baseline y bibliografía. La portada no es el informe y enlaza al conjunto, que los tiene.
 - Pendiente: los dos ✗ (`.ruby-version` o `ruby-version` en el workflow, y la ampliación del recuadro de la portada).
   Después, repetir la revisión de esos dos puntos y marcar 5.1.
+- Re-revisión de los dos ✗ (subagente `general-purpose` sin contexto, Opus, 12-nov): ✓ workflow (`8b87d44`:
+  `ruby-version: '3.4'`; Bundler 4.0.9 pide Ruby ≥ 3.2 y nokogiri, google-protobuf, sass-embedded y ffi tienen gema
+  `x86_64-linux-gnu` para 3.4; `x86_64-linux` está en PLATFORMS). ✗ portada (`9a8f53b`): «a tiempo igual gana» de
+  `H4F-0.05` va sin la salvedad del informe (cota inferior cerca de 0, idea vista en 201910), y «No es una mejora de
+  ganancia» queda junto a «gana» sin «por modelo; la ganancia extra, si la hay, viene de ensamblar con el tiempo
+  ahorrado». 5.1 sigue abierta.
