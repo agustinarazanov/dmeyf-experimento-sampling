@@ -29,7 +29,7 @@ No requiere corridas ni datos. Cada grupo es una sesión (Sonnet salvo que diga 
 ## 5. Revisión y puesta en línea
 
 - [x] 5.1 Revisión en sesión limpia (Opus o subagente `general-purpose`) con `docs/revision.md` § 3 (código) para `reporte.py`, `sitio.sh` y el workflow, y § 5 (informe) para la portada; cierre en la bitácora de `sampling_1` y `comun/tokens.py`; verificar que no quedan ✗ abiertos
-- [ ] 5.2 Pushear `main` (lo hace Agustina; Pages ya está activado con origen «GitHub Actions» desde el 12-nov); verificar que el run del workflow termina en verde, que la portada abre en `https://agustinarazanov.github.io/dmeyf-experimento-sampling/` y que desde el informe de h1 el enlace `reporte.html` abre el reporte dentro del sitio
+- [x] 5.2 Pushear `main` (lo hace Agustina; Pages ya está activado con origen «GitHub Actions» desde el 12-nov); verificar que el run del workflow termina en verde, que la portada abre en `https://agustinarazanov.github.io/dmeyf-experimento-sampling/` y que desde el informe de h1 el enlace `reporte.html` abre el reporte dentro del sitio
 
 ## Workflow follow-up
 
