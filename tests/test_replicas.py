@@ -38,7 +38,7 @@ def test_nombre_de_estudio_con_replica():
 def test_variantes_que_admiten_replicas():
     admiten = {b.nombre for b in variantes.VARIANTES.values() if b.replicas}
     assert admiten == {"C", "H3-0.25", "H3-0.1", "H3-0.05", "H3R-0.1", "H3R-0.25", "H3L-0.25", "H3L-0.1", "H3K-0.1",
-                       "H4H-0.1", "H4U-0.1", "H4F-0.05", "H4F-0.25"}
+                       "H4H-0.1", "H4U-0.1", "H4F-0.05", "H4F-0.25", "H4O-0.5"}
     assert variantes.variante("H3R-0.1").estudio == "U0.1" and variantes.variante("H3R-0.1").dueno == "h3"
     assert variantes.variante("H3-0.05").estudio == "U0.05"
 

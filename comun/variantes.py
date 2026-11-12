@@ -39,7 +39,8 @@ PARES_APAREADOS: list[tuple[str, str]] = [
 
 #: Variantes que no comparten estudios y se comparan entre sí sin aparear, con IC de Welch entre réplicas: `a − b`
 #: (`incorporar-aportes` D4: `h4/docs/hipotesis.md` regla 2 y `h3/docs/hipotesis.md` regla 7).
-PARES_WELCH: list[tuple[str, str]] = [("H4H-0.1", "H4U-0.1"), ("H3K-0.1", "H3-0.1")]
+#: `final-con-julio-agosto` D11: `H4O-0.5` (estudio propio sobre la receta de H4F) contra `H4F-0.05` (estudio `U0.05`).
+PARES_WELCH: list[tuple[str, str]] = [("H4H-0.1", "H4U-0.1"), ("H3K-0.1", "H3-0.1"), ("H4O-0.5", "H4F-0.05")]
 
 
 def _t(tasa: float) -> str:
@@ -65,6 +66,8 @@ VARIANTES: dict[str, Variante] = {
         Variante("H4U-0.1", "h4", "clase-uniforme", 0.1, "NU0.1", replicas=True),
         Variante("H4F-0.05", "h4", "fast-retrain", 0.05, "U0.05", replicas=True),
         Variante("H4F-0.25", "h4", "fast-retrain", 0.25, "U0.25", replicas=True),
+        # `final-con-julio-agosto` D11: reoptimiza sobre el set del final (receta de H4F con f = 0,5)
+        Variante("H4O-0.5", "h4", "fast-retrain-opt", 0.5, "F0.5", replicas=True),
     ]
 }
 
@@ -76,6 +79,7 @@ ESTUDIOS: dict[str, str] = {
     "K0.1": "h3",
     "NH0.1": "h4",
     "NU0.1": "h4",
+    "F0.5": "h4",
 }
 
 
@@ -86,7 +90,7 @@ def nombre(metodo: str, tasa: float) -> str:
     if metodo == "opt-muestra-reescalado":
         return f"H3R-{_t(tasa)}"
     for m, prefijo in (("opt-muestra-lineal", "H3L"), ("opt-muestra-cliente", "H3K"), ("clase-dificil", "H4H"),
-                       ("clase-uniforme", "H4U"), ("fast-retrain", "H4F")):
+                       ("clase-uniforme", "H4U"), ("fast-retrain", "H4F"), ("fast-retrain-opt", "H4O")):
         if metodo == m:
             return f"{prefijo}-{_t(tasa)}"
     if metodo == "uniforme":

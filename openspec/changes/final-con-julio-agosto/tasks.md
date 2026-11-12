@@ -62,7 +62,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   Además: `scripts/comparar_rondas.py` escribe
   `sampling_1/informe/comparacion_rondas.md` (D9). Verificar con un test sobre ledgers sintéticos de dos rondas que la
   tabla no mezcla rondas y muestra los dos δ.
-- [ ] 2.6 `comun/metodos.py` y `comun/variantes.py`: método `fast-retrain-opt`, variante `H4O-0.5` y estudio `F0.5`
+- [x] 2.6 `comun/metodos.py` y `comun/variantes.py`: método `fast-retrain-opt`, variante `H4O-0.5` y estudio `F0.5`
   con réplicas, par de Welch con `H4F-0.05` (D11). Tests sin datos: la muestra de búsqueda tiene todas las bajas y la
   mitad de las CONTINUA, los pesos llegan al `Dataset` de cada trial y la validación no lleva pesos. Verificar que
   `pytest` y `python -m comun.variantes --verificar` pasan.
