@@ -107,6 +107,26 @@ formato, porque lo copian los `informe.md` y lo leen los verificadores.
 - **THEN** su bloque A, la tabla de varianza y la de diferencias son idénticos a los de antes del cambio
 - **AND** `python -m scripts.verificar_readme` pasa sin cambios en el README
 
+### Requirement: Página del sitio, compartible
+El reporte SHALL ser una página del sitio de informes: un único archivo con encabezado YAML y cuerpo HTML, con las
+figuras embebidas y sin dependencias fuera del sitio, que toma la barra lateral, la búsqueda y los estilos del sitio.
+Los colores de veredicto (no pierde, pierde, indeterminado) SHALL verse igual que antes. El reporte SHALL NOT llevar
+`<html>`, `<head>` ni estilos propios.
+
+#### Scenario: Abrir desde el sitio
+- **WHEN** alguien abre el reporte de `sampling_1` en el sitio publicado
+- **THEN** ve el reporte completo con sus figuras, la barra lateral del sitio y las celdas de veredicto coloreadas
+
+#### Scenario: Abrir desde un clon limpio
+- **WHEN** alguien clona el repo y quiere ver `informe/reporte.html`
+- **THEN** lo ve completo con sus figuras usando la vista previa local del sitio, sin instalar nada fuera de lo que pide
+  el README
+
+#### Scenario: Mismos números después del cambio de formato
+- **WHEN** se regeneran los reportes con un cambio de presentación (formato de página, tablas resumidas, tarjetas)
+- **THEN** cada número de las tablas del reporte anterior aparece igual en el nuevo, aunque cambie la tabla o la celda
+  donde se muestra
+
 ## ADDED Requirements
 
 ### Requirement: Página a lo ancho

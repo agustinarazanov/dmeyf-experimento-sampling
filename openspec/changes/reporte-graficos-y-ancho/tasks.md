@@ -109,8 +109,13 @@ pasando: `python -m pytest tests/test_reporte.py`.
 
   12-nov: `--figuras` pide un directorio; los PNG fueron al scratchpad. Regeneración en 1 min 19 s. pytest 242 pasan,
   `variantes --verificar`, `verificar_readme` y `scripts/sitio.sh` (build y htmlproofer) pasan; el diff, en 4.4.
-- [ ] 7.2 Revisión en sesión limpia según `docs/revision.md`. Anotar el cierre en la bitácora de `sampling_1` y correr
+- [x] 7.2 Revisión en sesión limpia según `docs/revision.md`. Anotar el cierre en la bitácora de `sampling_1` y correr
   `comun/tokens.py`.
+
+  12-nov: subagente sin contexto. Un ✗ (figuras de `informe/figuras/` de la ronda vieja) y dos hallazgos medios
+  resueltos: PNG regenerados en `informe/figuras/` y requisito «Página del sitio, compartible» en el delta con el
+  escenario «Mismos números…» reescrito (así el follow-up de D7 ya no hace falta al archivar). Hallazgos bajos y
+  pendientes en la bitácora de `sampling_1`.
 
 ## Workflow follow-up
 

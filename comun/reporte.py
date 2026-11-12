@@ -941,7 +941,9 @@ def fig_tiempo_ganancia_paneles(ctx: Contexto, a: dict, figuras: Path | None) ->
     fig.legend([Line2D([], [], color=COLOR_C, marker="s", ls=""),
                 Line2D([], [], color=COLOR_C, marker="D", mfc="white", ls=""),
                 Line2D([], [], color=COLOR_C, ls=":", lw=1)] + marcas,
-               ["control (réplica 0)", f"control (media de {a.get('n_cR')} réplicas)", "control − δ"] + nombres,
+               ["control (réplica 0)",
+                f"control (media de {a['n_cR']} réplicas)" if a.get("n_cR") else "control (sin réplicas)",
+                "control − δ"] + nombres,
                frameon=False, fontsize=8, loc="lower center", ncol=4 + len(marcas))
     fig.suptitle("Tiempo contra ganancia por hipótesis (barras: rango entre réplicas; sin barra: una sola réplica)",
                  fontsize=10)

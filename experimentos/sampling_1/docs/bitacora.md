@@ -1577,3 +1577,40 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     queda en su lugar hasta que lo resuelva.
 - `comun/tokens.py`: dos sesiones sin etapa superan el objetivo de 100.000 (87 turnos, ~186.600 de contexto; 69 turnos,
   ~133.800). Una es la de este orquestador, inflada por los lanzamientos y esperas de la fase 7.
+
+### 12-nov-2026 · reporte-graficos-y-ancho · 4.4, 7.1 y revisión 7.2 (cierre)
+
+- Sesión: `591858f4-0256-47af-b0ed-adbe4fba2a09` (interactiva, toda la aplicación del cambio: archivo de
+  `sitio-github-pages`, grupos 1–7) · modelo: Opus · etapa: **codigo**. Supera el objetivo (115 turnos, ~165.500 de
+  contexto): la infló hacer el cambio entero en una sesión, con capturas de Chrome headless para medir el ancho y
+  mirar figuras en PNG, una compactación de por medio, y la espera a `final-con-julio-agosto` 4.1 sin `/clear`.
+
+- 4.4 y 7.1, retomadas tras `final-con-julio-agosto` 4.1–4.3: esa corrida ya había regenerado con este generador y
+  copiado el bloque B (lista) en `informe.md`. Contra el generador de 6438a0d sobre la misma ronda 201903–201908, el
+  `diff` de `tabla_resultados.md` solo toca el bloque B; pytest 242, `variantes --verificar`, `verificar_readme` y
+  `scripts/sitio.sh` pasan (5888fd3).
+- Revisión 7.2 en sesión limpia (subagente `general-purpose`, Opus, sin contexto), contra el delta, `design.md`,
+  `tasks.md` y `docs/revision.md` §§ 3 y 5. Corrió los tests, el invariante numérico en un worktree (bloque A,
+  varianza y diferencias idénticos; las 40 cifras del bloque B viejo están en la lista) y el determinismo.
+  - § 3 Código: ✓ determinismo (SVG con `hashsalt`, sin `Date` ni `Creator`; regenerar solo cambia la fecha); ✓ nada
+    del dataset en el repo; ✓ cambio en `comun/` anunciado (786704e). n/a el resto (no toca corredor, ledger,
+    muestreo, `consolidar.py` ni `vm.sh`).
+  - § 5 Informe: ✓ decisión con la regla escrita (veredictos idénticos). **✗ → resuelto:** `informe/figuras/` tenía
+    los PNG del 10-nov (ronda 201903–201906) y los citan `informe.md`, los informes de h1 y h2 y el guion; regenerados
+    con `--figuras experimentos/sampling_1/informe/figuras` (se suman tradeoff, tradeoff_h1–h4, fracción, réplicas,
+    diferencias y bandas_H4). n/a el resto (el cambio no toca texto, limitaciones, guion ni bibliografía).
+- Hallazgos y qué se hizo:
+  1. (media) El escenario «Mismos números después del cambio de formato» de `reporte-visual` pedía igualdad celda por
+     celda y el delta no lo tocaba, así que quedaba al archivar. OpenSpec no deja que un MODIFIED omita escenarios:
+     se agregó el requisito «Página del sitio, compartible» al delta con el escenario reescrito (cada número del
+     reporte anterior aparece igual, aunque cambie la tabla o la celda). `openspec validate` pasa.
+  2. (media) Figuras de `informe/figuras/` viejas: el ✗ de arriba, resuelto.
+  3. (baja, pendiente) El desplazador de etiquetas no considera que las etiquetas con `lx > 0.8` se alinean a la
+     derecha: con datos sintéticos (x = 0,62 y 0,82, mismo y) se pisan. Con los datos actuales no pasa (medido).
+  4. (baja, resuelta) La leyenda decía «media de None réplicas» si el control no tiene réplicas; ahora dice «sin
+     réplicas».
+  5. (baja, pendiente) En el detalle plegable del bloque A, las columnas de Δ no marcan el mejor; el resumen sí.
+  6. (observación) En las páginas por hipótesis el tradeoff usa Δ y veredicto con réplicas y la tabla de al lado la
+     réplica 0 (h3: H3-0.25 «gana» en la tabla, «no pierde (con réplicas)» en el bloque A). El color coincide.
+  7. (nit) `fig_tiempo_ganancia` quedó sin uso desde antes de este cambio.
+- Sin ✗ abiertos: la etapa cierra. Archivar el cambio lo decide Agustina; 3, 5 y 6 quedan para un cambio posterior.
