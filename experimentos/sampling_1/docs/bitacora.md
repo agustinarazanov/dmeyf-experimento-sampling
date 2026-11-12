@@ -1354,3 +1354,6 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `H4F-0.05` va sin la salvedad del informe (cota inferior cerca de 0, idea vista en 201910), y «No es una mejora de
   ganancia» queda junto a «gana» sin «por modelo; la ganancia extra, si la hay, viene de ensamblar con el tiempo
   ahorrado». 5.1 sigue abierta.
+- Cierre de 5.1 (12-nov): la portada se corrigió en `75ff536` (salvedad de la cota inferior de `H4F-0.05`, «por modelo; la
+  ganancia extra, si la hay, viene de ensamblar con el tiempo ahorrado», encuadre «La respuesta al tutor se amplía»);
+  el orquestador la comparó frase a frase con § Conclusiones del informe conjunto: ✓. Sin ✗ abiertos; 5.1 cerrada.
