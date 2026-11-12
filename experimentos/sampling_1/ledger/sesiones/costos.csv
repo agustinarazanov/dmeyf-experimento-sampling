@@ -78,3 +78,5 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-10T00:47,6,revisar,claude-opus-5-5,59,1.8799,7be709c8-c7b4-4abf-9874-317b84561cc7,success,0,incorporar-aportes
 2026-11-12T01:13,1,aplicar,claude-opus-5-5,43,1.703,a3097131-5af3-42aa-8dce-ec8fc2e2b611,success,0,final-con-julio-agosto
 2026-11-12T01:21,1,revisar,claude-opus-5-5,27,0.9477,4abfcbbe-dd4e-41b0-bad6-baa94ea26802,success,0,final-con-julio-agosto
+2026-11-12T02:09,2,aplicar,claude-sonnet-5-5,108,2.6148,4f4c3f05-4c91-465d-ab65-33964d9d51ce,success,0,final-con-julio-agosto
+2026-11-12T02:24,2,revisar,claude-opus-5-5,48,1.178,9a929db0-3c80-4b73-b0f2-d056e9c7f2ff,success,0,final-con-julio-agosto
