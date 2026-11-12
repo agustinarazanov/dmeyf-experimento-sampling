@@ -38,6 +38,7 @@ ETAPA_DE_GRUPO_POR_CAMBIO = {
     "renombrar-brazos": {"1": "codigo", "2": "codigo", "3": "informe", "4": "informe"},
     "incorporar-aportes": {"1": "hipotesis", "2": "codigo", "3": "codigo", "4": "corridas", "5": "corridas",
                            "6": "informe"},
+    "sitio-github-pages": {"1": "codigo", "2": "codigo", "3": "codigo", "4": "codigo", "5": "informe"},
 }
 DUENO_SIN_DECLARAR = "sampling_1"
 COLUMNAS = [

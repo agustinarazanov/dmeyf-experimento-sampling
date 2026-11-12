@@ -24,7 +24,7 @@ No requiere corridas ni datos. Cada grupo es una sesión (Sonnet salvo que diga 
 ## 4. Publicación (sesión: Sonnet)
 
 - [x] 4.1 `.github/workflows/pages.yml` (D1): push a `main` y `workflow_dispatch`, `concurrency: pages`, permisos `pages: write` e `id-token: write`, `ruby/setup-ruby` con `bundler-cache`, `configure-pages`, `scripts/sitio.sh --baseurl <base_path>`, `upload-pages-artifact`, `deploy-pages`; verificar con `actionlint` si está instalado (si no, revisar a ojo contra la doc de `deploy-pages`) y localmente `scripts/sitio.sh --baseurl /dmeyf-experimento-sampling` sin enlaces rotos
-- [ ] 4.2 Sumar `"sitio-github-pages"` a `ETAPA_DE_GRUPO_POR_CAMBIO` de `comun/tokens.py` (`1`–`4`: `codigo`, `5`: `informe`) con su test en `tests/test_tokens.py`; verificar que `pytest` pasa y anunciar el cambio en `comun/` en el commit
+- [x] 4.2 Sumar `"sitio-github-pages"` a `ETAPA_DE_GRUPO_POR_CAMBIO` de `comun/tokens.py` (`1`–`4`: `codigo`, `5`: `informe`) con su test en `tests/test_tokens.py`; verificar que `pytest` pasa y anunciar el cambio en `comun/` en el commit
 
 ## 5. Revisión y puesta en línea
 

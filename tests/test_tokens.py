@@ -80,3 +80,9 @@ def test_etapa_headless_sale_del_cambio_y_del_grupo(tmp_path):
     assert filas[C]["etapa"] == "informe"
     assert filas[D]["etapa"] == "codigo"      # sin cambio: el archivado
     assert filas[A]["costo_fuente"] == "costos.csv"
+
+
+def test_etapa_de_sitio_github_pages():
+    g = tokens.ETAPA_DE_GRUPO_POR_CAMBIO["sitio-github-pages"]
+    assert [g[str(n)] for n in range(1, 5)] == ["codigo"] * 4
+    assert g["5"] == "informe"
