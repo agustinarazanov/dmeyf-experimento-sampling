@@ -77,6 +77,43 @@ La respuesta de H4 sale de las reglas 1 y 3; la regla 2 explica el mecanismo de 
 veredicto único que junte las dos: el informe da el de la regla 1 y el de la regla 3 por variante, y la respuesta al
 tutor usa los contrastes principales (§ Comparaciones múltiples).
 
+## `H4O-0.5` (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Escrito antes del tag `corridas-v4` y de cualquier corrida de la variante. Solo existe en la ronda 201903–201908
+([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda 201903–201908): 20 semillas finales, N\* = 3.300
+y δ = 0,02 · Ḡ_C de los `C` de esa ronda.
+
+**De dónde viene.** El tutor pidió reoptimizar siempre que cambia el dataset (Tschopp, "siempre OP", Zulip 211718).
+`H4F-0.05` busca sobre una muestra uniforme del 5 % y entrena con otra receta (todas las bajas + 50 % de CONTINUA con
+peso 2), así que no cumple esa indicación. `H4O-0.5` usa la receta del final también para optimizar. La idea viene de
+211718, no de mirar 201910: se agrega por la indicación del tutor y entra con su predicción y su regla antes de correr.
+
+- **Variante**: `H4O-0.5`, método `fast-retrain-opt`, 8 réplicas (estudio `F0.5` / `F0.5@k`, k = 0…7).
+  - **Búsqueda**: todas las bajas + 50 % de CONTINUA de train 201903–201906, sorteado con la semilla de la réplica, con
+    peso 2 en CONTINUA en cada trial. Validación 201908 completa, sin pesos.
+  - **Final**: la misma receta sobre 201903–201908 con la semilla final.
+  - La tasa 0,5 es la fracción de CONTINUA, no una r de muestra de búsqueda; los hiperparámetros no se reescalan.
+
+### Predicciones y reglas
+
+4. **`H4O-0.5` contra `C`**, con Δ con réplicas (IC de Welch entre las 8 réplicas de cada una).
+   - **Predicción**: *no pierde*: cota inferior del IC de Welch de Δ con réplicas ≥ −δ (δ = 0,02 · Ḡ_C de la ronda).
+   - **Se confirma** si la cota inferior es ≥ −δ; **se refuta** si sale *pierde* (media de Δ con réplicas < −δ);
+     *indeterminado* en otro caso.
+5. **Reoptimizar sobre el set del final.** D_OF = media_k Ḡ_{`H4O-0.5`,k} − media_k Ḡ_{`H4F-0.05`,k}, con IC 95% de
+   Welch entre las 8 réplicas de cada una (sin aparear: las búsquedas no comparten muestra).
+   - **Ayuda** si la cota inferior del IC de D_OF es > 0 M$.
+   - **Empeora** si la cota superior del IC de D_OF es < 0 M$.
+   - **No cambia** en cualquier otro caso.
+   - **Predicción**: *no cambia*. En la ronda anterior `H4F-0.05` ya *no pierde* con réplicas (IC [−0,83; 4,54] M$) y su
+     búsqueda sobre el 5 % es de la misma familia que la de `H3`, que tampoco pierde; no esperamos que buscar sobre la
+     receta del final mueva la ganancia más que el ruido entre réplicas.
+   - Se informa además A(`H4O-0.5`) junto a A(`H4F-0.05`), con T como mediana entre réplicas: buscar sobre más de la mitad
+     de las filas cuesta más que sobre el 5 %. A no decide la regla 5; dice cuánto cuesta seguir el "siempre OP".
+
+El contraste `H4O-0.5` contra `H4F-0.05` es un resultado del experimento, no una limitación: el informe de `h4` lo da como
+respuesta a 211718. Es secundario (§ Comparaciones múltiples).
+
 ## Comparaciones múltiples
 
 Entre `h4` y las extensiones de `h3` (`h3/docs/hipotesis.md` § Extensiones del aporte de Luis) hay más de diez

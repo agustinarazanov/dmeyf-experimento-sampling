@@ -55,3 +55,57 @@ quedan marcadas como de la versión anterior.
   No incluye leer los datos ni generar los lags, que son iguales en todas las variantes. El tiempo de `lgb.train` del
   modelo final se reporta aparte.
 - **Aceleración**: A = T(control) / T(variante), con la misma definición de T en todas las variantes.
+
+## Ronda 201903–201908 (cambio `final-con-julio-agosto`, 12-nov-2026)
+
+Escrito antes del tag `corridas-v4` y de cualquier final de esta ronda. Lo de arriba describe la ronda anterior
+(final 201903–201906, 10 semillas), que se conserva y se sigue pudiendo consolidar. En la ronda nueva cambia solo lo
+siguiente; el resto (Optuna, espacio, G, Δ, regla de δ, veredictos, T, A) queda igual.
+
+- **Ventana del final: 201903–201908.** El modelo final de cada variante entrena con los seis meses y se evalúa en test
+  (201910). Lo pide el baseline: Luis Suárez preguntó si para el test en el mes 10 se reentrena incluyendo 07 y 08, y
+  Bolaños respondió "Yes" (Zulip 211210). Optuna no cambia: sigue entrenando con train 201903–201906 y eligiendo por AUC
+  en validación (201908); los estudios ya guardados (réplicas `@k` incluidas) se reusan. 201909 no se usa para entrenar,
+  validar ni evaluar; solo aporta la clase de 201907.
+- **N\* = 3.300, fijo.** Es el valor de la ronda anterior, calculado en validación (201908) con finales que no habían
+  visto 201908. En la ronda nueva la predicción de 201908 sería dentro de la muestra, así que los finales no la hacen y
+  N\* no se recalcula. Recalcularlo en test violaría "201910 solo para comparar".
+- **δ** sigue la regla de siempre (δ = 0,02 · Ḡ_C al corte N\* = 3.300) con los `C` de la ronda nueva, así que su valor
+  cambia. La tabla de rondas muestra los dos δ.
+- **20 semillas finales**, en este orden: las 10 oficiales (100003, 200003, 300007, 400009, 500009, 600011, 700001,
+  800011, 900001, 999983) y las 10 de la fórmula de Luis, 110017 + i · 19937 con i = 0…9: 110017, 129954, 149891,
+  169828, 189765, 209702, 229639, 249576, 269513, 289450. Ninguna choca con las oficiales ni con la semilla 0. Las
+  primeras 10 son las de la ronda anterior, así que se puede reconsolidar la ronda nueva con 10 y separar el efecto de la
+  ventana del de las semillas. El IC por semilla pasa a t de Student con 19 g.l. (n − 1 si faltan semillas).
+
+### Apartamientos del baseline
+
+Cada uno con su id y su motivo. Ninguno de estos es una limitación; las limitaciones son solo lo que no está justificado.
+
+| apartamiento | id | justificación |
+|---|---|---|
+| El veredicto sale de la ganancia G y no del AUC, aunque el baseline dice "métrica auc". El AUC en 201910 se reporta al lado: ΔAUC con su IC por semilla y con réplicas en todas las tablas. | Zulip 208135 | La regla de veredicto se escribió en pesos antes de la primera corrida y δ está definido en pesos. Un umbral de AUC sería una regla nueva escrita después de haber visto los AUC de la ronda anterior. Optuna sí elige por AUC en validación, como pide 208135. |
+| Ventana del final 201903–201908 (seis meses) y no una ventana corrida 201905–201908. | Zulip 211210 | La respuesta dice que se reentrena incluyendo 07 y 08, no que se saquen 03 y 04. Agustina eligió los seis meses. Si el tutor aclara que es 201905–201908, es otra ronda y otro cambio; hasta entonces se declara como duda abierta en las limitaciones. |
+| Los hiperparámetros elegidos con cuatro meses se usan sin cambios en un final de seis, incluido `min_data_in_leaf`, que es absoluto. | Zulip 211210 | Es lo que pide la consigna (reentrenar con los hiperparámetros ya elegidos), no una variante. Reescalar sería una variante nueva y la idea ya está en `H3R` y `H3L`. Se declara como limitación porque cambia el régimen del final. |
+
+### Predicción y regla de la ronda
+
+- **Veredictos estables.** Para cada variante, con Δ por semilla (sin réplicas) y con Δ con réplicas donde existen, se
+  compara el veredicto de la ronda anterior con el de la nueva. Un *cambio de lado* es pasar de *gana* o *no pierde* a
+  *pierde*, o al revés; los pasos desde o hacia *indeterminado* no cuentan.
+  - **Predicción**: 0 cambios de lado.
+  - **Se confirma** si hay 0 cambios de lado; **se refuta** si hay 1 o más.
+- **IC más angosto.** Para cada variante, la razón ancho del IC 95% de Δ por semilla en la ronda anterior / ancho en la
+  nueva. Con el mismo desvío sería 1,53 (2,262/√10 contra 2,093/√20), del orden de √2.
+  - **Predicción**: la mediana de la razón entre variantes está entre 1,2 y 1,9.
+  - **Se confirma** si está en [1,2; 1,9]; **se refuta** si es menor que 1,2 o mayor que 1,9.
+- **Con réplicas el ancho baja menos**, porque entre el 33 y el 40 % de la varianza de `H3` es entre réplicas y las
+  réplicas siguen siendo 8.
+  - **Predicción**: la mediana de la razón de anchos del IC de Welch de Δ con réplicas es menor que la mediana de la
+    razón por semilla, y menor que 1,3.
+  - **Se confirma** si se cumplen las dos desigualdades; **se refuta** si no se cumple alguna.
+- `H4O-0.5`, que solo existe en la ronda nueva, tiene su predicción y su regla en
+  [`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md) § `H4O-0.5`.
+
+Un veredicto que cambie no se descarta ni se reemplaza: la tabla de rondas
+(`sampling_1/informe/comparacion_rondas.md`) muestra, por variante, Δ y veredicto en las dos rondas, con los dos δ.

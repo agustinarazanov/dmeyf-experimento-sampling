@@ -4,7 +4,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
 ## 1. Diseño y predicción (sesión: Opus)
 
-- [ ] 1.1 `control/docs/hipotesis.md`:
+- [x] 1.1 `control/docs/hipotesis.md`:
   - la ventana del final 201903–201908 con el id 211210;
   - N\* = 3.300 fijo (D3);
   - la lista de 20 semillas en orden (D5);
