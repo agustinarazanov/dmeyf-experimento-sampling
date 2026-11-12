@@ -80,7 +80,9 @@ siguiente; el resto (Optuna, espacio, G, Δ, regla de δ, veredictos, T, A) qued
 
 ### Apartamientos del baseline
 
-Cada uno con su id y su motivo. Ninguno de estos es una limitación; las limitaciones son solo lo que no está justificado.
+Cada uno con su id y su motivo. Los tres están justificados; van a § Limitaciones del informe solo dos cosas que la
+tabla nombra: la duda abierta sobre la ventana (si el tutor quería 201905–201908) y el uso sin cambios de los
+hiperparámetros de cuatro meses en un final de seis.
 
 | apartamiento | id | justificación |
 |---|---|---|

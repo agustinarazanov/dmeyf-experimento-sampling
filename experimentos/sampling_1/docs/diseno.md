@@ -156,7 +156,8 @@ Definición de la ronda, semillas y predicción: [`control/docs/hipotesis.md`](.
   | `fase7_r1` … `fase7_r7` | `C@k`, las 8 de `h3` y las 5 de `h4` en la réplica k: 14 cada una |
 
   Son 23 + 7 × 14 = **121 celdas × 20 semillas = 2.420 finales** y **8 estudios** `F0.5@k`.
-- **Carga**: unas **24 h de cómputo**. `fase7_r0` lleva 460 finales y las otras 280, así que `r0` tarda ~4,5 h y cada
+- **Carga**: unas **24 h de cómputo** (los finales de la ronda anterior en `n2-highmem-8` promediaron ~24 s con cuatro
+  meses; con seis, × 1,5 ≈ 36 s, y 2.420 × 36 s ≈ 24 h). `fase7_r0` lleva 460 finales y las otras 280, así que `r0` tarda ~4,5 h y cada
   una de las otras ~2,8 h.
 - **Cuota y tandas**: `CPUS_ALL_REGIONS` 32 permite 4 VMs de 8 vCPU a la vez. Dos tandas: `r0`–`r3` y después
   `r4`–`r7`; unas **7 h de pared**. Antes de lanzar se verifican la cuota y el crédito del trial (vence el 9-ene-2027).

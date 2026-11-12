@@ -21,7 +21,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   - en `h4`, `H4O-0.5` y su estudio `F0.5` con 8 réplicas, como respuesta a 211718 para `H4F`.
 
   Anotar 211210 y 211718 en la bitácora de `sampling_1`. Verificar que los enlaces existen.
-- [ ] 1.3 Revisión en sesión limpia de hipótesis y diseño con `docs/revision.md` § 1 y § 2, y cierre en la bitácora.
+- [x] 1.3 Revisión en sesión limpia de hipótesis y diseño con `docs/revision.md` § 1 y § 2, y cierre en la bitácora.
   Ninguna corrida real antes de este cierre.
 
 ## 2. Código y migración (sesión: Sonnet)

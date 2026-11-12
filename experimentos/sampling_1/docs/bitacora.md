@@ -1263,6 +1263,51 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   en spot).
 - Pendiente: revisión en sesión limpia (tarea 1.3). Ninguna corrida real antes de ese cierre.
 
+### 2026-11-12 — cierre revisión del grupo 1 de `final-con-julio-agosto` (hipótesis y diseño)
+- Sesión: `4abfcbbe-dd4e-41b0-bad6-baa94ea26802` · modelo: Opus · etapa: **revision** (grupo 1, tarea 1.3).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 1 y § 2 sobre lo agregado en 1.1 y 1.2 (commits `159ee0d` y `887d666`):
+  `control/docs/hipotesis.md` § Ronda 201903–201908, `h4/docs/hipotesis.md` § `H4O-0.5` y las secciones de la ronda en
+  los `diseno.md` de `control`, `h1`–`h4` y `sampling_1`. Lo previo de cada lista ya estaba revisado en rondas
+  anteriores. Ningún ✗ abierto.
+- § 1:
+  - ✓ Pregunta del tutor: sin cambios. El control sigue siendo el baseline; los cambios de la ronda están en la tabla
+    de apartamientos, cada uno con su id (208135, 211210, 211210).
+  - ✓ Una variable y una métrica: `H4O-0.5` cambia solo la muestra de búsqueda (la receta del final) y decide por G.
+  - ✓ Umbrales numéricos y sin zona gris sin nombre: 0 cambios de lado; mediana de la razón de anchos en [1,2; 1,9];
+    con réplicas, menor que la mediana por semilla y que 1,3; regla 4 contra −δ con *indeterminado* nombrado; regla 5
+    contra 0 M$ con *no cambia*. Recalculé la razón 1,53: (2,262/√10)/(2,093/√20) = 1,528. Las 10 semillas nuevas
+    (110017 + i · 19937) están bien y no chocan con las oficiales ni con 0.
+  - ✓ Proporción de clases: `H4O-0.5` submuestrea CONTINUA en la búsqueda y en el final, igual que `H4F-*`, y lo
+    compensa con peso 2. La variante ya fue aceptada en `incorporar-aportes`, así que no es nueva.
+  - ✓ 201910: N\* = 3.300 queda fijo para no elegirlo en test. `H4O-0.5` sale de 211718 y no de 201910. La predicción
+    de la regla 5 cita el IC de `H4F-0.05` de la ronda anterior; queda declarado como antecedente y no elige nada.
+- § 2:
+  - ✓ Grilla: 23 + 7 × 14 = 121 celdas, que coinciden con las 9 de `control`, 4 de `h1`, 4 de `h2`, 64 de `h3` y 40
+    de `h4`. 121 × 20 = 2.420 finales y 8 estudios. `fase7_r0` tiene 460 finales y las demás 280.
+  - ✓ Variantes: las de `hipotesis.md` y ninguna más. `H4O-0.5` está en `h4` con su estudio `F0.5@k`.
+  - ✓ Apareado: las mismas 20 semillas en todas las variantes, y las 10 primeras son las de la ronda anterior.
+  - ✓ Optuna: `F0.5@k` usa 40 trials, TPE con semilla k y AUC en 201908, igual que los demás `@k`.
+  - ✓ Máquina: `n2-highmem-8`. Horas y costo: chequeé ~24 h contra el ledger. Los finales en n2 promediaron 23,8 s
+    (1.130 finales) con cuatro meses; × 1,5 ≈ 36 s, y 2.420 × 36 s ≈ 24 h. Las 7 h de pared salen de dos tandas, con
+    `r0` en ~4,5 h y las demás en ~2,8 h. El peor caso: 28 h × 0,52 × 1,15 ≈ US$ 17.
+  - ✓ Reparto: Agustina lanza todo, y las listas por réplica no se solapan.
+  - ✓ Devolución del tutor: 211210 y 211718 están citados en la bitácora, en `hipotesis.md` y en `diseno.md`.
+    `H3` no reoptimiza (justificado en `h3/docs/diseno.md`).
+  - ✓ Enlaces: todos los `.md` relativos de los ocho archivos existen, y también las secciones citadas (§ Reparto y
+    fases, § Estimación de horas y costo, § Corridas perdidas, § Comparaciones múltiples). Falta
+    `sampling_1/informe/comparacion_rondas.md`, que es un entregable de un grupo posterior y está bien que falte.
+- Hallazgos y correcciones:
+  1. `control/docs/hipotesis.md` § Apartamientos se contradecía. El texto introductorio decía «Ninguno de estos es una
+     limitación», pero las filas 2 y 3 se declaran como limitación. Además, `control/docs/diseno.md` nombraba como
+     limitación solo los hiperparámetros de cuatro meses. Corregí los dos textos: quedan dos limitaciones, la duda
+     sobre la ventana (201905–201908) y los hiperparámetros sin reescalar.
+  2. `sampling_1/docs/diseno.md` § Fase 7 daba «~24 h de cómputo» sin explicar de dónde salía. Agregué la cuenta,
+     que se hace con el tiempo medio de los finales de la ronda anterior.
+- Tokens (`comun/tokens.py --experimento sampling_1` al cerrar): 19 turnos, ~55.500 de contexto promedio (bajo el
+  objetivo de 100.000); el costo queda en `US$ ?` hasta la factura.
+- Devolución del tutor: no hay nueva desde 211718.
+
 ## 2026-11-12 — cierre revisión de sitio-github-pages (tarea 5.1)
 
 - Revisor: subagente `general-purpose` sin contexto (Opus), lanzado desde la sesión
