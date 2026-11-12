@@ -1399,3 +1399,37 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Tag `corridas-v4` creado en local sobre el commit de este cierre (lo pushea Agustina).
 - Tokens (`comun/tokens.py --experimento sampling_1` al cerrar): esta sesión, ~31 turnos y ~50.000 de contexto
   promedio (bajo el objetivo). El costo queda en `US$ ?` hasta la factura.
+
+### 12-nov-2026 · final-con-julio-agosto · grupo 3, corridas (orquestador)
+
+- Antes de lanzar: `main` y `corridas-v4` pusheados (`git ls-remote --tags origin` lo muestra), cuota N2 de 100 vCPU y
+  `CPUS_ALL_REGIONS` de 32 (4 VMs), billing activo. 3.1: `agregar_meses_final.py` aplicado a la copia del bucket (1.345
+  archivos), subida, bajada de nuevo y `--verificar` con 0 errores.
+- Lanzamientos (hora local): tanda 1 `fase7_r0`–`r3` a las 02:31; `r4` a las 05:24; `r5`, `r6` y `r7` a las 09:46–09:48.
+  Los lanzó este orquestador con `lanzar_fase.sh`, spot al principio y a pedido desde las 13:35 (`PROVISIONING`, ver abajo).
+- Incidentes (relanzar es seguro: `existe_fila` saltea lo hecho):
+  - `r1`: falló al copiar el repo (SSH todavía no listo) y se relanzó a las 02:41; terminó bien.
+  - `r5`: la VM spot se perdió a los minutos y falló una vez el `pip install`; relanzada dos veces (10:47 y 10:52).
+  - `r6`: perdida dos veces (spot), una falla al copiar el repo y otra pérdida; Agustina autorizó un relanzamiento
+    más (3.º) y después que **siempre** se lance a pedido. Corrió a pedido desde las 13:35.
+  - `r7`: perdida por spot (~2 h) y relanzada a las 11:49. Hacia las 13:10 este orquestador editó `scripts/vm.sh` con
+    el proceso de `r7` corriendo; bash lo lee de a pedazos, el script se desfasó (`pagan: command not found`), borró la
+    VM y se perdieron ~2 h 45 min de cómputo. Se relanzó a pedido a las 14:40 (2.º y último relanzamiento).
+    **No se edita nada de `scripts/` mientras haya VMs corriendo.**
+  - Para lanzar a pedido hizo falta un cambio en `scripts/vm.sh`: el template del curso fija `preemptible=true` y `gcloud`
+    no deja pisarlo, así que la VM a pedido repite sus propiedades (imagen `labo-family`, disco de 256 GB, red, cuenta,
+    etiquetas, shielded). `PROVISIONING=SPOT` vuelve al template tal cual. Probado con una VM de prueba, ya borrada.
+  - `main` recibió, de otra sesión, commits de `reporte-graficos-y-ancho` que tocan `comun/reporte.py`. Las VMs de `r6`
+    y `r7` copiaron `33daa55`, no `6a5dade`; `reporte.py` no entra en una corrida, así que los resultados no cambian, pero
+    los ids de 560 finales llevan `33daa55` y los otros 1.860 `6a5dade`.
+- Resultado: `gcloud compute instances list` sin ninguna VM `sampling-*`. Horas de VM, estimadas (los logs de `vm.sh` no
+  llevan hora): ~31 h entre listas y trabajo perdido (el presupuesto del cambio era ~24 h); costo estimado US$ 6–8
+  (~15 h spot y ~16 h a pedido). Las sesiones headless del cambio suman US$ 6,44 hasta acá. La factura de Google
+  Cloud es la cifra real.
+- `consolidar` falló con la ronda nueva: `curva_201908` vacía en los finales nuevos (`_absolutas`) y la sanity del
+  control comparaba `auc_val`, que ya no existe. Dos arreglos acotados en `comun/consolidar.py`, con test.
+- Verificado por el orquestador, no por el [x]: 2.420 finales = 121 celdas × 20 semillas, 8 estudios `F0.5`, todo
+  `n2-highmem-8`, `codigo_sucio = False`, `meses_final = 201903-201908`, `n_estrella = 3300` en todas las tablas;
+  `--sanity` sin fallas (C-rep contra C: |Δganancia| = 0, |ΔAUC| = 0).
+- Abierto para el grupo 4: `test_readme_coincide_con_fuentes` de `validacion_50_semillas` falla porque su README se
+  genera desde los ledgers vigentes (ronda nueva) y dice "10 semillas" y +2,08 M$ de la ronda anterior.

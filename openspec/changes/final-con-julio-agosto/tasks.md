@@ -81,11 +81,11 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
 
 ## 3. Corridas (VM, todas las lanza Agustina)
 
-- [ ] 3.1 Aplicar `agregar_meses_final.py` a la copia del bucket, subirla y verificarla bajándola de nuevo con
+- [x] 3.1 Aplicar `agregar_meses_final.py` a la copia del bucket, subirla y verificarla bajándola de nuevo con
   `--verificar`.
-- [ ] 3.2 Verificar la cuota de vCPU y el crédito. Lanzar `fase7_r0` … `fase7_r7` en dos tandas de 4 VMs. Verificar al
+- [x] 3.2 Verificar la cuota de vCPU y el crédito. Lanzar `fase7_r0` … `fase7_r7` en dos tandas de 4 VMs. Verificar al
   terminar que no quedan VMs encendidas (`gcloud compute instances list`) y anotar horas y costo en la bitácora.
-- [ ] 3.3 `python -m comun.consolidar` (ronda vigente) y `--sanity`. Verificar:
+- [x] 3.3 `python -m comun.consolidar` (ronda vigente) y `--sanity`. Verificar:
   - 121 celdas × 20 semillas y 8 estudios `F0.5@k`;
   - todo en `n2-highmem-8`, con `codigo_sucio = False` y `meses_final = 201903-201908`;
   - `n_estrella = 3300` en todas las tablas.
