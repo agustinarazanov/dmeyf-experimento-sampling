@@ -1,6 +1,6 @@
 """Smoke de `final-con-julio-agosto` 2.7 en la Mac: finales de 201903-201908 con `--filas 20000`, todo en una salida temporal.
 
-    python scripts/smoke_ventanas.py SALIDA_TEMPORAL
+    python -m scripts.smoke_ventanas SALIDA_TEMPORAL   # como módulo: importa `comun`
 
 Usa el panel de smoke de `DATOS_DIR` (enlazado, no copiado) y manda ledger, hp y bases de Optuna a SALIDA_TEMPORAL, así no
 toca el repo ni los estudios de smoke anteriores. Corre: C y H4F-0.05 con dos semillas; `F0.5@2` con 3 trials y un final de

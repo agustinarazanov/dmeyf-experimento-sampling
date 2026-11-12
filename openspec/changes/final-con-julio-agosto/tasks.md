@@ -76,7 +76,7 @@ Requiere `incorporar-aportes` archivado. Convive con `sitio-github-pages` (no to
   Verificar las tres cosas en la salida.
 - [x] 2.8 Listas `sampling_1/scripts/fase7_r0.txt` … `fase7_r7.txt` (D8). Verificar con `lanzar_fase.sh --en-seco` que
   cubren las 121 celdas y los 8 estudios `F0.5@k` sin repetir, con `--semilla todas`.
-- [ ] 2.9 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3 y cierre en la bitácora. Crear el tag
+- [x] 2.9 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3 y cierre en la bitácora. Crear el tag
   `corridas-v4` (lo pushea Agustina).
 
 ## 3. Corridas (VM, todas las lanza Agustina)

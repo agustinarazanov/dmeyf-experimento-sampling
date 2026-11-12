@@ -1357,3 +1357,45 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Cierre de 5.1 (12-nov): la portada se corrigió en `75ff536` (salvedad de la cota inferior de `H4F-0.05`, «por modelo; la
   ganancia extra, si la hay, viene de ensamblar con el tiempo ahorrado», encuadre «La respuesta al tutor se amplía»);
   el orquestador la comparó frase a frase con § Conclusiones del informe conjunto: ✓. Sin ✗ abiertos; 5.1 cerrada.
+
+### 2026-11-12 — cierre revisión del grupo 2 de `final-con-julio-agosto` (código y migración)
+- Sesión: `9a929db0` · modelo: Opus · etapa: **revision** (grupo 2, tarea 2.9).
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que implementó el grupo).
+- Lista: docs/revision.md § 3 sobre los commits de 2.1–2.8 (hasta `a709114`).
+- § 3:
+  - ✓ `pytest`: pasan los 229 tests. `python -m comun.variantes --verificar` también pasa.
+  - ✓ Smoke con `--filas 20000`: corrí `python -m scripts.smoke_ventanas` dos veces, con salidas temporales en
+    `$DATOS_DIR/rev_g2_fja/a` y `b`.
+    - Hay dos finales por variante (dos semillas) para `C`, `H4F-0.05` y `H4O-0.5`. Todos tienen
+      `meses_final = 201903-201908`, `auc_val` y `curva_201908` vacíos y el id con `-0308`.
+    - La optimización de `F0.5@2` está, con su hp.
+    - Cada corrida escribe una fila, en los métodos uniforme, fast-retrain y fast-retrain-opt. El informado lo cubre
+      `test_muestreo_informado.py`.
+  - ✓ Determinismo: comparé las 9 filas de `a` contra las de `b`. `hash_muestra`, `auc_test`, `ganancia_max_201910` y
+    `filas_train` son iguales.
+  - ✓ 201910 fuera de `optimizar`: según el log de meses leídos, los tres métodos optimizan con 201903–201906 y 201908,
+    sin 201907 ni 201910. Los finales leen 201903–201908 y 201910. El guard de 201907 lo cubre
+    `test_correr_ventanas.py`.
+  - ✓ Columnas obligatorias: lo cubre `test_falta_una_columna_y_se_nombra`. `meses_final` es obligatoria en los
+    finales (tests de 2.2).
+  - ✓ `codigo_sucio`: vale `True` en todas las filas del smoke. Es correcto, porque había archivos sin commitear fuera
+    de `ledger/`.
+  - ✓ Filas de train:
+    - `C` tiene 13.271, igual a las filas de 201903–201908 del panel de smoke.
+    - La búsqueda de `U0.05` tiene 438, contra 0,05 × 8.758 = 437,9. Está dentro de ± 0,1 %.
+    - `H4F-*` y `H4O-*` guardan todas las bajas más la fracción de CONTINUA, así que la regla r × filas no se les aplica.
+  - ✓ `consolidar.py` aparea solo las semillas en común: lo cubre `test_apareado_usa_solo_semillas_en_comun`. La
+    reproducción byte a byte de la ronda vieja está en `test_consolidar_rondas.py`.
+  - ✓ `scripts/vm.sh` borra la VM: `trap borrar EXIT` corre `instances delete --delete-disks=all`.
+  - ✓ No hay datos del dataset en el repo: `git ls-files` no lista `.gz`, `.parquet`, `.duckdb` ni `crudo`.
+- Hallazgos y correcciones:
+  1. Según el docstring de `scripts/smoke_ventanas.py`, el script se corría con `python scripts/smoke_ventanas.py`.
+     Así falla con `ModuleNotFoundError: comun`. Lo cambié a `python -m scripts.smoke_ventanas`. Es el único script
+     del grupo que importa `comun`.
+  2. La implementación del grupo 2 (2.1–2.8) no tiene entrada propia en la bitácora. `comun/tokens.py` deja sin etapa
+     dos sesiones: `a3097131` (28 turnos, ~86.000 de contexto) y `4f4c3f05` (86 turnos, ~132.800, **supera el
+     objetivo de 100.000**). Probablemente sean las del grupo 2, pero no lo verifiqué. Queda abierto: quien las corrió
+     tiene que clasificarlas y anotar qué infló `4f4c3f05`.
+- Tag `corridas-v4` creado en local sobre el commit de este cierre (lo pushea Agustina).
+- Tokens (`comun/tokens.py --experimento sampling_1` al cerrar): esta sesión, ~31 turnos y ~50.000 de contexto
+  promedio (bajo el objetivo). El costo queda en `US$ ?` hasta la factura.
