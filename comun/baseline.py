@@ -16,6 +16,12 @@ MESES_HISTORIA: list[int] = [201901, 201902]
 MESES_TRAIN_OPT: list[int] = [201903, 201904, 201905, 201906]
 #: Meses con los que entrena el `final` (D1): los de optimización más 201907 y 201908. Registrados en el ledger como `meses_final`.
 MESES_TRAIN_FINAL: list[int] = [201903, 201904, 201905, 201906, 201907, 201908]
+#: Ventana de un final como la registra el ledger en `meses_final`: `201903-201908`.
+def ventana(meses: list[int]) -> str:
+    return f"{meses[0]}-{meses[-1]}"
+
+
+VENTANA_FINAL: str = ventana(MESES_TRAIN_FINAL)
 MES_VALIDACION: int = 201908
 MES_TEST: int = 201910
 #: Meses que quedan en el panel (el target de 201910 mira hasta 201912 en el crudo, pero esos meses no se usan).

@@ -26,11 +26,11 @@ def test_consolidar_de_punta_a_punta(tmp_path):
         corrida(tmp_path, "C", s, 100.0)
     for s in (2, 3, 4):
         corrida(tmp_path, "U0.5", s, 101.0)
-    r = consolidar.consolidar(tmp_path)
+    r = consolidar.consolidar(tmp_path, meses_final=lg.MESES_FINAL_VIEJA)
     ap = r["apareado"].iloc[0]
     assert ap["n_estrella"] == 300 and ap["n_semillas"] == 2
     assert ap["delta_g_media"] == 300.0
-    assert (tmp_path / "resultados.csv").exists() and (tmp_path / "apareado.csv").exists()
+    assert (tmp_path / "resultados.csv").exists() and (tmp_path / "ronda_201903-201906" / "apareado.csv").exists()
 
 
 def test_consolidar_con_dos_ledgers(tmp_path):
@@ -45,9 +45,9 @@ def test_consolidar_con_dos_ledgers(tmp_path):
     for s in (2, 3, 4):
         corrida(h1, "U0.5", s, 101.0)
     corrida(h1, "U0.5", 0, 101.0, etapa="optimizar")
-    consolidar.consolidar(ctrl)
+    consolidar.consolidar(ctrl, meses_final=lg.MESES_FINAL_VIEJA)
     assert not (ctrl / "apareado.csv").exists()  # el control solo no tiene variantes que comparar
-    r = consolidar.consolidar(h1, control=ctrl)
+    r = consolidar.consolidar(h1, control=ctrl, meses_final=lg.MESES_FINAL_VIEJA)
     ap = r["apareado"].iloc[0]
     assert ap["variante"] == "U0.5" and ap["n_estrella"] == 300 and ap["n_semillas"] == 2
     assert ap["delta_g_media"] == 300.0
@@ -58,7 +58,7 @@ def test_consolidar_con_dos_ledgers(tmp_path):
     (h3 / "curvas").mkdir(parents=True)
     for s in (1, 2):
         corrida(h3, "H3-0.5", s, 99.0, estudio="U0.5")
-    r3 = consolidar.consolidar(h3, control=ctrl, ledgers_estudios=[h1])
+    r3 = consolidar.consolidar(h3, control=ctrl, ledgers_estudios=[h1], meses_final=lg.MESES_FINAL_VIEJA)
     assert r3["apareado"].iloc[0]["tiempo_total_s"] == 60.0  # 50 s del estudio de h1 + 10 s del final
 
 
@@ -72,7 +72,7 @@ def test_graficar_banda(tmp_path):
     for s in (1, 2):
         corrida(tmp_path, "C", s, 100.0)
         corrida(tmp_path, "U0.5", s, 99.0)
-    consolidar.consolidar(tmp_path)
+    consolidar.consolidar(tmp_path, meses_final=lg.MESES_FINAL_VIEJA)
     g.LEDGER = tmp_path
     fin = pd.read_csv(tmp_path / "resultados.csv")
     png = g.graficar("U0.5", fin, 201910, tmp_path / "f.png")

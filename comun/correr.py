@@ -163,7 +163,7 @@ class Contexto:
 
 def ventana(meses: list[int]) -> str:
     """`201903-201908`: primero y último mes de la ventana de train."""
-    return f"{meses[0]}-{meses[-1]}"
+    return bl.ventana(meses)
 
 
 def ventana_corta(meses: list[int]) -> str:
