@@ -2129,3 +2129,48 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: ~80 turnos · contexto ~77.000 por turno · ≈ US$ 2,6 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
 - Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (tarea 1.16)
+
+- Sesión: `f33b551e-4870-4d30-aec3-0ac91904bd35` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, más las verificaciones de 1.13 y 1.14.
+  Commits revisados: `bfbc37f` (1.13) y `8749379` (1.14).
+- Comandos:
+  - `python -m pytest tests`, con la corrección de `vm.sh`: 219 passed (8 min 20 s). El commit de 1.14 dice 267,
+    que probablemente sumaba los tests de `experimentos/`. Esos no los toca ninguno de los dos commits y no los corrí.
+  - `python -m comun.variantes --verificar`: 0 `PROBLEMA`. `verificar_readme`: ✓ (65 números, 31 enlaces).
+    `verificar_informe_h3`: 623 números, 0 sin fuente.
+  - `python -m comun.reporte --todos` dos veces: `git status` sin cambios fuera de `ledger/sesiones/` las dos veces.
+    `DATOS_DIR/ledger/` todavía no existe (1.15 no se hizo), así que todas las predicciones se leyeron por la ruta vieja.
+  - `mkdocs build` y `python -m scripts.medir_sitio --pagina experimentos/sampling_1/`: 0 problemas.
+  - `bash -n scripts/vm.sh` y `scripts/vm.sh <lista> --en-seco`: el script remoto y los destinos de las predicciones
+    salen bien (después de la corrección).
+- Verificaciones de las tareas:
+  - ✓ 1.13: la primera pestaña es «Lo mejor de cada hipótesis», con una fila por hipótesis, como pide D16: U0.5 (H1),
+    B0.25 (H2, ninguna vale la pena y es la de mayor Δ), H3-0.05 (H3) y H4F-0.05 (H4). «Valen la pena» ya no aparece.
+    Observación para el grupo 2: la pestaña no tiene la columna «vale la pena», así que B0.25 se ve igual que las
+    otras tres aunque no vale la pena (aceleración 1.23). El texto de Resultados (2.1) tiene que aclararlo.
+  - ✓ 1.14: `rutas.ledger_datos()` y `rutas.prediccion()` hacen lo que pide D18. `correr.py` escribe en
+    `DATOS_DIR/ledger/<dueño>/` con la misma ruta relativa que guarda `predicciones_201910`, también en exploración.
+    `reporte._absolutas` es el único lugar que lee predicciones y usa esa función. Hay cuatro tests: uno para
+    `DATOS_DIR`, uno para la ruta vieja, uno para cuando el archivo está en los dos lugares y uno para el reporte.
+  - ✗→✓ `scripts/vm.sh`, en `subir()` de la VM, no tenía espacio entre el origen y el destino de
+    `gsutil rsync` (`…/predicciones/"$BUCKET/…"`). El script remoto corre sin `-e`, así que ese `gsutil` fallaba sin
+    cortar nada, la VM terminaba con DONE y las predicciones no llegaban al bucket: se perdían al borrar la VM.
+    Corregido.
+  - ✗→✓ `scripts/vm.sh`, rescate con FALLO: traía `~/repo/experimentos/*/ledger` de la VM, pero las predicciones nuevas
+    ya no están ahí, así que se perdían las que no habían llegado al bucket. Ahora además trae `~/datos/ledger` (sin
+    exploración) a `$DATOS/ledger/` con `--ignore-existing`. Quedó probado con `bash -n` y en seco, no contra una VM.
+- Lista § 3: ninguno de los dos commits toca el entrenamiento, los meses leídos, las columnas del ledger,
+  `codigo_sucio`, las filas de train ni `consolidar.py`. Por eso son n/a el smoke test, el determinismo del
+  entrenamiento, que 201910 no se lea, las columnas obligatorias, `codigo_sucio`, las filas de train y el apareo de
+  semillas. ✓ Determinismo del generador: dos regeneraciones sin cambios. ✓/n/a `vm.sh` deja la VM borrada: el trap
+  no cambió. ✓ No hay datos del dataset en el repo: no hay `.parquet` versionados, y desde 1.14 las predicciones
+  nuevas van fuera del repo.
+- Correcciones: `scripts/vm.sh` (el espacio en `subir()` y el rescate de las predicciones con FALLO). No se tocó
+  `comun/`.
+- Pendiente para el orquestador: 1.15 (mover las predicciones a `DATOS_DIR`). Las dos regeneraciones de esta revisión
+  coincidieron con HEAD, pero eso no cierra la intermitencia de 1.11: falta medirla después de 1.15.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~40 turnos · contexto ~73.500 por turno · ≈ US$ 1,5 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —

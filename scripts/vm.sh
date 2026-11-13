@@ -72,7 +72,7 @@ done
 subir() {
   for e in \$(ls experimentos | grep -v ' '); do
     gsutil -q -m rsync -r -x '^(exploracion|sesiones|predicciones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
-    gsutil -q -m rsync -r \$DATOS_DIR/ledger/\$e/predicciones/"$BUCKET/experimentos/\$e/ledger/predicciones/"
+    gsutil -q -m rsync -r \$DATOS_DIR/ledger/\$e/predicciones/ "$BUCKET/experimentos/\$e/ledger/predicciones/"
   done
 }
 while read -r metodo tasa semilla etapa variante replica; do
@@ -194,6 +194,11 @@ if [ "$ESTADO" = FALLO ]; then
     && $G scp "$NOMBRE":~/ledgers.tgz "$T/ledgers.tgz" --zone="$ZONA" "${SCPF[@]}" 2>/dev/null \
     && tar xzf "$T/ledgers.tgz" -C "$T" && rm "$T/ledgers.tgz" \
     && rsync -a --ignore-existing "$T/" experimentos/ || true
+  rm -rf "$T"; T=$(mktemp -d)   # las predicciones de test, que en la VM están en ~/datos/ledger/ (D18)
+  $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command='cd ~/datos && tar czf ~/predicciones.tgz --exclude=exploracion ledger' 2>/dev/null \
+    && $G scp "$NOMBRE":~/predicciones.tgz "$T/predicciones.tgz" --zone="$ZONA" "${SCPF[@]}" 2>/dev/null \
+    && tar xzf "$T/predicciones.tgz" -C "$T" && rm "$T/predicciones.tgz" \
+    && mkdir -p "$DATOS/ledger" && rsync -a --ignore-existing "$T/ledger/" "$DATOS/ledger/" || true
   rm -rf "$T"
 fi
 soltar_candado
