@@ -1,0 +1,239 @@
+{
+ "duration_api_ms": 1068517,
+ "stop_reason": "end_turn",
+ "session_id": "fbbfbd6f-c7f7-41bf-a5b9-c012320a0868",
+ "total_cost_usd": 5.832374000000002,
+ "usage": {
+  "input_tokens": 282,
+  "cache_creation_input_tokens": 357768,
+  "cache_read_input_tokens": 29579480,
+  "output_tokens": 144279,
+  "output_tokens_details": {
+   "thinking_tokens": 44792
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 357768,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1357,
+    "cache_read_input_tokens": 370851,
+    "cache_creation_input_tokens": 377,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 377
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 282,
+   "outputTokens": 144279,
+   "cacheReadInputTokens": 29579480,
+   "cacheCreationInputTokens": 357768,
+   "webSearchRequests": 0,
+   "costUSD": 5.832374000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 44792,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 357768,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01U3Db555iJZNjV9SVkSci21",
+   "tool_input": {
+    "command": "openspec instructions apply --change tiempos-confiables-y-consistencia --json > /tmp/apply.json; head -c 1500 /tmp/apply.json; echo; ls experimentos/sampling_1/ledger/sesiones/; cat experimentos/sampling_1/ledger/sesiones/bloqueo.txt 2>/dev/null; git show HEAD:experimentos/sampling_1/ledger/sesiones/bloqueo.txt"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01N9TTsHmgs7HWNRgFhPSzG9",
+   "tool_input": {
+    "command": "openspec instructions apply --change tiempos-confiables-y-consistencia --json > /tmp/apply.json"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01YQZNXmnJQFY4UqeSAm35Ye",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling-tiempos; git diff comun/variantes.py > /tmp/dueno.patch 2>/dev/null || git diff comun/variantes.py > ledger_tmp.patch; ls /tmp/dueno.patch; sed -n 130,207p comun/consolidar.py | grep -n \"argparse\\|add_argument\\|salida\" ; grep -n \"add_argument\" comun/reporte.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01JasTHHvK8m7xgn6k2xJE8z",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling-tiempos; mkdir -p /Users/agustina/datos/experimentos-dmeyf/scratch_2_1 && git diff comun/variantes.py > /Users/agustina/datos/experimentos-dmeyf/scratch_2_1/dueno.patch && git checkout comun/variantes.py && grep -n \"add_argument\\|def main\" comun/consolidar.py comun/reporte.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Jriiw9Fhf9Xcw2mhu6jwoj",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling-tiempos; mkdir -p /Users/agustina/datos/experimentos-dmeyf/scratch_2_1; git ls-files experimentos/h3 | head -30; ls experimentos/h3 experimentos/h3/ledger experimentos/h3/informe 2>/dev/null | head -40; sed -n 1225,1250p comun/reporte.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_013Yh1uzuDi9cfYqyiUUk8GP",
+   "tool_input": {
+    "command": "for e in h1 h3 h4 sampling_1; do python -c \"\nimport runpy,sys\nsys.argv=['antes','reporte','--experimento','$e']\nrunpy.run_path('/Users/agustina/datos/experimentos-dmeyf/scratch_2_1/antes.py',run_name='__main__')\" 2>&1 | tail -3; done; git status --short | grep -v sesiones"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01G5NxVYCS7HyYmqdhpAWL7R",
+   "tool_input": {
+    "command": "S=/Users/agustina/datos/experimentos-dmeyf/scratch_2_1/antes; mkdir -p $S; for e in h1 h3 h4 sampling_1; do mkdir -p $S/$e; cp experimentos/$e/informe/reporte.html $S/$e/ 2>/dev/null; cp experimentos/$e/ledger/*.csv $S/$e/ 2>/dev/null; done; cp experimentos/sampling_1/informe/tabla_resultados.md $S/sampling_1/; ls $S/*"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01GBiwJZ6PBjWBDJtQx8dfi6",
+   "tool_input": {
+    "command": "ls experimentos/h3/ledger/hp | head -40; ls experimentos/h3/ledger/corridas | head -5; ls experimentos/h3/ledger/corridas | grep -c \"^U0\"; ls experimentos/h3/ledger/corridas | grep \"^U0\" | head -3; ls experimentos/h3/ledger/predicciones experimentos/h3/ledger/curvas | grep -c \"^U0\"; head -2 experimentos/h3/ledger/estudios.csv; grep -c \"U0\\.[0-9]*@\" experimentos/h3/ledger/estudios.csv experimentos/h3/ledger/resultados.csv experimentos/h3/ledger/reemplazadas.csv; ls experimentos/h1/ledger experimentos/h1/ledger/hp"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01JXVY2t8jqArBUQMXt5774D",
+   "tool_input": {
+    "command": "python - <<'EOF'\np='comun/reporte.py'\ns=open(p).read()\ns=s.replace('''    \"\"\"(finales de todas las réplicas con `g` al corte `n_est`, tiempos de estudio, `replicas.csv` de los ledgers).\"\"\"\n    finales, estudios, tablas = [], [], []\n    for e in exps:\n        led = rutas.ledger(e)\n        if (led / \"resultados.csv\").exists():\n            r = lg.leer_csv(led / \"resultados.csv\")\n            finales.append(_absolutas(_ronda(r), led))\n        if (led / \"estudios.csv\").exists():\n            estudios.append(lg.leer_csv(led / \"estudios.csv\"))\n        if (led / \"replicas.csv\").exists():\n            tablas.append(lg.leer_csv(led / \"replicas.csv\"))''','''    \"\"\"(finales de todas las réplicas con `g` al corte `n_est`, tiempos de estudio, `replicas.csv` de los ledgers).\n    Los tiempos de estudio salen también del dueño de cada estudio que usan las variantes de `exps` (`U{r}@k` es de `h1`).\"\"\"\n    finales, estudios, tablas = [], [], []\n    duenos_estudio = {reg.dueno_estudio(b.estudio) for e in exps for b in reg.variantes_de(e)}\n    for e in exps:\n        led = rutas.ledger(e)\n        if (led / \"resultados.csv\").exists():\n            r = lg.leer_csv(led / \"resultados.csv\")\n            finales.append(_absolutas(_ronda(r), led))\n        if (led / \"replicas.csv\").exists():\n            tablas.append(lg.leer_csv(led / \"replicas.csv\"))\n    for e in [*exps, *sorted(duenos_estudio - set(exps))]:\n        if (rutas.ledger(e) / \"estudios.csv\").exists():\n            estudios.append(lg.leer_csv(rutas.ledger(e) / \"estudios.csv\"))''')\nopen(p,'w').write(s)\nEOF\nfor e in h1 h3 h4 sampling_1; do :; done; python -m comun.reporte --experimento h4 >/dev/null; python -m comun.reporte --experimento h3 >/dev/null; python -m comun.reporte --experimento sampling_1 > /dev/null; python - <<'EOF'\nimport pathlib,difflib,re\nS=pathlib.Path('/Users/agustina/datos/experimentos-dmeyf/scratch_2_1/antes')\ndef trozos(t):\n    return re.sub(r'(<svg.*?</svg>)', '<svg/>', t, flags=re.S).replace('><','>\\n<').splitlines()\nfor e in ['h3','h4','sampling_1']:\n    a=trozos((S/e/'reporte.html').read_text()); b=trozos((pathlib.Path('experimentos')/e/'informe'/'reporte.html').read_text())\n    d=[l for l in difflib.unified_diff(a,b,lineterm='',n=0) if l[0] in '+-' and not l.startswith(('+++','---')) and 'Generado' not in l]\n    print('==',e,len(d))\n    for l in d[:40]: print(l[:260])\nEOF"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01WG6pxzNGai38TvGk8v3eT8",
+   "tool_input": {
+    "command": "python -m scripts.mover_estudios --bucket > /Users/agustina/datos/experimentos-dmeyf/scratch_2_1/bucket_mover.log 2>&1; echo exit $?; grep -v \"^  \\$ gsutil -q \\(cp\\|rm\\)\" /Users/agustina/datos/experimentos-dmeyf/scratch_2_1/bucket_mover.log | cut -c1-200 | head -60",
+    "timeout": 600000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Uwp8VXkw2WkZcEQVTCGa3z",
+   "tool_input": {
+    "command": "python - <<'EOF'\nimport subprocess,re,pathlib\nfrom scripts import mover_estudios as mv\nenv=mv._env(); B=env['BUCKET'].rstrip('/')\nfor e in ['h1','h3','h4','h2','control']:\n    base=f\"{B}/experimentos/{e}/ledger/\"\n    out=subprocess.run(['gsutil','ls','-r',base+'**'],capture_output=True,text=True).stdout.splitlines()\n    nb={x[len(base):] for x in out if x.startswith(base) and not x.endswith('/') and not x.endswith(':')}\n    nb={x for x in nb if not re.match(mv.FILTROS_VM,x)}\n    L=pathlib.Path('experimentos')/e/'ledger'\n    nl={str(p.relative_to(L)) for p in L.rglob('*') if p.is_file()}\n    nl={x for x in nl if not re.match(mv.FILTROS_VM,x) and '.DS_Store' not in x}\n    print(e,'bucket',len(nb),'repo',len(nl),'solo bucket',sorted(nb-nl)[:3],len(nb-nl),'solo repo',sorted(nl-nb)[:3],len(nl-nb))\nEOF",
+    "timeout": 300000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01HB4v9oxCbHVSm6Fn1km1BM",
+   "tool_input": {
+    "command": "cat >> tests/test_variantes.py <<'EOF'\n\n\n# --- `tiempos-confiables-y-consistencia` D8, D11, D12: la grilla común y los pares directos --------------------------------\n\n\ndef test_la_grilla_tiene_20_variantes_cinco_formas_por_cuatro_tasas():\n    en_grilla = [b for b in variantes.VARIANTES.values() if b.grilla in variantes.FILAS_GRILLA]\n    assert len(en_grilla) == 20\n    for fila in variantes.FILAS_GRILLA:\n        assert sorted(b.tasa for b in en_grilla if b.grilla == fila) == sorted(variantes.TASAS_GRILLA), fila\n    assert {b.dueno for b in en_grilla if b.grilla == \"U\"} == {\"h1\"} and {b.dueno for b in en_grilla if b.grilla == \"H3\"} == {\"h3\"}\n    assert {b.dueno for b in en_grilla if b.grilla in (\"H4O\", \"H4P\")} == {\"h4\"} and {b.dueno for b in en_grilla if b.grilla == \"B\"} == {\"h2\"}\n\n\ndef test_toda_variante_esta_en_la_grilla_es_control_o_dice_que_cruza():\n    for b in variantes.VARIANTES.values():\n        assert b.grilla in variantes.FILAS_GRILLA or b.grilla == \"control\" or b.nombre in variantes.FUERA_DE_GRILLA, b.nombre\n    assert set(variantes.FUERA_DE_GRILLA) == {b.nombre for b in variantes.VARIANTES.values() if not b.grilla}\n\n\ndef test_cada_celda_de_la_grilla_tiene_variante_o_motivo_declarado():\n    for fila in variantes.FILAS_GRILLA:\n        for tasa in variantes.TASAS_GRILLA:\n            hay = [b for b in variantes.VARIANTES.values() if b.grilla == fila and b.tasa == tasa]\n            assert len(hay) == 1 or (not hay and variantes.CELDAS_SIN_CORRER.get((fila, tasa))), (fila, tasa)\n    for celda in variantes.CELDAS_SIN_CORRER:  # un hueco declarado que ya tiene variante está de más\n        assert not [b for b in variantes.VARIANTES.values() if (b.grilla, b.tasa) == celda]\n\n\ndef test_8_replicas_en_todo_el_bloque_a_menos_c_rep():\n    assert all(b.replicas for b in variantes.VARIANTES.values() if b.nombre != \"C-rep\")\n\n\ndef test_cada_par_declarado_dice_que_aisla_y_los_principales_son_los_cuatro_h4o_menos_u():\n    pares = [*variantes.PARES_APAREADOS, *variantes.PARES_WELCH]\n    assert set(pares) == set(variantes.PARES_INFO) and len(pares) == len(set(pares))\n    assert all(a in variantes.VARIANTES and b in variantes.VARIANTES for a, b in pares)\n    assert all(variantes.PARES_INFO[p][0] for p in pares)\n    principales = {p for p, (_, principal) in variantes.PARES_INFO.items() if principal}\n    assert principales == {(f\"H4O-{r:g}\", f\"U{r:g}\") for r in variantes.TASAS_GRILLA}\n    nuevos = [p for p in pares if p[0].startswith((\"U\", \"H4O\", \"H4P\")) and not p == (\"H4O-0.5\", \"H4F-0.05\")]\n    assert len(nuevos) == 17  # D12: cuatro pares por tasa en cuatro formas, más el del peso\n\n\ndef test_los_pares_apareados_comparten_estudio_y_los_welch_de_h4_con_h1_o_h3_no():\n    for a, b in variantes.PARES_APAREADOS:\n        assert variantes.variante(a).estudio == variantes.variante(b).estudio, (a, b)\n    for a, b in [(f\"H4O-{r:g}\", f\"U{r:g}\") for r in variantes.TASAS_GRILLA]:\n        assert variantes.variante(a).estudio != variantes.variante(b).estudio\n\n\ndef test_dependencias_implicitas_con_la_grilla():\n    dep = variantes.implicitas()\n    assert dep[\"h3\"] == {\"control\", \"h1\"} and dep[\"h4\"] == {\"control\", \"h1\"} and dep[\"h1\"] == {\"control\"}\nEOF\npython -m comun.variantes --verificar | grep PROBLEMA; python -m pytest -q tests/test_variantes.py 2>&1 | tail -8; ls ~/datos/experimentos-dmeyf | head",
+    "timeout": 300000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_013uPhUaV15SDCpBen7dvcKN",
+   "tool_input": {
+    "command": "cat >> comun/ledger.py <<'EOF'\n\n\n# --- pares entre experimentos (`tiempos-confiables-y-consistencia` D12) ------------------------------------\n\n\ndef pares_directos(finales: pd.DataFrame, apareados: Sequence[tuple[str, str]], welch: Sequence[tuple[str, str]],\n                   info: dict[tuple[str, str], tuple[str, bool]] | None = None, semillas_por_replica: int = 20) -> pd.DataFrame:\n    \"\"\"Una fila por par declarado `a − b`, con las variantes de cualquier experimento (`finales` ya trae `g`, `replica_opt`\n    y `filas_train`). La cuenta es la de `replicas`: diferencia apareada por réplica y semilla con IC t entre réplicas, o\n    diferencia de medias por réplica con IC de Welch. Una réplica entra solo si tiene las `semillas_por_replica` semillas en\n    los dos lados; la fila dice cuántas usó. Un par al que le falta un lado, o con menos de dos réplicas completas en común,\n    sale `pendiente` y dice qué variante falta: `replicas` lo saltea sin avisar.\n    `info` da, por par, la decisión que aísla y si es un contraste principal.\"\"\"\n    info = info or {}\n    finales = con_replica(finales[finales[\"variante\"] != \"C-rep\"])\n    cuenta = finales.groupby([\"variante\", \"replica_opt\"]).size()\n\n    def completas(v: str) -> set[int]:\n        return {int(k) for (vv, k), n in cuenta.items() if vv == v and n >= semillas_por_replica}\n\n    filas = []\n    for tipo, lista in ((\"apareado\", apareados), (\"Welch\", welch)):\n        for a, b in lista:\n            aisla, principal = info.get((a, b), (\"\", False))\n            fila = {\"variante\": f\"{a} - {b}\", \"a\": a, \"b\": b, \"tipo\": tipo, \"aisla\": aisla, \"principal\": principal,\n                    \"estado\": \"pendiente\", \"faltan\": \"\", \"n_replicas\": 0, \"n_semillas\": 0, \"replicas\": \"\",\n                    \"delta_g_media\": np.nan, \"delta_g_se\": np.nan, \"delta_g_ic_inf\": np.nan, \"delta_g_ic_sup\": np.nan,\n                    \"veredicto\": \"pendiente\", \"filas_train_a\": np.nan, \"filas_train_b\": np.nan, \"nota\": \"\"}\n            faltan = [v for v in (a, b) if not (finales[\"variante\"] == v).any()]\n            ka, kb = completas(a), completas(b)\n            ks = sorted(ka & kb)\n            if faltan:\n                fila.update(faltan=\", \".join(faltan), nota=\"falta la variante \" + \" y \".join(faltan))\n            elif len(ks) < 2:\n                fila[\"nota\"] = (f\"menos de dos réplicas completas en común ({a}: {len(ka)}, {b}: {len(kb)}, \"\n                                f\"en común: {len(ks)})\")\n            else:\n                da, db = (finales[(finales[\"variante\"] == v) & finales[\"replica_opt\"].isin(ks)] for v in (a, b))\n                if tipo == \"apareado\":\n                    ga, gb = (d.set_index([\"replica_opt\", \"semilla\"])[\"g\"] for d in (da, db))\n                    comunes = ga.index.intersection(gb.index)\n                    dif = (ga.loc[comunes] - gb.loc[comunes]).rename(\"d\").reset_index()\n                    por_replica = dif.groupby(\"replica_opt\")[\"d\"].mean().to_numpy(dtype=float)\n                    media, sd, lo, hi = _ic(por_replica)\n                    se, n_sem = sd / np.sqrt(len(por_replica)), len(dif)\n                    nota = f\"apareado por réplica y semilla; IC t entre réplicas ({len(por_replica) - 1} g.l.)\"\n                else:\n                    media, se, lo, hi = _welch(da.groupby(\"replica_opt\")[\"g\"].mean().to_numpy(dtype=float),\n                                               db.groupby(\"replica_opt\")[\"g\"].mean().to_numpy(dtype=float))\n                    n_sem, nota = len(da), f\"sin aparear; IC de Welch entre réplicas ({len(ks)} y {len(ks)})\"\n                usadas = len(ks)\n                descartadas = {v: sorted((finales.loc[finales[\"variante\"] == v, \"replica_opt\"].unique().astype(int).tolist()))\n                               for v in (a, b)}\n                if any(len(r) > usadas for r in descartadas.values()):\n                    nota += f\"; usa {usadas} réplicas de las que hay ({a}: {len(descartadas[a])}, {b}: {len(descartadas[b])}): \" \\\n                            f\"las otras no tienen las {semillas_por_replica} semillas en los dos lados\"\n                fila.update(estado=\"completo\", n_replicas=usadas, n_semillas=n_sem, replicas=\" \".join(str(k) for k in ks),\n                            delta_g_media=media, delta_g_se=se, delta_g_ic_inf=lo, delta_g_ic_sup=hi,\n                            veredicto=_veredicto_par(lo, hi), nota=nota,\n                            filas_train_a=float(da[\"filas_train\"].median()) if \"filas_train\" in da else np.nan,\n                            filas_train_b=float(db[\"filas_train\"].median()) if \"filas_train\" in db else np.nan)\n            filas.append(fila)\n    return pd.DataFrame(filas)\nEOF\npython - <<'EOF'\np='comun/consolidar.py'\ns=open(p).read()\ns=s.replace('''def orden() -> list[str]:''','''PARES_CSV = \"pares.csv\"\n\n\ndef pares_entre_experimentos(meses_final: str = bl.VENTANA_FINAL) -> pd.DataFrame:\n    \"\"\"`experimentos/sampling_1/ledger/pares.csv` (D12): los pares declarados en `comun/variantes.py`, con variantes de\n    cualquier dueño, leídos de los `resultados.csv` ya consolidados de todos. `replicas.csv` es de cada experimento y solo con\n    sus variantes; un par entre dos (`U − H3`) no cabe ahí sin crear el ciclo de dependencias de D10.\"\"\"\n    finales, n_est = [], bl.N_ESTRELLA if meses_final == bl.VENTANA_FINAL else None\n    for e in variantes.duenos():\n        f = rutas.ledger(e) / \"resultados.csv\"\n        if f.exists():\n            r = lg.leer_csv(f)\n            finales.append(_absolutas(r[(r[\"etapa\"] == \"final\") & (r[\"meses_final\"] == meses_final)], rutas.ledger(e)))\n    if not finales:\n        return pd.DataFrame()\n    todo = lg.con_replica(pd.concat(finales, ignore_index=True))\n    if n_est is None:  # la ronda anterior fija N* con las curvas de `C`: este archivo es de la vigente\n        raise ValueError(f\"pares.csv es de la ronda {bl.VENTANA_FINAL}\")\n    con_g = lg.agregar_ganancia(todo, lambda ruta: pd.read_csv(ruta), n_est)\n    tabla = lg.pares_directos(con_g, variantes.PARES_APAREADOS, variantes.PARES_WELCH, variantes.PARES_INFO,\n                              semillas_por_replica=len(bl.SEMILLAS_FINALES))\n    tabla.insert(1, \"n_estrella\", n_est)\n    return tabla\n\n\ndef escribir_pares(meses_final: str = bl.VENTANA_FINAL) -> pd.DataFrame:\n    tabla = pares_entre_experimentos(meses_final)\n    destino = rutas.ledger(variantes.AGREGADOR)\n    destino.mkdir(parents=True, exist_ok=True)\n    tabla.to_csv(destino / PARES_CSV, index=False)\n    return tabla\n\n\ndef orden() -> list[str]:''',1)\ns=s.replace('''        exps = [a.experimento] if a.experimento else orden()\n        resultados = {}''','''        exps = [] if a.experimento == variantes.AGREGADOR else ([a.experimento] if a.experimento else orden())\n        resultados = {}''')\ns=s.replace('''    for e, r in resultados.items():\n        print(f\"{e}: {len(r['resultados'])}''','''    if not a.ledger and a.meses_final == bl.VENTANA_FINAL and a.experimento in (None, variantes.AGREGADOR):\n        pares = escribir_pares(a.meses_final)  # sin --experimento, al final de todos; con `sampling_1`, solo esto\n        print(f\"{variantes.AGREGADOR}: {PARES_CSV} con {len(pares)} pares declarados, \"\n              f\"{int((pares['estado'] == 'completo').sum()) if len(pares) else 0} completos, \"\n              f\"{int((pares['estado'] == 'pendiente').sum()) if len(pares) else 0} pendientes\")\n    for e, r in resultados.items():\n        print(f\"{e}: {len(r['resultados'])}''',1)\nopen(p,'w').write(s)\nEOF\npython -m comun.consolidar --experimento sampling_1 && head -3 experimentos/sampling_1/ledger/pares.csv | cut -c1-300; python -c \"\nimport pandas as pd; t=pd.read_csv('experimentos/sampling_1/ledger/pares.csv'); print(t[['variante','tipo','estado','faltan','n_replicas','veredicto']].to_string())\"",
+    "timeout": 300000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01M8G1Q29vTS46fK2fA212eB",
+   "tool_input": {
+    "command": "python - <<'EOF'\np='experimentos/sampling_1/scripts/tiempos_hp_fijos.py'\ns=open(p).read()\ns=s.replace('''        estudio = optuna.load_study(study_name=juego, storage=f\"sqlite:///{db}\")\n        mejor = estudio.best_trial''','''        try:\n            estudio = optuna.load_study(study_name=juego, storage=f\"sqlite:///{db}\")\n            mejor = estudio.best_trial\n        except KeyError:  # un .db vacío (el de una corrida a medias) no tiene el estudio\n            print(f\"{db} no tiene el estudio {juego}: se saltea\")\n            continue''')\nopen(p,'w').write(s)\nEOF\ncat > tests/test_tiempos_hp_fijos.py <<'EOF'\n\"\"\"`experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (D4, D6), sin datos reales.\"\"\"\n\nimport argparse\n\nimport pandas as pd\nimport pytest\n\nfrom experimentos.sampling_1.scripts import tiempos_hp_fijos as t\n\n\ndef test_216_mediciones_en_orden_aleatorio_de_semilla_fija_y_sin_repetir():\n    c = t.celdas(t.JUEGOS)\n    assert len(c) == 216 and sum(x[\"receta\"] == \"azar\" for x in c) == 120 and sum(x[\"receta\"] == \"bajas\" for x in c) == 96\n    assert len({t.nombre_archivo(x) for x in c}) == 216\n    assert c == t.celdas(t.JUEGOS) and c != sorted(c, key=t.nombre_archivo)  # mismo orden siempre, y no el lexicográfico\n    assert {x[\"tasa\"] for x in c if x[\"receta\"] == \"azar\"} == {1.0, 0.5, 0.25, 0.1, 0.05}\n    assert {x[\"tasa\"] for x in c if x[\"receta\"] == \"bajas\"} == {0.5, 0.25, 0.1, 0.05}\n    assert {x[\"juego\"] for x in c} == {\"C\", *[f\"C@{k}\" for k in range(1, 8)]}\n\n\ndef test_se_niega_a_correr_fuera_de_la_vm_salvo_con_prueba(monkeypatch):\n    monkeypatch.setattr(t.correr, \"tipo_de_maquina\", lambda: \"local\")\n    with pytest.raises(SystemExit, match=\"n2-highmem-8\"):\n        t.main([])\n    with pytest.raises(SystemExit, match=\"n2-highmem-8\"):\n        t.main([\"--calibracion\", \"x\", \"inicio\"])\n\n\ndef test_la_receta_de_bajas_pesa_1_sobre_f_y_la_de_azar_no_pesa():\n    import numpy as np\n    from comun import datos as dt\n    rng = np.random.default_rng(0)\n    y = (rng.random(4000) < 0.1).astype(int)\n    train = pd.DataFrame({dt.ID: np.arange(4000), dt.Y: y, \"a\": rng.normal(size=4000)})\n    d, _, peso = t.muestra(\"azar\", train, 0.25, 1001)\n    assert peso is None and len(d) == 1000\n    d, _, peso = t.muestra(\"bajas\", train, 0.1, 1001)\n    assert d[dt.Y].sum() == y.sum() and set(np.unique(peso[d[dt.Y].to_numpy() == 0])) == {10.0}\n\n\ndef test_consolidar_arma_los_dos_csv_y_suma_las_anclas(tmp_path, monkeypatch):\n    monkeypatch.setattr(t.rutas, \"EXPERIMENTOS\", tmp_path / \"experimentos\")\n    base = t.raiz_tiempos()\n    (base / \"hp_fijos\").mkdir(parents=True)\n    for k in range(3):\n        pd.DataFrame([{\"receta\": \"azar\", \"tasa\": 1.0, \"juego\": \"C\", \"repeticion\": k, \"t_medicion_s\": 20 + k}]).to_csv(\n            base / \"hp_fijos\" / f\"azar_1_C_{k}.csv\", index=False)\n    for momento, tt in ((\"inicio\", 27.0), (\"fin\", 28.0)):\n        pd.DataFrame([{\"tipo\": \"trial\", \"repeticion\": 0, \"t_s\": tt, \"lista\": \"l1\", \"momento\": momento},\n                      {\"tipo\": \"final\", \"repeticion\": 0, \"t_s\": 45.0, \"lista\": \"l1\", \"momento\": momento}]).to_csv(\n            base / f\"calibracion_l1_{momento}.csv\", index=False)\n    pd.DataFrame([{\"estudio\": \"C\", \"duracion_s\": 27.15}]).to_csv(base / \"anclas_trials.csv\", index=False)\n    ctrl = t.rutas.ledger(\"control\")\n    ctrl.mkdir(parents=True)\n    f = {\"etapa\": \"final\", \"meses_final\": t.VENTANA_FASE7, \"semilla\": t.SEMILLA_FINAL_CALIBRACION, \"replica_opt\": 0}\n    pd.DataFrame([{**f, \"variante\": \"C\", \"tiempo_entrenamiento_s\": 50.0}, {**f, \"variante\": \"C-rep\", \"tiempo_entrenamiento_s\": 45.0}]\n                 ).to_csv(ctrl / \"resultados.csv\", index=False)\n    hp, cal = t.consolidar()\n    assert len(pd.read_csv(hp)) == 3\n    c = pd.read_csv(cal)\n    assert len(c) == 4 and set(c[\"momento\"]) == {\"inicio\", \"fin\"}\n    tr, fi = c[c[\"tipo\"] == \"trial\"], c[c[\"tipo\"] == \"final\"]\n    assert (tr[\"ancla_trial_s\"] == 27.15).all() and (fi[\"ancla_final_fase7_s\"] == 50.0).all() and (fi[\"ancla_final_crep_s\"] == 45.0).all()\n    assert fi[\"cociente_ancla_crep\"].tolist() == [1.0, 1.0]\n\n\ndef test_dos_listas_no_escriben_el_mismo_archivo_de_calibracion(tmp_path, monkeypatch):\n    monkeypatch.setattr(t.rutas, \"EXPERIMENTOS\", tmp_path / \"experimentos\")\n    nombres = {t.raiz_tiempos() / f\"calibracion_{lista}_{m}.csv\" for lista in (\"fase8_r0_a\", \"fase8_r1_a\", \"fase8_r0_b\") for m in t.MOMENTOS}\n    assert len(nombres) == 6\nEOF\npython -m pytest -q tests/test_tiempos_hp_fijos.py 2>&1 | tail -10",
+    "timeout": 300000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_018ntsPiWY8pRNYMExsTDXcR",
+   "tool_input": {
+    "command": "python /Users/agustina/datos/experimentos-dmeyf/scratch_2_1/generar_listas.py && ls experimentos/sampling_1/scripts | grep fase8 | wc -l; chmod +x scripts/lanzar_carriles.sh; cat experimentos/sampling_1/scripts/fase8_r1_a.txt; scripts/lanzar_carriles.sh --en-seco",
+    "timeout": 60000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_013rqsW6bTgaRmURnzvzTEZM",
+   "tool_input": {
+    "command": "scripts/lanzar_carriles.sh --en-seco",
+    "timeout": 60000
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 164,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Apliqué el grupo 2 salvo la tarea 2.5, que quedó **BLOQUEADA** porque falta fijar `requirements.txt`. Las demás (2.1, 2.2, 2.3, 2.4, 2.6 y 2.7) están hechas, marcadas y commiteadas. Corrí el `pytest` entero al final y pasaron los 296 tests.\n\n**Por qué 2.5 no está marcada.** `vm.sh` ya calibra antes y después de la lista y sube otra vez después de la calibración final. `scripts/lanzar_carriles.sh` reparte las 17 listas en 4 carriles. Los dos se verifican en seco en `tests/test_fase8.py`. Lo que falta es `requirements.txt`, que pide las versiones exactas de una VM de prueba. Este grupo no lanza VMs y la versión de Python de la imagen no consta en ningún lado. Fijar las de la Mac sería adivinar, y el `pip install` de las 17 VMs podría fallar. El detalle y las dos salidas posibles (que Agustina lance una VM de prueba corta, o que confirme las versiones de la Mac) están en `ledger/sesiones/bloqueo.txt`.\n\n- **2.1 (D10):** verifiqué antes que no había ninguna VM viva y guardé las tablas anteriores. Moví 21 `hp/` y 21 `corridas/` de `U0.25@k`, `U0.1@k` y `U0.05@k` de `h3` a `h1`, en el repo y en el bucket. En el bucket hice los cinco pasos de D10 (VMs vivas, respaldo en `respaldo/2026-11-mover-U/`, copia con tamaño y crc32c iguales, borrado, verificación). Las tablas quedaron iguales salvo +21 filas en `h1`. Si hay que volver atrás: `python -m scripts.mover_estudios --deshacer` (`--bucket` para el bucket) y `git revert`.\n- **Reporte de `h4`:** no cambia, porque el bloque A solo se dibuja en el reporte de `sampling_1`. Lo que cambia es el cálculo: `H4F-0.05` pasa de T 84,28 s y A 9,455 (réplica 0) a T 80,17 s y A 12,500 (8 réplicas). Los valores de antes y de después están en la bitácora.\n- **2.2:** el registro tiene las 20 variantes de la grilla, 8 réplicas en todo el bloque A menos `C-rep`, y los 17 pares con lo que aísla cada uno. Corrí un smoke con `--filas 20000` de una variante de cada fila, en `optimizar` y en `final`. Los tests de la réplica 0 comparan los índices de la muestra, no el `hash_muestra` del ledger, porque eso exige el panel completo.\n- **2.3:** `pares.csv` tiene 24 pares declarados, 7 completos (iguales a sus `replicas.csv`) y 17 pendientes.\n- **2.4:** `tiempos_hp_fijos.py` pasó el smoke con `--prueba` en medición, calibración, `--consolidar` y `--anclas`. Con los `.db` del bucket, la ancla de `C` da 27,15 s, y las del final dan 50,163 s y 45,137 s, como dice D6.\n- **2.6:** las 17 listas suman 67 estudios y 2.560 finales, sin repetir. `lanzar_fase.sh --en-seco` de todas lo confirma.\n- **2.7:** `--sanity` suma el chequeo de la fase 8. Hoy falla a propósito: faltan las 128 celdas de la fase 8.\n\nNo lancé VMs ni escribí en Zulip. Las revisiones (2.8) quedan para la sesión de revisión. En la bitácora de `sampling_1` dejé una entrada de este grupo con su \"Tokens\" en blanco (`—`).",
+ "ttft_ms": 2863,
+ "type": "result",
+ "duration_ms": 4817105,
+ "uuid": "5e7cea52-3406-4697-84b1-dbab3a770975",
+ "ttft_stream_ms": 2193,
+ "time_to_request_ms": 175,
+ "first_content_frame_ms": 2193,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 282,
+   "outputTokens": 144279,
+   "cacheReadInputTokens": 29579480,
+   "cacheCreationInputTokens": 357768,
+   "webSearchRequests": 0,
+   "costUSD": 5.832374000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 44792,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 357768,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

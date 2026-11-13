@@ -1,0 +1,160 @@
+{
+ "duration_api_ms": 179694,
+ "stop_reason": "end_turn",
+ "session_id": "fddfd322-8e43-4e1e-9c4f-3871ce3597cc",
+ "total_cost_usd": 1.7048912000000005,
+ "usage": {
+  "input_tokens": 62,
+  "cache_creation_input_tokens": 101316,
+  "cache_read_input_tokens": 2604076,
+  "output_tokens": 18665,
+  "output_tokens_details": {
+   "thinking_tokens": 6572
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 101316,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1103,
+    "cache_read_input_tokens": 110514,
+    "cache_creation_input_tokens": 4262,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4262
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 62,
+   "outputTokens": 18665,
+   "cacheReadInputTokens": 2604076,
+   "cacheCreationInputTokens": 101316,
+   "webSearchRequests": 0,
+   "costUSD": 1.7048912000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 6572,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 101316,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01TfHesav8eTSfBneSkLSsyd",
+   "tool_input": {
+    "command": "git diff 43c0176~1 HEAD -- experimentos/control experimentos/h1 experimentos/h2 experimentos/h3 > /tmp/g1a.diff; git diff 43c0176~1 HEAD -- experimentos/h4 experimentos/sampling_1 > /tmp/g1b.diff; wc -l /tmp/g1*.diff",
+    "description": "Save group 1 diffs to files"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01H9cF9spVxitKsB6PmMsHHZ",
+   "tool_input": {
+    "command": "ls experimentos/sampling_1/ledger/sesiones/ | grep -v json | head; export PYENV_VERSION=facultad; python -c \"\nimport glob, pandas as pd\nd = pd.concat([pd.read_csv(f) for f in glob.glob('experimentos/*/ledger/resultados.csv')])\nf = d[(d.etapa == 'final') & (d.meses_final == '201903-201908')]\ng = f.groupby(['variante', 'replica_opt']).tiempo_entrenamiento_s.agg(['mean', 'std'])\ncv = 100 * g['std'] / g['mean']\nprint(len(cv), cv.median().round(2), cv.min().round(2), cv.max().round(2))\n\" 2>&1 | tail -3; python -m comun.variantes --verificar 2>&1 | tail -5",
+    "description": "Run CV command and variant registry check"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01K8qmhq9W6LU4vBknNJS9AS",
+   "tool_input": {
+    "command": "PYENV_VERSION=facultad python -c \"\nimport glob, pandas as pd\nd = pd.concat([pd.read_csv(f) for f in glob.glob('experimentos/*/ledger/resultados.csv')])\nf = d[(d.etapa == 'final') & (d.meses_final == '201903-201908')]\ng = f.groupby(['variante', 'replica_opt']).tiempo_entrenamiento_s.agg(['mean', 'std'])\ncv = 100 * g['std'] / g['mean']\nprint(len(cv), cv.median().round(2), cv.min().round(2), cv.max().round(2))\n\"",
+    "description": "Run the CV-between-seeds command from control hipotesis"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01NBECdgmBisCc95fH6Gqaqv",
+   "tool_input": {
+    "command": "PYENV_VERSION=facultad python -m comun.variantes --verificar",
+    "description": "Run variant registry verification"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01AkTBEsYYERksq635tC14Mk",
+   "tool_input": {
+    "command": "for e in h1 h2; do cut -d, -f1,19,20,21 experimentos/$e/ledger/apareado.csv; done; head -1 experimentos/control/ledger/replicas.csv; grep -n 'mediana\\|tiempo_total' comun/reporte.py | head -20",
+    "description": "Show T and A columns from apareado and reporte refs"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 38,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Revisé el grupo 1 contra `docs/revision.md` §1 y §2 y cerré la tarea 1.5 sin fallas abiertas, pero queda pendiente algo que solo podés hacer vos: confirmar las predicciones antes de lanzar la fase 8. Lo dejé en `bloqueo.txt`. Commit `e42c231`, sin Co-Authored-By.\n\n**Lo que no pasaba y corregí**\n- **`sampling_1/docs/diseno.md`, fase 8:** no decía quién corre ni el tipo de VM, como sí dicen las fases anteriores. Agregué un punto \"Quién\": la corrés vos, desde tu cuenta, en VMs `n2-highmem-8` a demanda.\n- **Cantidad de veredictos que se vuelven a decidir:** `design.md` (D13) y la tarea 1.2 decían 9, pero la lista tiene 8 (`U0.5`, `U0.25`, `U0.1`, `U0.05`, `B0.5`, `B0.25`, `B0.1`, `GOSS`). Lo pasé a 8, como ya decía `h4/docs/hipotesis.md`.\n\n**Números que comprobé corriendo**\n- **CV entre semillas:** el comando de `control/docs/hipotesis.md` da 121 celdas, mediana 2,43 %, de 0,76 a 6,20 %.\n- **Anclas de los finales:** con la semilla 100003, el final de `C` tarda 50,16 s y el de `C-rep` 45,14 s.\n- **Mejor trial de `C`:** es el 31 de 40 y dura 27,15 s, según el `C.db` local.\n- **A:** A(`U0.5`) = 2,25 con la réplica 0. Los valores nuevos (2,83, 1,54, 0,99 y 2,31) salen todos de una sola mediana del control, de unos 1.002 s.\n- **Totales:** 67 estudios y 2.560 finales, y coinciden por hipótesis y por lista.\n- **Costo y filas:** unos US$ 22, y las filas de la receta con bajas están bien.\n\n**Lo que queda abierto**\n- **Las predicciones siguen sin tu confirmación.** Son las de 1.1 (D5, D6) y 1.2 (D13), y `control/docs/hipotesis.md` dice que las confirmás \"antes de la revisión\". No se lanza ninguna VM de la fase 8 hasta que lo anotes en la bitácora.\n- **`python -m comun.variantes --verificar` sigue fallando** con `h4: falta declarar ['h3']`. Es esperado: se resuelve en la tarea 2.1, junto con la mudanza de los estudios `U{r}@k`.\n- **No commiteé** `costos.csv` ni `g1_aplicar_20261113T113305.json`: son de la sesión que aplicó el grupo.\n\nEl cierre está en `experimentos/sampling_1/docs/bitacora.md`, con cada ítem de la lista y la salida de `comun/tokens.py`. Esa salida muestra tres sesiones sin etapa, que no son de esta revisión y no pude clasificar.",
+ "ttft_ms": 1685,
+ "type": "result",
+ "duration_ms": 760804,
+ "uuid": "d197dea8-b1f6-42f0-b235-cf7a4f656ec1",
+ "ttft_stream_ms": 1175,
+ "time_to_request_ms": 216,
+ "first_content_frame_ms": 1175,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 62,
+   "outputTokens": 18665,
+   "cacheReadInputTokens": 2604076,
+   "cacheCreationInputTokens": 101316,
+   "webSearchRequests": 0,
+   "costUSD": 1.7048912000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 6572,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 101316,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

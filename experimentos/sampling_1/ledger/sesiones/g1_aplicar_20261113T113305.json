@@ -1,0 +1,152 @@
+{
+ "duration_api_ms": 423043,
+ "stop_reason": "end_turn",
+ "session_id": "171cafa4-eb5b-4237-9e39-5a1145998f04",
+ "total_cost_usd": 3.056387799999999,
+ "usage": {
+  "input_tokens": 84,
+  "cache_creation_input_tokens": 152126,
+  "cache_read_input_tokens": 4551719,
+  "output_tokens": 46435,
+  "output_tokens_details": {
+   "thinking_tokens": 11268
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 152126,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1255,
+    "cache_read_input_tokens": 162994,
+    "cache_creation_input_tokens": 984,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 984
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 46435,
+   "cacheReadInputTokens": 4551719,
+   "cacheCreationInputTokens": 152126,
+   "webSearchRequests": 0,
+   "costUSD": 3.056387799999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 11268,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 152126,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01UDN76X7GfSRMnCCn6MKC4g",
+   "tool_input": {
+    "command": "cat .claude/skills/openspec-apply-change/SKILL.md | head -80; openspec instructions apply --change tiempos-confiables-y-consistencia --json > /tmp/apply.json 2>&1; head -c 3000 /tmp/apply.json",
+    "description": "Read skill and apply instructions"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012HqqJmo3SFoV5a2bGiXxgX",
+   "tool_input": {
+    "command": "sed -i '' 's/^- \\[ \\] 1.2 Predicciones de la grilla/- [x] 1.2 Predicciones de la grilla/' openspec/changes/tiempos-confiables-y-consistencia/tasks.md && git add experimentos/h1/docs/hipotesis.md experimentos/h2/docs/hipotesis.md experimentos/h3/docs/hipotesis.md experimentos/h4/docs/hipotesis.md openspec/changes/tiempos-confiables-y-consistencia/tasks.md && git commit -q -m \"tiempos-confiables-y-consistencia 1.2: predicciones de la grilla común (D13) en secciones nuevas del 13-nov: h1 § Réplicas de H1, h2 § Réplicas de H2 y B0.05, h3 § H3-0.5, h4 § Grilla común (H4O-0.25/0.1/0.05, las cuatro H4P, pares directos con lo que aísla cada uno y lo que no, cuatro principales H4O-r − U-r) y § Comparaciones múltiples con los contrastes que se suman. Todas declaran que se agregan después de ver 201910. A confirmar por Agustina\" && git log --oneline -1",
+    "description": "Mark and commit task 1.2"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01EBNjmz15LG9zdWyao8rfkB",
+   "tool_input": {
+    "command": "python - <<'EOF'\nfrom pathlib import Path\np = Path('experimentos/h4/docs/diseno.md'); t = p.read_text()\nviejo = '''- `h1`: los estudios `U0.05` y `U0.25` de la réplica 0 (`ledger/hp/U0.05.json`, `ledger/hp/U0.25.json`), que usan\n  `H4F-0.05` y `H4F-0.25`.\n- `h3`: las réplicas `U0.05@k` y `U0.25@k` (k = 1…7), de `h3` por la regla de dueños de `h3-semillas-optuna`.\n'''\nassert viejo in t\nt = t.replace(viejo, '''- `h1`: los estudios `U0.05` y `U0.25` y sus réplicas `U0.05@k` y `U0.25@k` (k = 1…7) (`ledger/hp/U0.05.json`,\n  `ledger/hp/U0.25.json` y sus `@k`), que usan `H4F-0.05` y `H4F-0.25`.\n\nActualizado el 13-nov-2026 (cambio `tiempos-confiables-y-consistencia`): las réplicas `U{r}@k` pasaron de `h3` a `h1`,\nasí que este experimento deja de depender de `h3`. Los estudios `F{f}` y `F{f}@k` de la grilla común son propios.\n''')\nnuevo = '''## Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)\n\nPredicciones y reglas (6 a 11): [`docs/hipotesis.md`](hipotesis.md) § Grilla común. `h4` aporta dos filas de la grilla\ncomún ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Grilla común): \"con bajas y peso, búsqueda y\nfinal\" (`H4O-{f}`) y \"con bajas y peso, solo búsqueda\" (`H4P-{f}`), con f ∈ {0,5; 0,25; 0,1; 0,05}.\n\n| variante | método | tasa | estudio (k = 0 / k ≥ 1) | dueño del estudio | final |\n|---|---|---|---|---|---|\n| `H4O-0.25`, `H4O-0.1`, `H4O-0.05` | `fast-retrain-opt` | f | `F{f}` / `F{f}@k` | `h4` | todas las bajas + f de CONTINUA, peso 1/f, sobre 201903–201908 |\n| `H4P-0.5`, `H4P-0.25`, `H4P-0.1`, `H4P-0.05` | `clase-peso` | f | `F{f}` / `F{f}@k` | `h4` | completo (r = 1), sin peso |\n\n- **Estudio `F{f}@k`**: como `F0.5@k` (§ `H4O-0.5`) con la fracción f: todas las bajas + f de CONTINUA de train\n  201903–201906, sorteado con la semilla k, peso 1/f en CONTINUA en cada trial; validación 201908 completa y sin pesos.\n  `F0.5` y `F0.5@k` ya existen y conservan su `hash_muestra`.\n- **`H4O-{f}`**: la fracción de CONTINUA del final pasa a ser la tasa de la variante (antes, fija en 0,5). `H4F-*` sigue\n  con la mitad de CONTINUA y peso 2 en el final. Hiperparámetros sin reescalar.\n- **`H4P-{f}`**: optimiza con el método de `H4O-{f}` y comparte su estudio; el final es el de `opt-muestra` (train\n  201903–201908 completo, sin peso). La muestra de búsqueda de `H4P-0.1` es la misma que la de `H4U-0.1` (misma función,\n  misma semilla); solo cambia el peso.\n- **Estudios nuevos**: `F0.25`, `F0.1` y `F0.05` en k = 0…7: **24 estudios**.\n- **Finales nuevos**, con las 20 semillas de la ronda 201903–201908: las 7 variantes nuevas en k = 0…7:\n  7 × 8 × 20 = **1.120 finales**.\n- **T y A**: T suma los 40 trials de `F{f}@k` y la media del final; el tiempo del estudio entra en T de `H4O-{f}` y de\n  `H4P-{f}`. Mediana entre réplicas y A con una sola referencia\n  ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos).\n- **Pares directos** (`PARES_APAREADOS` y `PARES_WELCH`, con lo que aísla cada uno): § Grilla común de\n  [`docs/hipotesis.md`](hipotesis.md). Los que cruzan experimentos se calculan en `sampling_1`.\n- **Lo que hay que tocar en `comun/`** (grupo 2 del cambio): `clase-peso` en `comun/metodos.py`, que\n  `metodo_optimizacion` manda a `fast-retrain-opt`; `pesos` recibe la tasa; `fast-retrain` y `fast-retrain-opt` dejan de\n  compartir la fracción fija; `validar` acepta las cuatro tasas en `fast-retrain-opt`.\n- Van en las listas `fase8_r0_a` … `fase8_r7_a` de la fase 8 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md)\n  § Reparto y fases), cada estudio antes de sus finales.\n- **Fuera de la grilla común**: `H4F-*`, `H4H-0.1` y `H4U-0.1` quedan como están (la tabla de cobertura los lista\n  aparte); `H4U-0.1` entra solo en el par del peso.\n\n## Fuera de la grilla'''\nt = t.replace('## Fuera de la grilla', nuevo, 1)\np.write_text(t)\nEOF\npython -m comun.variantes --verificar 2>&1 | grep -v \"se rompen\"; echo rc=$?",
+    "description": "Update h4 design and run verifier"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01YTaZK7LKJHRZ56cAqk9zri",
+   "tool_input": {
+    "command": "python -m comun.variantes --verificar > /tmp/verif.txt 2>&1; echo \"rc $?\"; head -20 /tmp/verif.txt",
+    "description": "Run verifier capturing exit code"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 53,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Terminé el grupo 1 hasta la 1.4: hay 4 de 36 tareas marcadas, con un commit por tarea en la rama `tiempos-confiables` y sin push. Ninguna VM lanzada. La 1.5 (revisión en sesión limpia) queda abierta para la sesión de revisión.\n\n**Lo que se escribió:**\n- **1.1** (`43c0176`), en `control/docs/hipotesis.md` § Medición de tiempos:\n  - A calculada siempre contra la mediana de las 8 réplicas de `C`, con su intervalo por bootstrap.\n  - La medición a hiperparámetros fijos y la calibración por máquina, cada una con su predicción y su regla.\n  - Las anclas sacadas del ledger: 27,15 s del mejor trial de `C`, 50,16 s del final de `C` réplica 0 con la semilla 100003 y 45,14 s de `C-rep` con la misma semilla.\n  - El comando que da el CV entre semillas dentro de una VM. Lo corrí tal como quedó escrito: da una mediana de 2,43 % en las 121 celdas.\n- **1.2** (`6e0f3db`): las predicciones de la grilla común en secciones nuevas con fecha:\n  - h1 § Réplicas de H1, h2 § Réplicas de H2 y `B0.05`, h3 § `H3-0.5`.\n  - h4 § Grilla común, con las reglas 6 a 11, los pares directos, lo que aísla cada uno y los cuatro contrastes principales `H4O-{r}` − `U{r}`.\n  - Todas declaran que las variantes se agregan después de ver 201910.\n- **1.3** (`0f4ec04`):\n  - Los `diseno.md` de h1–h4, con `## Dependencias` actualizadas al nuevo dueño de `U{r}@k`.\n  - En `sampling_1/docs/diseno.md`, la fase 8 (17 listas, 4 carriles, unas 36 h de VM, unos US$ 22) y la tabla de la grilla común.\n  - En `sampling_1/docs/hipotesis.md` § Pregunta, la grilla común y los pares directos.\n- **1.4** (`6c1e865`): la entrada en la bitácora de `sampling_1`.\n\n**Para la revisión y para vos (están en la bitácora):**\n- **Predicciones:** las de 1.1 y 1.2 quedan a confirmar o ajustar por vos. Las reglas de cuándo se confirma o se refuta las completé siguiendo el esquema de las reglas que ya existen.\n- **`--verificar` falla hoy:** marca `h4: falta declarar ['h3']`. Es esperado: la 1.3 pide sacar `h3` de las dependencias de `h4`, pero el registro de dueños recién cambia en la 2.1. Hasta entonces el verificador va a seguir fallando.\n- **Una cuenta del design no cierra:** D13 y la 1.2 hablan de \"9 veredictos que se vuelven a decidir\", pero la lista (`U*`, `B*` menos `B0.05`, y `GOSS`) suma 8. En `h4/docs/hipotesis.md` los puse por nombre, sin el número.\n- **Reparto de carriles:** el que figura en `sampling_1/docs/diseno.md` es una propuesta mía para que los cuatro carriles queden parejos. D15 no lo fija, y lo va a definir `scripts/lanzar_carriles.sh` en el grupo 2.",
+ "ttft_ms": 1720,
+ "type": "result",
+ "duration_ms": 894596,
+ "uuid": "688bc304-2f74-4c2f-9c2c-7d3292feb50d",
+ "ttft_stream_ms": 1211,
+ "time_to_request_ms": 101,
+ "first_content_frame_ms": 1211,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 46435,
+   "cacheReadInputTokens": 4551719,
+   "cacheCreationInputTokens": 152126,
+   "webSearchRequests": 0,
+   "costUSD": 3.056387799999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 11268,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 152126,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
