@@ -126,3 +126,41 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `sampling_1/docs/bitacora.md`. Reglas 5 a 8 bien aplicadas. Corregido: la conclusión decía que el reescalado "no
   cambia nada"; ahora dice que √(1/r) no cambia contra no reescalar (la regla 5 da *gana la raíz* contra la lineal en
   r = 0,1). `verificar_informe_h3`: 0 sin fuente.
+
+### 2026-11-13 — `docs/hipotesis.md`, `docs/diseno.md` e `informe/` fundidos en `README.md` (sitio-legible 3.5)
+
+- Sesión: aplicar del grupo 3 de `sitio-legible`, headless, Opus. Etapa: informe.
+- Destino de cada sección vieja:
+  - `hipotesis.md` encabezado → callouts de § Predicción (tres momentos, con fecha y commit: `2f05cae` 1-nov y
+    `7c34254` 3-nov; 8-nov `h3-semillas-optuna`; 9-nov `incorporar-aportes`).
+  - `hipotesis.md` § H3 → § Idea (mecanismo y riesgo de `min_data_in_leaf`) y § Predicción › H3 (réplica 0), reglas sin
+    cambios. «pre-registrada» → «fijada de antemano».
+  - `hipotesis.md` § H3 con réplicas (qué queda fijo, qué es una réplica, reglas 1–4) → § Predicción › H3 con réplicas.
+    En las reglas 1, 3 y 8 el umbral «−5,52 M$» se escribe «−δ», con δ = 5,52 M$ en «Qué queda fijo» y la nota de que en
+    la ronda vigente se aplica el δ de la ronda (como ya hacía el informe).
+  - `hipotesis.md` § Limitaciones previstas de las réplicas: «desvío mayor que el previsto → indeterminado» descartada
+    (no pasó: las reglas decidieron); «tiempos de VMs distintas» → § Limitaciones › Ocho réplicas.
+  - `hipotesis.md` § Extensiones del aporte de Luis → § Predicción › Extensiones del exploratorio
+    `validacion_50_semillas` (D8: sin nombres; «lo que reporta Luis» → «lo que reporta el exploratorio»). Tabla de
+    variantes nuevas → § Diseño › Variantes.
+  - `hipotesis.md` § Limitaciones previstas → § Limitaciones (dependencia de `h1`, estudios compartidos, test ya mirado).
+  - `diseno.md` § Variantes y › Extensiones → § Diseño › Variantes (una sola tabla de las ocho). § Estudios compartidos y
+    § Réplicas de optimización → § Diseño › Estudios y réplicas.
+  - `diseno.md` § Grilla con réplicas, › Grilla de las extensiones, § Grilla de la réplica 0 → § Diseño › Grilla, con los
+    totales de horas (las tablas de horas por bloque se descartan: el detalle de ejecución está en
+    `sampling_1/corridas.md`). «Por qué R = 8» → § Diseño › Grilla («exploratorio de Martín» → `sensibilidad_muestra`).
+  - `diseno.md` › Ronda 201903–201908 y «por qué H3 no reoptimiza (211718)» → § Diseño › Rondas («el tutor pidió…,
+    Tschopp» → «la consigna pide…»).
+  - `diseno.md` § Fuera de la grilla → § Diseño › Grilla (réplicas de `U*`, `B*`, `GOSS`); «H4 y fast-retrain» descartado
+    (lo dice H4); «reescalado como trabajo futuro» ya está en la regla 4.
+  - `diseno.md` § Dependencias → § Dependencias.
+  - `informe.md` encabezado, § Hipótesis y › Ronda 201903–201908 → descartados (dónde estaba cada cosa) o § Diseño ›
+    Rondas. Los tres apartamientos están en `control/README.md` y en § Diseño › Rondas.
+  - `informe.md` tablas copiadas de `tabla_resultados.md` (réplica 0, con réplicas, varianza, diferencias) → bloque
+    `resultado` (tabla de variantes, mapa y curva) y, para réplicas, varianza y diferencias, los bloques de Resultados
+    (una línea enlaza ahí). Veredictos de las reglas 1–8, AUC y ganancia, «¿alcanzan 50 semillas?» y § Conclusión →
+    § Veredicto, con los mismos números.
+  - `informe.md` § Limitaciones → § Limitaciones, salvo hiperparámetros de cuatro meses (la parte común va a Resultados;
+    la propia, «no se probó el reescalado para el salto de cuatro a seis meses», queda) y un solo año/mes/máquina con el
+    bootstrap de clientes → Limitaciones comunes de Resultados.
+- Nuevo: diagrama del pipeline que marca que H3 achica solo la optimización.

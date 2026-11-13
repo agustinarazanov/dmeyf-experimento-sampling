@@ -56,6 +56,8 @@ exclude_docs: |
   !/experimentos/h1/figuras/**
   !/experimentos/h2/README.md
   !/experimentos/h2/figuras/**
+  !/experimentos/h3/README.md
+  !/experimentos/h3/figuras/**
   !/experimentos/control/README.md
 
 nav:
@@ -63,6 +65,7 @@ nav:
   - Hipótesis:
     - H1: experimentos/h1/README.md
     - H2: experimentos/h2/README.md
+    - H3: experimentos/h3/README.md
   - Cómo medimos:
     - Control y reglas: experimentos/control/README.md
 
