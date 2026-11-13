@@ -2027,3 +2027,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: 35 turnos · contexto ~56.000 por turno · ≈ US$ 1,1 (`tokens.py` todavía no tiene el costo de esta sesión).
 - Tutor: —
+
+### 13-nov-2026 · sitio-legible, cierre de 1.3 y 1.4 (orquestador)
+
+- 1.3: el workflow de Pages corrió con `workflow_dispatch` en la rama `sitio-legible-ci` (run 43482664191) y terminó en
+  verde; el deploy se saltó, porque solo publica desde `main`. Localmente, `scripts/sitio.sh` pasa y falla con «tutor»
+  nombrando archivo y línea (verificado en el grupo 1).
+- 1.4: corrido tal como está escrito en el README raíz. `pip install -r requirements-sitio.txt` y `scripts/sitio.sh serve`
+  sirven en 127.0.0.1:8000; `/experimentos/h3/` da 200 y `/experimentos/h3/docs/bitacora/` da 404.
+- Correcciones del orquestador después del grupo 3 (21010dd): la letra de las figuras era ilegible a ~750 px y pasó a 11–14 pt;
+  la leyenda del mapa del tradeoff se cortaba; las etiquetas contra el borde o sobre un vecino ahora se corren; las
+  tarjetas suman la idea en una línea. Revisado con capturas a 1280 y 390 px.
+- Se unió `origin/main` (PR #2, dos líneas en `h3/sensibilidad_muestra/README.md`) antes del push.

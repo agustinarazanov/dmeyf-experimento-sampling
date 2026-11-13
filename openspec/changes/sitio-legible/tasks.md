@@ -11,11 +11,11 @@
   `md_in_html`, `attr_list`), `site_name: Sampling_1`, y `sitio/estilos.css` portado de `_sass/custom/custom.scss`
   (pill, icbar, td.sig-\*, ic, nota, largo de línea). Verificar en `mkdocs serve`: un callout, un diagrama Mermaid, una
   grilla de tarjetas y una tabla con pills se ven bien. «Sampling_1» entra en una línea a 1280 px y a 390 px.
-- [ ] 1.3 `scripts/sitio.sh [serve]` sobre MkDocs, con la búsqueda de nombres de D8 (con lista de excepciones con
+- [x] 1.3 `scripts/sitio.sh [serve]` sobre MkDocs, con la búsqueda de nombres de D8 (con lista de excepciones con
   motivo) antes del build. `.github/workflows/pages.yml` con `setup-python` en lugar de Ruby. Verificar: `scripts/sitio.sh`
   pasa local; con «tutor» en una página publicada falla nombrando archivo y línea; el workflow corre en una rama con
   `workflow_dispatch` (sin publicar desde la rama) y termina en verde.
-- [ ] 1.4 README raíz § Ver el sitio localmente con el comando nuevo. Verificar corriéndolo tal como está escrito.
+- [x] 1.4 README raíz § Ver el sitio localmente con el comando nuevo. Verificar corriéndolo tal como está escrito.
 
 ## 2. Generador con marcadores y figuras nuevas (sesión: Sonnet; cambio en `comun/`, se anuncia en el commit)
 
