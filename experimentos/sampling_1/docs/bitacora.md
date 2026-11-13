@@ -1855,3 +1855,8 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Verificado: `python -m scripts.verificar_readme` «todos los números están en el bloque bloque-a-completo y todos los
   enlaces existen»; `python scripts/nombres_sitio.py` sin hallazgos; `scripts/sitio.sh` sale con 0;
   `python -m comun.variantes --verificar` sale con 0.
+- Cierre del grupo 3 (aplicar): `python -m pytest` entero, 258 passed (6 min 27 s). Con `pytest` a secas el entorno no
+  encuentra `comun`; con `python -m pytest` sí. Queda para la revisión en sesión limpia del grupo 3 y para 4.1:
+  `_config.yml`, `_sass/` y `Gemfile*` siguen en la raíz hasta 4.1 (los `reporte.html` y las carpetas `informe/` ya se
+  borraron con cada README), y los
+  comentarios de `comun/` que nombran `docs/hipotesis.md` o `docs/diseno.md` los revisa el `git grep` de 4.1.
