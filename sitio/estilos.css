@@ -75,10 +75,32 @@
 /* Figuras (una imagen sola en su párrafo): al 100 % de la columna; en pantallas angostas no bajan de 40rem, para que
    el texto se lea, y se desplazan dentro de su recuadro, como las tablas. Fondo blanco, borde redondeado y margen
    interno: se leen igual en claro y en oscuro (los SVG y PNG llevan texto oscuro). */
-.md-typeset p:has(> img:only-child) { overflow-x: auto; }
-.md-typeset p > img:only-child { width: 100%; max-width: 100%; }
+/* Con glightbox (D17) la imagen va dentro de un enlace: p > a.glightbox > img. */
+.md-typeset p:has(> img:only-child),
+.md-typeset p:has(> a.glightbox:only-child) { overflow-x: auto; }
+.md-typeset p > img:only-child,
+.md-typeset p > a.glightbox:only-child > img { width: 100%; max-width: 100%; cursor: zoom-in; }
 @media screen and (max-width: 44.9375em) {
-  .md-typeset p > img:only-child { min-width: 40rem; max-width: none; }
+  .md-typeset p > img:only-child,
+  .md-typeset p > a.glightbox:only-child > img { min-width: 40rem; max-width: none; }
+}
+
+/* Tablas ordenables y filtrables (sitio/tablas.js, D17). */
+.md-typeset table th[role="columnheader"]:not(.no-sort) { cursor: pointer; }
+.md-typeset table th[aria-sort="ascending"]::after { content: " ▲"; font-size: 0.7em; }
+.md-typeset table th[aria-sort="descending"]::after { content: " ▼"; font-size: 0.7em; }
+.md-typeset .filtro-tabla {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 1em 0 -0.4em;
+  padding: 0.4em 0.7em;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 0.05rem solid var(--md-default-fg-color--lighter);
+  border-radius: 0.3rem;
 }
 .md-typeset img { background: #ffffff; border-radius: 0.4rem; padding: 0.4rem; box-sizing: border-box; }
 
