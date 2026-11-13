@@ -1678,3 +1678,55 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   README, y 13 enlaces a páginas no publicadas) hasta que el grupo 3 reescriba esas páginas. 1.3 (workflow en una rama)
   y 1.4 (correr el comando del README tal como está escrito) quedan abiertas por eso: pushear una rama lo decide Agustina
   y el build va a fallar hasta el grupo 3.
+
+### 13-nov-2026 · tiempos-confiables-y-consistencia · grupo 1 (predicciones y diseño, Opus)
+
+Rama `tiempos-confiables`, worktree `../experimento-sampling-tiempos`. Etapa: **hipotesis** (1.1, 1.2) y **diseno** (1.3).
+
+- **Mensaje del tutor (Zulip 212124, 12-nov, tópico `Experimentos - Lunes > sampling_1`).** Pregunta si H4 dialoga con
+  H1: ¿se usan los mismos cortes? ¿se ve alguna diferencia? Y recuerda medir los tiempos de forma confiable. No cambia el
+  baseline. La respuesta va como sección «Diálogo entre H1 y H4» del informe conjunto (D17, tareas 4.2 y 6.5), en voz
+  impersonal y citando el id; el mensaje lo escribe y lo manda Agustina.
+- **Revisión del 13-nov que originó el cambio** (el ledger de la ronda 201903–201908, verificado por una revisión en
+  sesión limpia el mismo día):
+  - dentro de una VM la máquina mide bien: el mismo final con otra semilla tarda lo mismo, CV de 1,8 a 6,1 % en las
+    variantes sin réplicas (mediana 2,43 % en las 121 celdas; el comando quedó en `control/docs/hipotesis.md`
+    § Medición de tiempos);
+  - entre VMs hay una sola medición (`C-rep` contra `C` réplica 0: 47,0 contra 48,9 s de media) y el ledger no guarda
+    la instancia;
+  - Optuna es el ruido grande: T(`C`) va de 682 a 1.264 s según la réplica, por el `num_leaves` elegido y los trials;
+  - A usaba dos referencias de T(`C`): la réplica 0 en el ledger y la mediana en el reporte solo con réplicas. A(`U0.5`)
+    daba 2,25 o 2,83 según cuál; entre 1,93 y 3,57 según la réplica del control;
+  - las hipótesis no comparten grilla: entre H1 y H4 solo hay dos cruces y ninguno es un contraste directo.
+- **Ampliación a la grilla común.** Para contestar 212124 con un contraste directo, el cambio pasó de una VM de
+  medición a la grilla común (D8): cuatro tasas y 8 réplicas en cada forma de muestrear, 9 variantes nuevas, pares
+  directos declarados (D12) y la fase 8 en 17 listas y cuatro carriles (D15).
+- **Revisiones en sesión limpia de la propuesta** (13-nov, las dos con subagente `general-purpose`, Opus, incorporadas;
+  detalle en la entrada «decisiones de Agustina» de arriba): la primera con 4 hallazgos altos, 9 medios y 10 bajos
+  (`001c09e`); la segunda sin hallazgos de la primera abiertos, con dos altos nuevos (el segundo proyecto no anda con los
+  scripts; el orden con `sitio-legible`) y siete medios (`ba7eb67`).
+- **Lo escrito en este grupo:**
+  - 1.1 `control/docs/hipotesis.md` § Medición de tiempos (`43c0176`): A con una sola referencia y su intervalo,
+    medición a hiperparámetros fijos, calibración con sus dos anclas (27,15 s del mejor trial de `C`; 50,16 s del final
+    de `C` réplica 0 con la semilla 100003 en la fase 7 y 45,14 s de `C-rep` con la misma semilla), CV entre semillas y
+    alcance exploratorio.
+  - 1.2 predicciones de la grilla (`6e0f3db`): h1 § Réplicas de H1, h2 § Réplicas de H2 y `B0.05`, h3 § `H3-0.5`, h4
+    § Grilla común (reglas 6 a 11) y § Comparaciones múltiples.
+  - 1.3 diseño (`0f4ec04`): `h1`–`h4/docs/diseno.md`, `## Dependencias` con el dueño nuevo de `U{r}@k`,
+    `sampling_1/docs/diseno.md` (fase 8 y § Grilla común) y `sampling_1/docs/hipotesis.md` § Pregunta.
+- **Quedan a confirmar por Agustina** las predicciones de 1.1 (D5, D6) y 1.2 (D13). Las escribió esta sesión desde el
+  design, tal como las propone; las propuso una sesión que ya vio la ronda, y cada sección lo dice.
+- **Para la revisión (1.5):**
+  - `python -m comun.variantes --verificar` marca `h4: falta declarar ['h3']`. Es esperado: 1.3 pide que `h4` deje de
+    declarar `h3`, y el registro (`dueno_estudio`, `dueno_variante`, `implicitas`) cambia en 2.1. Se resuelve ahí, en el
+    mismo commit que la mudanza. `--verificar` cuenta cualquier nombre entre comillas invertidas de la sección: por eso
+    la nota de `h4` nombra h3 sin ellas.
+  - D13 y la tarea 1.2 dicen "9 veredictos que se vuelven a decidir" con la lista `U*`, `B*` menos `B0.05` y `GOSS`, que
+    son 8 (`U0.5`, `U0.25`, `U0.1`, `U0.05`, `B0.5`, `B0.25`, `B0.1`, `GOSS`). `h4/docs/hipotesis.md` § Comparaciones
+    múltiples lista los 8 por nombre, sin el número.
+  - El reparto de las 17 listas en los cuatro carriles (`sampling_1/docs/diseno.md` § Reparto y fases, fase 8) es una
+    propuesta para que queden parejos (el carril 1 lleva la medición y la réplica 0, que es más corta). D15 no lo fija;
+    lo fija `scripts/lanzar_carriles.sh` en el grupo 2.
+  - Las reglas de confirmación de las predicciones nuevas (cuándo se confirma, se refuta o ninguna de las dos) las
+    completó esta sesión siguiendo el esquema de las reglas existentes; D5, D6 y D13 dan la predicción.
+- Ninguna VM lanzada; ninguna corrida antes del cierre de 1.5.

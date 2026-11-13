@@ -44,7 +44,7 @@ Qué puede ir en paralelo:
   - `sampling_1/docs/diseno.md`: la fase 8 (D15) con listas, carriles, horas y costo, y la tabla de la grilla común
     (D8);
   - `sampling_1/docs/hipotesis.md` § Pregunta: la grilla común y los pares directos (D12).
-- [ ] 1.4 Anotar en la bitácora de `sampling_1` el mensaje del tutor (Zulip 212124, 12-nov), la revisión del 13-nov que
+- [x] 1.4 Anotar en la bitácora de `sampling_1` el mensaje del tutor (Zulip 212124, 12-nov), la revisión del 13-nov que
   originó este cambio, la ampliación a la grilla común y las dos revisiones en sesión limpia de la propuesta (13-nov,
   incorporadas).
 - [ ] 1.5 Revisión en sesión limpia de 1.1–1.4 con `docs/revision.md` § 1 y § 2, y cierre en la bitácora. Ninguna
