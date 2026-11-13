@@ -27,7 +27,7 @@ def on_config(config):
 
 
 _NOMBRE = "Sampling_1 · DMEyF 2026"
-_PARTIDO = '<span class="md-ellipsis">\n            Sampling_1<span class="sitio-anio"> · DMEyF 2026</span>\n          </span>'
+_PARTIDO = '<span class="md-ellipsis">\n            Sampling_1<span class="sitio-anio"><span class="sitio-sep"> · </span>DMEyF 2026</span>\n          </span>'
 
 
 def on_post_page(output, page, config):

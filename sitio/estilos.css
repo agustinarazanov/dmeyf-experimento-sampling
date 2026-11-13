@@ -109,6 +109,7 @@
   .md-header { height: 3.6rem; }
   .md-header__title .md-header__topic:first-child .md-ellipsis { white-space: normal; line-height: 1.15; }
   .md-header__title .sitio-anio { display: block; font-size: 0.7em; opacity: 0.85; }
+  .md-header__title .sitio-sep { display: none; }  /* en dos líneas, el separador sobra */
   .md-sidebar { top: 3.6rem; }
 }
 
