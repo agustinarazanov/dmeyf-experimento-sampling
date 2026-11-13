@@ -109,7 +109,7 @@ Qué puede ir en paralelo:
 
   Smoke test local con `--prueba`, 1 juego de hiperparámetros, 2 tasas, 1 repetición y datos reducidos. Los archivos de
   prueba no se commitean.
-- [ ] 2.5 `scripts/vm.sh` y versiones:
+- [x] 2.5 `scripts/vm.sh` y versiones:
   - corre la calibración antes y después de la lista, y sube al bucket una vez más después de la calibración del final;
   - `requirements.txt` con las versiones exactas que instala una VM de prueba;
   - `scripts/lanzar_carriles.sh`: reparte listas en carriles y lanza las de cada carril una tras otra, con `--en-seco`.

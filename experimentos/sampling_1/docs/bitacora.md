@@ -1868,3 +1868,13 @@ Sesión de código (Sonnet). Cambios en `comun/`: `variantes.py`, `metodos.py`, 
   (`U0.5` *no pierde* con A = 2,25; `B0.1` *pierde*; `H4F-0.05` y `H3-0.25` *no pierden* con 8 réplicas). Ninguna
   reescribe una regla anterior.
 - Se levanta el bloqueo de 1.5: la fase 8 puede lanzarse cuando se cierre el grupo 2.
+
+### 2026-11-13 — 2.5: `requirements.txt` con versiones fijas
+
+- VM de prueba `sampling-versiones` (n2-highmem-8 a pedido, imagen `labo-family`, mismas propiedades que `vm.sh`),
+  lanzada por la sesión orquestadora con el visto bueno de Agustina: `python3 -m venv`, `pip install -r requirements.txt`
+  sin versiones y `pip freeze`. Python 3.14.4. Borrada enseguida (con disco); al cerrar no queda ninguna VM en el proyecto.
+- Fijadas las versiones directas: duckdb 2.0.0, pandas 3.1.1, numpy 2.5.4, scipy 1.18.1, pyarrow 26.0.1, lightgbm 4.7.0,
+  optuna 5.0.0, scikit-learn 1.9.1, matplotlib 3.11.2, pytest 9.2.0. La Mac tiene numpy 2.5.3, pandas 3.0.6 y pyarrow
+  26.0.0, que no corren fases.
+- Se levanta el bloqueo de 2.5 (`bloqueo.txt` borrado). Queda la revisión 2.8.
