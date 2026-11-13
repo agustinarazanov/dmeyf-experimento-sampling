@@ -87,3 +87,5 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-12T19:15,4,revisar,claude-opus-5-5,49,1.2788,d072a59b-9cff-434f-9b0f-176eacd3ad67,success,0,final-con-julio-agosto
 2026-11-13T12:08,2,aplicar,claude-sonnet-5-5,114,3.4159,a1a6304c-c736-486e-9a05-0d7dc671a001,success,0,sitio-legible
 2026-11-13T12:30,2,revisar,claude-opus-5-5,38,1.0439,3033befa-6843-4464-b8d7-90ac08af6358,success,0,sitio-legible
+2026-11-13T13:39,3,aplicar,claude-opus-5-5,130,10.0702,4d587e21-a1a8-4b95-8758-4b00e9b427cb,success,0,sitio-legible
+2026-11-13T13:56,3,revisar,claude-opus-5-5,4,1.8588,ffaa4e11-eed7-42a1-99f0-be64211df66a,success,0,sitio-legible
