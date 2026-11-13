@@ -1,9 +1,23 @@
-tiempos-confiables-y-consistencia, revisión 1.5 (13-nov-2026)
+BLOQUEADO: tiempos-confiables-y-consistencia, tarea 2.5 (solo `requirements.txt`), 13-nov-2026
 
-La revisión del grupo 1 cerró sin ✗ abiertos, pero falta algo que solo puede hacer Agustina:
-confirmar o ajustar las predicciones propuestas por una sesión que ya había visto la ronda 201903–201908:
-  - control/docs/hipotesis.md § Medición de tiempos (D5: A_fijo, cociente entre recetas, CV ≤ 5 %; D6: calibración);
-  - h1 § Réplicas de H1, h2 § Réplicas de H2 y B0.05, h3 § H3-0.5, h4 § Grilla común (reglas 6 a 11) (D13).
-El texto de control dice que se confirman "antes de la revisión"; no consta en la bitácora.
-Ninguna VM de la fase 8 se lanza hasta que Agustina lo anote en experimentos/sampling_1/docs/bitacora.md
-(confirmadas tal cual, o con los ajustes escritos en cada sección antes de correr). Después se borra este archivo.
+Grupo 2 aplicado: 2.1, 2.2, 2.3, 2.4, 2.6 y 2.7 hechas y marcadas, cada una en su commit. 2.5 sigue sin marcar: `vm.sh` (calibración
+antes y después, subida extra) y `scripts/lanzar_carriles.sh` están hechos y verificados con `--en-seco`
+(tests/test_fase8.py), pero falta su segundo punto:
+
+  - `requirements.txt` con las versiones exactas que instala una VM de prueba.
+
+Por qué no puedo: leer esas versiones exige crear una VM (pip install -r requirements.txt en la imagen labo-family y pip freeze
+ahí) y este grupo no lanza VMs. Tampoco las puedo deducir: la versión de Python de la imagen no consta en el repo ni en los logs.
+Fijar las de esta Mac (lightgbm 4.7.0, numpy 2.5.3, optuna 5.0.0, pandas 3.0.6, scipy 1.18.1, pyarrow 26.0.0, scikit-learn
+1.9.1, matplotlib 3.11.2, duckdb 2.0.0, Python 3.14) sería adivinar: si la imagen trae otro Python, el pip install de las 17 VMs puede
+fallar o resolver otra cosa, justo lo que la tarea quiere evitar.
+
+Qué hace falta (decide Agustina, no es una decisión de código):
+  (a) una VM de prueba corta, lanzada por Agustina (a pedido, unos minutos, centavos de dólar), `pip install -r requirements.txt`
+      en una venv y `pip freeze` de lightgbm, numpy, optuna, pandas, scipy, pyarrow, scikit-learn, matplotlib y duckdb; o
+  (b) confirmar que se fijan las versiones de esta Mac y aceptar que 5.1 lo verifique con la primera VM.
+Con cualquiera de las dos, la sesión que siga escribe `requirements.txt`, marca 2.5 y commitea; después de eso, el grupo 2 solo
+espera la revisión 2.8 (sesión limpia, `docs/revision.md` § 3).
+
+Anotado también: las predicciones de 1.1 y 1.2 siguen esperando la confirmación de Agustina antes de lanzar la fase 8 (grupo 5);
+eso no frena este grupo.
