@@ -1702,3 +1702,36 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - VISUAL PENDIENTE: los SVG de `experimentos/<exp>/figuras/` se ven en github.com (texto con fuente genérica) y en el sitio.
 - VISUAL PENDIENTE: el mapa del tradeoff con las 21 variantes, sin etiquetas pisadas (las revisé en PNG a 12 pulgadas; falta
   verlo en el sitio a 1280 px).
+
+### 13-nov-2026 · sitio-legible grupo 2 · revisión en sesión limpia (tarea 2.8)
+
+- Sesión: revisión en sesión limpia, Opus, sin contexto de la sesión que aplicó. Revisor: Claude (Opus). Lista:
+  `docs/revision.md` § 3, más las verificaciones de las tareas 2.1–2.7.
+- Lista § 3 (los commits `283d23d` y `b6610ad` no tocan `src/`, el corredor, `consolidar.py` ni `vm.sh`):
+  - n/a smoke test con `--filas 20000`, determinismo, `optimizar` sin 201910, columnas del ledger, `codigo_sucio`, filas
+    de train, `consolidar.py` y `vm.sh`: el grupo no cambió ese código. Sus tests siguen en verde (`pytest`: 258 passed).
+  - ✓ No hay datos del dataset en el repo (`git ls-files` sin `.csv.gz`, `.parquet`, `.pkl` ni `competencia_02`).
+- Tareas del grupo:
+  - ✓ 2.1 marcadores: `test_marcador_faltante_falla_sin_escribir_nada` y `test_regenerar_no_toca_el_texto_de_afuera`
+    pasan. `--exp` y `--todos` corren.
+  - ✓ 2.2 `table-wrapper`: 0 en el código y en las seis salidas regeneradas. `grep -ci autor` sobre el bloque B
+    (`tabla_resultados.md` regenerada) da 0.
+  - ✓ 2.3 regenerar dos veces: los README/SVG nuevos son idénticos (tests). En la salida vieja `reporte.html` solo cambia
+    la hora del pie («Generado … · commit …»), que ya estaba antes y desaparece con esos archivos en el grupo 4.
+  - ✓ 2.4 figuras: miré `tradeoff.png` (generado con `--figuras` en una carpeta temporal, ya borrada). 21 variantes, título
+    que dice qué mirar, ninguna etiqueta encima de otra. Detalle menor sin corregir: el rótulo `H3K-0.1` cruza la línea de
+    −δ. Los tests de «sin datos» pendiente y de la curva de `U0.05` debajo de 0 en N\* pasan.
+  - ✓ 2.5 y 2.6: hay tests. `comun.variantes --verificar` falla hoy, a propósito, nombrando cada `docs/diseno.md` con
+    `## Dependencias`. Pasa a verde en el grupo 3.
+  - ✓ 2.7: `test_verificadores.py` altera 3,25 → 3,26 y exige que el verificador falle nombrando el número y el
+    `archivo:línea`. Ignora lo que está dentro de los bloques generados. Los dos verificadores fallan hoy con el mensaje
+    `bloque-a-completo` faltante, como estaba previsto.
+- Hallazgo: la sesión de aplicar no regeneró las salidas viejas commiteadas. `tabla_resultados.md` seguía con tres
+  «Autor:» en el bloque B, y los `reporte.html` tenían el `.table-wrapper` y las figuras viejas.
+- Corrección: regeneradas con `python -m comun.reporte --todos` y commiteadas con esta revisión.
+- Sin cerrar (necesitan un humano): la tabla a 390 px en `mkdocs serve`, los SVG en github.com y el mapa en el sitio a
+  1280 px. Quedan en `ledger/sesiones/bloqueo.txt` y se pueden ver en el recorrido de 4.2.
+- `comun/tokens.py` corrido: lista sesiones sin etapa de otros días que superan el objetivo (`53a0ed85`, `a1a6304c`,
+  `076c6949`, `961d71db`, `e5c1be96`). No son de esta revisión y no las clasifico.
+- Tokens: ~30 turnos · contexto ~45.000 por turno · ≈ US$ 0,9.
+- Tutor: —

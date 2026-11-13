@@ -44,7 +44,7 @@
 - [x] 2.7 `scripts/verificar_readme.py` y `scripts/verificar_informe_h3.py` leen el bloque `bloque-a-completo` de
   `sampling_1/README.md`, y el segundo revisa el texto fuera de los marcadores de cada `hN/README.md` (D9). Verificar
   con un número alterado a mano que el verificador falla nombrándolo.
-- [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
+- [x] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
   `comun/tokens.py`.
 
 ## 3. Un README por experimento (sesión: Opus para redactar; un commit por experimento)

@@ -80,7 +80,6 @@ Las cifras del bloque B no se comparan una a una con las del bloque A: otro prot
 
 ### experimentos/h3/sensibilidad_muestra
 
-- **Autor:** Martín López
 - **Pregunta:** ¿Cuánto depende de la muestra la configuración que elige H3?
 - **Protocolo:** 20 configuraciones al azar, 10 muestras del 25 %, una semilla final, float64, 4 hilos
 - **Cifras principales:**
@@ -93,7 +92,6 @@ Las cifras del bloque B no se comparan una a una con las del bloque A: otro prot
 
 ### experimentos/sampling_1/exploratorios/validacion_20_semillas
 
-- **Autor:** Luis María Laguinge
 - **Pregunta:** ¿Cambian los veredictos de H1 a H4 si el control y cada variante se evalúan con 20 semillas finales en lugar de 10?
 - **Protocolo:** 20 semillas finales por variante (lista no publicada), una búsqueda por estudio, reportes por hipótesis hechos con una versión anterior de comun/reporte.py y editados a mano; sin código ni ledger
 - **Cifras principales:**
@@ -104,7 +102,6 @@ Las cifras del bloque B no se comparan una a una con las del bloque A: otro prot
 
 ### experimentos/sampling_1/exploratorios/validacion_50_semillas
 
-- **Autor:** Luis María Laguinge
 - **Pregunta:** ¿Con 50 semillas finales, qué estrategias de las hipótesis 3 y 4 ganan al control y cuántas semillas entran en un presupuesto de 900 s?
 - **Protocolo:** 9 estrategias con hiperparámetros fijos, 50 semillas finales (10 oficiales + 110017 + i·19937), presupuesto de 900 s; ranking y curva según K en 201908, 201910 solo informado
 - **Cifras principales:**
