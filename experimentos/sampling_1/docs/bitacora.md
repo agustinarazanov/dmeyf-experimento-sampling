@@ -1841,3 +1841,17 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   búsqueda de nombres solo encuentra el README raíz (3.10).
 - Observación para la revisión: las tarjetas generadas dicen el veredicto de cada hipótesis pero no su idea en una
   línea (escenario «Abrir Hipótesis» de `sitio-informes`). El generador es del grupo 2; no lo toqué.
+- 3.10 README raíz y `CLAUDE.md`. Destino de cada sección vieja del README raíz:
+  - Título y línea de integrantes y tutor → título igual; la línea de nombres se descarta (D8). § La pregunta y la
+    respuesta corta → primer párrafo y «Respuesta corta», sin números (están en Resultados) y sin nombres.
+  - § Resultados (bloques A y B comentados), § Experimentos (tabla con estado de cada uno), § Aportes de Martín y Luis y
+    § Qué sigue → descartados del README: los cubren Resultados, las páginas de cada hipótesis, Exploratorios y
+    § Qué sigue de Resultados. Queda § El sitio con un enlace a cada página.
+  - § Ver el sitio localmente → § El sitio › Ver el sitio localmente, igual. § Cómo correr → igual (`reporte --exp`,
+    `lanzar_fase.sh <lista>`, `vm.sh --en-seco`, `.env`; el reparto y la operación → Corridas). § Estructura → con la
+    estructura nueva (README por experimento, `figuras/`, `sitio/`, `mkdocs.yml`, verificadores).
+  - `CLAUDE.md`: el mapa del primer párrafo describe el README por experimento, el sitio y lo que publica, la regla de
+    redacción impersonal, `h1` a `h4`, y que los entregables son los README con bloques generados.
+- Verificado: `python -m scripts.verificar_readme` «todos los números están en el bloque bloque-a-completo y todos los
+  enlaces existen»; `python scripts/nombres_sitio.py` sin hallazgos; `scripts/sitio.sh` sale con 0;
+  `python -m comun.variantes --verificar` sale con 0.

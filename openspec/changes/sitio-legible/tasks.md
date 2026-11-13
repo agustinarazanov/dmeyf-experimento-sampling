@@ -80,7 +80,7 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   `sitio/como-medimos.md` y `docs/metodo.md` (Cómo trabajamos: método, § Agregar una hipótesis con la estructura
   nueva y enlaces a GitHub a bitácoras, specs, `docs/revision.md` y guion). Se borran los `sitio/*.md` viejos.
   Verificar con el escenario «Llegar a una bitácora».
-- [ ] 3.10 README raíz recortado (qué es, enlace al sitio, cómo correr, estructura) e impersonal; `CLAUDE.md` con el mapa de
+- [x] 3.10 README raíz recortado (qué es, enlace al sitio, cómo correr, estructura) e impersonal; `CLAUDE.md` con el mapa de
   archivos nuevo. Verificar con `python -m scripts.verificar_readme` y con la búsqueda de nombres de D8.
 
 ## 4. Limpieza e integración (sesión: Sonnet)
