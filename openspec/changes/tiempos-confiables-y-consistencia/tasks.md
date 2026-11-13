@@ -91,7 +91,7 @@ Qué puede ir en paralelo:
   Tests: un par declarado al que le falta un lado sale como pendiente, con el nombre de la variante que falta; un par
   declarado que no aparece hace fallar el test; los pares de un solo experimento dan lo mismo que en su `replicas.csv`;
   una réplica incompleta no entra y el par dice cuántas usó.
-- [ ] 2.4 `experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (D4, D6):
+- [x] 2.4 `experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (D4, D6):
   - importa solo de `comun/`;
   - las dos recetas (al azar y bajas con peso), orden aleatorizado con semilla fija;
   - cronometra por separado el `Dataset`, el entrenamiento y la predicción; el tiempo de la medición es entrenamiento
