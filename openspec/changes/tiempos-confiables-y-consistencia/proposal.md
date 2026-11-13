@@ -135,7 +135,7 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
     raíz, `tabla_resultados.md`, `comparacion_rondas.md` y las figuras.
   - `docs/metodo.md` y `docs/revision.md`.
   - Dos borradores de respuesta en `experimentos/sampling_1/docs/zulip/`.
-- **Cómputo**: 67 estudios y 2.560 finales nuevos, más la medición. Unas 32 h de VM `n2-highmem-8` a pedido, repartidas
-  en 9 VMs en paralelo (una por réplica y una para la medición), unas 4 h de reloj. Agustina las lanza.
-- **Orden de archivado**: `final-con-julio-agosto` se archiva antes que este cambio. Los dos modifican "Comparación
-  limpia en dos bloques" y "Réplicas de la optimización"; los deltas de este cambio ya incluyen lo que agregó aquel.
+- **Cómputo**: 67 estudios y 2.560 finales nuevos, más la medición. Unas 36 h de VM `n2-highmem-8` a pedido, repartidas
+  en 17 VMs en paralelo (dos por réplica y una para la medición), unas 2,5 h de reloj. Agustina las lanza.
+- **Specs de base**: `final-con-julio-agosto` quedó archivado el 13-nov. Los deltas de este cambio que modifican
+  "Comparación limpia en dos bloques" y "Réplicas de la optimización" parten de la versión que dejó.

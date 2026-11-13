@@ -11,7 +11,7 @@ variantes. La fila SHALL registrar k en la columna `replica_opt`.
 Los estudios `U{r}@k` que ya existían en el ledger de `h3` SHALL pasar al de `h1` sin cambiar sus ids, sus
 hiperparámetros ni sus tiempos.
 
-Este requisito parte de la versión que deja `final-con-julio-agosto` (20 semillas finales).
+Este requisito parte de la versión que dejó `final-con-julio-agosto` (20 semillas finales).
 
 #### Scenario: Réplica 0 igual a lo ya corrido
 - **WHEN** se corre la optimización de `C` con `--replica 0` y `--filas 20000`, en la Mac, antes y después del cambio

@@ -77,8 +77,8 @@ El informe conjunto SHALL reportar el coeficiente de variación entre VMs y, por
 final y la del inicio. Ninguna corrida SHALL descartarse por su calibración después de conocer su ganancia.
 
 #### Scenario: Ruido entre máquinas
-- **WHEN** nueve VMs corrieron sus listas con calibración
-- **THEN** el informe da el coeficiente de variación entre las medias de calibración de las nueve
+- **WHEN** las VMs de una fase corrieron sus listas con calibración
+- **THEN** el informe da el coeficiente de variación entre las medias de calibración de todas
 
 #### Scenario: Máquina fuera de rango
 - **WHEN** la calibración de una VM queda fuera del rango pre-registrado

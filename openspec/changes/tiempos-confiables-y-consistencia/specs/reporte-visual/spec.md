@@ -37,7 +37,7 @@ formato, porque lo copian los `informe.md` y lo leen los verificadores. Las úni
 final de la tabla del bloque A, y qué aísla cada par, al final de la tabla de diferencias (capacidad `grilla-comun`). La
 nota del bloque A SHALL decir que A usa la mediana de T_C entre réplicas en todas las filas.
 
-Este requisito parte de la versión que deja `final-con-julio-agosto` (ΔAUC junto a la ganancia) y de la que dejó
+Este requisito parte de la versión que dejó `final-con-julio-agosto` (ΔAUC junto a la ganancia) y de la que dejó
 `reporte-graficos-y-ancho` (resumen y detalle plegable): las dos se conservan.
 
 #### Scenario: Variante con réplicas

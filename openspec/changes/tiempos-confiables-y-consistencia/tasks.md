@@ -1,13 +1,13 @@
 # Tasks
 
-Requiere la ronda 201903–201908 consolidada (`final-con-julio-agosto`). `Experimentos guion.md`, en la raíz, queda fuera.
+Requiere la ronda 201903–201908 consolidada (`final-con-julio-agosto`, archivado el 13-nov). `Experimentos guion.md`, en la raíz, queda fuera.
 
 Qué puede ir en paralelo:
 - Después de cerrar 1.5: el grupo 2 (código de corridas), el grupo 3 (código del reporte), 4.1 (correcciones de texto
   que no dependen de números nuevos) y 4.2 (primera respuesta al tutor). 2 y 3 tocan archivos distintos de `comun/` y
   pueden ir en dos sesiones, cada una en su rama; 3.5 a 3.7 leen del registro lo que deja 2.2, así que esperan a esa
   tarea.
-- En el grupo 5: las 9 VMs a la vez (17 si la cuota alcanza).
+- En el grupo 5: las 17 VMs a la vez (en dos tandas si la cuota no alcanza).
 - En el grupo 6: los informes de `h1`, `h2`, `h3` y `h4` (6.2), cada uno en su sesión; el conjunto va después.
 
 ## 1. Predicciones y diseño (sesión: Opus)
@@ -72,8 +72,8 @@ Qué puede ir en paralelo:
   prueba no se commitean.
 - [ ] 2.4 `scripts/vm.sh`: corre la calibración antes y después de la lista y trae los dos CSV con los ledgers.
   Verificar con `--en-seco`.
-- [ ] 2.5 Listas de la fase 8 en `experimentos/sampling_1/scripts/` (D15): `fase8_r0` … `fase8_r7` y `fase8_medicion`,
-  más las mitades `_a` y `_b` de cada réplica. En cada lista, los estudios van antes que sus finales.
+- [ ] 2.5 Listas de la fase 8 en `experimentos/sampling_1/scripts/` (D15): `fase8_r0_a` … `fase8_r7_a` (h1, h3 y h4),
+  `fase8_r0_b` … `fase8_r7_b` (h2) y `fase8_medicion`. En cada lista, los estudios van antes que sus finales.
   `scripts/lanzar_fase.sh --en-seco` de todas: 67 estudios y 2.560 finales en total, y ninguna corrida repetida.
 - [ ] 2.6 Revisión en sesión limpia de 2.1–2.5 con `docs/revision.md` § 3. Commit que anuncia el cambio en `comun/`.
 
@@ -134,8 +134,8 @@ Qué puede ir en paralelo:
 
 ## 5. Corridas (VMs a pedido, las lanza Agustina)
 
-- [ ] 5.1 Verificar el crédito y la cuota de vCPU. Lanzar `fase8_r0` … `fase8_r7` y `fase8_medicion` a la vez, o las
-  mitades `_a` y `_b` si la cuota alcanza para 17 VMs. Al terminar, verificar que no queda ninguna VM encendida y anotar
+- [ ] 5.1 Verificar el crédito y la cuota de vCPU (136 para las 17 VMs). Lanzar las 16 listas `fase8_rk_a` y
+  `fase8_rk_b` y `fase8_medicion` a la vez, o en dos tandas si la cuota no alcanza. Al terminar, verificar que no queda ninguna VM encendida y anotar
   horas y costo en la bitácora.
 - [ ] 5.2 `python -m comun.consolidar` y `--sanity`. Verificar:
   - 67 estudios nuevos y 2.560 finales nuevos, con 20 semillas en cada celda de variante y réplica;
@@ -175,5 +175,4 @@ Qué puede ir en paralelo:
 
 ## Workflow follow-up
 
-- Archivar `final-con-julio-agosto` antes que este cambio: los dos modifican los mismos requisitos.
 - Archivar con `/opsx:archive` cuando estén cerradas las cinco revisiones (1.5, 2.6, 3.8, 5.3 y 6.6).

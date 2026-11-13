@@ -212,21 +212,23 @@ lista de D11 antes de correr. `docs/revision.md` § 2 suma el ítem que lo verif
 **D15. Fase 8, en paralelo.** Una corrida a la vez por VM, como siempre: el paralelismo es entre VMs y no cambia la
 medición de tiempos.
 
-- **Una lista por réplica**, `fase8_r0` … `fase8_r7`, cada una en su VM, como las fases 6 y 7. Dentro de la lista, cada
-  estudio va antes que sus finales. Más `fase8_medicion` (D4) en otra VM: 9 VMs, 72 vCPU.
-- **Qué lleva cada lista `fase8_rk` (k ≥ 1):**
+- **Dos listas por réplica**, cada una en su VM: `fase8_rk_a` (h1, h3 y h4) y `fase8_rk_b` (h2), para k = 0…7. Dentro
+  de cada lista, cada estudio va antes que sus finales. Más `fase8_medicion` (D4) en otra VM: 17 VMs, 136 vCPU
+  (decisión de Agustina, 13-nov).
+- **Qué llevan entre las dos listas de la réplica k ≥ 1** (`_a`: lo de `U`, `H3`, `F`, `H4O` y `H4P`; `_b`: lo de `B` y
+  `GOSS`):
   - estudios: `U0.5@k`, `F0.25@k`, `F0.1@k`, `F0.05@k`, `B0.5@k`, `B0.25@k`, `B0.1@k`, `B0.05@k`, `GOSS@k`;
   - finales (20 semillas): `U0.5`, `U0.25`, `U0.1`, `U0.05`, `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`, `H4P-0.5`,
     `H4P-0.25`, `H4P-0.1`, `H4P-0.05`, `B0.5`, `B0.25`, `B0.1`, `B0.05`, `GOSS`.
-- **`fase8_r0`:** estudios `F0.25`, `F0.1`, `F0.05` y `B0.05`; finales de `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`,
+- **Réplica 0:** estudios `F0.25`, `F0.1`, `F0.05` y `B0.05`; finales de `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`,
   las cuatro `H4P` y `B0.05`. El resto de la réplica 0 ya existe.
 - **Totales:** 67 estudios y 2.560 finales.
-- **Estimación**, con los tiempos de `estudios.csv` y `resultados.csv` de la ronda: una lista `fase8_rk` lleva unos
-  68 min de estudios (los de `B*` y `GOSS` son 57 de esos) y unas 2,4 h de finales; con el arranque, unas 4 h.
-  `fase8_r0`, unas 2 h; la medición, unas 2 h. En total unas 32 h de VM y unas 4 h de reloj. A US$ 0,52/h más un 15 %
-  de disco (`sampling_1/docs/diseno.md` § Estimación de horas y costo), unos US$ 20.
-- **Si la cuota de vCPU alcanza para 17 VMs** (136 vCPU), cada lista se parte en dos: `fase8_rk_a` (h1, h3 y h4) y
-  `fase8_rk_b` (h2), y el reloj baja a unas 2,5 h. `lanzar_fase.sh` ya verifica la cuota y no lanza si no alcanza.
+- **Estimación**, con los tiempos de `estudios.csv` y `resultados.csv` de la ronda: una lista `_a` lleva unos 12 min
+  de estudios y 1,4 h de finales; una `_b`, unos 57 min de estudios y 1 h de finales. Con media hora de arranque, cada VM
+  termina en unas 2 a 2,5 h; las de la réplica 0 y la de la medición, antes. En total unas 36 h de VM y unas 2,5 h de
+  reloj. A US$ 0,52/h más un 15 % de disco (`sampling_1/docs/diseno.md` § Estimación de horas y costo), unos US$ 22.
+- **Si la cuota de vCPU no alcanza para 17 VMs**, `lanzar_fase.sh` no lanza ninguna: se lanzan en dos tandas (primero
+  las `_a` y la medición, después las `_b`) o se pide más cuota. El resultado no cambia, solo el reloj.
 - **Los estudios ya corridos** (`U0.25@k`, `U0.1@k`, `U0.05@k`, `F0.5@k`) no se repiten: la VM los lee del repo.
 
 ### Texto y respuesta
@@ -271,7 +273,7 @@ medición de tiempos.
   conclusiones se apoyan en los principales.
 - **Mover estudios de `h3` a `h1`** toca filas ya corridas. Mitigación: commit propio, invariante de consolidado
   idéntico (D10) y revisión de código antes de correr.
-- **El alcance creció**: el cambio pasó de una VM de 2–3 h a nueve VMs y 9 variantes nuevas. Mitigación: la primera
+- **El alcance creció**: el cambio pasó de una VM de 2–3 h a 17 VMs y 9 variantes nuevas. Mitigación: la primera
   respuesta al tutor no espera a las corridas (D17), y las correcciones de texto van en paralelo (D16).
 - **Peso 1/f grande en `H4O-0.05` y `H4P-0.05`** (20 en CONTINUA), con `min_data_in_leaf` sin reescalar. Es parte de la
   receta y se declara como limitación, igual que en `H4O-0.5`.
@@ -280,5 +282,5 @@ medición de tiempos.
   `C-rep`, y el informe lo dice.
 - **Las predicciones de D5, D6 y D13** las propone una sesión que ya vio los resultados de la ronda. Las de tiempos son
   exploratorias y no deciden nada; las de la grilla se declaran como "ideas que vienen de mirar el test".
-- **Dos cambios abiertos modifican los mismos requisitos.** `final-con-julio-agosto` se archiva primero; los deltas de
-  este cambio parten de su versión.
+- **Cuota de vCPU.** 17 VMs piden 136 vCPU N2 en la región y en el proyecto; las fases anteriores usaron 64. Se
+  verifica antes de lanzar (tarea 5.1).
