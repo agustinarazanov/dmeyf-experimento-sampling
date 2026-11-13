@@ -14,7 +14,7 @@ modelo.
 
 Los resultados, las hipótesis y el método se leen en el sitio:
 <https://agustinarazanov.github.io/dmeyf-experimento-sampling/>. Cada página es un archivo de este repo, en la misma
-ruta: [Resultados](experimentos/sampling_1/README.md), [H1](experimentos/h1/README.md), [H2](experimentos/h2/README.md),
+ruta: [Resultados](experimentos/sampling_1/README.md), [Anexo de resultados](experimentos/sampling_1/anexo.md), [H1](experimentos/h1/README.md), [H2](experimentos/h2/README.md),
 [H3](experimentos/h3/README.md), [H4](experimentos/h4/README.md), [Control y reglas](experimentos/control/README.md),
 [Corridas](experimentos/sampling_1/corridas.md), [Exploratorios](experimentos/sampling_1/exploratorios/README.md) y
 [Cómo trabajamos](docs/metodo.md).
@@ -74,7 +74,7 @@ experimento al bucket, los trae y borra la VM. Las fases, las listas y el costo 
 - `experimentos/<nombre>/`: un experimento por carpeta (`control`, `h1` a `h4`, `sampling_1`). Cada uno tiene su
   `README.md` (la página del sitio, con las tablas y figuras entre marcadores `<!-- generado:… -->` y las figuras en
   `figuras/`), `docs/bitacora.md` y `ledger/`. Declara en `## Dependencias` de su README de quién lee y no toca carpetas
-  ni ledgers ajenos. `sampling_1` además tiene `corridas.md`, `exploratorios/`, `src/`, `scripts/` (las listas de las
+  ni ledgers ajenos. `sampling_1` además tiene `anexo.md` (las tablas completas), `corridas.md`, `exploratorios/`, `src/`, `scripts/` (las listas de las
   fases) y `docs/` (guion del video y rutas viejas).
 - `plantilla/`: la estructura vacía de un experimento. Para agregar una hipótesis: [Cómo trabajamos](docs/metodo.md)
   § Agregar una hipótesis.

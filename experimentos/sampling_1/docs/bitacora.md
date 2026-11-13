@@ -2296,3 +2296,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   de Resultados en 2.1. El bloque de carpetas pasa a dos columnas angostas y suma `anexo.md`.
 - ✓ Escenario «Cómo trabajamos»: el diagrama de etapas va antes del detalle y sale en el HTML (tres diagramas). Ninguna
   línea de código pasa de 80 caracteres. `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.7 · guion, CLAUDE.md y README raíz
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- `guion.md`: el diseño se muestra desde Corridas § Protocolo; las limitaciones, desde Resultados § Limitaciones
+  comunes; `rondas.png` pasa a `ic_rondas.png` (Anexo § Rondas); `ensamble.png` (según el tiempo) entra en H4 y en la
+  conclusión; «envíos» pasa a «clientes contactados». No se borra texto dicho.
+- `CLAUDE.md` y `README.md` suman `anexo.md` al mapa de archivos.
+- ✓ Las 11 figuras que cita el guion tienen su SVG (`tmp_etapas/figuras_guion.py`). `verificar_readme` (32 enlaces) y
+  `scripts/sitio.sh` sin avisos.

@@ -150,7 +150,7 @@ Cada tarea:
   - comentarios de código cortados.
 
   Verificar con el escenario «Cómo trabajamos» y con que ninguna línea de código supera los 80 caracteres.
-- [ ] 2.7 `experimentos/sampling_1/docs/guion.md`: secciones y figuras citadas que se mudaron, y la figura de ensamble
+- [x] 2.7 `experimentos/sampling_1/docs/guion.md`: secciones y figuras citadas que se mudaron, y la figura de ensamble
   según el tiempo donde corresponda. `CLAUDE.md` y el README raíz suman `anexo.md` al mapa de archivos. Verificar con
   `python -m scripts.verificar_readme` y con que cada figura que cita el guion existe.
 - [ ] 2.7b `control/README.md` y `h1` a `h4/README.md`:

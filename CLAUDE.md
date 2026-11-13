@@ -5,10 +5,11 @@ idea, predicción, diseño, dependencias, resultado generado, veredicto y limita
 `ledger/`, y `src/` o `scripts/` si hacen falta), lo compartido en `comun/`, `plantilla/` para empezar uno nuevo, `docs/`
 con el método (`metodo.md`) y las listas de revisión (`revision.md`). El sitio (MkDocs Material, `mkdocs.yml`,
 `scripts/sitio.sh`) publica solo los README de los experimentos, `index.md`, `sitio/{hipotesis,como-medimos}/README.md`,
-`experimentos/sampling_1/{corridas.md,exploratorios/README.md}` y `docs/metodo.md`; lo demás se enlaza en GitHub. Las páginas publicadas y el
+`experimentos/sampling_1/{anexo.md,corridas.md,exploratorios/README.md}` y `docs/metodo.md`; lo demás se enlaza en GitHub. Las páginas publicadas y el
 README raíz son impersonales: sin nombres de docentes ni integrantes («el baseline», «la pregunta del experimento», ids de Zulip);
 `scripts/sitio.sh` lo verifica.
-`experimentos/sampling_1/README.md` es Resultados; `sampling_1/docs/` tiene la bitácora, el guion del video y las rutas
+`experimentos/sampling_1/README.md` es Resultados y `anexo.md`, el Anexo de resultados (tablas completas y rondas);
+`sampling_1/docs/` tiene la bitácora, el guion del video y las rutas
 viejas (`rutas.md`). Desde el 3-nov cada hipótesis tiene su carpeta (`control`, `h1` a `h4`) y `sampling_1` es el experimento **Sampling_1** (comisión lunes): Agustina Razanov, Martín López, Luis María Laguinge; tutor
 Joaquín I. Aramendía; tópico Zulip `Experimentos - Lunes > sampling_1`. Pregunta del tutor (1-nov): ¿vale la pena el
 tradeoff entre velocidad y pérdida de performance? Sampling_2 hace undersampling de la clase mayoritaria; **nosotros
