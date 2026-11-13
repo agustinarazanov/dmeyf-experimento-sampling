@@ -25,6 +25,10 @@
 # `experimentos/<exp>/ledger/` contra `$BUCKET/experimentos/<exp>/ledger/` (el `$BUCKET/ledger/` anterior a la separación
 # no se toca). Una VM nueva baja del bucket el panel, los SQLite de Optuna y los ledgers si existen, así que relanzar la
 # misma lista retoma.
+# Calibración por máquina (`tiempos-confiables-y-consistencia` D6): la VM corre `tiempos_hp_fijos.py --calibracion <lista> inicio`
+# antes de la primera línea y `... fin` después de la última, y sube el ledger una vez más después de la del final; cada una
+# deja `ledger/tiempos/calibracion_<lista>_<momento>.csv` (subcarpeta: viaja con el resto del ledger). No se calibra con
+# flags extra (`--filas`, smoke) ni con SIN_CALIBRACION=1.
 # `--en-seco`: imprime los comandos y los destinos y sale antes de cualquier gcloud o gsutil (no crea nada).
 set -euo pipefail
 cd "$(dirname "$0")/.."                # raíz del repo
@@ -43,6 +47,8 @@ TEMPLATE=${TEMPLATE:-to-064ram-08vcpu}
 NOMBRE=${NOMBRE:-sampling-$(whoami | tr -c 'a-z0-9\n' '-')}
 PERSONA=${PERSONA:-$(git config user.name)}
 COMMIT=$(git rev-parse --short HEAD)
+LISTA_NOMBRE=$(basename "$LISTA" .txt)   # nombre de la lista en los archivos de calibración
+CALIBRAR=1; { [ -n "$EXTRA" ] || [ -n "${SIN_CALIBRACION:-}" ]; } && CALIBRAR=""
 G="gcloud compute --project=$PROYECTO"
 EXPERIMENTOS=$(find experimentos -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -v ' ' | sort)   # carpetas de experimentos del repo (sin las de aportes, que tienen espacios y no tienen ledger)
 
@@ -69,6 +75,12 @@ subir() {
     gsutil -q -m rsync -r -x '^(exploracion|sesiones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
   done
 }
+calibrar() {   # momento: inicio o fin; sube lo que dejó (la calibración del final llega al bucket antes de dar la lista por terminada)
+  [ -n "$CALIBRAR" ] || return 0
+  python -m experimentos.sampling_1.scripts.tiempos_hp_fijos --calibracion "$LISTA_NOMBRE" "\$1" >> ~/corrida.log 2>&1 || echo "FALLO: calibración \$1" >> ~/corrida.log
+  subir
+}
+calibrar inicio
 while read -r metodo tasa semilla etapa variante replica; do
   [ -z "\$metodo" ] && continue; case "\$metodo" in \#*) continue;; esac
   if [ "\$metodo" = "@" ]; then   # línea de módulo: \`@ <módulo> <args>...\` corre \`python -m <módulo> <args>\`
@@ -83,6 +95,7 @@ while read -r metodo tasa semilla etapa variante replica; do
   subir
   [ -f \$DATOS_DIR/panel_2019.parquet ] && gsutil -q cp -n \$DATOS_DIR/panel_2019.parquet "$BUCKET/" || true
 done < ~/configuraciones.txt
+calibrar fin
 echo DONE > ~/estado
 REMOTO
 
@@ -91,6 +104,11 @@ if [ -n "$EN_SECO" ]; then
   echo "VM: $NOMBRE (n2-highmem-8, Ice Lake, spot) en $ZONA, proyecto $PROYECTO, template $TEMPLATE"
   echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM; historia: git bundle -> ~/repo_git"
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
+  if [ -n "$CALIBRAR" ]; then
+    echo "calibración: al empezar y al terminar (experimentos/sampling_1/ledger/tiempos/calibracion_${LISTA_NOMBRE}_inicio.csv y _fin.csv)"
+  else
+    echo "calibración: no (flags extra o SIN_CALIBRACION)"
+  fi
   echo "corridas (una por línea de la lista):"
   grep -v '^[[:space:]]*#' "$LISTA" | grep -v '^[[:space:]]*$' | while read -r metodo tasa semilla etapa variante replica; do
     if [ "$metodo" = "@" ]; then echo "  python -m $tasa $semilla $etapa ${variante:-} ${replica:-}$EXTRA"; continue; fi
