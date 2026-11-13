@@ -14,6 +14,11 @@
 
 .md-typeset img { max-width: 100%; }
 
+/* Figuras generadas (una imagen sola en su párrafo): en pantallas angostas no bajan de 40rem, para que el texto se
+   lea, y se desplazan dentro de su recuadro, como las tablas; la página no se desplaza. */
+.md-typeset p:has(> img:only-child) { overflow-x: auto; }
+.md-typeset p > img:only-child { width: 100%; min-width: 40rem; max-width: none; }
+
 /* Reporte generado por comun/reporte.py: celdas y textos por veredicto. */
 .md-typeset td.pierde { background: #f8d7d0; }
 .md-typeset td.ok { background: #d6ecd9; }
