@@ -63,6 +63,8 @@ exclude_docs: |
   !/experimentos/h4/README.md
   !/experimentos/h4/figuras/**
   !/experimentos/control/README.md
+  !/experimentos/sampling_1/corridas.md
+  !/experimentos/sampling_1/exploratorios/README.md
 
 nav:
   - Inicio: index.md
@@ -74,6 +76,8 @@ nav:
     - H4: experimentos/h4/README.md
   - Cómo medimos:
     - Control y reglas: experimentos/control/README.md
+    - Corridas: experimentos/sampling_1/corridas.md
+    - Exploratorios: experimentos/sampling_1/exploratorios/README.md
 
 validation:
   links:

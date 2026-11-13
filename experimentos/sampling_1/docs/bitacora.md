@@ -1792,3 +1792,28 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Verificado: `python -m scripts.verificar_readme` «todos los números están en el bloque bloque-a-completo y todos los
   enlaces existen». `scripts/sitio.sh`: en Resultados solo fallan los enlaces a `corridas.md` y `exploratorios/README.md`
   (3.8); `index.md` y el README raíz siguen con nombres hasta 3.9 y 3.10.
+- 3.8 `experimentos/sampling_1/corridas.md` y `experimentos/sampling_1/exploratorios/README.md`. Destino de cada
+  sección vieja:
+  - `docs/diseno.md` encabezado y lista de dónde está cada diseño → descartados (D8). § Estimación de horas y costo →
+    § Costo (la tabla de u·min por variante se resume en los factores y el total; las A estimadas eran de costo, no
+    predicciones). § Reparto y fases (fases 1–7, listas, cargas, cuotas, costo, «quién: Agustina») → § Fases (tabla por
+    fase con tag, listas, VMs y carga, y notas por fase) y § Costo; «todo lo lanza Agustina desde su cuenta» → «las
+    corridas se lanzaron todas desde una sola cuenta» (D8). «El detalle de los exploratorios está en
+    `openspec/changes/incorporar-aportes/design.md`» → descartado (el cambio está archivado; la página de exploratorios
+    enlaza los README). § Orden entre fases y § Corridas perdidas → § Fases. § Fuera de la grilla → descartado (lo que
+    decía ya entró como `h4` y `H3R-0.1`, y el fuera de grilla de cada hipótesis está en su README). § Devolución del
+    tutor → § Devoluciones del curso. § Dependencias → `sampling_1/README.md` § Dependencias (3.7).
+  - `docs/operacion.md` § Una configuración, § Qué cuenta y qué no, § Consolidar y reportar, § VM → las secciones del mismo
+    nombre (con `comun.reporte --todos` escribiendo bloques, `scripts.comparar_rondas`, `lanzar_fase.sh` y
+    `vm.sh --en-seco`).
+  - `control/docs/diseno.md` § Máquina (3.2) → § Máquina: template, gcloud, zonas, Ice Lake, una corrida por VM, bucket,
+    tags. Se agrega que `vm.sh` crea las VMs a pedido por defecto (como dice su código). Proyecto y cuotas de una cuenta
+    y fecha del trial → descartados (están en la memoria de la sesión y en el historial); queda la cuota de 32 vCPU.
+  - Bloque B y «Lectura del bloque B» del informe (3.7) → `exploratorios/README.md`: una sección por estudio con su
+    lectura, sin autores, con el enlace a su README en GitHub; las cifras en el bloque `bloque-b`.
+  - `validacion_20_semillas/exploratorio.json`: la advertencia decía «script de Luis» y salía en el bloque B; pasa a
+    «script de validacion_50_semillas» (el campo `autor` queda, el generador no lo muestra).
+- Verificado: `python -m comun.variantes --verificar` sale con 0 y sin `PROBLEMA`. Ninguna página publicada tiene una
+  tabla con texto de exploratorios (`git grep` de filas de tabla con sus carpetas: solo los README internos de cada
+  exploratorio, que no se publican). `grep -ci autor` sobre `exploratorios/README.md` da 0. `scripts/sitio.sh`: solo
+  fallan `index.md` (3.9) y el README raíz (3.10).

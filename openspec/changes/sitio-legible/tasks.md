@@ -72,7 +72,7 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   `sampling_1/informe/`. La tabla de rutas pasa a `docs/rutas.md` y el guion a `docs/guion.md`, con los nombres nuevos de
   los PNG. Verificar con `python -m scripts.verificar_readme` y con que el bloque A tenga las mismas filas y valores que
   el `tabla_resultados.md` anterior (`git show HEAD~:…`).
-- [ ] 3.8 `experimentos/sampling_1/corridas.md` (de `docs/diseno.md` y `docs/operacion.md`, con el reparto por máquina
+- [x] 3.8 `experimentos/sampling_1/corridas.md` (de `docs/diseno.md` y `docs/operacion.md`, con el reparto por máquina
   y por fase) y `experimentos/sampling_1/exploratorios/README.md` (bloque B, una sección por estudio, enlaces a los
   README de cada exploratorio en GitHub). Verificar que la tabla con texto de exploratorios ya no existe y que
   `comun.variantes --verificar` pasa.
