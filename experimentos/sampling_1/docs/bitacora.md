@@ -1735,3 +1735,20 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `076c6949`, `961d71db`, `e5c1be96`). No son de esta revisión y no las clasifico.
 - Tokens: ~30 turnos · contexto ~45.000 por turno · ≈ US$ 0,9.
 - Tutor: —
+
+### 13-nov-2026 · sitio-legible grupo 3 · un README por experimento (aplicar, Opus, headless)
+
+- 3.1 `plantilla/README.md` (D3). Destino de cada sección vieja:
+  - `plantilla/docs/hipotesis.md`: título → `# <HN> · <título>`; párrafo «escrito antes de cualquier corrida» y cita de
+    las reglas → callout de § Predicción (fecha, commit y enlace a `control/README.md`); § Pregunta → línea de apertura
+    e § Idea; § H1 (variable, métrica, predicción, confirma/refuta/ninguna) → § Predicción; § Limitaciones previstas →
+    § Limitaciones.
+  - `plantilla/docs/diseno.md`: § Dependencias → § Dependencias (igual, con `control`); § Variantes y § Grilla → § Diseño
+    › Variantes y › Grilla; § Parámetros fijos y § Métricas que se calculan → § Diseño › Grilla («lo que no cambia del
+    baseline no se repite»; las métricas son las de `control/README.md`); § Máquina, § Estimación de horas y costo, §
+    Reparto y fases → descartadas de la plantilla: el reparto por máquina y por fase vive en
+    `sampling_1/corridas.md` (D2); § Fuera de la grilla → descartada (lo que no se corre se dice en Limitaciones).
+  - `plantilla/informe/` (solo `.gitkeep`) → borrada; el resultado va en el bloque `resultado` del README.
+  - Verificado: copia de `plantilla/` como `experimentos/h9/` en una raíz temporal; `variantes.declaradas` lee
+    `{'control'}` de su `## Dependencias` y `variantes.verificar` con una variante `X0.5` de `h9` no da problemas de `h9`
+    (solo avisa que falta `sampling_1/`, que la copia mínima no trae).

@@ -53,7 +53,7 @@ Cada tarea: listar antes cada sección de los archivos viejos con su destino o e
 bitácora del experimento), escribir el README con la plantilla de D3, aplicar las reglas de redacción de D8, regenerar,
 borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `pytest` y `scripts/sitio.sh`.
 
-- [ ] 3.1 `plantilla/README.md` con las secciones de D3 y los marcadores vacíos. Se borran `plantilla/docs/{hipotesis,diseno}.md`
+- [x] 3.1 `plantilla/README.md` con las secciones de D3 y los marcadores vacíos. Se borran `plantilla/docs/{hipotesis,diseno}.md`
   y `plantilla/informe/`. Verificar copiando la plantilla a una carpeta temporal: `comun.variantes --verificar` acepta
   la estructura.
 - [ ] 3.2 `experimentos/control/README.md`: baseline, reglas (G, Δ, δ, T, A, N\*, veredictos), regla de veredicto como
