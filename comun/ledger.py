@@ -346,3 +346,64 @@ def replicas(finales: pd.DataFrame, delta: float, propias: set[str] | None = Non
                     f"{gb['replica_opt'].nunique()})",
         })
     return pd.DataFrame(filas)
+
+
+# --- pares entre experimentos (`tiempos-confiables-y-consistencia` D12) ------------------------------------
+
+
+def pares_directos(finales: pd.DataFrame, apareados: Sequence[tuple[str, str]], welch: Sequence[tuple[str, str]],
+                   info: dict[tuple[str, str], tuple[str, bool]] | None = None, semillas_por_replica: int = 20) -> pd.DataFrame:
+    """Una fila por par declarado `a − b`, con las variantes de cualquier experimento (`finales` ya trae `g`, `replica_opt`
+    y `filas_train`). La cuenta es la de `replicas`: diferencia apareada por réplica y semilla con IC t entre réplicas, o
+    diferencia de medias por réplica con IC de Welch. Una réplica entra solo si tiene las `semillas_por_replica` semillas en
+    los dos lados; la fila dice cuántas usó. Un par al que le falta un lado, o con menos de dos réplicas completas en común,
+    sale `pendiente` y dice qué variante falta: `replicas` lo saltea sin avisar.
+    `info` da, por par, la decisión que aísla y si es un contraste principal."""
+    info = info or {}
+    finales = con_replica(finales[finales["variante"] != "C-rep"])
+    cuenta = finales.groupby(["variante", "replica_opt"]).size()
+
+    def completas(v: str) -> set[int]:
+        return {int(k) for (vv, k), n in cuenta.items() if vv == v and n >= semillas_por_replica}
+
+    filas = []
+    for tipo, lista in (("apareado", apareados), ("Welch", welch)):
+        for a, b in lista:
+            aisla, principal = info.get((a, b), ("", False))
+            fila = {"variante": f"{a} - {b}", "a": a, "b": b, "tipo": tipo, "aisla": aisla, "principal": principal,
+                    "estado": "pendiente", "faltan": "", "n_replicas": 0, "n_semillas": 0, "replicas": "",
+                    "delta_g_media": np.nan, "delta_g_se": np.nan, "delta_g_ic_inf": np.nan, "delta_g_ic_sup": np.nan,
+                    "veredicto": "pendiente", "filas_train_a": np.nan, "filas_train_b": np.nan, "nota": ""}
+            faltan = [v for v in (a, b) if not (finales["variante"] == v).any()]
+            ka, kb = completas(a), completas(b)
+            ks = sorted(ka & kb)
+            if faltan:
+                fila.update(faltan=", ".join(faltan), nota="falta la variante " + " y ".join(faltan))
+            elif len(ks) < 2:
+                fila["nota"] = (f"menos de dos réplicas completas en común ({a}: {len(ka)}, {b}: {len(kb)}, "
+                                f"en común: {len(ks)})")
+            else:
+                da, db = (finales[(finales["variante"] == v) & finales["replica_opt"].isin(ks)] for v in (a, b))
+                if tipo == "apareado":
+                    ga, gb = (d.set_index(["replica_opt", "semilla"])["g"] for d in (da, db))
+                    comunes = ga.index.intersection(gb.index)
+                    dif = (ga.loc[comunes] - gb.loc[comunes]).rename("d").reset_index()
+                    por_replica = dif.groupby("replica_opt")["d"].mean().to_numpy(dtype=float)
+                    media, sd, lo, hi = _ic(por_replica)
+                    se, n_sem = sd / np.sqrt(len(por_replica)), len(dif)
+                    nota = f"apareado por réplica y semilla; IC t entre réplicas ({len(por_replica) - 1} g.l.)"
+                else:
+                    media, se, lo, hi = _welch(da.groupby("replica_opt")["g"].mean().to_numpy(dtype=float),
+                                               db.groupby("replica_opt")["g"].mean().to_numpy(dtype=float))
+                    n_sem, nota = len(da), f"sin aparear; IC de Welch entre réplicas ({len(ks)} y {len(ks)})"
+                hay = {v: int(finales.loc[finales["variante"] == v, "replica_opt"].nunique()) for v in (a, b)}
+                if any(n > len(ks) for n in hay.values()):
+                    nota += (f"; usa {len(ks)} réplicas de las que hay ({a}: {hay[a]}, {b}: {hay[b]}): las otras no "
+                             f"tienen las {semillas_por_replica} semillas en los dos lados")
+                fila.update(estado="completo", n_replicas=len(ks), n_semillas=n_sem, replicas=" ".join(str(k) for k in ks),
+                            delta_g_media=media, delta_g_se=se, delta_g_ic_inf=lo, delta_g_ic_sup=hi,
+                            veredicto=_veredicto_par(lo, hi), nota=nota,
+                            filas_train_a=float(da["filas_train"].median()) if "filas_train" in da else np.nan,
+                            filas_train_b=float(db["filas_train"].median()) if "filas_train" in db else np.nan)
+            filas.append(fila)
+    return pd.DataFrame(filas)

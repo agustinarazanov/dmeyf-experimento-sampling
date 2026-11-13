@@ -1,0 +1,25 @@
+variante,n_estrella,a,b,tipo,aisla,principal,estado,faltan,n_replicas,n_semillas,replicas,delta_g_media,delta_g_se,delta_g_ic_inf,delta_g_ic_sup,veredicto,filas_train_a,filas_train_b,nota
+H3R-0.1 - H3-0.1,3300,H3R-0.1,H3-0.1,apareado,reescalar min_data_in_leaf con la raíz en el final,False,completo,,8,160,0 1 2 3 4 5 6 7,-123750.0,773691.7240920776,-1953240.2140447595,1705740.2140447595,no cambia,768499.0,768499.0,apareado por réplica y semilla; IC t entre réplicas (7 g.l.)
+H3R-0.25 - H3L-0.25,3300,H3R-0.25,H3L-0.25,apareado,"reescalado con raíz contra lineal en r = 0,25",False,completo,,8,160,0 1 2 3 4 5 6 7,721875.0,687062.8074195879,-902770.3767917801,2346520.37679178,no cambia,768499.0,768499.0,apareado por réplica y semilla; IC t entre réplicas (7 g.l.)
+H3R-0.1 - H3L-0.1,3300,H3R-0.1,H3L-0.1,apareado,"reescalado con raíz contra lineal en r = 0,1",False,completo,,8,160,0 1 2 3 4 5 6 7,1450625.0,339192.10409757897,648563.1247020807,2252686.8752979194,mejora,768499.0,768499.0,apareado por réplica y semilla; IC t entre réplicas (7 g.l.)
+H3R-0.25 - H3-0.25,3300,H3R-0.25,H3-0.25,apareado,"reescalar con la raíz contra no reescalar en r = 0,25",False,completo,,8,160,0 1 2 3 4 5 6 7,522500.0,894248.4873584395,-1592061.6601579292,2637061.660157929,no cambia,768499.0,768499.0,apareado por réplica y semilla; IC t entre réplicas (7 g.l.)
+U0.5 - H3-0.5,3300,U0.5,H3-0.5,apareado,"muestrear también el final, al azar",False,pendiente,H3-0.5,0,0,,,,,,pendiente,,,falta la variante H3-0.5
+U0.25 - H3-0.25,3300,U0.25,H3-0.25,apareado,"muestrear también el final, al azar",False,pendiente,,0,0,,,,,,pendiente,,,"menos de dos réplicas completas en común (U0.25: 1, H3-0.25: 8, en común: 1)"
+U0.1 - H3-0.1,3300,U0.1,H3-0.1,apareado,"muestrear también el final, al azar",False,pendiente,,0,0,,,,,,pendiente,,,"menos de dos réplicas completas en común (U0.1: 1, H3-0.1: 8, en común: 1)"
+U0.05 - H3-0.05,3300,U0.05,H3-0.05,apareado,"muestrear también el final, al azar",False,pendiente,,0,0,,,,,,pendiente,,,"menos de dos réplicas completas en común (U0.05: 1, H3-0.05: 8, en común: 1)"
+H4O-0.5 - H4P-0.5,3300,H4O-0.5,H4P-0.5,apareado,"muestrear también el final, con bajas",False,pendiente,H4P-0.5,0,0,,,,,,pendiente,,,falta la variante H4P-0.5
+H4O-0.25 - H4P-0.25,3300,H4O-0.25,H4P-0.25,apareado,"muestrear también el final, con bajas",False,pendiente,"H4O-0.25, H4P-0.25",0,0,,,,,,pendiente,,,falta la variante H4O-0.25 y H4P-0.25
+H4O-0.1 - H4P-0.1,3300,H4O-0.1,H4P-0.1,apareado,"muestrear también el final, con bajas",False,pendiente,"H4O-0.1, H4P-0.1",0,0,,,,,,pendiente,,,falta la variante H4O-0.1 y H4P-0.1
+H4O-0.05 - H4P-0.05,3300,H4O-0.05,H4P-0.05,apareado,"muestrear también el final, con bajas",False,pendiente,"H4O-0.05, H4P-0.05",0,0,,,,,,pendiente,,,falta la variante H4O-0.05 y H4P-0.05
+H4H-0.1 - H4U-0.1,3300,H4H-0.1,H4U-0.1,Welch,CONTINUA difíciles contra al azar en la búsqueda,False,completo,,8,160,0 1 2 3 4 5 6 7,-3389375.0,2161699.10592422,-8062325.58837667,1283575.5883766701,no cambia,768499.0,768499.0,sin aparear; IC de Welch entre réplicas (8 y 8)
+H3K-0.1 - H3-0.1,3300,H3K-0.1,H3-0.1,Welch,muestrear por cliente contra por fila en la búsqueda,False,completo,,8,160,0 1 2 3 4 5 6 7,-1925000.0,2121370.8242801735,-6684243.305992296,2834243.305992296,no cambia,768499.0,768499.0,sin aparear; IC de Welch entre réplicas (8 y 8)
+H4O-0.5 - H4F-0.05,3300,H4O-0.5,H4F-0.05,Welch,reoptimizar sobre la receta de H4F (estudio propio) contra reusar `U0.05`,False,completo,,8,160,0 1 2 3 4 5 6 7,-2743125.0,1374388.480087209,-5691323.91761638,205073.91761638038,no cambia,388132.0,388132.0,sin aparear; IC de Welch entre réplicas (8 y 8)
+H4O-0.5 - U0.5,3300,H4O-0.5,U0.5,Welch,"conservar las bajas, en búsqueda y final",True,pendiente,,0,0,,,,,,pendiente,,,"menos de dos réplicas completas en común (H4O-0.5: 8, U0.5: 1, en común: 1)"
+H4O-0.25 - U0.25,3300,H4O-0.25,U0.25,Welch,"conservar las bajas, en búsqueda y final",True,pendiente,H4O-0.25,0,0,,,,,,pendiente,,,falta la variante H4O-0.25
+H4O-0.1 - U0.1,3300,H4O-0.1,U0.1,Welch,"conservar las bajas, en búsqueda y final",True,pendiente,H4O-0.1,0,0,,,,,,pendiente,,,falta la variante H4O-0.1
+H4O-0.05 - U0.05,3300,H4O-0.05,U0.05,Welch,"conservar las bajas, en búsqueda y final",True,pendiente,H4O-0.05,0,0,,,,,,pendiente,,,falta la variante H4O-0.05
+H4P-0.5 - H3-0.5,3300,H4P-0.5,H3-0.5,Welch,"conservar las bajas, solo en la búsqueda",False,pendiente,"H4P-0.5, H3-0.5",0,0,,,,,,pendiente,,,falta la variante H4P-0.5 y H3-0.5
+H4P-0.25 - H3-0.25,3300,H4P-0.25,H3-0.25,Welch,"conservar las bajas, solo en la búsqueda",False,pendiente,H4P-0.25,0,0,,,,,,pendiente,,,falta la variante H4P-0.25
+H4P-0.1 - H3-0.1,3300,H4P-0.1,H3-0.1,Welch,"conservar las bajas, solo en la búsqueda",False,pendiente,H4P-0.1,0,0,,,,,,pendiente,,,falta la variante H4P-0.1
+H4P-0.05 - H3-0.05,3300,H4P-0.05,H3-0.05,Welch,"conservar las bajas, solo en la búsqueda",False,pendiente,H4P-0.05,0,0,,,,,,pendiente,,,falta la variante H4P-0.05
+H4P-0.1 - H4U-0.1,3300,H4P-0.1,H4U-0.1,Welch,el peso en la búsqueda (misma muestra),False,pendiente,H4P-0.1,0,0,,,,,,pendiente,,,falta la variante H4P-0.1

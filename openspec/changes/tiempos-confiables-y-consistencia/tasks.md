@@ -84,7 +84,7 @@ Qué puede ir en paralelo:
 
   Smoke test local con `--filas 20000` de una variante nueva de cada fila, en `optimizar` y `final`.
   `python -m comun.variantes --verificar`.
-- [ ] 2.3 Pares entre experimentos (D12): `python -m comun.consolidar` sin `--experimento` arma al final
+- [x] 2.3 Pares entre experimentos (D12): `python -m comun.consolidar` sin `--experimento` arma al final
   `experimentos/sampling_1/ledger/pares.csv` desde los `resultados.csv` de todos los dueños, y `--experimento sampling_1`
   lo arma solo. Usa la cuenta de `ledger.replicas` y guarda las filas de entrenamiento de cada lado. Una réplica entra
   solo si tiene las 20 semillas en los dos lados.

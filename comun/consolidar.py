@@ -110,6 +110,39 @@ def consolidar_experimento(exp: str, meses_final: str = bl.VENTANA_FINAL) -> dic
     return consolidar(rutas.ledger(exp), control, sorted(estudios), meses_final)
 
 
+PARES_CSV = "pares.csv"
+
+
+def pares_entre_experimentos(meses_final: str = bl.VENTANA_FINAL) -> pd.DataFrame:
+    """`experimentos/sampling_1/ledger/pares.csv` (D12): los pares declarados en `comun/variantes.py`, con variantes de
+    cualquier dueño, leídos de los `resultados.csv` ya consolidados de todos. `replicas.csv` es de cada experimento y solo con
+    sus variantes; un par entre dos (`U − H3`) no cabe ahí sin crear el ciclo de dependencias de D10."""
+    if meses_final != bl.VENTANA_FINAL:
+        raise ValueError(f"pares.csv es de la ronda vigente {bl.VENTANA_FINAL}, no de {meses_final}")
+    finales = []
+    for e in variantes.duenos():
+        f = rutas.ledger(e) / "resultados.csv"
+        if f.exists():
+            r = lg.leer_csv(f)
+            finales.append(_absolutas(r[(r["etapa"] == "final") & (r["meses_final"] == meses_final)], rutas.ledger(e)))
+    if not finales:
+        return pd.DataFrame()
+    todo = lg.con_replica(pd.concat(finales, ignore_index=True))
+    con_g = lg.agregar_ganancia(todo, lambda ruta: pd.read_csv(ruta), bl.N_ESTRELLA)
+    tabla = lg.pares_directos(con_g, variantes.PARES_APAREADOS, variantes.PARES_WELCH, variantes.PARES_INFO,
+                              semillas_por_replica=len(bl.SEMILLAS_FINALES))
+    tabla.insert(1, "n_estrella", bl.N_ESTRELLA)
+    return tabla
+
+
+def escribir_pares(meses_final: str = bl.VENTANA_FINAL) -> pd.DataFrame:
+    tabla = pares_entre_experimentos(meses_final)
+    destino = rutas.ledger(variantes.AGREGADOR)
+    destino.mkdir(parents=True, exist_ok=True)
+    tabla.to_csv(destino / PARES_CSV, index=False)
+    return tabla
+
+
 def orden() -> list[str]:
     """Dueños de variantes con las dependencias primero (el control, luego quien lee de otros)."""
     dep = variantes.implicitas()
@@ -185,13 +218,18 @@ def main() -> None:
     if a.ledger:
         resultados = {"(ledger)": consolidar(a.ledger, meses_final=a.meses_final)}
     else:
-        exps = [a.experimento] if a.experimento else orden()
+        exps = [] if a.experimento == variantes.AGREGADOR else ([a.experimento] if a.experimento else orden())
         resultados = {}
         for e in exps:
             if not (rutas.ledger(e) / "corridas").is_dir():
                 print(f"{e}: sin ledger/corridas, se saltea")
                 continue
             resultados[e] = consolidar_experimento(e, a.meses_final)
+    if not a.ledger and a.meses_final == bl.VENTANA_FINAL and a.experimento in (None, variantes.AGREGADOR):
+        pares = escribir_pares(a.meses_final)  # sin --experimento, al final de todos; con `sampling_1`, solo esto
+        completos = int((pares["estado"] == "completo").sum()) if len(pares) else 0
+        print(f"{variantes.AGREGADOR}: {PARES_CSV} con {len(pares)} pares declarados, {completos} completos, "
+              f"{len(pares) - completos} pendientes")
     for e, r in resultados.items():
         print(f"{e}: {len(r['resultados'])} corridas válidas, {len(r['reemplazadas'])} reemplazadas, "
               f"{len(r['apareado']) if 'apareado' in r else 0} variantes apareadas")
