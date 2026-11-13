@@ -57,7 +57,8 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 <!-- /generado:desglose -->
 
 Las variantes `U*`, `B*` y `GOSS` no tienen réplicas (pierden o no aceleran, y las réplicas no cambian eso). En `C`, H3
-y H4, el veredicto sale de Δ con 8 réplicas de la optimización.
+y H4, el veredicto sale de Δ con 8 réplicas de la optimización. La primera pestaña muestra la mejor variante de cada
+hipótesis, valga la pena o no: la de H2, `B0.25`, no pierde pero acelera 1,23 veces, así que no vale la pena.
 
 <!-- generado:bloque-a -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.

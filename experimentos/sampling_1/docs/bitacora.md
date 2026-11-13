@@ -2309,7 +2309,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 
 ### 13-nov-2026 · inicio-y-resultados 2.7b · control y H1 a H4
 
-- Sesión: headless · modelo: Opus · etapa: **informe**.
+- Sesión: `bb6fd3f0-a8c7-4d80-ac42-bada6bb70ffa` (headless, tareas 2.1 a 2.7b) · modelo: Opus · etapa: **informe**.
+  Anotado por la revisión 2.8: 107 turnos, ~143.700 de contexto por turno (US$ 5,92), por encima del objetivo de
+  100.000 porque hizo las siete tareas de redacción en una sola sesión.
 - Recuadros de § Veredicto y § Limitaciones y su destino (D11), antes de tocarlos. Un recuadro que pasa a ítem queda
   como `- **título.** cuerpo`, con el cuerpo entero:
   - `control` § Limitaciones: los dos «Limitación» pasan a ítems «Hiperparámetros de cuatro meses en un final de seis»
@@ -2339,3 +2341,48 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `medir_sitio --pagina` de control y H1 a H4: 0 problemas en 5 páginas, columna de 720 px (solo avisos de tablas más
   anchas, que se desplazan en su recuadro).
 - Tokens: sesión de las tareas 2.1 a 2.7b, ≈ US$ 5,6 (presupuesto de la sesión).
+
+### 13-nov-2026 · inicio-y-resultados grupo 2 · revisión en sesión limpia (tarea 2.8)
+
+- Sesión: `b0dd584a-b3ed-4e13-8543-85bc11586343` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 5, más las reglas del grupo 2 de
+  `tasks.md`. Commits revisados: `3d95c0a` (2.1) a `43b3f7c` (2.7b); base de comparación `bf64611`.
+- Texto perdido: `tmp_etapas/texto_perdido.py` separa en frases el texto escrito a mano de
+  `git show bf64611:experimentos/sampling_1/README.md` (fuera de los bloques generados) y busca cada una en Resultados,
+  Anexo, Corridas, Exploratorios, Inicio, Cómo trabajamos, control y H1 a H4. De 139 frases, 114 están igual; las 25
+  restantes están reformuladas, no perdidas: «A» → «aceleración» y «envíos» → «clientes contactados» (D9, D14), los
+  recuadros de Limitaciones comunes pasan a lista (D11), los enlaces a «Control y reglas» y al Anexo se reescribieron,
+  «Sus cifras no se comparan una a una» sigue en § Exploratorios y en `exploratorios/README.md`, y N\* = 3.300 está en
+  `corridas.md` § Protocolo y en `control` § Reglas.
+- Comandos: `verificar_readme` ✓ (53 números, 32 enlaces); `verificar_informe_h3` (623 números, 0 sin fuente);
+  `comun.variantes --verificar` sin problemas; `scripts/sitio.sh` en verde; `python -m scripts.medir_sitio`: 0
+  problemas en 13 páginas (solo avisos de tablas anchas en H1 a H4 y el Anexo, que se desplazan en su recuadro);
+  `grep -rn envío` vacío en las páginas publicadas; ningún «A =/≥/≤» en el texto escrito a mano de Inicio, Resultados,
+  Anexo, Exploratorios y Corridas; las anclas de Resultados (`#prediccion-del-experimento-1-nov`, `#protocolo`,
+  `#rondas`) y de Inicio existen en `site/`. Las tres líneas de más de 80 caracteres dentro de bloques ``` son
+  `mermaid` (control, H2, H3), no código, y `medir_sitio` dice que los diagramas entran en la columna.
+- Lista § 5:
+  - ✓ Cada hipótesis se decide con la regla de `control` § Reglas (no pierde y aceleración ≥ 2; H3 con las reglas 1
+    a 8 con réplicas); no aparecen reglas nuevas.
+  - ✓ Cada afirmación cita una fila o una figura: `verificar_readme` y `verificar_informe_h3` sin números sin fuente.
+  - ✓ Refutaciones con el mismo peso: H2 refutada, H1 «ninguna de las dos» y la búsqueda informada de H4 refutada van
+    en la misma lista que las confirmaciones, y las conclusiones dicen que la predicción falló con H1.
+  - ✓ Limitaciones: semillas y réplicas («Réplicas solo en parte de las variantes» y § ¿Qué tan estable es?), un solo
+    mes de test («Un mes, un año, una máquina»), adaptación de H2 (H2 § Limitaciones, «`bagging_fraction` fuera de
+    Optuna»).
+  - ✓ El guion entra en 10 minutos (bloques de 0:00 a 10:00, 978 palabras) y sigue hipótesis, diseño, limitaciones,
+    resultados y conclusiones. Las figuras citadas son los PNG de `comun.reporte --figuras`, con los nombres de los SVG
+    de `figuras/`, como dice el guion.
+  - ✓ El guion no explica el baseline: lo nombra y lo sigue.
+  - ✓ Bibliografía lista en `docs/metodo.md` § Bibliografía (cuatro referencias y el baseline con su id de Zulip).
+- Reglas del grupo 2: ✓ secciones viejas listadas con su destino antes de mover (2.1, 2.5, 2.7b); ✓ D1 en el orden de
+  Resultados; ✓ la tabla completa de consulta entre la respuesta y las conclusiones está plegada (`<details>`); ✓
+  redacción impersonal (`sitio.sh`).
+- Correcciones: en Resultados § ¿Qué conviene achicar? se agrega, antes del bloque A, que la primera pestaña muestra
+  la mejor variante de cada hipótesis valga la pena o no, y que `B0.25` acelera 1,23 veces y no vale la pena (era la
+  observación abierta de la revisión 1.16; el texto lo decía solo más abajo, en la lista de veredictos).
+  `verificar_readme` y `sitio.sh` en verde después del cambio.
+- `comun/tokens.py --experimento sampling_1` corrido. La sesión que aplicó 2.1 a 2.7b quedó anotada en la entrada de
+  2.7b (supera el objetivo de contexto por turno).
+- Tokens: ~40 turnos · contexto ~78.000 por turno · ≈ US$ 1,6 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —

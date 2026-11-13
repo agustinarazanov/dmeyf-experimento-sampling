@@ -164,7 +164,7 @@ Cada tarea:
   legibles», con `grep -rn envío` vacío en las páginas publicadas, con los dos verificadores y con
   `python -m scripts.medir_sitio --pagina experimentos/control/ experimentos/h1/ experimentos/h2/ experimentos/h3/
   experimentos/h4/` (los diagramas entran en la columna).
-- [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 5 (comparando contra
+- [x] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 5 (comparando contra
   `git show <commit previo>:experimentos/sampling_1/README.md` que no se perdió texto), cierre en la bitácora de
   `sampling_1` y `comun/tokens.py`.
 
