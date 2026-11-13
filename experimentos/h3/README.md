@@ -53,7 +53,7 @@ momentos, cada uno antes de las corridas que decide; lo anterior no se cambió a
 ### H3 con réplicas de optimización
 
 !!! info "Predicción"
-    Fijada el 8-nov (cambio `h3-semillas-optuna`), antes de cualquier corrida con réplicas, y revisada en sesión limpia
+    Fijada el 8-nov (cambio `h3-semillas-optuna`, commit `ca60a45`), antes de cualquier corrida con réplicas, y revisada en sesión limpia
     antes de la primera. Lo de la réplica 0 no cambia. Esta parte suma réplicas de la optimización para medir la suerte
     de Optuna, que el IC por semilla no ve.
 
@@ -102,7 +102,7 @@ de la ronda (§ Diseño › Rondas).
 ### Extensiones del exploratorio `validacion_50_semillas`
 
 !!! info "Predicción"
-    Fijada el 9-nov (cambio `incorporar-aportes`), antes de cualquier corrida de estas variantes, y revisada en sesión
+    Fijada el 9-nov (cambio `incorporar-aportes`, commit `d9d9303`), antes de cualquier corrida de estas variantes, y revisada en sesión
     limpia antes de la primera. Lo anterior no cambia.
 
 **Origen: vienen de mirar 201910.** Las cuatro variantes salen del exploratorio
