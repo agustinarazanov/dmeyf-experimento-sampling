@@ -5,6 +5,16 @@ Tres estudios con su propio protocolo, hechos fuera de la grilla y replicados en
 veredicto: sus cifras salen de otro protocolo, otra muestra u otro entorno, y no se comparan una a una con las de
 [Resultados](../README.md).
 
+Qué motivó cada uno (ninguna flecha llega a un veredicto: los veredictos salen de la grilla):
+
+```mermaid
+flowchart TB
+    S["sensibilidad_muestra"] --> R["R = 8 réplicas de Optuna"]
+    V50["validacion_50_semillas"] --> H4["H4"]
+    V50 --> X3["extensiones de H3"]
+    V20["validacion_20_semillas"] --> RV["ronda vigente con 20 semillas"]
+```
+
 ## `sensibilidad_muestra`
 
 ¿Cuánto depende de la muestra la configuración que elige H3? Con 10 muestras del 25 %, la configuración elegida cambia
@@ -39,14 +49,15 @@ Código, reproducción y detalle:
 ¿Cambian los veredictos de H1 a H4 si el control y cada variante se evalúan con 20 semillas finales en lugar de 10? Solo
 quedan los HTML de los reportes, sin código ni ledger, así que no se puede reproducir. La pregunta la contesta ahora la
 ronda vigente con el protocolo del experimento: 20 semillas publicadas, con réplicas y desde los ledgers. Ningún
-veredicto cambia de lado (§ Rondas de [Resultados](../README.md)).
+veredicto cambia de lado (§ Rondas del [Anexo de resultados](../anexo.md#rondas)).
 
 Detalle:
 [`experimentos/sampling_1/exploratorios/validacion_20_semillas/`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/sampling_1/exploratorios/validacion_20_semillas/README.md).
 
 ## Cifras
 
-Pregunta, protocolo, cifras principales y advertencia de cada estudio, leídos de su `exploratorio.json` y de sus CSV.
+Pregunta, protocolo, cifras principales, figuras y advertencia de cada estudio, leídos de su `exploratorio.json` y de
+sus CSV. Lo que mostró cada uno está arriba, en su sección.
 
 <!-- generado:bloque-b -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.

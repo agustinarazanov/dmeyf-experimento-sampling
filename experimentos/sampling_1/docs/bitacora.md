@@ -2260,3 +2260,14 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - ✓ Escenario «Primera visita del tutor» en `site/index.html`: pregunta, respuesta, `tradeoff.svg`,
   `desglose_tiempo.svg`, `ensamble.svg` con su explicación, recuadro de limitaciones, botón primario a Resultados y
   tarjetas hasta H4. `verificar_readme` (53 números, 31 enlaces) y `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.4 · Exploratorios
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- No se borra texto. Se suma el diagrama de motivaciones (D5, `flowchart TB`): `sensibilidad_muestra` → R = 8,
+  `validacion_50_semillas` → H4 y extensiones de H3, `validacion_20_semillas` → ronda vigente, con la aclaración de que
+  ninguno decide un veredicto. El enlace a § Rondas pasa al Anexo.
+- ✓ Escenario «Exploratorios»: cada estudio es una sección con sus párrafos (qué mostró) y, en el bloque B, sus cifras y
+  figuras. Escenario «Figuras de un exploratorio»: las de `validacion_50_semillas` dicen «Reporte original (50 semillas,
+  hiperparámetros fijos)», sin autor. `scripts/sitio.sh` sin avisos (incluido el control de nombres); el diagrama sale
+  en el HTML.

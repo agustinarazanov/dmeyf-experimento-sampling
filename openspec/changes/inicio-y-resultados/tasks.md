@@ -132,7 +132,7 @@ Cada tarea:
 
   Verificar con el escenario «Primera visita del tutor» en el HTML de `site/` y con `verificar_readme` sobre
   `index.md`.
-- [ ] 2.4 `experimentos/sampling_1/exploratorios/README.md`: diagrama de motivaciones (D5) y una sección por estudio con
+- [x] 2.4 `experimentos/sampling_1/exploratorios/README.md`: diagrama de motivaciones (D5) y una sección por estudio con
   qué mostró, alrededor del bloque B. Verificar con los escenarios «Figuras de un exploratorio» y «Exploratorios» y con
   `scripts/sitio.sh` (sin autor).
 - [ ] 2.5 `experimentos/sampling_1/corridas.md`:
