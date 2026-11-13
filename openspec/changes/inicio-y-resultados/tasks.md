@@ -74,7 +74,16 @@
   `pytest tests/test_reporte.py` y con regenerar dos veces sin cambios.
 - [x] 1.10 Barras laterales (D13). **La hace el orquestador; una sesión headless no la toca ni la marca.** Verificar con
   el escenario «Barras laterales parejas» en capturas a 1440 px en claro y en oscuro.
-- [ ] 1.11 Revisión en sesión limpia de 1.8 y 1.9 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.
+- [ ] 1.12 Resultados por hipótesis (D16, junto con 1.9 porque comparten las figuras):
+  - un color por hipótesis en `comun/reporte.py`, validado con la skill `dataviz`;
+  - el veredicto, en el marcador;
+  - paneles de 2 × 2 por hipótesis en `tradeoff`, `semillas_replicas`, `fraccion` y `tiempo_igual`; las barras
+    (`desglose_tiempo`) y la matriz (`grilla_veredictos`) no cambian de forma;
+  - el bloque A de Resultados en pestañas («Valen la pena», H1 a H4), y el Anexo entero.
+
+  Verificar con el escenario «Resultados entra en la pantalla» (alto medido en `site/`), con `pytest
+  tests/test_reporte.py`, regenerando dos veces sin cambios y con los dos verificadores.
+- [ ] 1.11 Revisión en sesión limpia de 1.8, 1.9 y 1.12 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.
 
 ## 2. Redacción (sesión: Opus; un commit por página)
 

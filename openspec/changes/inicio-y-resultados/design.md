@@ -207,16 +207,17 @@ Los verificadores leen los encabezados nuevos.
 
 ### D10. Figura del tradeoff en filas (agregado el 13-nov)
 
-`tradeoff.svg` pasa del gráfico de dispersión de 12 pulgadas (Δ contra A en escala log, con etiquetas que se pisan
-alrededor de 4,5×) a dos paneles con las filas compartidas, una fila por variante agrupada por hipótesis:
+`tradeoff.svg` deja de ser un solo gráfico de dispersión de 12 pulgadas (Δ contra A en escala log, con 21 etiquetas que
+se pisan alrededor de 4,5×) y pasa a **cuatro paneles de 2 × 2, uno por hipótesis** (D16):
 
-- a la izquierda, Δ con su IC y −δ punteado;
-- a la derecha, la aceleración en escala log con la línea de 2×;
-- el color es el de «ganancia contra el control» y las que valen la pena llevan una marca.
+- en cada panel, Δ con su IC contra la aceleración en escala log, con los ejes compartidos;
+- el control como referencia en (1×, 0), la línea de 2× y −δ punteado;
+- el color de la hipótesis;
+- las variantes que pierden, con el marcador vacío;
+- las que valen la pena, con su etiqueta en negrita.
 
-Se lee al ancho de la columna (D6) sin etiquetas pisadas, y crece en alto con las variantes. `ANCHO` baja para que la
-letra de las figuras no quede más chica que la del texto al escalar a la columna. El escenario «Ver el tradeoff de un
-vistazo» cambia en consecuencia.
+Con 4 a 9 variantes por panel, las etiquetas no se pisan. `ANCHO` baja para que la letra de las figuras no quede más
+chica que la del texto al escalar a la columna. El escenario «Ver el tradeoff de un vistazo» cambia en consecuencia.
 
 ### D11. Veredicto y Limitaciones sin pila de recuadros (agregado el 13-nov)
 
@@ -268,6 +269,30 @@ La tabla de § Variantes de cada hipótesis tiene la columna «estudio (réplica
   cuánto depende el resultado de la suerte de la búsqueda); la réplica 0 es la búsqueda original.
 
 Los ids no cambian, porque son los del ledger.
+
+### D16. Resultados dividido por hipótesis, con un color por hipótesis (agregado el 13-nov)
+
+Las figuras y tablas de Resultados muestran las 21 variantes a la vez. Al ancho de la columna son más altas que la
+pantalla y no se encuentra nada. Tres reglas:
+
+- **Un color por hipótesis**, el mismo en todas las figuras del sitio: control en gris y H1 a H4 con cuatro tonos. Es una
+  constante de `comun/reporte.py`, validada con el validador de la skill `dataviz` en claro y en oscuro, porque las
+  figuras tienen fondo blanco en los dos modos.
+  - El veredicto deja de ser color y pasa al marcador: lleno *no pierde*, vacío *pierde*, con borde punteado
+    *indeterminado*. Los nombres de las variantes llevan el color de su hipótesis.
+  - Las tablas generadas suman una pastilla de color con el nombre de la hipótesis donde haya columna «hipótesis».
+- **Dividir por hipótesis**: los gráficos de puntos con todas las variantes juntas (`tradeoff`, `semillas_replicas`,
+  `fraccion`, `tiempo_igual`) pasan a paneles de 2 × 2, uno por hipótesis, con los ejes compartidos para comparar
+  entre paneles. El control se repite en cada panel como referencia gris.
+- **Se quedan como están** el gráfico de barras (`desglose_tiempo`) y la matriz de veredictos (`grilla_veredictos`):
+  se leen bien con todas las variantes (pedido del 13-nov). Solo toman el color de la hipótesis en los nombres, si eso
+  no cambia su forma.
+- **Tablas en pestañas**: el bloque A de Resultados va en pestañas `pymdownx.tabbed` (ya habilitado): «Valen la pena»
+  (solo esas variantes, la primera que se ve), «H1», «H2», «H3» y «H4». La tabla completa sigue entera en el Anexo.
+  Para que la pestaña no rompa el bloque generado, el generador escribe las pestañas dentro del marcador.
+
+Tope: a 1440 × 900, ninguna figura ni tabla de Resultados es más alta que 800 px. Si una no entra con 2 × 2, se parte
+en dos figuras (H1–H2 y H3–H4) y no se achica la letra.
 
 ## Risks / Trade-offs
 

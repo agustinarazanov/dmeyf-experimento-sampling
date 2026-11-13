@@ -84,9 +84,15 @@ condiciones:
 
 #### Scenario: Ver el tradeoff de un vistazo
 - **WHEN** se abre Resultados
-- **THEN** antes de las tablas aparece el mapa del tradeoff: una fila por variante con Δ e IC a la izquierda y la
-  aceleración a la derecha, las que valen la pena marcadas
+- **THEN** antes de las tablas aparece el mapa del tradeoff en cuatro paneles, uno por hipótesis con su color: Δ e IC
+  contra la aceleración, el control como referencia y las que valen la pena con su etiqueta en negrita
 - **AND** a 1440 px entra en la columna sin etiquetas pisadas
+
+#### Scenario: Resultados entra en la pantalla
+- **WHEN** se recorre Resultados a 1440 × 900
+- **THEN** ninguna figura ni tabla mide más de 800 px de alto
+- **AND** cada hipótesis tiene el mismo color en todas las figuras
+- **AND** el bloque A está en pestañas, con «Valen la pena» abierta, mientras el Anexo tiene la tabla entera
 
 #### Scenario: Tabla de una hipótesis sin redundancias
 - **WHEN** se lee el bloque `resultado` de `h3/README.md` y todas sus variantes tienen 20 semillas
