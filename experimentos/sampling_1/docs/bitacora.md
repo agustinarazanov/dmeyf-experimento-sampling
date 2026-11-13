@@ -1859,3 +1859,12 @@ Sesión de código (Sonnet). Cambios en `comun/`: `variantes.py`, `metodos.py`, 
   `test_tiempos_hp_fijos`, `test_mover_estudios`, `test_reporte`) pasan.
 - No se corrió ninguna VM ni se escribió en Zulip.
 - Tokens: —
+
+### 2026-11-13 — predicciones de 1.1 y 1.2 confirmadas
+
+- Confirmadas **tal cual**, sin ajustes, por la sesión orquestadora (Claude) a pedido de Agustina: `control` § Medición
+  de tiempos, `h1` § Réplicas de H1, `h2` § Réplicas de H2 y `B0.05`, `h3` § `H3-0.5` y `h4` § Grilla común.
+- Chequeo hecho antes de confirmar: coinciden con D13 y con D5/D6 del design, y son coherentes con la réplica 0 vigente
+  (`U0.5` *no pierde* con A = 2,25; `B0.1` *pierde*; `H4F-0.05` y `H3-0.25` *no pierden* con 8 réplicas). Ninguna
+  reescribe una regla anterior.
+- Se levanta el bloqueo de 1.5: la fase 8 puede lanzarse cuando se cierre el grupo 2.
