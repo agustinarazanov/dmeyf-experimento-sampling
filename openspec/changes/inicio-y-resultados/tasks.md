@@ -74,7 +74,7 @@
   `pytest tests/test_reporte.py` y con regenerar dos veces sin cambios.
 - [x] 1.10 Barras laterales (D13). **La hace el orquestador; una sesión headless no la toca ni la marca.** Verificar con
   el escenario «Barras laterales parejas» en capturas a 1440 px en claro y en oscuro.
-- [ ] 1.12 Resultados por hipótesis (D16, junto con 1.9 porque comparten las figuras):
+- [x] 1.12 Resultados por hipótesis (D16, junto con 1.9 porque comparten las figuras):
   - un color por hipótesis en `comun/reporte.py`, validado con la skill `dataviz`;
   - el veredicto, en el marcador;
   - paneles de 2 × 2 por hipótesis en `tradeoff`, `semillas_replicas`, `fraccion` y `tiempo_igual`; las barras

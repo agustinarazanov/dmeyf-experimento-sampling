@@ -1040,42 +1040,66 @@ def fig_desglose(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     return figura(fig, "desglose_tiempo", figuras)
 
 
+def _paneles_por_hipotesis(ctx: Contexto, filas: list[dict], alto_fila: float, extra: float = 2.4):
+    """Paneles de 2 × 2, uno por hipótesis (D16), con el eje x compartido y una fila por variante en cada panel; el alto
+    de cada fila de paneles sigue a su panel con más variantes. Devuelve la figura, los ejes y las hipótesis."""
+    hips = [h for h in ctx.hipotesis if any(f["hipotesis"] == h for f in filas)]
+    cols = 2 if len(hips) > 1 else 1
+    nf = math.ceil(len(hips) / cols)
+    por_fila = [max(sum(f["hipotesis"] == h for f in filas) for h in hips[i * cols:(i + 1) * cols]) for i in range(nf)]
+    fig, axs = plt.subplots(nf, cols, figsize=(ANCHO, alto_fila * sum(por_fila) + extra), sharex=True, squeeze=False,
+                            gridspec_kw={"height_ratios": por_fila})
+    for ax in axs.flat[len(hips):]:
+        ax.set_visible(False)
+    return fig, axs, hips
+
+
 def fig_semillas(ctx: Contexto, a: dict, figuras: Path | None) -> str:
-    """Δ de cada semilla (un punto) por variante; las réplicas de Optuna, con otro marcador (media de sus semillas)."""
+    """Δ de cada semilla (un punto) por variante en paneles de 2 × 2, uno por hipótesis (D16); las réplicas de Optuna,
+    con otro marcador (media de sus semillas). El color es el de la hipótesis y el veredicto va en la caja: llena si no
+    pierde, solo el borde si pierde."""
     s = a.get("semillas", {})
     filas = [f for f in a["filas"] if s.get(f["variante"], {}).get("semillas")]
     if not filas:
         return pendiente("ninguna variante tiene Δ por semilla")
-    fig, ax = plt.subplots(figsize=(ANCHO, 0.34 * len(filas) + 1.9))
+    fig, axs, hips = _paneles_por_hipotesis(ctx, filas, 0.34)
     hay_rep = False
-    for i, f in enumerate(filas):
-        col = COLOR_VEREDICTO[clase_veredicto(f["veredicto"])]
-        sem = np.array(s[f["variante"]]["semillas"]) / 1e6
-        q1, q3 = np.percentile(sem, [25, 75])
-        ax.barh(i, q3 - q1, left=q1, height=0.56, facecolor=col, alpha=0.16, edgecolor=col, linewidth=1, zorder=1)
-        ax.vlines(sem.mean(), i - 0.28, i + 0.28, color=col, linewidth=2.2, zorder=2)
-        ax.scatter(sem, i + (np.arange(len(sem)) % 5 - 2) * 0.09, s=16, color=col, alpha=0.65, lw=0, zorder=2)
-        rep = np.array(s[f["variante"]]["replicas"]) / 1e6
-        if len(rep):
-            hay_rep = True
-            ax.scatter(rep, [i] * len(rep), s=46, marker="D", facecolor="white", edgecolor=col, linewidth=1.5, zorder=3)
-    ax.axvline(0, color=COLOR_C, lw=0.8)
-    ax.axvline(-a["delta"] / 1e6, color=COLOR_C, ls=":", lw=1)
-    _filas_por_variante(ax, filas, [_etiqueta(f) for f in filas])
+    for ax, h in zip(axs.flat, hips):
+        propias = [f for f in filas if f["hipotesis"] == h]
+        col = ctx.color[h]
+        for i, f in enumerate(propias):
+            ok = clase_veredicto(f["veredicto"]) == "ok"
+            sem = np.array(s[f["variante"]]["semillas"]) / 1e6
+            q1, q3 = np.percentile(sem, [25, 75])
+            ax.barh(i, q3 - q1, left=q1, height=0.56, facecolor=col if ok else "none", alpha=0.3 if ok else 1,
+                    edgecolor=col, linewidth=1, zorder=1)
+            ax.vlines(sem.mean(), i - 0.28, i + 0.28, color=col, linewidth=2.2, zorder=2)
+            ax.scatter(sem, i + (np.arange(len(sem)) % 5 - 2) * 0.09, s=16, color=col, alpha=0.65, lw=0, zorder=2)
+            rep = np.array(s[f["variante"]]["replicas"]) / 1e6
+            if len(rep):
+                hay_rep = True
+                ax.scatter(rep, [i] * len(rep), s=46, marker="D", facecolor="white", edgecolor=col, linewidth=1.5, zorder=3)
+        ax.axvline(0, color=COLOR_C, lw=0.8)
+        ax.axvline(-a["delta"] / 1e6, color=COLOR_C, ls=":", lw=1)
+        ax.set_yticks(range(len(propias)), [f["variante"] for f in propias], fontsize=11)
+        ax.set_ylim(len(propias) - 0.5, -0.5)
+        ax.set_title(h, fontsize=12, loc="left", color=col, fontweight="bold")
+        _ejes(ax)
+    for ax in axs[-1]:
+        ax.set_xlabel("Δ contra la misma semilla del control (M$); punteada: −δ")
     amplio = max(filas, key=lambda f: np.ptp(s[f["variante"]]["semillas"]))
     fig.suptitle(f"Cada punto es una semilla: la dispersión entre semillas llega a "
                  f"{np.ptp(s[amplio['variante']]['semillas']) / 1e6:.1f} M$ ({amplio['variante']})", fontsize=14, x=0.01,
                  ha="left")
-    ax.set_xlabel("Δ contra la misma semilla del control (M$); punteada: −δ")
     marcas = [Line2D([], [], color=COLOR_C, marker="o", ms=4, ls=""), Line2D([], [], color=COLOR_C, lw=2.2),
-              plt.Rectangle((0, 0), 1, 1, facecolor=COLOR_C, alpha=0.16, edgecolor=COLOR_C)]
-    nombres = ["semilla (réplica 0)", "media de las semillas", "caja: Q1–Q3 de las semillas"]
+              plt.Rectangle((0, 0), 1, 1, facecolor=COLOR_C, alpha=0.3, edgecolor=COLOR_C),
+              plt.Rectangle((0, 0), 1, 1, facecolor="none", edgecolor=COLOR_C)]
+    nombres = ["semilla (réplica 0)", "media de las semillas", "caja llena: Q1–Q3, no pierde", "caja vacía: Q1–Q3, pierde"]
     if hay_rep:
         marcas.append(Line2D([], [], color=COLOR_C, marker="D", mfc="white", ls=""))
         nombres.append("réplica de Optuna (media de sus semillas)")
     fig.legend(marcas, nombres, frameon=False, fontsize=11, ncol=2, loc="lower center")
-    fig.tight_layout(rect=(0, 0.08, 1, 0.96))
-    _ejes(ax)
+    fig.tight_layout(rect=(0, 0.1, 1, 0.96))
     return figura(fig, "semillas_replicas", figuras, ajustar=False)
 
 
@@ -1394,26 +1418,31 @@ def fig_tiempo_igual_ic(ctx: Contexto, a: dict, figuras: Path | None) -> str:
             filas.append((f, r, f["ti_boot"]))
     if not filas:
         return pendiente("ninguna variante tiene su ensamble a tiempo igual")
-    fig, ax = plt.subplots(figsize=(ANCHO, 0.32 * len(filas) + 1.8))
-    for i, (_, r, b) in enumerate(filas):
-        for t, dy, marca, color, relleno in ((r, -0.15, "o", PALETA[0], PALETA[0]), (b, 0.15, "s", PALETA[1], "white")):
-            if t:
-                m, lo, hi = (x / 1e6 for x in t[:3])
-                ax.errorbar([m], [i + dy], xerr=[[m - lo], [hi - m]], fmt=marca, ms=4, mfc=relleno, capsize=2, color=color)
-    ax.axvline(0, color=COLOR_C, lw=0.8)
-    _filas_por_variante(ax, [f for f, _, _ in filas], [_etiqueta(f) for f, _, _ in filas])
-    ax.legend([Line2D([], [], color=PALETA[0], marker="o", ls=""),
-               Line2D([], [], color=PALETA[1], marker="s", mfc="white", ls="")],
-              ["réplicas (IC t; cada réplica contra Ḡ_C de su réplica)", "bootstrap de clientes (réplica 0)"],
-              frameon=False, fontsize=11, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.32 * len(filas) + 1.8)),
-              ncol=2)
-    ax.set_xlabel(f"G del ensamble de K semillas en {MES} − Ḡ_C (M$)")
+    fig, axs, hips = _paneles_por_hipotesis(ctx, [f for f, _, _ in filas], 0.32)
+    for ax, h in zip(axs.flat, hips):
+        propias = [x for x in filas if x[0]["hipotesis"] == h]
+        col = ctx.color[h]
+        for i, (_, r, b) in enumerate(propias):
+            for t, dy, marca, relleno in ((r, -0.15, "o", col), (b, 0.15, "s", "white")):
+                if t:
+                    m, lo, hi = (x / 1e6 for x in t[:3])
+                    ax.errorbar([m], [i + dy], xerr=[[m - lo], [hi - m]], fmt=marca, ms=4, mfc=relleno, capsize=2, color=col)
+        ax.axvline(0, color=COLOR_C, lw=0.8)
+        ax.set_yticks(range(len(propias)), [f["variante"] for f, _, _ in propias], fontsize=11)
+        ax.set_ylim(len(propias) - 0.5, -0.5)
+        ax.set_title(h, fontsize=12, loc="left", color=col, fontweight="bold")
+        _ejes(ax)
+    for ax in axs[-1]:
+        ax.set_xlabel(f"G del ensamble de K semillas en {MES} − Ḡ_C (M$)")
+    fig.legend([Line2D([], [], color=TINTA, marker="o", ls=""), Line2D([], [], color=TINTA, marker="s", mfc="white", ls="")],
+               ["réplicas (IC t; cada réplica contra Ḡ_C de su réplica)", "bootstrap de clientes (réplica 0)"],
+               frameon=False, fontsize=11, loc="lower center", ncol=2)
     intervalos = [t for _, r, b in filas for t in (r or b,)]
     ganan = sum(t[1] > 0 for t in intervalos)
-    ax.set_title(f"A tiempo igual, {ganan} de {len(filas)} variantes superan al control (intervalo entero sobre 0)",
-                 fontsize=11, loc="left")
-    _ejes(ax)
-    return figura(fig, "tiempo_igual", figuras)
+    fig.suptitle(f"A tiempo igual, {ganan} de {len(filas)} variantes superan al control (intervalo entero sobre 0)",
+                 fontsize=12, x=0.01, ha="left")
+    fig.tight_layout(rect=(0, 0.07, 1, 0.96))
+    return figura(fig, "tiempo_igual", figuras, ajustar=False)
 
 
 def fig_diferencias(ctx: Contexto, a: dict, figuras: Path | None) -> str:
