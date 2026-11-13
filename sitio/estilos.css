@@ -1,18 +1,14 @@
 /* Estilos propios del sitio (MkDocs Material). Portados de _sass/custom/custom.scss: lo que el tema ya resuelve
    (ancho de página, tarjetas, recuadro de tablas) no se repite acá. */
 
-/* Página a lo ancho; el texto corrido queda en ~75 caracteres por línea, tablas y figuras sin tope. */
+/* Una sola columna: el ancho fijo va en el contenido y todo lo de adentro (párrafos, figuras, código, recuadros,
+   plegables) ocupa el 100 %. Las tablas más anchas se desplazan en su recuadro. */
 .md-grid { max-width: 90rem; }
-
-.md-typeset > p,
-.md-typeset > ul,
-.md-typeset > ol,
-.md-typeset > blockquote,
-.md-typeset > dl { max-width: 75ch; }
-
-/* Los recuadros (Respuesta, Predicción, Veredicto, Limitación) solo llevan texto: el tope va en el recuadro, no en sus
-   párrafos, para que no quede más ancho que su contenido. */
-.md-typeset .admonition { max-width: calc(89ch + 1.6rem); }  /* su letra es 0,8 de la del texto: 89ch ≈ 75ch del texto */
+.md-content__inner { max-width: 36rem; margin-left: auto; margin-right: auto; }
+.md-typeset .admonition,
+.md-typeset details,
+.md-typeset pre,
+.md-typeset .highlight { max-width: 100%; }
 
 .md-typeset img { max-width: 100%; }
 
@@ -22,41 +18,69 @@
   .md-nav--primary > .md-nav__title { display: none; }
 }
 
-/* Figuras generadas (una imagen sola en su párrafo): el párrafo no lleva el tope de 75ch; en pantallas angostas la
-   figura no baja de 40rem, para que el texto se lea, y se desplaza dentro de su recuadro, como las tablas. */
-.md-typeset p:has(> img:only-child) { max-width: none; overflow-x: auto; }
+/* Figuras (una imagen sola en su párrafo): al 100 % de la columna; en pantallas angostas no bajan de 40rem, para que
+   el texto se lea, y se desplazan dentro de su recuadro, como las tablas. Fondo blanco, borde redondeado y margen
+   interno: se leen igual en claro y en oscuro (los SVG y PNG llevan texto oscuro). */
+.md-typeset p:has(> img:only-child) { overflow-x: auto; }
 .md-typeset p > img:only-child { width: 100%; min-width: 40rem; max-width: none; }
+.md-typeset img { background: #ffffff; border-radius: 0.4rem; padding: 0.4rem; box-sizing: border-box; }
+
+/* Encabezado: en el teléfono «DMEyF 2026» baja a una segunda línea, en letra más chica (D7b). */
+@media screen and (max-width: 59.9375em) {
+  .md-header { height: 3.6rem; }
+  .md-header__title .md-header__topic:first-child .md-ellipsis { white-space: normal; line-height: 1.15; }
+  .md-header__title .sitio-anio { display: block; font-size: 0.7em; opacity: 0.85; }
+  .md-sidebar { top: 3.6rem; }
+}
+
+:root {
+  --c-pierde-bg: #f8d7d0; --c-pierde-fg: #8a2a1e;
+  --c-ok-bg: #d6ecd9; --c-ok-fg: #1f5e3a;
+  --c-ind-bg: #fbefc8; --c-ind-fg: #7a5a00;
+  --c-pill-bg: #eeeeee; --c-pill-fg: #333333; --c-muted: #666666;
+  --c-pos: #2e8b57; --c-neg: #c0392b;
+  --c-icbar-bg: #f1f1f1; --c-icbar: #9a9a9a; --c-icbar-zero: #333333;
+}
+
+[data-md-color-scheme="slate"] {
+  --c-pierde-bg: #5a2a24; --c-pierde-fg: #ffb4a8;
+  --c-ok-bg: #1f4a2e; --c-ok-fg: #a8e6bd;
+  --c-ind-bg: #5a4a14; --c-ind-fg: #f5dc8a;
+  --c-pill-bg: #3a3d4a; --c-pill-fg: #e2e4ec; --c-muted: #a9adbb;
+  --c-pos: #5fd38d; --c-neg: #ff7b6b;
+  --c-icbar-bg: #3a3d4a; --c-icbar: #8d90a0; --c-icbar-zero: #e2e4ec;
+}
 
 /* Reporte generado por comun/reporte.py: celdas y textos por veredicto. */
-.md-typeset td.pierde { background: #f8d7d0; }
-.md-typeset td.ok { background: #d6ecd9; }
-.md-typeset td.ind { background: #fbefc8; }
-.md-typeset .pend { color: #888888; font-style: italic; }
+.md-typeset td.pierde { background: var(--c-pierde-bg); }
+.md-typeset td.ok { background: var(--c-ok-bg); }
+.md-typeset td.ind { background: var(--c-ind-bg); }
+.md-typeset .pend { color: var(--c-muted); font-style: italic; }
 
 /* Resultados resaltados: las reglas salen del generador; acá solo los colores, los mismos de veredicto que td.*. */
 .md-typeset .pill {
   display: inline-block;
   padding: 0.05em 0.6em;
   border-radius: 1em;
-  background: #eeeeee;
-  color: #333333;
+  background: var(--c-pill-bg);
+  color: var(--c-pill-fg);
   white-space: nowrap;
 }
 
-.md-typeset .pill.pierde { background: #f8d7d0; color: #8a2a1e; }
-.md-typeset .pill.ok { background: #d6ecd9; color: #1f5e3a; }
-.md-typeset .pill.ind { background: #fbefc8; color: #7a5a00; }
-.md-typeset .pill.pend { background: #eeeeee; color: #666666; font-style: italic; }
+.md-typeset .pill.pierde { background: var(--c-pierde-bg); color: var(--c-pierde-fg); }
+.md-typeset .pill.ok { background: var(--c-ok-bg); color: var(--c-ok-fg); }
+.md-typeset .pill.ind { background: var(--c-ind-bg); color: var(--c-ind-fg); }
+.md-typeset .pill.pend { background: var(--c-pill-bg); color: var(--c-muted); font-style: italic; }
 
 .md-typeset td .v { white-space: nowrap; }
-.md-typeset td.sig-pos .v { font-weight: 700; color: #2e8b57; }
-.md-typeset td.sig-neg .v { font-weight: 700; color: #c0392b; }
+.md-typeset td.sig-pos .v { font-weight: 700; color: var(--c-pos); }
+.md-typeset td.sig-neg .v { font-weight: 700; color: var(--c-neg); }
 .md-typeset td.mejor .v { font-weight: 700; }
 
 .md-typeset .ic {
   display: block;
   font-size: 0.75em;
-  color: #777777;
+  color: var(--c-muted);
   white-space: nowrap;
 }
 
@@ -67,7 +91,7 @@
   min-width: 5rem;
   height: 6px;
   margin-top: 3px;
-  background: #f1f1f1;
+  background: var(--c-icbar-bg);
 }
 
 .md-typeset .icbar::before {
@@ -77,7 +101,7 @@
   bottom: 1px;
   left: var(--l);
   width: calc(var(--r) - var(--l));
-  background: #9a9a9a;
+  background: var(--c-icbar);
 }
 
 .md-typeset .icbar::after {
@@ -87,10 +111,10 @@
   bottom: -2px;
   left: var(--z);
   width: 1px;
-  background: #333333;
+  background: var(--c-icbar-zero);
 }
 
-.md-typeset td.sig-pos .icbar::before { background: #2e8b57; }
-.md-typeset td.sig-neg .icbar::before { background: #c0392b; }
+.md-typeset td.sig-pos .icbar::before { background: var(--c-pos); }
+.md-typeset td.sig-neg .icbar::before { background: var(--c-neg); }
 
-.md-typeset p.nota { font-size: 0.85em; color: #666666; margin-top: 0.25rem; }
+.md-typeset p.nota { font-size: 0.85em; color: var(--c-muted); margin-top: 0.25rem; }

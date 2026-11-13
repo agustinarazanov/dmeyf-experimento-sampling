@@ -2,7 +2,7 @@
 
 ## 1. Sitio y generador (sesión: Sonnet; cambio en `comun/`, se anuncia en el commit)
 
-- [ ] 1.1 `mkdocs.yml`:
+- [x] 1.1 `mkdocs.yml`:
   - `nav` sin etiquetas en las páginas (D7), Resultados como sección con `anexo.md` de hija;
   - lista blanca con `anexo.md` y `!/experimentos/**/figuras/**`;
   - `site_name: Sampling_1 · DMEyF 2026`;
@@ -10,7 +10,7 @@
 
   Verificar con `mkdocs build` y el HTML de `site/`: la barra dice «H4 · Muestras informadas por clase» y «Control y
   reglas», y el encabezado tiene el botón de modo.
-- [ ] 1.2 `sitio/estilos.css`:
+- [x] 1.2 `sitio/estilos.css`:
   - una columna (D6): sin topes de 75ch ni `calc(89ch …)`, todo al 100 % de `.md-content__inner`;
   - colores de veredicto, pills e IC en variables, con valores para `slate`;
   - figuras con fondo blanco, borde redondeado y margen en oscuro;

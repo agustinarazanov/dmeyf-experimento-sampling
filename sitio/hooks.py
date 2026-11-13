@@ -24,3 +24,14 @@ def on_config(config):
     if not any(isinstance(f, _EnlaceExcluido) for f in logger.filters):
         logger.addFilter(_EnlaceExcluido())
     return config
+
+
+_NOMBRE = "Sampling_1 · DMEyF 2026"
+_PARTIDO = '<span class="md-ellipsis">\n            Sampling_1<span class="sitio-anio"> · DMEyF 2026</span>\n          </span>'
+
+
+def on_post_page(output, page, config):
+    """Parte el nombre del sitio en el encabezado para que en el teléfono «DMEyF 2026» baje a una segunda línea
+    (estilos.css). Es lo que haría un override de partials/header.html, sin copiar la plantilla del tema."""
+    marca = f'<span class="md-ellipsis">\n            {_NOMBRE}\n          </span>'
+    return output.replace(marca, _PARTIDO, 1)

@@ -1,4 +1,4 @@
-site_name: Sampling_1
+site_name: Sampling_1 · DMEyF 2026
 site_description: Experimento Sampling_1 de DMEyF 2026. ¿Vale la pena el tradeoff entre velocidad y pérdida de performance?
 repo_url: https://github.com/agustinarazanov/dmeyf-experimento-sampling
 edit_uri: ""
@@ -10,6 +10,17 @@ site_dir: site
 theme:
   name: material
   language: es
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Cambiar a modo oscuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Cambiar a modo claro
   features:
     - navigation.indexes
     - navigation.top
@@ -55,6 +66,7 @@ exclude_docs: |
   !/sitio/hipotesis/README.md
   !/sitio/como-medimos/README.md
   !/experimentos/sampling_1/README.md
+  !/experimentos/sampling_1/anexo.md
   !/experimentos/sampling_1/figuras/**
   !/experimentos/sampling_1/corridas.md
   !/experimentos/sampling_1/exploratorios/README.md
@@ -68,21 +80,24 @@ exclude_docs: |
   !/experimentos/h4/README.md
   !/experimentos/h4/figuras/**
   !/docs/metodo.md
+  !/experimentos/**/figuras/**
 
 nav:
   - Inicio: index.md
-  - Resultados: experimentos/sampling_1/README.md
+  - Resultados:
+    - experimentos/sampling_1/README.md
+    - experimentos/sampling_1/anexo.md
   - Hipótesis:
     - sitio/hipotesis/README.md
-    - H1: experimentos/h1/README.md
-    - H2: experimentos/h2/README.md
-    - H3: experimentos/h3/README.md
-    - H4: experimentos/h4/README.md
+    - experimentos/h1/README.md
+    - experimentos/h2/README.md
+    - experimentos/h3/README.md
+    - experimentos/h4/README.md
   - Cómo medimos:
     - sitio/como-medimos/README.md
-    - Control y reglas: experimentos/control/README.md
-    - Corridas: experimentos/sampling_1/corridas.md
-    - Exploratorios: experimentos/sampling_1/exploratorios/README.md
+    - experimentos/control/README.md
+    - experimentos/sampling_1/corridas.md
+    - experimentos/sampling_1/exploratorios/README.md
   - Cómo trabajamos: docs/metodo.md
 
 validation:
