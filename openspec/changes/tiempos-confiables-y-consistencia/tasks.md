@@ -1,6 +1,7 @@
 # Tasks
 
-Requiere la ronda 201903–201908 consolidada (`final-con-julio-agosto`, archivado el 13-nov). `Experimentos guion.md`, en
+Requiere la ronda 201903–201908 consolidada (`final-con-julio-agosto`, archivado el 13-nov) y que `sitio-legible` haya
+cerrado antes de los grupos 3, 4 y 6 (reorganiza los informes y la salida del reporte). La entrega es el 23-nov. `Experimentos guion.md`, en
 la raíz, queda fuera. Los números de línea que citan las tareas son orientativos: las frases se buscan por su texto.
 
 Qué puede ir en paralelo:
@@ -37,7 +38,8 @@ Qué puede ir en paralelo:
 - [ ] 1.3 Diseño:
   - `h1`–`h4/docs/diseno.md`: variantes, estudios y grilla nuevos de cada una, y `## Dependencias` después del cambio de
     dueño de `U{r}@k` (D10): `h3` lee todos los `U{r}` de `h1`, y `h4` deja de declarar `h3`;
-  - `sampling_1/docs/diseno.md`: la fase 8 (D15) con listas, tandas, horas y costo, y la tabla de la grilla común (D8);
+  - `sampling_1/docs/diseno.md`: la fase 8 (D15) con listas, tandas, horas, costo y el recorte del 19-nov, que
+    Agustina confirma, y la tabla de la grilla común (D8);
   - `sampling_1/docs/hipotesis.md` § Pregunta: la grilla común y los pares directos (D12).
 - [ ] 1.4 Anotar en la bitácora de `sampling_1` el mensaje del tutor (Zulip 212124, 12-nov), la revisión del 13-nov que
   originó este cambio, la ampliación a la grilla común y la revisión en sesión limpia de la propuesta (13-nov, 4

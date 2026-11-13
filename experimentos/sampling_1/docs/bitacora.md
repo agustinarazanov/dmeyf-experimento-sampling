@@ -1638,3 +1638,16 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   ΔAUC y su escenario. El cambio pasa a `openspec/changes/archive/2026-11-13-final-con-julio-agosto`.
 - `tiempos-confiables-y-consistencia`: la fase 8 pasa a 17 VMs (dos listas por réplica y la medición), por decisión de
   Agustina.
+
+### 13-nov-2026 · decisiones de Agustina para tiempos-confiables-y-consistencia
+
+- **"Siempre OP" (211718, 211719, 212043)**: buscar sobre una muestra (H3, `H4F`) está bien aunque no lo cumpla, porque es
+  parte del experimento. Queda como apartamiento declarado con id; no se le consulta al tutor. Cierra el punto que la
+  entrada anterior dejaba sin confirmar.
+- **Entrega: 23-nov.**
+- **Cuota**: `CPUS_ALL_REGIONS` = 32 en los dos proyectos de la cuenta (4 VMs a la vez cada uno); en el período de prueba
+  no se puede pedir aumento. La fase 8 va en tandas, de 8 si el segundo proyecto suma su cuota (se prueba antes de
+  lanzar) y de 4 si no. Se borró la VM `desktop-jr` (apagada desde el 13-oct, con su disco de 256 GB), que no era de
+  este experimento.
+- La propuesta del cambio pasó por una revisión en sesión limpia (subagente `general-purpose`, Opus): 4 hallazgos altos,
+  9 medios y 10 bajos, incorporados en `001c09e`.

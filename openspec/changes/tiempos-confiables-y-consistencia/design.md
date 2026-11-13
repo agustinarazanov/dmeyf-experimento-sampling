@@ -57,6 +57,12 @@ Restricciones:
 - Un cambio en `comun/` se anuncia en el commit.
 - Las corridas las hace la VM, lanzada a pedido. El crédito no es una restricción (Agustina, 13-nov); la cuota sí.
 - La ventana del final es 201903–201908 (confirmada el 13-nov) y la ronda tiene 20 semillas finales.
+- **La entrega es el 23-nov** (video grupal). Quedan 10 días para las seis etapas.
+- **"Siempre OP" (Zulip 211718)**: buscar sobre una muestra y entrenar el final con otra receta es la hipótesis de H3, de
+  `H4F` y de las nuevas `H3-0.5` y `H4P`. Agustina decidió el 13-nov que ese apartamiento vale porque es parte del
+  experimento: se declara con su id en los informes, como hasta ahora, y no se le pregunta al tutor.
+- **`sitio-legible` va antes.** Ese cambio reorganiza los informes y la salida de `comun/reporte.py`, y al terminar
+  actualiza las rutas que nombran los artefactos de este cambio. Los grupos 3, 4 y 6 de este cambio esperan a que cierre.
 
 ## Goals / Non-Goals
 
@@ -307,6 +313,10 @@ medición de tiempos.
   son por proyecto, pero el período de prueba puede tener un tope por cuenta de facturación. Si la quinta VM arranca, las
   tandas son de 8; si no, de 4. No se crean proyectos nuevos ni se pide aumento.
 - **Orden de las tandas:** primero `fase8_medicion` y las `_a`, que son las que responden al tutor; después las `_b`.
+- **Recorte declarado antes de correr**, por la entrega del 23-nov (propuesta, que Agustina confirma en 1.3): si el
+  19-nov las listas `_b` no terminaron, H2 queda con las réplicas que tenga. La tabla de cobertura muestra cuántas son y
+  el informe de `h2` lo declara como limitación. Las `_a` y la medición no se recortan. Ninguna lista se corta ni se
+  descarta por su resultado.
 - **El segundo proyecto** usa la imagen y el bucket del primero, con permiso de lectura y escritura sobre el bucket para
   su cuenta de servicio. `vm.sh` y `lanzar_fase.sh` ya toman `PROYECTO` del entorno; `lanzar_fase.sh` verifica la cuota
   del proyecto que recibe.
