@@ -23,15 +23,15 @@ control (4,63 M$, IC [0,77; 8,50]).
 
 Todos los números son de la **ronda vigente**: el modelo final entrena con 201903–201908 (Bolaños, Zulip 211210) y se
 evalúa en 201910 con 20 semillas; N\* = 3.300 queda fijo. La ronda anterior (final 201903–201906, 10 semillas) se compara
-en [`comparacion_rondas.md`](experimentos/sampling_1/informe/comparacion_rondas.md): ningún veredicto cambia de lado. El
+en [`comparacion_rondas.md`](experimentos/sampling_1/README.md#rondas): ningún veredicto cambia de lado. El
 veredicto sale de la ganancia; el AUC en 201910 va al lado (ΔAUC) y en varias variantes va en otra dirección.
 
 ## Resultados
 
 La comparación está en dos bloques en
-[`experimentos/sampling_1/informe/tabla_resultados.md`](experimentos/sampling_1/informe/tabla_resultados.md), que genera
+[`experimentos/sampling_1/informe/tabla_resultados.md`](experimentos/sampling_1/README.md), que genera
 `python -m comun.reporte --experimento sampling_1` desde los ledgers, y comentada en
-[`experimentos/sampling_1/informe/informe.md`](experimentos/sampling_1/informe/informe.md) § Resultados:
+[`experimentos/sampling_1/informe/informe.md`](experimentos/sampling_1/README.md) § Resultados:
 
 - **Bloque A, mismo protocolo**: una fila por variante con Δ de la réplica 0, Δ con réplicas (en `C`, las H3 y las H4,
   8 réplicas), ΔAUC, T, A, tiempo igual con intervalo (entre réplicas y por bootstrap de clientes de 201910) y el
@@ -47,18 +47,18 @@ y `GOSS` muestrean dentro de LightGBM (H2), `H3` optimiza con una muestra y entr
 `min_data_in_leaf`, `H3K` muestrea clientes) y `H4` conserva todas las bajas en la búsqueda (`H4H`, `H4U`) o en el final
 (`H4F`, y `H4O` también en la búsqueda). H4 y las extensiones de H3 salen de ideas que se eligieron mirando 201910 y suman más de diez contrastes sin
 corrección: las conclusiones se apoyan en `H3-0.1`, `H4H-0.1` y `H4F-0.05`, fijados antes de correr. Las limitaciones,
-las conclusiones y las figuras están en el informe y en [`reporte.html`](experimentos/sampling_1/informe/reporte.html).
+las conclusiones y las figuras están en el informe y en [`reporte.html`](experimentos/sampling_1/README.md).
 
 ## Experimentos
 
 | experimento | qué es | pregunta | estado |
 |---|---|---|---|
 | [`control`](experimentos/control/) | el control `C` (y su réplica `C-rep`) y las reglas comunes (G, Δ, δ, T, A, N\*, veredictos) | ¿cuál es el punto de comparación de todas las hipótesis? | reporte |
-| [`h1`](experimentos/h1/) | submuestreo uniforme del train | ¿cuánto se gana en tiempo y se pierde en ganancia con r ∈ {0,5, 0,25, 0,1, 0,05}? | [informe](experimentos/h1/informe/informe.md): ni confirmada ni refutada |
-| [`h2`](experimentos/h2/) | bagging y GOSS | ¿alcanza con submuestrear dentro de LightGBM? | [informe](experimentos/h2/informe/informe.md): refutada |
-| [`h3`](experimentos/h3/) | optimizar con muestra y entrenar completo | ¿se puede optimizar rápido y entrenar con todo? (la réplica 0 reusa los estudios de `h1`; las réplicas `@k` son suyas) | [informe](experimentos/h3/informe/informe.md): confirmada, también con réplicas; mecanismo sin resolver; extensiones sin cambios contra no reescalar |
-| [`h4`](experimentos/h4/) | muestras informadas por clase: todas las bajas en la búsqueda o en el final | ¿conviene que la muestra que acelera conserve todas las bajas? (usa estudios de `h1` y `h3`) | [informe](experimentos/h4/informe/informe.md): búsqueda informada refutada; fast-retrain confirmado con 5 % y 25 %; reoptimizar sobre el set del final no cambia |
-| [`sampling_1`](experimentos/sampling_1/) | el experimento conjunto: compara a `h1`–`h4` contra `control`, informe y video | ¿vale la pena el tradeoff velocidad-performance? | [informe](experimentos/sampling_1/informe/informe.md) |
+| [`h1`](experimentos/h1/) | submuestreo uniforme del train | ¿cuánto se gana en tiempo y se pierde en ganancia con r ∈ {0,5, 0,25, 0,1, 0,05}? | [informe](experimentos/h1/README.md): ni confirmada ni refutada |
+| [`h2`](experimentos/h2/) | bagging y GOSS | ¿alcanza con submuestrear dentro de LightGBM? | [informe](experimentos/h2/README.md): refutada |
+| [`h3`](experimentos/h3/) | optimizar con muestra y entrenar completo | ¿se puede optimizar rápido y entrenar con todo? (la réplica 0 reusa los estudios de `h1`; las réplicas `@k` son suyas) | [informe](experimentos/h3/README.md): confirmada, también con réplicas; mecanismo sin resolver; extensiones sin cambios contra no reescalar |
+| [`h4`](experimentos/h4/) | muestras informadas por clase: todas las bajas en la búsqueda o en el final | ¿conviene que la muestra que acelera conserve todas las bajas? (usa estudios de `h1` y `h3`) | [informe](experimentos/h4/README.md): búsqueda informada refutada; fast-retrain confirmado con 5 % y 25 %; reoptimizar sobre el set del final no cambia |
+| [`sampling_1`](experimentos/sampling_1/) | el experimento conjunto: compara a `h1`–`h4` contra `control`, informe y video | ¿vale la pena el tradeoff velocidad-performance? | [informe](experimentos/sampling_1/README.md) |
 
 Cada experimento tiene `docs/` (hipótesis, diseño, bitácora), `ledger/` e `informe/`. Declara en `## Dependencias` de su
 `docs/diseno.md` de quién lee (`control` como mínimo) y no toca carpetas ni ledgers ajenos. Para agregar una hipótesis

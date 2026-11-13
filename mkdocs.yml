@@ -51,6 +51,8 @@ exclude_docs: |
   *
   !/assets/**
   !/index.md
+  !/experimentos/sampling_1/README.md
+  !/experimentos/sampling_1/figuras/**
   !/sitio/estilos.css
   !/experimentos/h1/README.md
   !/experimentos/h1/figuras/**
@@ -64,6 +66,7 @@ exclude_docs: |
 
 nav:
   - Inicio: index.md
+  - Resultados: experimentos/sampling_1/README.md
   - Hipótesis:
     - H1: experimentos/h1/README.md
     - H2: experimentos/h2/README.md

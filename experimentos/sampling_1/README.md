@@ -1,31 +1,419 @@
-# sampling_1
+# Resultados
 
-El experimento conjunto de Sampling_1 (comisión lunes): compara las hipótesis `h1`–`h3` contra `control` y entrega el
-informe y el video. Su pregunta, hipótesis y diseño de fases están en `docs/`; las corridas y los resultados de cada
-hipótesis, en la carpeta de cada una (`../control`, `../h1`, `../h2`, `../h3`). Operación: [`docs/operacion.md`](docs/operacion.md).
+Todas las variantes de las cuatro hipótesis contra el control, con la respuesta a la pregunta del experimento.
 
-## Correspondencia de rutas (antes y después del 3-nov-2026)
+## Pregunta
 
-Hasta el tag `informe-v1` (y los commits anteriores a la separación) el experimento era una sola carpeta,
-`experimentos/sampling-velocidad/`, y se corría parado en ella con `PYTHONPATH=../..`. Ahora es `experimentos/sampling_1/`
-más una carpeta por hipótesis, y todo se corre desde la raíz del repo. Quien tenga que reproducir un tag o leer un commit
-viejo usa esta tabla.
+**¿Vale la pena el tradeoff entre velocidad y pérdida de performance?** (Zulip 208986, 1-nov.)
 
-| ruta vieja (`experimentos/sampling-velocidad/…`) | ruta nueva |
-|---|---|
-| `docs/hipotesis.md` | `experimentos/sampling_1/docs/hipotesis.md` (pregunta y comparación); G, Δ, δ, T, A, N\*, veredictos y control en `experimentos/control/docs/hipotesis.md`; cada H en `experimentos/h1`, `h2`, `h3` `/docs/hipotesis.md` |
-| `docs/diseno.md` | `experimentos/sampling_1/docs/diseno.md` (fases, reparto, estimación, tutor); control, máquina y parámetros en `experimentos/control/docs/diseno.md`; variantes de cada H en su `docs/diseno.md` |
-| `docs/bitacora.md`, `docs/operacion.md` | `experimentos/sampling_1/docs/` (la de cada hipótesis, en la suya) |
-| `src/correr.py`, `src/metodos.py`, `src/muestreo.py` | `comun/correr.py`, `comun/metodos.py`, `comun/muestreo.py` |
-| `src/consolidar.py` | `comun/consolidar.py` (`--experimento X`; sin argumento, todos) |
-| `scripts/vm.sh` | `scripts/vm.sh` en la raíz del repo (`lanzar_fase.sh` es nuevo, en la raíz y con un atajo en `experimentos/sampling_1/scripts/`) |
-| `scripts/graficar.py` | `experimentos/sampling_1/scripts/graficar.py` (junto a `fase*.txt` y `ledger_parcial.py`, posteriores al renombre) |
-| `ledger/resultados.csv`, `estudios.csv`, `reemplazadas.csv`, `corridas/`, `curvas/`, `hp/`, `predicciones/` | repartidos por dueño de la variante o del estudio (`comun/variantes.py`): `experimentos/control/ledger/`, `h1/ledger/`, `h2/ledger/`, `h3/ledger/` (manifiesto en `experimentos/sampling_1/ledger/separacion_manifiesto.json`) |
-| `ledger/apareado.csv` | `experimentos/sampling_1/ledger/apareado_previo.csv` (copia de lo que había) y un `apareado.csv` por hipótesis, regenerado por `python -m comun.consolidar` |
-| `ledger/exploracion/`, `ledger/sesiones/`, `ledger/tokens.csv` | `experimentos/sampling_1/ledger/` (lo que no tiene variante); `tokens.csv` de cada experimento con lo que declara |
-| `informe/` (informe, decisiones, guion, figuras, reporte) | `experimentos/sampling_1/informe/` (conjunto) y `informe/` de cada hipótesis |
-| `$BUCKET/ledger/` | sigue sin tocarse; los ledgers nuevos van a `$BUCKET/experimentos/<exp>/ledger/` |
+Sobre el baseline (Zulip 208135), ¿cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) si se usan menos
+filas para entrenar u optimizar? En H1, H2 y H3 la proporción de BAJA+1 ∪ BAJA+2 queda igual, en esperanza, en todas las
+variantes; el undersampling de la clase mayoritaria lo estudia Sampling_2. H4 es la excepción declarada: conserva todas
+las bajas y recorta solo CONTINUA.
 
-Comandos: `cd experimentos/sampling-velocidad && PYTHONPATH=../.. python -m src.correr …` pasa a
-`python -m comun.correr …` desde la raíz; `python -m src.consolidar`, a `python -m comun.consolidar`. El cambio de
-openspec que lo hizo es `separar-hipotesis`; el anterior, `experimento-sampling-velocidad`, está archivado.
+| hipótesis | qué achica | página |
+|---|---|---|
+| H1 | el train, al azar, en la búsqueda y en el final | [H1](../h1/README.md) |
+| H2 | las filas que ve cada árbol (`bagging_fraction`, GOSS) | [H2](../h2/README.md) |
+| H3 | solo la búsqueda de Optuna; el final entrena con todo | [H3](../h3/README.md) |
+| H4 | CONTINUA, conservando todas las bajas, en la búsqueda o en el final | [H4](../h4/README.md) |
+
+Una variante **vale la pena** si *no pierde* contra el control y además es al menos 2 veces más rápida (A ≥ 2). Las
+reglas (G, Δ, δ, T, A, N\*, veredictos) están en [Control y reglas](../control/README.md).
+
+## Respuesta
+
+!!! success "Respuesta"
+    Vale la pena achicar la **optimización**, al azar: correr Optuna sobre el 10 % de las filas y entrenar el final con
+    todas no pierde contra el control y es casi 8 veces más rápido. Si además se quiere un final más rápido, conservar
+    todas las bajas y la mitad de CONTINUA con peso 2 tampoco pierde. Ninguna de las dos es una mejora de ganancia por
+    modelo: es lo mismo, más rápido, y el tiempo que sobra se puede gastar en ensamblar.
+
+<!-- generado:mapa -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+![12 de 21 variantes no pierden y aceleran 2× o más; la más rápida entre ellas es H4F-0.05 (12.5×)](figuras/tradeoff.svg)
+
+<!-- /generado:mapa -->
+
+## Predicción
+
+!!! info "Predicción"
+    Fijada el 2026-11-01 en `sampling_1/docs/hipotesis.md` (commit `2f05cae`), antes de cualquier corrida real. Las
+    predicciones de cada hipótesis están en su página.
+
+- **Qué vale la pena**: H3 con ambas tasas y H1 con r = 0,25. Para un pipeline acotado en tiempo, como el de la segunda
+  entrega, lo que más sirve es H3 con r_opt = 0,1, porque la optimización domina el tiempo total.
+- **A tiempo igual**: la pregunta no es velocidad contra ganancia sino qué se hace con el tiempo ahorrado. Si no se
+  reinvierte, no vale la pena perder ni un 1 %. Por eso, además de la comparación a datos iguales, hay una comparación a
+  tiempo igual: el control completo contra la variante rápida con el tiempo sobrante gastado en más semillas (ensamble
+  de K modelos de la variante, con K tal que el tiempo total iguale al del control). Predicción: a tiempo igual la
+  variante rápida gana, y H3 es la que más rinde. (Nota del 2-nov, después de las fases 1 a 3 y antes de ver ningún
+  ensamble: el ledger guardaba curvas y no predicciones, así que se agregó una fase que repite los finales guardando
+  predicciones. La predicción no cambió.)
+- **Contrastes principales** (9-nov, cambio `incorporar-aportes`, antes de correr H4 y las extensiones de H3): con cuatro
+  hipótesis hay más de diez contrastes sin corrección por comparaciones múltiples, así que la respuesta se apoya en
+  `H3-0.1`, `H4H-0.1` y `H4F-0.05` contra `C`, con réplicas (y `H4F-0.05` también a tiempo igual), fijados en
+  [H4](../h4/README.md). El resto se informa como secundario.
+- **Ronda 201903–201908** (12-nov): ningún veredicto cambia de lado, el IC por semilla se angosta del orden de √2 y el de
+  réplicas menos. Reglas en [Control y reglas](../control/README.md).
+
+## Comparación entre hipótesis
+
+Las variantes `U*`, `B*` y `GOSS` no tienen réplicas (pierden o no aceleran, y las réplicas no cambian eso). En `C`, H3
+y H4, el veredicto sale de Δ con 8 réplicas de la optimización.
+
+<!-- generado:bloque-a -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 envíos; Ḡ_C (réplica 0) = 282.48 M$; Ḡ_C con réplicas = 281.78 M$ (R=8); ensamble de 20 semillas del control = 286.55 M$.
+
+Ḡ, T y A salen de la réplica 0 en las variantes sin réplicas; en las que tienen réplicas (columna R), Ḡ es la media entre réplicas, T la mediana entre réplicas y A = T_C / T con T_C también mediana entre réplicas, así que se comparan con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0.
+
+<table><tr><th>variante</th><th>hipótesis</th><th>R</th><th>Δ [IC 95%] (M$)</th><th>A</th><th>veredicto</th></tr><tr><td>U0.05</td><td>H1</td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-30.14</span><span class='ic'>[-34.56; -25.72]</span><span class='icbar' style='--l:0.0%;--r:22.0%;--z:85.9%'></span></td><td><span class='v'>11.45</span></td><td><span class='pill pierde'>pierde</span></td></tr><tr><td>U0.1</td><td>H1</td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-16.28</span><span class='ic'>[-19.83; -12.73]</span><span class='icbar' style='--l:36.6%;--r:54.3%;--z:85.9%'></span></td><td><span class='v'>9.89</span></td><td><span class='pill pierde'>pierde</span></td></tr><tr><td>U0.25</td><td>H1</td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-9.57</span><span class='ic'>[-12.65; -6.49]</span><span class='icbar' style='--l:54.5%;--r:69.8%;--z:85.9%'></span></td><td><span class='v'>4.87</span></td><td><span class='pill pierde'>pierde</span></td></tr><tr><td>U0.5</td><td>H1</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>-1.38</span><span class='ic'>[-3.99; 1.24]</span><span class='icbar' style='--l:76.0%;--r:89.0%;--z:85.9%'></span></td><td><span class='v'>2.25</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>B0.1</td><td>H2</td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-8.47</span><span class='ic'>[-11.02; -5.92]</span><span class='icbar' style='--l:58.5%;--r:71.2%;--z:85.9%'></span></td><td><span class='v'>1.84</span></td><td><span class='pill pierde'>pierde</span></td></tr><tr><td>B0.25</td><td>H2</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>0.88</span><span class='ic'>[-1.95; 3.71]</span><span class='icbar' style='--l:81.1%;--r:95.1%;--z:85.9%'></span></td><td><span class='v'>1.23</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>B0.5</td><td>H2</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>-0.94</span><span class='ic'>[-3.62; 1.75]</span><span class='icbar' style='--l:76.9%;--r:90.3%;--z:85.9%'></span></td><td><span class='v'>0.79</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>GOSS</td><td>H2</td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-4.01</span><span class='ic'>[-7.03; -1.00]</span><span class='icbar' style='--l:68.4%;--r:83.4%;--z:85.9%'></span></td><td><span class='v'>0.72</span></td><td><span class='pill ind'>indeterminado</span></td></tr><tr><td>H3-0.05</td><td>H3</td><td><span class='v'>8</span></td><td class='mejor'><span class='v'>2.08</span><span class='ic'>[-0.87; 5.02]</span><span class='icbar' style='--l:83.8%;--r:98.4%;--z:85.9%'></span></td><td><span class='v'>10.56</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3K-0.1</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>-0.21</span><span class='ic'>[-5.05; 4.63]</span><span class='icbar' style='--l:73.4%;--r:97.4%;--z:85.9%'></span></td><td><span class='v'>7.98</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3-0.1</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>1.71</span><span class='ic'>[-1.07; 4.49]</span><span class='icbar' style='--l:83.3%;--r:97.1%;--z:85.9%'></span></td><td><span class='v'>7.76</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3L-0.1</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>0.14</span><span class='ic'>[-3.30; 3.57]</span><span class='icbar' style='--l:77.7%;--r:94.8%;--z:85.9%'></span></td><td><span class='v'>7.73</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3R-0.1</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>1.59</span><span class='ic'>[-1.80; 4.98]</span><span class='icbar' style='--l:81.4%;--r:98.3%;--z:85.9%'></span></td><td><span class='v'>7.71</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3L-0.25</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>1.22</span><span class='ic'>[-1.59; 4.03]</span><span class='icbar' style='--l:82.0%;--r:95.9%;--z:85.9%'></span></td><td><span class='v'>4.51</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3R-0.25</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>1.95</span><span class='ic'>[-0.85; 4.74]</span><span class='icbar' style='--l:83.8%;--r:97.7%;--z:85.9%'></span></td><td><span class='v'>4.46</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H3-0.25</td><td>H3</td><td><span class='v'>8</span></td><td><span class='v'>1.42</span><span class='ic'>[-2.82; 5.67]</span><span class='icbar' style='--l:78.9%;--r:100.0%;--z:85.9%'></span></td><td><span class='v'>4.38</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H4F-0.05</td><td>H4</td><td><span class='v'>8</span></td><td><span class='v'>1.41</span><span class='ic'>[-1.58; 4.40]</span><span class='icbar' style='--l:82.0%;--r:96.8%;--z:85.9%'></span></td><td class='mejor'><span class='v'>12.50</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H4H-0.1</td><td>H4</td><td><span class='v'>8</span></td><td class='sig-neg'><span class='v'>-11.41</span><span class='ic'>[-15.80; -7.03]</span><span class='icbar' style='--l:46.6%;--r:68.4%;--z:85.9%'></span></td><td><span class='v'>7.93</span></td><td><span class='pill pierde'>pierde</span></td></tr><tr><td>H4F-0.25</td><td>H4</td><td><span class='v'>8</span></td><td><span class='v'>1.26</span><span class='ic'>[-1.42; 3.94]</span><span class='icbar' style='--l:82.4%;--r:95.7%;--z:85.9%'></span></td><td><span class='v'>4.77</span></td><td><span class='pill ok'>no pierde</span></td></tr><tr><td>H4U-0.1</td><td>H4</td><td><span class='v'>8</span></td><td class='sig-neg'><span class='v'>-8.02</span><span class='ic'>[-11.52; -4.53]</span><span class='icbar' style='--l:57.3%;--r:74.7%;--z:85.9%'></span></td><td><span class='v'>3.41</span></td><td><span class='pill pierde'>pierde</span></td></tr><tr><td>H4O-0.5</td><td>H4</td><td><span class='v'>8</span></td><td><span class='v'>-1.33</span><span class='ic'>[-4.27; 1.60]</span><span class='icbar' style='--l:75.3%;--r:89.9%;--z:85.9%'></span></td><td><span class='v'>2.31</span></td><td><span class='pill ok'>no pierde</span></td></tr></table><p class='nota'><sup>a</sup> sin réplicas de optimización: Δ, A y el veredicto salen de la réplica 0 (Δ apareado por semilla).</p>
+
+<details markdown="1">
+<summary>Detalle del bloque A</summary>
+
+<table><tr><th>variante</th><th>Ḡ (M$)</th><th>Δ réplica 0 [IC] (M$)</th><th>Δ con réplicas [IC] (M$)</th><th>ΔAUC en 201910 [IC]</th><th>T mediana (s)</th><th>tiempo igual, réplicas [IC t] (M$)</th><th>tiempo igual, bootstrap de clientes [IC] (M$)</th></tr><tr><td>U0.05</td><td>252.34</td><td class='sig-neg'><span class='v'>-30.14</span><span class='ic'>[-34.56; -25.72]</span><span class='icbar' style='--l:0.0%;--r:21.0%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0176</span><span class='ic'>[-0.0186; -0.0166]</span><span class='icbar' style='--l:0.0%;--r:9.8%;--z:92.0%'></span></td><td>70</td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-13.72</span><span class='ic'>[-26.90; -0.92]</span><span class='icbar' style='--l:0.0%;--r:57.8%;--z:59.9%'></span></td></tr><tr><td>U0.1</td><td>266.20</td><td class='sig-neg'><span class='v'>-16.28</span><span class='ic'>[-19.83; -12.73]</span><span class='icbar' style='--l:35.0%;--r:51.9%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0103</span><span class='ic'>[-0.0111; -0.0095]</span><span class='icbar' style='--l:37.3%;--r:44.9%;--z:92.0%'></span></td><td>81</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>-5.82</span><span class='ic'>[-15.73; 3.85]</span><span class='icbar' style='--l:24.9%;--r:68.4%;--z:59.9%'></span></td></tr><tr><td>U0.25</td><td>272.91</td><td class='sig-neg'><span class='v'>-9.57</span><span class='ic'>[-12.65; -6.49]</span><span class='icbar' style='--l:52.1%;--r:66.7%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0055</span><span class='ic'>[-0.0060; -0.0050]</span><span class='icbar' style='--l:62.3%;--r:67.5%;--z:92.0%'></span></td><td>164</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>-0.52</span><span class='ic'>[-8.86; 7.54]</span><span class='icbar' style='--l:40.1%;--r:76.6%;--z:59.9%'></span></td></tr><tr><td>U0.5</td><td>281.11</td><td><span class='v'>-1.38</span><span class='ic'>[-3.99; 1.24]</span><span class='icbar' style='--l:72.7%;--r:85.1%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0019</span><span class='ic'>[-0.0023; -0.0015]</span><span class='icbar' style='--l:80.8%;--r:84.5%;--z:92.0%'></span></td><td>354</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>5.98</span><span class='ic'>[-1.71; 13.53]</span><span class='icbar' style='--l:56.1%;--r:90.0%;--z:59.9%'></span></td></tr><tr><td>B0.1</td><td>274.01</td><td class='sig-neg'><span class='v'>-8.47</span><span class='ic'>[-11.02; -5.92]</span><span class='icbar' style='--l:56.0%;--r:68.1%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0088</span><span class='ic'>[-0.0094; -0.0083]</span><span class='icbar' style='--l:45.6%;--r:50.9%;--z:92.0%'></span></td><td>434</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>-2.34</span><span class='ic'>[-11.66; 6.44]</span><span class='icbar' style='--l:33.9%;--r:74.2%;--z:59.9%'></span></td></tr><tr><td>B0.25</td><td>283.36</td><td><span class='v'>0.88</span><span class='ic'>[-1.95; 3.71]</span><span class='icbar' style='--l:77.6%;--r:91.0%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0044</span><span class='ic'>[-0.0047; -0.0041]</span><span class='icbar' style='--l:68.8%;--r:72.0%;--z:92.0%'></span></td><td>650</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>3.72</span><span class='ic'>[-6.00; 13.31]</span><span class='icbar' style='--l:46.5%;--r:89.5%;--z:59.9%'></span></td></tr><tr><td>B0.5</td><td>281.55</td><td><span class='v'>-0.94</span><span class='ic'>[-3.62; 1.75]</span><span class='icbar' style='--l:73.6%;--r:86.4%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-neg'><span class='v'>-0.0012</span><span class='ic'>[-0.0017; -0.0008]</span><span class='icbar' style='--l:83.5%;--r:88.3%;--z:92.0%'></span></td><td>1,011</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>—<sup>b</sup></span></td></tr><tr><td>GOSS</td><td>278.46</td><td class='sig-neg'><span class='v'>-4.01</span><span class='ic'>[-7.03; -1.00]</span><span class='icbar' style='--l:65.5%;--r:79.8%;--z:82.2%'></span></td><td><span class='v'>—<sup>a</sup></span></td><td class='sig-pos'><span class='v'>+0.0005</span><span class='ic'>[+0.0003; +0.0008]</span><span class='icbar' style='--l:93.3%;--r:96.1%;--z:92.0%'></span></td><td>1,102</td><td><span class='v'>—<sup>a</sup></span></td><td><span class='v'>—<sup>b</sup></span></td></tr><tr><td>H3-0.05</td><td>283.86</td><td class='sig-pos'><span class='v'>5.22</span><span class='ic'>[2.96; 7.49]</span><span class='icbar' style='--l:89.2%;--r:100.0%;--z:82.2%'></span></td><td><span class='v'>2.08</span><span class='ic'>[-0.87; 5.02]</span><span class='icbar' style='--l:69.6%;--r:97.0%;--z:73.6%'></span></td><td><span class='v'>-0.0020</span><span class='ic'>[-0.0041; +0.0000]</span><span class='icbar' style='--l:72.0%;--r:92.1%;--z:92.0%'></span></td><td>95</td><td class='sig-pos'><span class='v'>4.77</span><span class='ic'>[1.01; 8.53]</span><span class='icbar' style='--l:56.4%;--r:92.5%;--z:51.5%'></span></td><td class='sig-pos'><span class='v'>7.74</span><span class='ic'>[0.06; 16.23]</span><span class='icbar' style='--l:60.0%;--r:96.0%;--z:59.9%'></span></td></tr><tr><td>H3K-0.1</td><td>281.57</td><td><span class='v'>0.44</span><span class='ic'>[-1.91; 2.79]</span><span class='icbar' style='--l:77.7%;--r:88.8%;--z:82.2%'></span></td><td><span class='v'>-0.21</span><span class='ic'>[-5.05; 4.63]</span><span class='icbar' style='--l:50.1%;--r:95.1%;--z:73.6%'></span></td><td class='sig-neg'><span class='v'>-0.0033</span><span class='ic'>[-0.0050; -0.0017]</span><span class='icbar' style='--l:67.5%;--r:83.7%;--z:92.0%'></span></td><td>126</td><td><span class='v'>3.95</span><span class='ic'>[-1.58; 9.47]</span><span class='icbar' style='--l:43.9%;--r:97.1%;--z:51.5%'></span></td><td><span class='v'>4.24</span><span class='ic'>[-6.33; 15.40]</span><span class='icbar' style='--l:45.8%;--r:94.1%;--z:59.9%'></span></td></tr><tr><td>H3-0.1</td><td>283.49</td><td><span class='v'>1.26</span><span class='ic'>[-1.95; 4.48]</span><span class='icbar' style='--l:77.5%;--r:92.9%;--z:82.2%'></span></td><td><span class='v'>1.71</span><span class='ic'>[-1.07; 4.49]</span><span class='icbar' style='--l:68.6%;--r:94.5%;--z:73.6%'></span></td><td class='sig-neg'><span class='v'>-0.0017</span><span class='ic'>[-0.0030; -0.0003]</span><span class='icbar' style='--l:77.1%;--r:90.4%;--z:92.0%'></span></td><td>129</td><td class='sig-pos'><span class='v'>5.46</span><span class='ic'>[2.93; 7.98]</span><span class='icbar' style='--l:65.6%;--r:89.9%;--z:51.5%'></span></td><td><span class='v'>6.04</span><span class='ic'>[-2.37; 15.30]</span><span class='icbar' style='--l:54.6%;--r:93.9%;--z:59.9%'></span></td></tr><tr><td>H3L-0.1</td><td>281.92</td><td><span class='v'>-1.43</span><span class='ic'>[-4.02; 1.16]</span><span class='icbar' style='--l:72.6%;--r:84.9%;--z:82.2%'></span></td><td><span class='v'>0.14</span><span class='ic'>[-3.30; 3.57]</span><span class='icbar' style='--l:58.2%;--r:90.2%;--z:73.6%'></span></td><td><span class='v'>-0.0005</span><span class='ic'>[-0.0020; +0.0010]</span><span class='icbar' style='--l:82.1%;--r:96.9%;--z:92.0%'></span></td><td>130</td><td class='sig-pos'><span class='v'>2.98</span><span class='ic'>[0.05; 5.92]</span><span class='icbar' style='--l:51.7%;--r:80.0%;--z:51.5%'></span></td><td><span class='v'>1.76</span><span class='ic'>[-7.26; 10.72]</span><span class='icbar' style='--l:43.7%;--r:83.7%;--z:59.9%'></span></td></tr><tr><td>H3R-0.1</td><td>283.37</td><td><span class='v'>0.82</span><span class='ic'>[-1.79; 3.44]</span><span class='icbar' style='--l:77.9%;--r:90.4%;--z:82.2%'></span></td><td><span class='v'>1.59</span><span class='ic'>[-1.80; 4.98]</span><span class='icbar' style='--l:65.2%;--r:96.8%;--z:73.6%'></span></td><td><span class='v'>-0.0008</span><span class='ic'>[-0.0023; +0.0006]</span><span class='icbar' style='--l:80.7%;--r:94.9%;--z:92.0%'></span></td><td>130</td><td class='sig-pos'><span class='v'>5.87</span><span class='ic'>[4.27; 7.47]</span><span class='icbar' style='--l:72.0%;--r:87.4%;--z:51.5%'></span></td><td><span class='v'>5.06</span><span class='ic'>[-2.15; 13.31]</span><span class='icbar' style='--l:55.1%;--r:89.5%;--z:59.9%'></span></td></tr><tr><td>H3L-0.25</td><td>283.00</td><td><span class='v'>1.32</span><span class='ic'>[-1.36; 4.00]</span><span class='icbar' style='--l:79.0%;--r:91.7%;--z:82.2%'></span></td><td><span class='v'>1.22</span><span class='ic'>[-1.59; 4.03]</span><span class='icbar' style='--l:66.2%;--r:92.4%;--z:73.6%'></span></td><td><span class='v'>+0.0004</span><span class='ic'>[-0.0008; +0.0016]</span><span class='icbar' style='--l:88.0%;--r:100.0%;--z:92.0%'></span></td><td>222</td><td class='sig-pos'><span class='v'>5.46</span><span class='ic'>[0.83; 10.08]</span><span class='icbar' style='--l:55.5%;--r:100.0%;--z:51.5%'></span></td><td class='sig-pos'><span class='v'>9.00</span><span class='ic'>[2.14; 16.83]</span><span class='icbar' style='--l:64.6%;--r:97.3%;--z:59.9%'></span></td></tr><tr><td>H3R-0.25</td><td>283.72</td><td><span class='v'>2.04</span><span class='ic'>[-0.81; 4.88]</span><span class='icbar' style='--l:80.3%;--r:93.8%;--z:82.2%'></span></td><td><span class='v'>1.95</span><span class='ic'>[-0.85; 4.74]</span><span class='icbar' style='--l:69.6%;--r:95.7%;--z:73.6%'></span></td><td><span class='v'>+0.0000</span><span class='ic'>[-0.0011; +0.0011]</span><span class='icbar' style='--l:86.5%;--r:97.6%;--z:92.0%'></span></td><td>225</td><td class='sig-pos'><span class='v'>5.32</span><span class='ic'>[2.93; 7.71]</span><span class='icbar' style='--l:65.6%;--r:88.6%;--z:51.5%'></span></td><td><span class='v'>6.65</span><span class='ic'>[-0.28; 14.19]</span><span class='icbar' style='--l:59.2%;--r:91.4%;--z:59.9%'></span></td></tr><tr><td>H3-0.25</td><td>283.20</td><td class='sig-pos'><span class='v'>4.73</span><span class='ic'>[2.48; 6.98]</span><span class='icbar' style='--l:88.1%;--r:98.8%;--z:82.2%'></span></td><td><span class='v'>1.42</span><span class='ic'>[-2.82; 5.67]</span><span class='icbar' style='--l:60.4%;--r:100.0%;--z:73.6%'></span></td><td><span class='v'>-0.0009</span><span class='ic'>[-0.0021; +0.0004]</span><span class='icbar' style='--l:81.5%;--r:94.0%;--z:92.0%'></span></td><td>229</td><td class='sig-pos'><span class='v'>6.15</span><span class='ic'>[3.95; 8.34]</span><span class='icbar' style='--l:70.5%;--r:91.6%;--z:51.5%'></span></td><td class='sig-pos'><span class='v'>8.85</span><span class='ic'>[1.87; 16.83]</span><span class='icbar' style='--l:64.0%;--r:97.3%;--z:59.9%'></span></td></tr><tr><td>H4F-0.05</td><td>283.19</td><td class='sig-pos'><span class='v'>4.18</span><span class='ic'>[1.11; 7.25]</span><span class='icbar' style='--l:84.8%;--r:99.4%;--z:82.2%'></span></td><td><span class='v'>1.41</span><span class='ic'>[-1.58; 4.40]</span><span class='icbar' style='--l:66.2%;--r:94.1%;--z:73.6%'></span></td><td><span class='v'>-0.0019</span><span class='ic'>[-0.0041; +0.0003]</span><span class='icbar' style='--l:71.9%;--r:93.5%;--z:92.0%'></span></td><td>80</td><td class='sig-pos'><span class='v'>4.63</span><span class='ic'>[0.77; 8.50]</span><span class='icbar' style='--l:55.2%;--r:92.4%;--z:51.5%'></span></td><td class='sig-pos'><span class='v'>9.29</span><span class='ic'>[1.53; 18.04]</span><span class='icbar' style='--l:63.3%;--r:100.0%;--z:59.9%'></span></td></tr><tr><td>H4H-0.1</td><td>270.37</td><td class='sig-neg'><span class='v'>-9.19</span><span class='ic'>[-12.06; -6.31]</span><span class='icbar' style='--l:53.5%;--r:67.2%;--z:82.2%'></span></td><td class='sig-neg'><span class='v'>-11.41</span><span class='ic'>[-15.80; -7.03]</span><span class='icbar' style='--l:0.0%;--r:40.9%;--z:73.6%'></span></td><td class='sig-neg'><span class='v'>-0.0045</span><span class='ic'>[-0.0062; -0.0028]</span><span class='icbar' style='--l:61.4%;--r:78.1%;--z:92.0%'></span></td><td>126</td><td class='sig-neg'><span class='v'>-5.68</span><span class='ic'>[-10.71; -0.65]</span><span class='icbar' style='--l:0.0%;--r:48.4%;--z:51.5%'></span></td><td><span class='v'>-8.72</span><span class='ic'>[-17.99; 0.44]</span><span class='icbar' style='--l:19.8%;--r:60.8%;--z:59.9%'></span></td></tr><tr><td>H4F-0.25</td><td>283.04</td><td><span class='v'>1.04</span><span class='ic'>[-2.02; 4.11]</span><span class='icbar' style='--l:77.4%;--r:92.0%;--z:82.2%'></span></td><td><span class='v'>1.26</span><span class='ic'>[-1.42; 3.94]</span><span class='icbar' style='--l:67.0%;--r:91.9%;--z:73.6%'></span></td><td><span class='v'>-0.0002</span><span class='ic'>[-0.0013; +0.0009]</span><span class='icbar' style='--l:85.5%;--r:96.6%;--z:92.0%'></span></td><td>210</td><td class='sig-pos'><span class='v'>4.91</span><span class='ic'>[2.09; 7.73]</span><span class='icbar' style='--l:61.6%;--r:88.7%;--z:51.5%'></span></td><td><span class='v'>2.39</span><span class='ic'>[-4.62; 10.01]</span><span class='icbar' style='--l:49.6%;--r:82.1%;--z:59.9%'></span></td></tr><tr><td>H4U-0.1</td><td>273.76</td><td class='sig-neg'><span class='v'>-7.70</span><span class='ic'>[-10.81; -4.59]</span><span class='icbar' style='--l:56.5%;--r:71.3%;--z:82.2%'></span></td><td class='sig-neg'><span class='v'>-8.02</span><span class='ic'>[-11.52; -4.53]</span><span class='icbar' style='--l:19.9%;--r:52.5%;--z:73.6%'></span></td><td class='sig-neg'><span class='v'>-0.0037</span><span class='ic'>[-0.0054; -0.0021]</span><span class='icbar' style='--l:65.2%;--r:81.8%;--z:92.0%'></span></td><td>293</td><td><span class='v'>3.95</span><span class='ic'>[-1.40; 9.29]</span><span class='icbar' style='--l:44.8%;--r:96.2%;--z:51.5%'></span></td><td><span class='v'>2.91</span><span class='ic'>[-7.54; 14.25]</span><span class='icbar' style='--l:43.1%;--r:91.6%;--z:59.9%'></span></td></tr><tr><td>H4O-0.5</td><td>280.44</td><td><span class='v'>-0.71</span><span class='ic'>[-3.83; 2.40]</span><span class='icbar' style='--l:73.1%;--r:87.9%;--z:82.2%'></span></td><td><span class='v'>-1.33</span><span class='ic'>[-4.27; 1.60]</span><span class='icbar' style='--l:53.7%;--r:81.0%;--z:73.6%'></span></td><td><span class='v'>+0.0004</span><span class='ic'>[-0.0007; +0.0015]</span><span class='icbar' style='--l:88.4%;--r:99.6%;--z:92.0%'></span></td><td>434</td><td class='sig-pos'><span class='v'>4.08</span><span class='ic'>[0.49; 7.67]</span><span class='icbar' style='--l:53.9%;--r:88.4%;--z:51.5%'></span></td><td><span class='v'>4.34</span><span class='ic'>[-3.79; 12.60]</span><span class='icbar' style='--l:51.4%;--r:87.9%;--z:59.9%'></span></td></tr></table><p class='nota'><sup>a</sup> sin réplicas de optimización: Δ, A y el veredicto salen de la réplica 0 (Δ apareado por semilla).</p><p class='nota'><sup>b</sup> no aplica: K &lt; 2, en el tiempo del control no entra un segundo modelo final de la variante.</p>
+
+</details>
+
+<!-- /generado:bloque-a -->
+
+- **H1, ninguna de las dos** ([H1](../h1/README.md)): `U0.5` *no pierde* y `U0.25` ya *pierde*; la frontera observada es
+  r = 0,5. La pérdida crece a medida que baja r.
+- **H2, refutada** ([H2](../h2/README.md)): con f = 0,1 pierde y con 0,5 y 0,25 casi no acelera (A ≤ 1,23). GOSS es
+  descriptiva y queda *indeterminado*.
+- **H3, confirmada también con réplicas** ([H3](../h3/README.md)): `H3-0.1` y `H3-0.25` no pierden con réplicas (cotas
+  inferiores −1,07 y −2,82 M$, contra −δ = −5,65 M$) y aceleran 7,76 y 4,38 veces. La réplica 0 sola movía Δ en los dos
+  sentidos: de 4,73 a 1,42 M$ con réplicas en `H3-0.25`, de 1,26 a 1,71 M$ en `H3-0.1`. El mecanismo (la muestra
+  regulariza o el control tuvo mala suerte) queda sin resolver. `H3-0.05` también se confirma (A = 10,56) y reescalar
+  `min_data_in_leaf` no cambia.
+- **Extensiones de H3** (secundarias): las cuatro no pierden contra el control. La raíz no mejora a no reescalar; le
+  gana a la lineal en r = 0,1 y no en r = 0,25; buscar sobre el 10 % de los clientes no cambia contra el 10 % de las
+  filas.
+- **H4, búsqueda informada: refutada** ([H4](../h4/README.md)). `H4H-0.1` y `H4U-0.1` *pierden* con réplicas (−11,41 y
+  −8,02 M$, con los IC enteros debajo de −δ). Elegir negativos difíciles en vez de uniformes no cambia.
+- **H4, fast-retrain: confirmada en las dos tasas.** `H4F-0.05` no pierde, acelera 12,50 veces (más que `H3-0.05`,
+  10,56) y a tiempo igual *gana*. `H4F-0.25` también cumple las tres condiciones.
+- **`H4O-0.5`, reoptimizar sobre el set del final** (respuesta a Zulip 211718): no pierde contra el control y no cambia
+  contra `H4F-0.05`, con A = 2,31 contra 12,50. Seguir el «siempre OP» en fast-retrain cuesta más de 5 veces el tiempo y
+  no suma ganancia medible.
+- `U0.25` y `H3-0.25` comparten el estudio de Optuna de la réplica 0, o sea los mismos hiperparámetros. `U0.25` pierde y
+  `H3-0.25` no, así que en H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una
+  muestra.
+- **Vale la pena** (no pierde y A ≥ 2): las ocho variantes de H3, las de fast-retrain (`H4F-0.05`, `H4F-0.25` y
+  `H4O-0.5`) y, en esta ronda, `U0.5` (A = 2,25). Ninguna de H2 (las que no pierden, `B0.25` y `B0.5`, tienen A < 2) ni de
+  la búsqueda informada de H4, que pierde. La predicción acertó con H3 y falló con `U0.25`.
+- **AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). Las variantes de H3 y `H4F-0.05` tienen ΔAUC
+  negativo con Δ de ganancia positivo: en `H3-0.1` la caída de AUC es distinguible de 0 y la ganancia no. En GOSS va al
+  revés. El AUC mide el orden de todos los clientes; G, solo los 3.300 de arriba. En H1, `B0.1` y la búsqueda informada
+  de H4 las dos bajan juntas.
+
+### Varianza entre réplicas y entre semillas
+
+<!-- generado:varianza -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+<table><tr><th>variante</th><th>réplicas</th><th>corridas</th><th>sd entre réplicas (M$)</th><th>sd entre semillas (M$)</th><th>varianza entre réplicas</th></tr><tr><td>C</td><td>8</td><td>160</td><td>2.78</td><td>4.53</td><td>25 %</td></tr><tr><td>H3-0.05</td><td>8</td><td>160</td><td>2.71</td><td>3.75</td><td>32 %</td></tr><tr><td>H3-0.1</td><td>8</td><td>160</td><td>2.38</td><td>3.94</td><td>24 %</td></tr><tr><td>H3-0.25</td><td>8</td><td>160</td><td>4.72</td><td>4.45</td><td>50 %</td></tr><tr><td>H3K-0.1</td><td>8</td><td>160</td><td>5.51</td><td>4.31</td><td>58 %</td></tr><tr><td>H3L-0.1</td><td>8</td><td>160</td><td>3.55</td><td>3.58</td><td>47 %</td></tr><tr><td>H3L-0.25</td><td>8</td><td>160</td><td>2.45</td><td>3.90</td><td>26 %</td></tr><tr><td>H3R-0.1</td><td>8</td><td>160</td><td>3.48</td><td>3.57</td><td>46 %</td></tr><tr><td>H3R-0.25</td><td>8</td><td>160</td><td>2.41</td><td>3.68</td><td>28 %</td></tr><tr><td>H4F-0.05</td><td>8</td><td>160</td><td>2.80</td><td>3.96</td><td>31 %</td></tr><tr><td>H4F-0.25</td><td>8</td><td>160</td><td>2.15</td><td>4.43</td><td>17 %</td></tr><tr><td>H4H-0.1</td><td>8</td><td>160</td><td>4.91</td><td>4.83</td><td>48 %</td></tr><tr><td>H4O-0.5</td><td>8</td><td>160</td><td>2.69</td><td>4.50</td><td>25 %</td></tr><tr><td>H4U-0.1</td><td>8</td><td>160</td><td>3.65</td><td>5.57</td><td>28 %</td></tr></table>
+
+
+![Cada punto es una semilla: la dispersión entre semillas llega a 35.2 M$ (U0.05)](figuras/semillas_replicas.svg)
+
+<!-- /generado:varianza -->
+
+**¿Alcanzan más semillas finales?** No, con un solo estudio de Optuna: entre el 24 % (`H3-0.1`) y el 58 % (`H3K-0.1`) de
+la varianza de G es suerte de la optimización (25 % en `C`), y esa parte no baja con más semillas finales. Pasar de 10 a
+20 semillas angostó el IC por semilla pero no el de réplicas (§ Rondas). Las cuentas están en [H3](../h3/README.md).
+
+### Diferencias entre variantes
+
+<!-- generado:diferencias -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+<table><tr><th>diferencia</th><th>Δ [IC entre réplicas] (M$)</th><th>réplicas</th><th>IC</th><th>veredicto</th></tr><tr><td>H3R-0.1 - H3-0.1</td><td><span class='v'>-0.12</span><span class='ic'>[-1.95; 1.71]</span><span class='icbar' style='--l:56.1%;--r:89.6%;--z:74.0%'></span></td><td>8</td><td>t, apareado</td><td><span class='pill '>no cambia</span></td></tr><tr><td>H3R-0.25 - H3L-0.25</td><td><span class='v'>0.72</span><span class='ic'>[-0.90; 2.35]</span><span class='icbar' style='--l:65.7%;--r:95.5%;--z:74.0%'></span></td><td>8</td><td>t, apareado</td><td><span class='pill '>no cambia</span></td></tr><tr><td>H3R-0.1 - H3L-0.1</td><td class='sig-pos'><span class='v'>1.45</span><span class='ic'>[0.65; 2.25]</span><span class='icbar' style='--l:79.9%;--r:94.7%;--z:74.0%'></span></td><td>8</td><td>t, apareado</td><td><span class='pill ok'>mejora</span></td></tr><tr><td>H3R-0.25 - H3-0.25</td><td><span class='v'>0.52</span><span class='ic'>[-1.59; 2.64]</span><span class='icbar' style='--l:59.4%;--r:98.2%;--z:74.0%'></span></td><td>8</td><td>t, apareado</td><td><span class='pill '>no cambia</span></td></tr><tr><td>H3K-0.1 - H3-0.1</td><td><span class='v'>-1.93</span><span class='ic'>[-6.68; 2.83]</span><span class='icbar' style='--l:12.6%;--r:100.0%;--z:74.0%'></span></td><td>8</td><td>Welch, sin aparear</td><td><span class='pill '>no cambia</span></td></tr><tr><td>H4H-0.1 - H4U-0.1</td><td><span class='v'>-3.39</span><span class='ic'>[-8.06; 1.28]</span><span class='icbar' style='--l:0.0%;--r:85.8%;--z:74.0%'></span></td><td>8</td><td>Welch, sin aparear</td><td><span class='pill '>no cambia</span></td></tr><tr><td>H4O-0.5 - H4F-0.05</td><td><span class='v'>-2.74</span><span class='ic'>[-5.69; 0.21]</span><span class='icbar' style='--l:21.8%;--r:75.9%;--z:74.0%'></span></td><td>8</td><td>Welch, sin aparear</td><td><span class='pill '>no cambia</span></td></tr></table>
+
+
+![](figuras/diferencias.svg)
+
+<!-- /generado:diferencias -->
+
+### Más figuras
+
+<!-- generado:figuras -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+![Δ contra la fracción de muestra: el punto más bajo es U0.05 (-30.1 M$), por debajo de −δ](figuras/fraccion.svg)
+
+
+
+![En el control la optimización es el 94 % de T (748 s de 797 s); la variante con la optimización más corta, U0.05, la baja a 67 s](figuras/desglose_tiempo.svg)
+
+
+
+![De 21 variantes: no pierden 14, pierden 6, indeterminadas 1, pendientes 0](figuras/grilla_veredictos.svg)
+
+<!-- /generado:figuras -->
+
+### Tablas completas
+
+<!-- generado:bloque-a-completo -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+<details markdown="1">
+<summary>Tablas completas del bloque A</summary>
+
+#### Bloque A: mismo protocolo
+
+Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 envíos; Ḡ_C (réplica 0) = 282.48 M$; Ḡ_C con réplicas = 281.78 M$ (R=8); ensamble de 20 semillas del control = 286.55 M$.
+
+Ḡ, T y A salen de la réplica 0 en las variantes sin réplicas; en las marcadas (R=n), Ḡ es la media entre réplicas, T la mediana entre réplicas y A = T_C / T con T_C también mediana entre réplicas, así que se comparan con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0.
+
+| variante | hipótesis | Ḡ (M$) | Δ réplica 0 [IC] (M$) | Δ con réplicas [IC] (M$) | ΔAUC en 201910 [IC] | T mediana (s) | A | tiempo igual, réplicas [IC t] (M$) | tiempo igual, bootstrap de clientes [IC] (M$) | veredicto (fuente) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| U0.05 | H1 | 252.34 | -30.14 [-34.56; -25.72] | — | -0.0176 [-0.0186; -0.0166] (réplica 0) | 70 | 11.45 | sin réplicas | -13.72 [-26.90; -0.92] | pierde (réplica 0) |
+| U0.1 | H1 | 266.20 | -16.28 [-19.83; -12.73] | — | -0.0103 [-0.0111; -0.0095] (réplica 0) | 81 | 9.89 | sin réplicas | -5.82 [-15.73; 3.85] | pierde (réplica 0) |
+| U0.25 | H1 | 272.91 | -9.57 [-12.65; -6.49] | — | -0.0055 [-0.0060; -0.0050] (réplica 0) | 164 | 4.87 | sin réplicas | -0.52 [-8.86; 7.54] | pierde (réplica 0) |
+| U0.5 | H1 | 281.11 | -1.38 [-3.99; 1.24] | — | -0.0019 [-0.0023; -0.0015] (réplica 0) | 354 | 2.25 | sin réplicas | 5.98 [-1.71; 13.53] | no pierde (réplica 0) |
+| B0.1 | H2 | 274.01 | -8.47 [-11.02; -5.92] | — | -0.0088 [-0.0094; -0.0083] (réplica 0) | 434 | 1.84 | sin réplicas | -2.34 [-11.66; 6.44] | pierde (réplica 0) |
+| B0.25 | H2 | 283.36 | 0.88 [-1.95; 3.71] | — | -0.0044 [-0.0047; -0.0041] (réplica 0) | 650 | 1.23 | sin réplicas | 3.72 [-6.00; 13.31] | no pierde (réplica 0) |
+| B0.5 | H2 | 281.55 | -0.94 [-3.62; 1.75] | — | -0.0012 [-0.0017; -0.0008] (réplica 0) | 1,011 | 0.79 | sin réplicas | no aplica (K<2) | no pierde (réplica 0) |
+| GOSS | H2 | 278.46 | -4.01 [-7.03; -1.00] | — | +0.0005 [+0.0003; +0.0008] (réplica 0) | 1,102 | 0.72 | sin réplicas | no aplica (K<2) | indeterminado (réplica 0) |
+| H3-0.05 | H3 | 283.86 (R=8) | 5.22 [2.96; 7.49] | 2.08 [-0.87; 5.02] (R=8) | -0.0020 [-0.0041; +0.0000] (R=8) | 95 | 10.56 | 4.77 [1.01; 8.53] (R=8) | 7.74 [0.06; 16.23] | no pierde (con réplicas (8)) |
+| H3K-0.1 | H3 | 281.57 (R=8) | 0.44 [-1.91; 2.79] | -0.21 [-5.05; 4.63] (R=8) | -0.0033 [-0.0050; -0.0017] (R=8) | 126 | 7.98 | 3.95 [-1.58; 9.47] (R=8) | 4.24 [-6.33; 15.40] | no pierde (con réplicas (8)) |
+| H3-0.1 | H3 | 283.49 (R=8) | 1.26 [-1.95; 4.48] | 1.71 [-1.07; 4.49] (R=8) | -0.0017 [-0.0030; -0.0003] (R=8) | 129 | 7.76 | 5.46 [2.93; 7.98] (R=8) | 6.04 [-2.37; 15.30] | no pierde (con réplicas (8)) |
+| H3L-0.1 | H3 | 281.92 (R=8) | -1.43 [-4.02; 1.16] | 0.14 [-3.30; 3.57] (R=8) | -0.0005 [-0.0020; +0.0010] (R=8) | 130 | 7.73 | 2.98 [0.05; 5.92] (R=8) | 1.76 [-7.26; 10.72] | no pierde (con réplicas (8)) |
+| H3R-0.1 | H3 | 283.37 (R=8) | 0.82 [-1.79; 3.44] | 1.59 [-1.80; 4.98] (R=8) | -0.0008 [-0.0023; +0.0006] (R=8) | 130 | 7.71 | 5.87 [4.27; 7.47] (R=8) | 5.06 [-2.15; 13.31] | no pierde (con réplicas (8)) |
+| H3L-0.25 | H3 | 283.00 (R=8) | 1.32 [-1.36; 4.00] | 1.22 [-1.59; 4.03] (R=8) | +0.0004 [-0.0008; +0.0016] (R=8) | 222 | 4.51 | 5.46 [0.83; 10.08] (R=8) | 9.00 [2.14; 16.83] | no pierde (con réplicas (8)) |
+| H3R-0.25 | H3 | 283.72 (R=8) | 2.04 [-0.81; 4.88] | 1.95 [-0.85; 4.74] (R=8) | +0.0000 [-0.0011; +0.0011] (R=8) | 225 | 4.46 | 5.32 [2.93; 7.71] (R=8) | 6.65 [-0.28; 14.19] | no pierde (con réplicas (8)) |
+| H3-0.25 | H3 | 283.20 (R=8) | 4.73 [2.48; 6.98] | 1.42 [-2.82; 5.67] (R=8) | -0.0009 [-0.0021; +0.0004] (R=8) | 229 | 4.38 | 6.15 [3.95; 8.34] (R=8) | 8.85 [1.87; 16.83] | no pierde (con réplicas (8)) |
+| H4F-0.05 | H4 | 283.19 (R=8) | 4.18 [1.11; 7.25] | 1.41 [-1.58; 4.40] (R=8) | -0.0019 [-0.0041; +0.0003] (R=8) | 80 | 12.50 | 4.63 [0.77; 8.50] (R=8) | 9.29 [1.53; 18.04] | no pierde (con réplicas (8)) |
+| H4H-0.1 | H4 | 270.37 (R=8) | -9.19 [-12.06; -6.31] | -11.41 [-15.80; -7.03] (R=8) | -0.0045 [-0.0062; -0.0028] (R=8) | 126 | 7.93 | -5.68 [-10.71; -0.65] (R=8) | -8.72 [-17.99; 0.44] | pierde (con réplicas (8)) |
+| H4F-0.25 | H4 | 283.04 (R=8) | 1.04 [-2.02; 4.11] | 1.26 [-1.42; 3.94] (R=8) | -0.0002 [-0.0013; +0.0009] (R=8) | 210 | 4.77 | 4.91 [2.09; 7.73] (R=8) | 2.39 [-4.62; 10.01] | no pierde (con réplicas (8)) |
+| H4U-0.1 | H4 | 273.76 (R=8) | -7.70 [-10.81; -4.59] | -8.02 [-11.52; -4.53] (R=8) | -0.0037 [-0.0054; -0.0021] (R=8) | 293 | 3.41 | 3.95 [-1.40; 9.29] (R=8) | 2.91 [-7.54; 14.25] | pierde (con réplicas (8)) |
+| H4O-0.5 | H4 | 280.44 (R=8) | -0.71 [-3.83; 2.40] | -1.33 [-4.27; 1.60] (R=8) | +0.0004 [-0.0007; +0.0015] (R=8) | 434 | 2.31 | 4.08 [0.49; 7.67] (R=8) | 4.34 [-3.79; 12.60] | no pierde (con réplicas (8)) |
+
+Notas:
+
+- `U0.05`: sin réplicas
+- `U0.1`: sin réplicas
+- `U0.25`: sin réplicas
+- `U0.5`: sin réplicas
+- `B0.1`: sin réplicas
+- `B0.25`: sin réplicas
+- `B0.5`: sin réplicas
+- `GOSS`: sin réplicas
+
+#### Varianza entre réplicas y entre semillas
+
+| variante | réplicas | corridas | sd entre réplicas (M$) | sd entre semillas (M$) | varianza entre réplicas |
+|---|---|---|---|---|---|
+| C | 8 | 160 | 2.78 | 4.53 | 25 % |
+| H3-0.05 | 8 | 160 | 2.71 | 3.75 | 32 % |
+| H3-0.1 | 8 | 160 | 2.38 | 3.94 | 24 % |
+| H3-0.25 | 8 | 160 | 4.72 | 4.45 | 50 % |
+| H3K-0.1 | 8 | 160 | 5.51 | 4.31 | 58 % |
+| H3L-0.1 | 8 | 160 | 3.55 | 3.58 | 47 % |
+| H3L-0.25 | 8 | 160 | 2.45 | 3.90 | 26 % |
+| H3R-0.1 | 8 | 160 | 3.48 | 3.57 | 46 % |
+| H3R-0.25 | 8 | 160 | 2.41 | 3.68 | 28 % |
+| H4F-0.05 | 8 | 160 | 2.80 | 3.96 | 31 % |
+| H4F-0.25 | 8 | 160 | 2.15 | 4.43 | 17 % |
+| H4H-0.1 | 8 | 160 | 4.91 | 4.83 | 48 % |
+| H4O-0.5 | 8 | 160 | 2.69 | 4.50 | 25 % |
+| H4U-0.1 | 8 | 160 | 3.65 | 5.57 | 28 % |
+
+#### Diferencias entre variantes
+
+| diferencia | Δ [IC entre réplicas] (M$) | réplicas | IC | veredicto |
+|---|---|---|---|---|
+| H3R-0.1 - H3-0.1 | -0.12 [-1.95; 1.71] | 8 | t, apareado | no cambia |
+| H3R-0.25 - H3L-0.25 | 0.72 [-0.90; 2.35] | 8 | t, apareado | no cambia |
+| H3R-0.1 - H3L-0.1 | 1.45 [0.65; 2.25] | 8 | t, apareado | mejora |
+| H3R-0.25 - H3-0.25 | 0.52 [-1.59; 2.64] | 8 | t, apareado | no cambia |
+| H3K-0.1 - H3-0.1 | -1.93 [-6.68; 2.83] | 8 | Welch, sin aparear | no cambia |
+| H4H-0.1 - H4U-0.1 | -3.39 [-8.06; 1.28] | 8 | Welch, sin aparear | no cambia |
+| H4O-0.5 - H4F-0.05 | -2.74 [-5.69; 0.21] | 8 | Welch, sin aparear | no cambia |
+
+</details>
+
+<!-- /generado:bloque-a-completo -->
+
+## A tiempo igual
+
+Cada variante gasta el tiempo que le sobra respecto del control en un ensamble de K semillas finales, K = ⌊(T(C) −
+T_opt) / T_final⌋ acotado a las semillas que hay, y se mide la ganancia en 201910 al corte N\* del promedio de sus
+probabilidades. Con réplicas, el IC es t entre réplicas; el bootstrap de clientes de 201910 mide el ruido del mes de test.
+
+<!-- generado:tiempo-igual -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+<p>Se le da a cada variante el tiempo del control: después de su optimización, el sobrante se gasta en K modelos finales con semillas distintas, K = ⌊(T(C) − T_opt) / T_final⌋, acotado a las 20 semillas que hay. T_final es la media de <code>tiempo_entrenamiento_s</code> de la variante y T_opt = T − T_final. Para K ≥ 2 se promedia fila a fila <code>prob</code> de las primeras K semillas (en el orden de <code>semillas_pedidas</code>) y se mide la ganancia en 201910 al corte N*. Se compara con Ḡ_C (un modelo del control, media de sus 10 semillas) y, como referencia, con el ensamble de las 20 semillas del control.</p><p>Ḡ_C = 282.48 M$; ensamble de 20 semillas del control = 286.55 M$.</p><table><tr><th>variante</th><th>T_opt (s)</th><th>T_final (s)</th><th>K</th><th>G del ensamble en 201910 (M$)</th><th>G − Ḡ_C (M$)</th><th>G − ensamble 20 de C (M$)</th></tr><tr><td>U0.5</td><td>328</td><td>25.9</td><td>18</td><td>288.75</td><td>6.27</td><td>2.20</td></tr><tr><td>U0.25</td><td>153</td><td>10.3</td><td>62 (se usan 20)</td><td>281.05</td><td>-1.43</td><td>-5.50</td></tr><tr><td>U0.1</td><td>77</td><td>3.7</td><td>194 (se usan 20)</td><td>276.65</td><td>-5.83</td><td>-9.90</td></tr><tr><td>U0.05</td><td>67</td><td>2.7</td><td>273 (se usan 20)</td><td>267.85</td><td>-14.63</td><td>-18.70</td></tr><tr><td>B0.5</td><td>973</td><td>37.6</td><td>0</td><td>no aplica (K &lt; 2)</td><td>no aplica (K &lt; 2)</td><td>no aplica (K &lt; 2)</td></tr><tr><td>B0.25</td><td>612</td><td>37.4</td><td>4</td><td>285.45</td><td>2.97</td><td>-1.10</td></tr><tr><td>B0.1</td><td>404</td><td>29.4</td><td>13</td><td>278.85</td><td>-3.63</td><td>-7.70</td></tr><tr><td>GOSS</td><td>1,059</td><td>43.0</td><td>0</td><td>no aplica (K &lt; 2)</td><td>no aplica (K &lt; 2)</td><td>no aplica (K &lt; 2)</td></tr><tr><td>H3-0.25</td><td>153</td><td>29.3</td><td>21 (se usan 20)</td><td>292.05</td><td>9.57</td><td>5.50</td></tr><tr><td>H3-0.1</td><td>77</td><td>22.2</td><td>32 (se usan 20)</td><td>288.75</td><td>6.27</td><td>2.20</td></tr><tr><td>H3-0.05</td><td>67</td><td>30.9</td><td>23 (se usan 20)</td><td>289.85</td><td>7.37</td><td>3.30</td></tr><tr><td>H3R-0.1</td><td>77</td><td>24.0</td><td>29 (se usan 20)</td><td>287.65</td><td>5.17</td><td>1.10</td></tr><tr><td>H3R-0.25</td><td>153</td><td>28.7</td><td>22 (se usan 20)</td><td>288.75</td><td>6.27</td><td>2.20</td></tr><tr><td>H3L-0.25</td><td>153</td><td>28.7</td><td>22 (se usan 20)</td><td>292.05</td><td>9.57</td><td>5.50</td></tr><tr><td>H3L-0.1</td><td>77</td><td>23.2</td><td>31 (se usan 20)</td><td>283.25</td><td>0.77</td><td>-3.30</td></tr><tr><td>H3K-0.1</td><td>227</td><td>70.0</td><td>8</td><td>285.45</td><td>2.97</td><td>-1.10</td></tr><tr><td>H4H-0.1</td><td>99</td><td>31.2</td><td>22 (se usan 20)</td><td>274.45</td><td>-8.03</td><td>-12.10</td></tr><tr><td>H4U-0.1</td><td>203</td><td>50.8</td><td>11</td><td>285.45</td><td>2.97</td><td>-1.10</td></tr><tr><td>H4F-0.05</td><td>67</td><td>17.4</td><td>42 (se usan 20)</td><td>292.05</td><td>9.57</td><td>5.50</td></tr><tr><td>H4F-0.25</td><td>153</td><td>17.1</td><td>37 (se usan 20)</td><td>284.35</td><td>1.87</td><td>-2.20</td></tr><tr><td>H4O-0.5</td><td>367</td><td>27.1</td><td>15</td><td>286.55</td><td>4.07</td><td>0.00</td></tr></table>
+
+
+![](figuras/tiempo_igual.svg)
+
+<!-- /generado:tiempo-igual -->
+
+Con réplicas, todas las H3 salvo `H3K-0.1` y las tres de fast-retrain quedan arriba del control; `H4U-0.1` tiene IC que
+contiene a 0 aunque pierda con réplicas, porque el ensamble suma ganancia por sí solo, y `H4H-0.1` queda abajo. El
+bootstrap de clientes da IC de unos ±8 M$ o más. Con 20 semillas ensamblar el control sí suma, así que la ventaja a
+tiempo igual es en buena parte ensamble. La predicción (a tiempo igual la variante rápida gana y H3 es la que más rinde)
+se cumple para las variantes que valen la pena, pero las que pierden a datos iguales no se rescatan ensamblando.
+
+## Rondas
+
+<!-- generado:rondas -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+![La mayor diferencia entre rondas es la de H4H-0.1: Δ cambia -5.9 M$](figuras/rondas.svg)
+
+
+Generado por `python scripts/comparar_rondas.py`; no editar a mano. Cada ronda se lee de su propio `apareado.csv` y `replicas.csv` (G, Δ y δ salen del control de esa ronda); T y A no se comparan entre rondas.
+
+- Ronda 201903-201906 (final con 4 meses, 10 semillas, N* de validación): δ = 5.52 M$.
+- Ronda 201903-201908 (final con 6 meses, 20 semillas, N* fijo): δ = 5.65 M$.
+
+Δ en M$ al corte N* de cada ronda, con IC 95%.
+
+| variante | Δ réplica 0 201903-201906 | veredicto | Δ con réplicas | veredicto | Δ réplica 0 201903-201908 | veredicto | Δ con réplicas | veredicto | ¿cambia el veredicto? |
+|---|---|---|---|---|---|---|---|---|---|
+| B0.1 | -7.81 [-12.27; -3.35] | pierde | — | — | -8.47 [-11.02; -5.92] | pierde | — | — | no |
+| B0.25 | 0.66 [-2.86; 4.18] | no pierde | — | — | 0.88 [-1.95; 3.71] | no pierde | — | — | no |
+| B0.5 | -0.11 [-4.46; 4.24] | no pierde | — | — | -0.94 [-3.62; 1.75] | no pierde | — | — | no |
+| C | pendiente | pendiente | — | — | pendiente | pendiente | — | — | pendiente |
+| GOSS | 0.55 [-2.60; 3.70] | no pierde | — | — | -4.01 [-7.03; -1.00] | indeterminado | — | — | sí |
+| H3-0.05 | 3.74 [1.77; 5.71] | gana | 1.87 [-1.02; 4.76] | no pierde | 5.22 [2.96; 7.49] | gana | 2.08 [-0.87; 5.02] | no pierde | no |
+| H3-0.1 | 4.07 [-0.27; 8.41] | no pierde | 2.30 [-0.88; 5.47] | no pierde | 1.26 [-1.95; 4.48] | no pierde | 1.71 [-1.07; 4.49] | no pierde | no |
+| H3-0.25 | 4.18 [-0.60; 8.96] | no pierde | 1.81 [-1.78; 5.41] | no pierde | 4.73 [2.48; 6.98] | gana | 1.42 [-2.82; 5.67] | no pierde | sí |
+| H3K-0.1 | 5.17 [1.48; 8.86] | gana | 1.28 [-3.42; 5.98] | no pierde | 0.44 [-1.91; 2.79] | no pierde | -0.21 [-5.05; 4.63] | no pierde | sí |
+| H3L-0.1 | -1.43 [-3.86; 1.00] | no pierde | -1.46 [-4.73; 1.81] | no pierde | -1.43 [-4.02; 1.16] | no pierde | 0.14 [-3.30; 3.57] | no pierde | no |
+| H3L-0.25 | 1.21 [-2.40; 4.82] | no pierde | 0.25 [-2.02; 2.51] | no pierde | 1.32 [-1.36; 4.00] | no pierde | 1.22 [-1.59; 4.03] | no pierde | no |
+| H3R-0.1 | 3.30 [0.65; 5.95] | gana | 1.76 [-1.21; 4.73] | no pierde | 0.82 [-1.79; 3.44] | no pierde | 1.59 [-1.80; 4.98] | no pierde | sí |
+| H3R-0.25 | 2.97 [-0.20; 6.14] | no pierde | 1.53 [-1.92; 4.97] | no pierde | 2.04 [-0.81; 4.88] | no pierde | 1.95 [-0.85; 4.74] | no pierde | no |
+| H4F-0.05 | 4.40 [-0.07; 8.87] | no pierde | 1.86 [-0.83; 4.54] | no pierde | 4.18 [1.11; 7.25] | gana | 1.41 [-1.58; 4.40] | no pierde | sí |
+| H4F-0.25 | 3.52 [-1.66; 8.70] | no pierde | 1.39 [-1.87; 4.65] | no pierde | 1.04 [-2.02; 4.11] | no pierde | 1.26 [-1.42; 3.94] | no pierde | no |
+| H4H-0.1 | -3.30 [-7.38; 0.78] | indeterminado | -8.61 [-12.78; -4.43] | pierde | -9.19 [-12.06; -6.31] | pierde | -11.41 [-15.80; -7.03] | pierde | sí |
+| H4U-0.1 | -2.42 [-7.11; 2.27] | indeterminado | -5.54 [-8.94; -2.14] | pierde | -7.70 [-10.81; -4.59] | pierde | -8.02 [-11.52; -4.53] | pierde | sí |
+| U0.05 | -33.77 [-39.84; -27.70] | pierde | — | — | -30.14 [-34.56; -25.72] | pierde | — | — | no |
+| U0.1 | -16.94 [-23.35; -10.53] | pierde | — | — | -16.28 [-19.83; -12.73] | pierde | — | — | no |
+| U0.25 | -6.38 [-11.21; -1.55] | pierde | — | — | -9.57 [-12.65; -6.49] | pierde | — | — | no |
+| U0.5 | -1.32 [-6.77; 4.13] | indeterminado | — | — | -1.38 [-3.99; 1.24] | no pierde | — | — | sí |
+
+<!-- /generado:rondas -->
+
+- **Veredictos estables: se confirma.** 0 cambios de lado. Cambian 8 veredictos, todos desde o hacia *indeterminado* o
+  entre *gana* y *no pierde* (por semilla); con réplicas no cambia ninguno.
+- **IC más angosto: se confirma.** La mediana de la razón de anchos del IC por semilla (ronda anterior / vigente) es
+  1,44, dentro de [1,2; 1,9].
+- **Con réplicas el ancho baja menos: se confirma.** La mediana de la razón con réplicas es 0,96: con 8 réplicas el IC
+  prácticamente no se angosta, porque la suerte de Optuna no depende de las semillas finales.
+- T y A no se comparan entre rondas: el final de seis meses es más largo y se midió en otras VMs.
+
+## Exploratorios
+
+Tres estudios con su propio protocolo, replicados en las VMs del experimento, motivaron las réplicas de Optuna, H4 y las
+extensiones de H3. Sus cifras no se comparan una a una con las de arriba; están en
+[Exploratorios](exploratorios/README.md).
+
+## Diseño
+
+Cada variante tiene su Optuna (40 trials, train 201903–201906, AUC en validación, 201908) y un final que entrena con
+201903–201908 y se evalúa en test (201910) con 20 semillas. Decide la ganancia al corte N\* = 3.300 envíos; el AUC va al
+lado. `C`, H3 y H4 tienen 8 réplicas de la optimización (otra semilla de Optuna y otra muestra). Las fases, el reparto por
+máquina y el costo están en [Corridas](corridas.md); los apartamientos del baseline, con su id, en
+[Control y reglas](../control/README.md).
+
+## Dependencias
+
+Lee los ledgers de todos los experimentos para la comparación conjunta:
+
+- `control`
+- `h1`
+- `h2`
+- `h3`
+- `h4`
+
+Una hipótesis nueva suma su línea acá: es la única que se toca fuera de su carpeta y de `comun/`.
+
+## Limitaciones comunes
+
+Las propias de cada hipótesis están en su página.
+
+!!! warning "Hiperparámetros de cuatro meses en un final de seis"
+    Se usan sin cambios, incluido `min_data_in_leaf`, que es absoluto y ahora se aplica sobre más filas. Reescalarlo
+    sería una variante nueva (la idea está en `H3R` y `H3L`).
+
+!!! warning "Test ya mirado"
+    H4 (salvo `H4O-0.5`) y las extensiones de H3 salen de un exploratorio que eligió y descartó estrategias mirando su
+    ganancia en 201910, y no hay otro mes de test (la consigna lo reserva para la comparación). Entraron todas juntas,
+    con reglas escritas antes de correr, y ninguna se eligió ni se descartó acá por 201910; aun así, esos resultados no
+    cuentan con un mes de test que no se haya mirado.
+
+!!! warning "Comparaciones múltiples"
+    Entre H4 y las extensiones de H3 hay más de diez contrastes sin corrección: con un 5 % de error por contraste, alguno
+    puede salir significativo por azar. Las conclusiones se apoyan en los contrastes principales; el resto es
+    secundario.
+
+!!! warning "Réplicas solo en parte de las variantes"
+    Solo `C`, H3 y H4 tienen réplicas de Optuna. Para `U*`, `B*` y GOSS, Δ sigue incluyendo la suerte de una sola
+    optimización; como pierden por mucho o no aceleran, no cambia la respuesta (`U0.5`, que vale la pena por poco, es la
+    excepción: su veredicto es de una sola búsqueda). Ocho réplicas alcanzan para decidir *no pierde*, pero no para
+    separar de 0 una ventaja de 1,42 a 2,08 M$.
+
+!!! warning "Evidencia no independiente"
+    `U0.25`/`H3-0.25` y `U0.1`/`H3-0.1` comparten el estudio de la réplica 0; `H3R`, `H3L` y H3 de la misma tasa comparten
+    todos, y `H4F-0.05`/`H4F-0.25` comparten los de `H3-0.05`/`H3-0.25`.
+
+!!! warning "Un mes, un año, una máquina"
+    Un solo año (2019) y un solo mes de test (201910): el bootstrap de clientes muestra que el ruido de ese mes es mayor
+    que el de las réplicas. A N\* fijo la ganancia se mueve en pasos de 1,1 M$, así que diferencias de uno o dos BAJA+2 no
+    se distinguen del ruido. El corte N\* sale de 201908: si la tasa de bajas de 201910 es distinta, todas las variantes
+    pagan igual. Los tiempos valen para `n2-highmem-8` (VMs distintas; T es la mediana entre réplicas), y en otra máquina
+    solo se trasladan las aceleraciones relativas. `num_iterations = 100` fijo y `force_col_wise`: T(C) no es el tiempo
+    del baseline con la configuración automática. La réplica del control (`C-rep`) se corrió en otra VM de la misma
+    cuenta.
+
+## Conclusiones
+
+El tradeoff vale la pena si lo que se achica es la **optimización**, no el entrenamiento del modelo final. Optimizar
+sobre el 5 %, 10 % o 25 % de las filas y entrenar con todas las de 201903–201908 no pierde contra el control, también
+cuando se mide la suerte de Optuna con 8 réplicas, y es de 4,38 a 10,56 veces más rápido. Entrenar el final con menos
+filas al azar pierde desde r = 0,25 (r = 0,5 no pierde y acelera 2,25 veces), y dentro de LightGBM pierde con f = 0,1.
+Por qué: la optimización es lo que domina T, y los hiperparámetros que elige Optuna sobre la muestra sirven para el
+total.
+
+Lo que las réplicas corrigen es el tamaño de la ventaja: con una sola optimización, H3 puede parecer que le gana al
+control o que empata, según la suerte del estudio; con 8 réplicas la diferencia queda entre 1,42 y 2,08 M$ y su IC
+contiene a 0. La respuesta práctica no cambia (H3 no pierde y acelera), pero no hay que venderla como una mejora de
+ganancia. Para comparar variantes con Optuna, más semillas finales no alcanzan: hay que repetir la optimización.
+
+Con los tres contrastes principales, fijados antes de correr H4:
+
+- **`H3-0.1` contra el control: no pierde** (1,71 M$ [−1,07; 4,49] con réplicas) y acelera 7,76 veces.
+- **`H4H-0.1` contra el control: pierde** (−11,41 M$ [−15,80; −7,03]). Achicar la búsqueda conservando todas las bajas y
+  recortando CONTINUA rinde peor que achicarla al azar, elijan como se elijan los negativos. La ventaja que reportaba el
+  exploratorio no se sostiene al repetir la búsqueda.
+- **`H4F-0.05` contra el control: no pierde** (1,41 M$ [−1,58; 4,40]), acelera 12,50 veces y **a tiempo igual gana**
+  (4,63 M$ [0,77; 8,50]). Achicar también el final, conservando todas las bajas y la mitad de CONTINUA con peso 2,
+  agrega velocidad sin perder; con el tiempo que sobra se ensamblan más semillas. Esta variante viene de una idea vista
+  en 201910, y reoptimizarla sobre su propio set (`H4O-0.5`) no la mejora.
+
+Con el final de seis meses y 20 semillas la respuesta es la misma que con cuatro meses y 10.
+
+## Qué sigue
+
+- Otro mes de test, para separar el ruido de 201910 del efecto de las variantes y para tener uno que no se haya mirado al
+  elegir H4 y las extensiones de H3.
+- Fast-retrain sobre otras búsquedas (por ejemplo, `H3-0.1`) y con otras fracciones de CONTINUA, con réplicas desde el
+  principio: la suerte de la optimización es del mismo orden que las diferencias entre variantes.
+
+## Bibliografía
+
+- Ke, G. et al. (2017). *LightGBM: A Highly Efficient Gradient Boosting Decision Tree*. NeurIPS 30. (GOSS)
+- Friedman, J. H. (2002). *Stochastic Gradient Boosting*. Computational Statistics & Data Analysis 38(4). (bagging por
+  iteración)
+- Akiba, T. et al. (2019). *Optuna: A Next-generation Hyperparameter Optimization Framework*. KDD.
+- Bergstra, J. et al. (2011). *Algorithms for Hyper-Parameter Optimization*. NeurIPS 24. (TPE)
+- Baseline oficial del experimento colaborativo, Zulip 208135 (28-oct-2026).

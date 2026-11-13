@@ -59,14 +59,14 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
 - [x] 3.2 `experimentos/control/README.md`: baseline, reglas (G, Δ, δ, T, A, N\*, veredictos), regla de veredicto como
   diagrama Mermaid, línea de tiempo de meses (train / validación 201908 / test 201910), apartamientos con sus ids de
   Zulip, bloque `estado`. Verificar que todo lo de `control/docs/{hipotesis,diseno}.md` tiene destino.
-- [ ] 3.3 `experimentos/h1/README.md` (Idea con diagrama del pipeline, Predicción con fecha y commit del
+- [x] 3.3 `experimentos/h1/README.md` (Idea con diagrama del pipeline, Predicción con fecha y commit del
   `hipotesis.md` original, Diseño, Dependencias, Resultado generado, Veredicto, Limitaciones). Verificar con
   `verificar_informe_h3.py --informe experimentos/h1/README.md`.
-- [ ] 3.4 `experimentos/h2/README.md`, igual que 3.3.
-- [ ] 3.5 `experimentos/h3/README.md`, igual que 3.3, con la dependencia de `h1` en Limitaciones.
-- [ ] 3.6 `experimentos/h4/README.md`, igual que 3.3, declarando en Predicción que las variantes salieron de mirar
+- [x] 3.4 `experimentos/h2/README.md`, igual que 3.3.
+- [x] 3.5 `experimentos/h3/README.md`, igual que 3.3, con la dependencia de `h1` en Limitaciones.
+- [x] 3.6 `experimentos/h4/README.md`, igual que 3.3, declarando en Predicción que las variantes salieron de mirar
   201910.
-- [ ] 3.7 `experimentos/sampling_1/README.md` (Resultados): pregunta, respuesta, comparación entre hipótesis, a tiempo
+- [x] 3.7 `experimentos/sampling_1/README.md` (Resultados): pregunta, respuesta, comparación entre hipótesis, a tiempo
   igual, limitaciones comunes, conclusiones y qué sigue, con los bloques de D4. Se funden `informe.md`,
   `tabla_resultados.md`, `decisiones.md`, `comparacion_rondas.md` y `docs/hipotesis.md`, y desaparece
   `sampling_1/informe/`. La tabla de rutas pasa a `docs/rutas.md` y el guion a `docs/guion.md`, con los nombres nuevos de

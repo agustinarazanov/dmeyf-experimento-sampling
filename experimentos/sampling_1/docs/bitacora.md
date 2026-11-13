@@ -1752,3 +1752,43 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - Verificado: copia de `plantilla/` como `experimentos/h9/` en una raíz temporal; `variantes.declaradas` lee
     `{'control'}` de su `## Dependencias` y `variantes.verificar` con una variante `X0.5` de `h9` no da problemas de `h9`
     (solo avisa que falta `sampling_1/`, que la copia mínima no trae).
+- 3.3–3.6 (README de h1–h4): destino de cada sección en la bitácora de cada hipótesis. Verificado juntas al tener el
+  bloque `bloque-a-completo` (3.7): `python -m scripts.verificar_informe_h3 --informe experimentos/hN/README.md` para
+  los cuatro da «623 números del texto, 0 sin fuente». Antes daba 41 sin fuente: eran constantes del diseño y de las
+  predicciones que ahora viven en el mismo README (40 trials, δ = 5,52 y Ḡ_C = 276,10 de la ronda anterior, recorte 8000,
+  cifras del exploratorio citadas en el origen de H4, …). Se sumaron a `CONSTANTES` de `scripts/verificar_informe_h3.py`,
+  cada grupo con su motivo; `tests/test_verificadores.py` pasa.
+- 3.7 `experimentos/sampling_1/README.md` (Resultados). Destino de cada sección vieja:
+  - `README.md` (correspondencia de rutas) → `docs/rutas.md`, con una tabla nueva para las rutas de `sitio-legible`.
+  - `docs/hipotesis.md` encabezado (lista de dónde está cada hipótesis) → descartado (D8: no abrir con dónde están otras
+    páginas); lo reemplaza la tabla de § Pregunta. § Pregunta → § Pregunta («pregunta del tutor», «baseline de Bolaños»
+    → «pregunta del experimento» con el id, «el baseline»). § H4 — propuesta original → descartada del sitio (no decide
+    nada; la nota de H4 › Diseño › Grilla › Fuera de la grilla la menciona y el texto queda en `2f05cae`). § Respuesta a
+    la pregunta del tutor (vale la pena, tiempo igual, contrastes principales) → § Predicción. § Limitaciones previstas
+    → § Limitaciones comunes (las que siguen vigentes; «con 10 semillas no se separan diferencias menores que δ» y
+    «aparear por semilla ayuda poco» se descartan: la ronda vigente tiene 20 semillas y réplicas, y el IC lo dice).
+  - `informe/informe.md` encabezado → descartado. § Hipótesis → § Pregunta (tabla de hipótesis) y § Predicción. § Diseño
+    → § Diseño (corto; fases y costo en `corridas.md`, apartamientos en `control/README.md`). § Resultados y bloque A →
+    bloques `mapa`, `bloque-a`, `varianza`, `diferencias`, `figuras` y `bloque-a-completo`. § Lectura del bloque A →
+    viñetas de § Comparación entre hipótesis, más cortas (el detalle de cada regla está en cada hipótesis) y «¿alcanzan
+    más semillas?» bajo la varianza. «A tiempo igual» → § A tiempo igual (bloque `tiempo-igual` y lectura).
+  - `informe/informe.md` § Bloque B y § Lectura del bloque B → `exploratorios/README.md` (tarea 3.8); acá queda
+    § Exploratorios con un párrafo y el enlace. § Tabla de rondas → bloque `rondas` (escrito por
+    `python -m scripts.comparar_rondas`) y las viñetas de lectura. § Limitaciones → § Limitaciones comunes (las propias de
+    cada hipótesis ya están en su README). § Conclusiones y § Qué sigue → iguales, sin nombres. § Bibliografía → igual,
+    sin «para postear en Zulip» y con «Baseline oficial del experimento colaborativo» en vez del nombre.
+  - `informe/tabla_resultados.md` → bloque `bloque-a-completo` (21 filas del bloque A idénticas a
+    `git show HEAD:…/tabla_resultados.md`, y todas sus filas de tabla están en el bloque nuevo). Su bloque B →
+    `exploratorios/README.md`.
+  - `informe/decisiones.md` (veredictos de la ronda 201903–201906 por línea de `apareado_previo.csv` y el tiempo igual
+    sin réplicas de entonces) → descartado del sitio: la ronda anterior está en el bloque `rondas` y el tiempo igual
+    vigente en su bloque. El archivo queda en el historial (`git show 4b17350:experimentos/sampling_1/informe/decisiones.md`).
+  - `informe/comparacion_rondas.md` → bloque `rondas`. `informe/reporte.html` → los bloques. `informe/figuras/*.png`
+    (nombres viejos: `bandas_*`, `tiempo_vs_ganancia`, `varianza`, `replicas`) → borrados; las figuras son los SVG de
+    `figuras/` y los PNG se generan con `--figuras`.
+  - `informe/guion.md` → `docs/guion.md`, con los nombres nuevos de las figuras (`tradeoff.png`,
+    `curva_diferencia_H1.png`, `semillas_replicas.png`, `rondas.png`, `grilla_veredictos.png`, …).
+  - README raíz: solo los enlaces a los archivos borrados pasan a los README nuevos (se reescribe en 3.10).
+- Verificado: `python -m scripts.verificar_readme` «todos los números están en el bloque bloque-a-completo y todos los
+  enlaces existen». `scripts/sitio.sh`: en Resultados solo fallan los enlaces a `corridas.md` y `exploratorios/README.md`
+  (3.8); `index.md` y el README raíz siguen con nombres hasta 3.9 y 3.10.

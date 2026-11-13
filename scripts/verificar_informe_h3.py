@@ -43,6 +43,14 @@ GENERADO = re.compile(r"<!-- generado:([\w-]+) -->.*?<!-- /generado:\1 -->", re.
 # mensajes de Zulip de los apartamientos (211210 ventana, 211718 reoptimizar)
 CONSTANTES = [3300, 8, 0, 7, 10, 50, 80, 95, 2019, 201908, 201910, 5, 25, 0.05, 0.1, 0.25, 208135,
               20, 201903, 201905, 201906, 211210, 211718]
+# desde `sitio-legible` 3.3–3.6 las predicciones y el diseño están en el mismo README: 40 trials, 100 iteraciones,
+# learning_rate 0,01 (GOSS) y 0,08 (sonda), 30 % de filas de GOSS y 30 % más de costo con 10 réplicas, δ = 0,02 · Ḡ_C,
+# δ y Ḡ_C de la ronda 201903–201906 fijados en la regla de réplicas (5,52 y 276,10), semiamplitud ±5,8 con 5 réplicas,
+# recorte 8000 de `min_data_in_leaf`, pozo del 35 %, presupuesto de 900 s, celdas y finales de la grilla (64, 1.280, 800),
+# el IC de `H4F-0.05` de la ronda anterior citado en la predicción de `H4O-0.5` y las cifras de 201910 del exploratorio
+# `validacion_50_semillas` que cita el origen de H4 (+7,19, −2,31, 283,25 y 276,65 M$)
+CONSTANTES += [40, 100, 0.01, 0.08, 30, 0.02, 5.52, 276.10, 5.8, 8000, 35, 900, 64, 1280, 800, -0.83, 4.54,
+               7.19, -2.31, 283.25, 276.65]
 
 NUM_TABLA = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 NUM_TEXTO = re.compile(r"(?<![\w.,@−-])[−-]?\d+(?:\.\d{3})*(?:,\d+)?(?![\w@])")
