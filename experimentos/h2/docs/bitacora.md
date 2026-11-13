@@ -25,3 +25,25 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Lo que sigue diciendo «brazo»: la historia de git (los commits anteriores) y el tag `corridas-v1`.
 - Un clon anterior al renombre no consolida: `comun/ledger.py` rechaza una cabecera `brazo` nombrando el archivo. Hay que
   actualizar el clon y volver a bajar el ledger del bucket renombrado.
+
+### 2026-11-13 — `docs/hipotesis.md`, `docs/diseno.md` e `informe/` fundidos en `README.md` (sitio-legible 3.4)
+
+- Sesión: aplicar del grupo 3 de `sitio-legible`, headless, Opus. Etapa: informe.
+- Destino de cada sección vieja:
+  - `hipotesis.md` encabezado → callout de § Predicción con fecha y commit (`2f05cae` 1-nov; `7c34254` 3-nov).
+  - `hipotesis.md` § H2 → línea de apertura, § Idea (mecanismo de `bagging_fraction`, adaptación del espacio, GOSS) y
+    § Predicción (todas las viñetas, sin cambios en las reglas; «curva tiempo-ganancia» → «mapa del tradeoff», que es la
+    figura nueva).
+  - `hipotesis.md` § Limitaciones previstas (GOSS y `learning_rate`) → § Limitaciones, primer callout.
+  - `diseno.md` encabezado → una línea en § Diseño que remite al control. § Variantes → § Diseño › Variantes (tabla con
+    menos columnas; r = 1 en el párrafo). § Grilla y › Ronda 201903–201908 → § Diseño › Grilla y › Rondas.
+  - `diseno.md` § Fuera de la grilla («respuesta del tutor sobre H2») → § Diseño › Grilla, «si la devolución del curso
+    pide…» (D8).
+  - `diseno.md` § Dependencias → igual.
+  - `informe.md` encabezado y § Hipótesis → descartado / línea de apertura. Párrafo de la ronda → § Diseño › Rondas y
+    el bloque generado. § Resultados (tabla) → bloque `resultado`; viñetas → § Veredicto. § Conclusión → último párrafo
+    del veredicto.
+  - `informe.md` § Limitaciones: GOSS descriptivo, adaptación de `B*` y una semilla de Optuna → § Limitaciones;
+    hiperparámetros de cuatro meses y un solo año/mes/máquina → Limitaciones comunes de Resultados.
+  - `informe/reporte.html` y `bandas_H2.png` → bloque `resultado` y `figuras/` (curva de diferencia).
+- Nuevo: diagrama del pipeline que marca dónde muestrea (dentro de cada árbol, con train y `Dataset` completos).
