@@ -39,7 +39,8 @@ Bash($DIR/scripts/lanzar_fase.sh:*),Bash(bash $DIR/scripts/lanzar_fase.sh:*),Bas
 Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*),\
 Bash(git grep:*),Bash(shasum:*),Bash(sha256sum:*),Bash(gsutil rsync:*),Bash(gsutil cp:*),Bash(gsutil -m rsync:*),Bash(gsutil -m cp:*),Bash(gsutil -q -m rsync:*),Bash(gsutil -q cp:*),Bash(gcloud compute regions describe:*),\
 Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/vm.sh:*),\
-Bash(scripts/sitio.sh:*),Bash(bash scripts/sitio.sh:*),Bash(mkdocs build:*),Bash(git show:*),Bash(cp:*),Bash(mktemp:*),Bash(diff:*)"
+Bash(scripts/sitio.sh:*),Bash(bash scripts/sitio.sh:*),Bash(mkdocs build:*),Bash(git show:*),Bash(cp:*),Bash(mktemp:*),Bash(diff:*),\
+Bash(sed:*),Bash(git check-ignore:*),Bash(git restore --staged:*),Bash(pip list:*),Bash(pip show:*),Bash(sort:*),Bash(uniq:*)"
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
     claude -p "$4" --model "$1" --permission-mode acceptEdits --max-budget-usd "$2" \
@@ -99,6 +100,8 @@ tareas dependen de sus resultados, no bloquees ni marques: escribí EN_CURSO y q
 el loop espera a que las VMs terminen y vuelve a correr este grupo, y entonces consolidás, verificás y marcás. \
 Si los resultados ya están (ledger/corridas con filas, sin vm.sh corriendo: pgrep -f vm.sh), consolidá y marcá. Commiteá al cerrar cada tarea (sin Co-Authored-By). No hagas push y no cambies el diseño. \
 No publiques en Zulip ni mandes mensajes fuera del repo. \
+Un comando fuera de la lista permitida no falla enseguida: la sesión queda parada unos 2 minutos y después se deniega. \
+No escribas en /tmp ni fuera del repo y de $DATOS (los archivos temporales, en una carpeta ignorada del repo o en $DATOS), y no leas archivos de fuera del repo. \
 Si una tarea necesita algo que no podés hacer (una decisión de diseño), escribí BLOQUEADO y el motivo en $BLOQUEO y terminá. $INDICACIONES" || RC=$?
 registrar "$J_APLICAR" "$GRUPO" aplicar "$RC"
 if [ -f "$BLOQUEO" ]; then echo "== BLOQUEADO:"; cat "$BLOQUEO"; exit 2; fi
