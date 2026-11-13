@@ -93,11 +93,13 @@ class Contexto:
 
 # --- datos ---
 
-def _absolutas(fin: pd.DataFrame, base: Path) -> pd.DataFrame:
-    """Rutas de curvas y predicciones absolutas, para mezclar finales de varios ledgers y leerlas igual."""
+def _absolutas(fin: pd.DataFrame, exp: str) -> pd.DataFrame:
+    """Rutas de curvas y predicciones absolutas, para mezclar finales de varios ledgers y leerlas igual. Las predicciones
+    se buscan en `DATOS_DIR` y, si no están, en el repo (D18)."""
     fin = fin.copy()
     for col in [c for c in fin.columns if c.startswith(("curva_", "predicciones_"))]:
-        fin[col] = fin[col].map(lambda r: str(base / r) if isinstance(r, str) else r)
+        ruta = rutas.prediccion if col.startswith("predicciones_") else lambda e, r: rutas.ledger(e) / r
+        fin[col] = fin[col].map(lambda r: str(ruta(exp, r)) if isinstance(r, str) else r)
     return fin
 
 
@@ -114,7 +116,7 @@ def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
         f = rutas.ledger(e) / "resultados.csv"
         if f.exists():
             r = lg.leer_csv(f)
-            finales.append(_absolutas(_ronda(r), rutas.ledger(e)))
+            finales.append(_absolutas(_ronda(r), e))
     fin = pd.concat(finales, ignore_index=True) if finales else pd.DataFrame(columns=["variante"])
     if "replica_opt" in fin:  # lo de siempre es la réplica 0; las demás las lee `cargar_replicas`
         fin = fin[lg.con_replica(fin)["replica_opt"] == 0]
@@ -131,7 +133,7 @@ def cargar_replicas(exps: list[str], n_est: int) -> tuple[pd.DataFrame, pd.DataF
         led = rutas.ledger(e)
         if (led / "resultados.csv").exists():
             r = lg.leer_csv(led / "resultados.csv")
-            finales.append(_absolutas(_ronda(r), led))
+            finales.append(_absolutas(_ronda(r), e))
         if (led / "estudios.csv").exists():
             estudios.append(lg.leer_csv(led / "estudios.csv"))
         if (led / "replicas.csv").exists():

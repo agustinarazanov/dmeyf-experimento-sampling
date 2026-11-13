@@ -25,10 +25,14 @@
 # `experimentos/<exp>/ledger/` contra `$BUCKET/experimentos/<exp>/ledger/` (el `$BUCKET/ledger/` anterior a la separación
 # no se toca). Una VM nueva baja del bucket el panel, los SQLite de Optuna y los ledgers si existen, así que relanzar la
 # misma lista retoma.
+# Las predicciones de test (`ledger/predicciones/`, ~10 GB) no viven en el repo (D18, el repo está en iCloud): viajan por
+# el mismo bucket (`$BUCKET/experimentos/<exp>/ledger/predicciones/`) pero acá y en la VM están en
+# `$DATOS_DIR/ledger/<exp>/predicciones/`.
 # `--en-seco`: imprime los comandos y los destinos y sale antes de cualquier gcloud o gsutil (no crea nada).
 set -euo pipefail
 cd "$(dirname "$0")/.."                # raíz del repo
 [ -f .env ] && { set -a; . ./.env; set +a; }   # PROYECTO y BUCKET pueden venir de .env
+DATOS=${DATOS_DIR:-$HOME/datos/experimentos-dmeyf}   # fuera del repo: panel, Optuna y predicciones de test (D18)
 LISTA=${1:?uso: vm.sh configuraciones.txt [--filas N] [--en-seco]}
 shift || true
 EN_SECO=""; EXTRA=""                    # EXTRA: p. ej. --filas 20000 (smoke de la propia VM)
@@ -61,12 +65,14 @@ export DATOS_DIR=\${DATOS_DIR:-\$HOME/datos}; mkdir -p \$DATOS_DIR/optuna
 gsutil -q cp "$BUCKET/panel_2019.parquet" \$DATOS_DIR/ 2>/dev/null || true
 gsutil -q -m cp "$BUCKET/optuna/*.db" \$DATOS_DIR/optuna/ 2>/dev/null || true
 for e in \$(ls experimentos | grep -v ' '); do
-  mkdir -p experimentos/\$e/ledger
-  gsutil -q -m rsync -r -x '^sesiones/|^[^/]*\.csv$' "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
+  mkdir -p experimentos/\$e/ledger \$DATOS_DIR/ledger/\$e/predicciones
+  gsutil -q -m rsync -r -x '^(sesiones|predicciones)/|^[^/]*\.csv$' "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
+  gsutil -q -m rsync -r "$BUCKET/experimentos/\$e/ledger/predicciones/" \$DATOS_DIR/ledger/\$e/predicciones/ 2>/dev/null || true
 done
 subir() {
   for e in \$(ls experimentos | grep -v ' '); do
-    gsutil -q -m rsync -r -x '^(exploracion|sesiones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
+    gsutil -q -m rsync -r -x '^(exploracion|sesiones|predicciones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
+    gsutil -q -m rsync -r \$DATOS_DIR/ledger/\$e/predicciones/"$BUCKET/experimentos/\$e/ledger/predicciones/"
   done
 }
 while read -r metodo tasa semilla etapa variante replica; do
@@ -100,6 +106,7 @@ if [ -n "$EN_SECO" ]; then
   echo "destinos de los ledgers (VM -> bucket -> acá):"
   for e in $EXPERIMENTOS; do
     echo "  experimentos/$e/ledger/  ->  $BUCKET/experimentos/$e/ledger/  ->  experimentos/$e/ledger/"
+    echo "  predicciones: \$DATOS_DIR/ledger/$e/predicciones/ (VM)  ->  $BUCKET/experimentos/$e/ledger/predicciones/  ->  $DATOS/ledger/$e/predicciones/"
   done
   echo "otros destinos: panel $BUCKET/panel_2019.parquet, Optuna $BUCKET/optuna/ (el $BUCKET/ledger/ viejo no se toca)"
   echo "-- script remoto (/tmp/remoto-$COMMIT.sh) --"
@@ -175,8 +182,9 @@ echo "== estado: $ESTADO"
 echo "== trayendo los ledgers"
 tomar_candado
 for e in $EXPERIMENTOS; do
-  mkdir -p "experimentos/$e/ledger"
-  gsutil -q -m rsync -r -x '^sesiones/|^[^/]*\.csv$' "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
+  mkdir -p "experimentos/$e/ledger" "$DATOS/ledger/$e/predicciones"
+  gsutil -q -m rsync -r -x '^(sesiones|predicciones)/|^[^/]*\.csv$' "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
+  gsutil -q -m rsync -r "$BUCKET/experimentos/$e/ledger/predicciones/" "$DATOS/ledger/$e/predicciones/" || true
 done
 # Lo que el bucket no alcanzó a recibir: los ledgers de la VM, sin exploración. Con DONE la VM ya subió todo y una VM
 # perdida no responde, así que solo se intenta con FALLO; no pisa nada de lo que vino del bucket.

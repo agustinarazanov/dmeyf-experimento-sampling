@@ -131,7 +131,8 @@ class Contexto:
         self.metodo = metodos.metodo_optimizacion(a.metodo) if a.etapa == "optimizar" else a.metodo
         self.estudio = variantes.nombre_estudio(metodos.estudio(a.metodo, a.tasa), self.replica)
         self.variante = a.variante or metodos.variante(self.metodo, a.tasa)
-        self.raiz = rutas.ledger(variantes.dueno_variante(self.variante, self.replica))  # ledger del dueño de la variante: filas, curvas, predicciones
+        self.dueno = variantes.dueno_variante(self.variante, self.replica)
+        self.raiz = rutas.ledger(self.dueno)  # ledger del dueño de la variante: filas y curvas
         self.base = self.raiz / "exploracion" if self.explora else self.raiz
         ledger_estudio = rutas.ledger(variantes.dueno_estudio(self.estudio))  # ledger del dueño del estudio: hp
         self.base_hp = ledger_estudio / "exploracion" if self.explora else ledger_estudio
@@ -305,11 +306,12 @@ def final(cx: Contexto) -> None:
         r_te = f"{cx.rel}curvas/{id_}_{bl.MES_TEST}.csv"
         curva_te.to_csv(cx.raiz / r_te, index=False)
         # D12: predicciones de test en el orden del mes, para ensamblar semillas en la comparación a tiempo igual
-        (cx.base / "predicciones").mkdir(parents=True, exist_ok=True)
+        # van a DATOS_DIR, fuera del repo (D18); el ledger guarda la misma ruta relativa de siempre
         r_pred = f"{cx.rel}predicciones/{id_}.parquet"
+        (rutas.ledger_datos(cx.dueno) / r_pred).parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame({
             dt.ID: test[dt.ID].to_numpy().astype(np.int64), "prob": p_te.astype(np.float32), dt.BAJA2: b2_te.astype(np.int8),
-        }).to_parquet(cx.raiz / r_pred, index=False)
+        }).to_parquet(rutas.ledger_datos(cx.dueno) / r_pred, index=False)
         envios, g_max = gn.ganancia_maxima(curva_te)
         lg.escribir_fila(cx.base / "corridas", cx.fila(
             id=id_, semilla=semilla, etapa_corrida="final", meses_final=ventana(bl.MESES_TRAIN_FINAL), hp=json.dumps(hp),

@@ -90,7 +90,7 @@
 - [x] 1.13 Primera pestaña del bloque A de Resultados: «Lo mejor de cada hipótesis» en lugar de «Valen la pena» (D16).
   Verificar con `python -m scripts.medir_sitio --pagina experimentos/sampling_1/` sin problemas y con los dos
   verificadores.
-- [ ] 1.14 Predicciones fuera del repo (D18), solo código:
+- [x] 1.14 Predicciones fuera del repo (D18), solo código:
   - `comun/correr.py` escribe las predicciones nuevas en `DATOS_DIR/ledger/<exp>/predicciones/`;
   - la ruta del ledger (`predicciones_201910`) no cambia: una función de `comun/rutas.py` la resuelve, primero en
     `DATOS_DIR` y, si no está, en la ruta vieja del repo;
