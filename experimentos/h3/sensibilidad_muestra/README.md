@@ -30,6 +30,8 @@ ajustes de Control, están en `resumen.json`.
   por carga de la máquina: la configuración 1 de la semilla 20261111 tardó 616 s, contra unos 16 s de las otras.
   Medido por muestra, el ahorro va de 33 % a 76 %.
 
+  **Alcance de la medición.** El ahorro del 69 % corresponde al tiempo de búsqueda de hiperparámetros. Para evaluar el modelo final de cada muestra H3, reutilizamos el ajuste de Control de la configuración elegida, que ya estaba entrenado con todo el conjunto de entrenamiento. La columna `tiempo_ajuste_completo_reutilizado_s` registra la duración de ese ajuste original. La corrida midió el ahorro en la búsqueda y dejó pendiente medir el tiempo total de H3 con un reentrenamiento final propio.
+
 ### 08 — ganancia en 201910 con 3.300 envíos (`resultados/08_ganancia_por_*.csv`)
 
 | Config. | Rol | Ganancia | BAJA+2 | BAJA+1 | CONTINUA |
