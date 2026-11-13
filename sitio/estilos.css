@@ -8,10 +8,19 @@
 .md-typeset > ul,
 .md-typeset > ol,
 .md-typeset > blockquote,
-.md-typeset > dl,
-.md-typeset .admonition > p:not(.admonition-title) { max-width: 75ch; }
+.md-typeset > dl { max-width: 75ch; }
+
+/* Los recuadros (Respuesta, Predicción, Veredicto, Limitación) solo llevan texto: el tope va en el recuadro, no en sus
+   párrafos, para que no quede más ancho que su contenido. */
+.md-typeset .admonition { max-width: calc(89ch + 1.6rem); }  /* su letra es 0,8 de la del texto: 89ch ≈ 75ch del texto */
 
 .md-typeset img { max-width: 100%; }
+
+/* En escritorio el nombre del sitio ya está en la barra superior: no se repite arriba de la barra lateral. En el
+   teléfono queda, porque es la cabecera del menú desplegable. */
+@media screen and (min-width: 76.25em) {
+  .md-nav--primary > .md-nav__title { display: none; }
+}
 
 /* Figuras generadas (una imagen sola en su párrafo): el párrafo no lleva el tope de 75ch; en pantallas angostas la
    figura no baja de 40rem, para que el texto se lea, y se desplaza dentro de su recuadro, como las tablas. */

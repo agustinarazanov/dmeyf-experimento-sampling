@@ -8,9 +8,11 @@ Optuna), cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) 
     filas no pierde contra el control y es varias veces más rápido. Achicar el final al azar sí pierde; conservando todas
     las bajas y la mitad de CONTINUA con peso, no.
 
-[Ver los resultados](experimentos/sampling_1/README.md){ .md-button .md-button--primary }
+## Resultados
 
 ![Mapa del tradeoff: cada variante con su aceleración y su diferencia de ganancia contra el control](experimentos/sampling_1/figuras/tradeoff.svg)
+
+[Ver los resultados](experimentos/sampling_1/README.md){ .md-button .md-button--primary }
 
 ## Hipótesis
 

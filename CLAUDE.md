@@ -4,7 +4,7 @@ Repo de experimentos de DMEyF 2026: **una carpeta por experimento** en `experime
 idea, predicción, diseño, dependencias, resultado generado, veredicto y limitaciones; `figuras/`, `docs/bitacora.md`,
 `ledger/`, y `src/` o `scripts/` si hacen falta), lo compartido en `comun/`, `plantilla/` para empezar uno nuevo, `docs/`
 con el método (`metodo.md`) y las listas de revisión (`revision.md`). El sitio (MkDocs Material, `mkdocs.yml`,
-`scripts/sitio.sh`) publica solo los README de los experimentos, `index.md`, `sitio/{hipotesis,como-medimos}.md`,
+`scripts/sitio.sh`) publica solo los README de los experimentos, `index.md`, `sitio/{hipotesis,como-medimos}/README.md`,
 `experimentos/sampling_1/{corridas.md,exploratorios/README.md}` y `docs/metodo.md`; lo demás se enlaza en GitHub. Las páginas publicadas y el
 README raíz son impersonales: sin nombres de docentes ni integrantes («el baseline», «la pregunta del experimento», ids de Zulip);
 `scripts/sitio.sh` lo verifica.

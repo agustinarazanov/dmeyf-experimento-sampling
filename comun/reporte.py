@@ -7,7 +7,7 @@ En cada README, `<!-- generado:NOMBRE -->` … `<!-- /generado:NOMBRE -->` delim
 del archivo no se toca (sitio-legible D4). Si falta un marcador, falla nombrando archivo y marcador antes de escribir
 nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `bloque-a`,
 `bloque-a-completo`, `varianza`, `diferencias`, `tiempo-igual`, `figuras` (y `rondas`, de `scripts/comparar_rondas.py`);
-`sampling_1/exploratorios/README.md` → `bloque-b`; `index.md` y `sitio/hipotesis.md` → `tarjetas`. Las figuras salen como
+`sampling_1/exploratorios/README.md` → `bloque-b`; `index.md` y `sitio/hipotesis/README.md` → `tarjetas`. Las figuras salen como
 SVG en `experimentos/<exp>/figuras/` (con `--figuras` también PNG a 200 dpi para el video).
 
 Un archivo sin ningún marcador se omite y `main` lo avisa. Las variantes sin datos salen como pendientes; ningún número
@@ -1387,7 +1387,7 @@ def destinos(exp: str) -> list[tuple[Path, object]]:
         return [(base / "README.md", bloques_control)]
     if exp == reg.AGREGADOR:
         return [(base / "README.md", bloques_sampling), (base / "exploratorios" / "README.md", bloques_exploratorios),
-                (rutas.RAIZ / "index.md", bloques_tarjetas("")), (rutas.RAIZ / "sitio" / "hipotesis.md", bloques_tarjetas("../"))]
+                (rutas.RAIZ / "index.md", bloques_tarjetas("")), (rutas.RAIZ / "sitio" / "hipotesis" / "README.md", bloques_tarjetas("../../"))]
     return [(base / "README.md", bloques_hipotesis)]
 
 

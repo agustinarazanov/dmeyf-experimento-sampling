@@ -52,8 +52,8 @@ exclude_docs: |
   !/assets/**
   !/index.md
   !/sitio/estilos.css
-  !/sitio/hipotesis.md
-  !/sitio/como-medimos.md
+  !/sitio/hipotesis/README.md
+  !/sitio/como-medimos/README.md
   !/experimentos/sampling_1/README.md
   !/experimentos/sampling_1/figuras/**
   !/experimentos/sampling_1/corridas.md
@@ -73,13 +73,13 @@ nav:
   - Inicio: index.md
   - Resultados: experimentos/sampling_1/README.md
   - Hipótesis:
-    - sitio/hipotesis.md
+    - sitio/hipotesis/README.md
     - H1: experimentos/h1/README.md
     - H2: experimentos/h2/README.md
     - H3: experimentos/h3/README.md
     - H4: experimentos/h4/README.md
   - Cómo medimos:
-    - sitio/como-medimos.md
+    - sitio/como-medimos/README.md
     - Control y reglas: experimentos/control/README.md
     - Corridas: experimentos/sampling_1/corridas.md
     - Exploratorios: experimentos/sampling_1/exploratorios/README.md
