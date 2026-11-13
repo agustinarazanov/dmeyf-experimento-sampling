@@ -1558,8 +1558,9 @@ def tarjetas(a: dict, ctx: Contexto, prefijo: str) -> str:
             resumen = "pendiente: sin resultados todavía."
         else:
             clases = [clase_veredicto(f["veredicto"]) for f in filas]
-            partes = [f"{sum(c == k for c in clases)} {NOMBRE_VEREDICTO[k]}" for k in ("ok", "pierde", "ind", "pend")
-                      if k in clases]
+            formas = {"ok": ("no pierde", "no pierden"), "pierde": ("pierde", "pierden"),
+                      "ind": ("indeterminada", "indeterminadas"), "pend": ("pendiente", "pendientes")}
+            partes = [f"{n} {formas[k][n != 1]}" for k in formas if (n := sum(c == k for c in clases))]
             rapidas = [f for f, c in zip(filas, clases) if c == "ok" and f["A"] is not None and f["A"] >= A_VALE]
             resumen = f"{len(filas)} variantes: " + ", ".join(partes) + "."
             if rapidas:

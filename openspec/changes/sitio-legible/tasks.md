@@ -19,29 +19,29 @@
 
 ## 2. Generador con marcadores y figuras nuevas (sesión: Sonnet; cambio en `comun/`, se anuncia en el commit)
 
-- [ ] 2.1 `comun/reporte.py`: escritura entre marcadores `<!-- generado:… -->` (D4), que falla sin escribir nada si
+- [x] 2.1 `comun/reporte.py`: escritura entre marcadores `<!-- generado:… -->` (D4), que falla sin escribir nada si
   falta un marcador y no toca el texto de afuera. Se puede correr por experimento (`--exp h1`), para que el grupo 3
   regenere cada README cuando lo crea. Mientras tanto, los experimentos sin README nuevo siguen con la salida vieja.
   Test nuevo en `tests/test_reporte.py` para los dos casos. Verificar con `pytest tests/test_reporte.py`.
-- [ ] 2.2 `html_tabla()` sin `.table-wrapper` propio, y bloque B sin autor (D4, D8). Verificar en `mkdocs serve`: una
+- [x] 2.2 `html_tabla()` sin `.table-wrapper` propio, y bloque B sin autor (D4, D8). Verificar en `mkdocs serve`: una
   tabla generada tiene un solo recuadro y una sola barra de desplazamiento a 390 px. `grep -c autor` sobre la salida
   del bloque B da 0.
-- [ ] 2.3 Figuras como archivos SVG en `experimentos/<exp>/figuras/` más PNG con `--figuras` (D5). Verificar: regenerar
+- [x] 2.3 Figuras como archivos SVG en `experimentos/<exp>/figuras/` más PNG con `--figuras` (D5). Verificar: regenerar
   dos veces da archivos idénticos (`git status` limpio en la segunda) y el SVG se ve en github.com y en el sitio.
-- [ ] 2.4 Cargar la skill `dataviz`. Gráficos de D6: mapa del tradeoff, Δ contra tasa con banda, desglose del tiempo,
+- [x] 2.4 Cargar la skill `dataviz`. Gráficos de D6: mapa del tradeoff, Δ contra tasa con banda, desglose del tiempo,
   semillas y réplicas, grilla de veredictos, rondas (dumbbell) y curva de diferencia por hipótesis, con títulos que
   digan qué mirar, salidos del generador. Se borran `fig_tradeoff`, `fig_tiempo_ganancia_paneles`, `fig_bandas`,
   `fig_replicas` y `fig_varianza`. Verificar con los escenarios de `reporte-visual` § Comparación de todas las variantes:
   ninguna etiqueta encima de otra, «sin datos» sale como pendiente (test con un ledger vacío) y la curva de `U0.05`
   queda por debajo de 0 en N\*.
-- [ ] 2.5 Bloques de tarjetas (`index.md`, `sitio/hipotesis.md`) con el veredicto leído del ledger, y
+- [x] 2.5 Bloques de tarjetas (`index.md`, `sitio/hipotesis.md`) con el veredicto leído del ledger, y
   `scripts/comparar_rondas.py` escribiendo el bloque `rondas`. Verificar regenerando y comparando los veredictos de
   las tarjetas con `apareado.csv`/`replicas.csv`.
-- [ ] 2.6 `comun/variantes.py` lee § Variantes y § Dependencias de `experimentos/*/README.md` y falla si queda una
+- [x] 2.6 `comun/variantes.py` lee § Variantes y § Dependencias de `experimentos/*/README.md` y falla si queda una
   `docs/diseno.md` con § Dependencias. `tests/test_variantes.py` en la ruta nueva, con el escenario de archivo viejo.
   Verificar con `pytest tests/test_variantes.py` y `python -m comun.variantes --verificar` (se corre en el grupo 3,
   cuando existan los README).
-- [ ] 2.7 `scripts/verificar_readme.py` y `scripts/verificar_informe_h3.py` leen el bloque `bloque-a-completo` de
+- [x] 2.7 `scripts/verificar_readme.py` y `scripts/verificar_informe_h3.py` leen el bloque `bloque-a-completo` de
   `sampling_1/README.md`, y el segundo revisa el texto fuera de los marcadores de cada `hN/README.md` (D9). Verificar
   con un número alterado a mano que el verificador falla nombrándolo.
 - [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y

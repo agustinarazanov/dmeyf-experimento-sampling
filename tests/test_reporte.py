@@ -347,4 +347,4 @@ def test_tarjetas_leen_el_veredicto_de_las_filas(ronda_anterior):
     for nombre in ctx.hipotesis:
         filas = [f for f in a["filas"] if f["hipotesis"] == nombre]
         ok = sum(reporte.clase_veredicto(f["veredicto"]) == "ok" for f in filas)
-        assert f"{len(filas)} variantes: " in texto and (f"{ok} no pierde" in texto or ok == 0)
+        assert f"{len(filas)} variantes: " in texto and (f"{ok} no pierde" in texto or ok == 0)  # singular o plural

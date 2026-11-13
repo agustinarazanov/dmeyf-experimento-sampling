@@ -1678,3 +1678,27 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   README, y 13 enlaces a páginas no publicadas) hasta que el grupo 3 reescriba esas páginas. 1.3 (workflow en una rama)
   y 1.4 (correr el comando del README tal como está escrito) quedan abiertas por eso: pushear una rama lo decide Agustina
   y el build va a fallar hasta el grupo 3.
+
+## 13-nov-2026 · sitio-legible grupo 2 (Sonnet, sesión de aplicar)
+
+- 2.1–2.7 hechas; 2.8 (revisión en sesión limpia, tokens) queda para la sesión de revisión. Cambio en `comun/` anunciado en el
+  commit 283d23d.
+- `comun/reporte.py`: `--exp`/`--todos` escriben bloques entre `<!-- generado:… -->`; un archivo sin ningún marcador todavía
+  no migró y su experimento sigue con la salida vieja (`informe/reporte.html`, `tabla_resultados.md`) hasta el grupo 3. Las
+  figuras y los README se escriben recién después de validar todos los marcadores. Los títulos de las hipótesis se leen del
+  `# H1 · título` del README y, mientras no exista, de `docs/hipotesis.md` (el generador deja de leerlo cuando el grupo 3 lo borre).
+- Figuras: `fig_tradeoff` (A log contra Δ con IC, zona «no pierde», rango entre réplicas), `fig_fraccion` (banda de IC),
+  `fig_desglose` (optimización / `lgb.train` / resto del final; suma el T de `apareado.csv`), `fig_semillas`, `fig_grilla`,
+  `fig_rondas` (dumbbell, lo usa `scripts/comparar_rondas.py` para el bloque `rondas`) y `fig_curva_diferencia`. Se borraron
+  `fig_tradeoff` viejo, `fig_tiempo_ganancia_paneles`, `fig_bandas`, `fig_replicas` y `fig_varianza`. Paleta categórica de
+  `dataviz` (references/palette.md) en su orden; no pude correr `validate_palette.js` (node no está permitido en esta sesión),
+  así que se usó la paleta de referencia ya validada y los colores de veredicto de siempre.
+- `python -m comun.variantes --verificar` falla hoy a propósito (no hay README con `## Dependencias`, `docs/diseno.md` sí): se
+  corre en el grupo 3. Lo mismo `verificar_readme.py` y `verificar_informe_h3.py` (falta el bloque `bloque-a-completo`).
+- Verificado en MkDocs con una página temporal (README de h1 en el nav, ya sacada): una sola `<table>` sin envoltorio propio,
+  `<img>` que resuelven a archivos de `site/`. Regenerar dos veces da README y SVG idénticos.
+- VISUAL PENDIENTE: una tabla generada del bloque A a 390 px tiene un solo recuadro y una sola barra de desplazamiento (el
+  recuadro lo pone el JS de Material).
+- VISUAL PENDIENTE: los SVG de `experimentos/<exp>/figuras/` se ven en github.com (texto con fuente genérica) y en el sitio.
+- VISUAL PENDIENTE: el mapa del tradeoff con las 21 variantes, sin etiquetas pisadas (las revisé en PNG a 12 pulgadas; falta
+  verlo en el sitio a 1280 px).
