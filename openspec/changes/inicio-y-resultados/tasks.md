@@ -177,7 +177,7 @@ Cada tarea:
   una columna al costado y una línea fina a cada punto, o con la región de 4× a 6× ampliada en un recuadro), y la
   leyenda distingue *indeterminado* de *pierde* a simple vista. Verificar con la figura a 1440 px en `site/` y
   regenerando dos veces sin cambios.
-- [ ] 3.1 `pytest` entero, `python -m comun.variantes --verificar`, los dos verificadores y `scripts/sitio.sh`, todo en
+- [x] 3.1 `pytest` entero, `python -m comun.variantes --verificar`, los dos verificadores y `scripts/sitio.sh`, todo en
   verde. `mkdocs build` y `python -m scripts.medir_sitio` sin problemas: ancho único a 1440 px (texto, figura, código,
   recuadro, plegable y diagrama con el ancho de la columna; las tablas más anchas, solo como aviso), ninguna de las
   ~13 páginas desborda a 390 px y Resultados respeta el tope de alto de D16. Las capturas en claro y en oscuro las
