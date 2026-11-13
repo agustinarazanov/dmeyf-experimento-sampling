@@ -1822,3 +1822,40 @@ antes y dentro del script).
 - Vuelta atrás: `python -m scripts.mover_estudios --deshacer` (repo) y `--bucket --deshacer` (respaldo); el commit, con
   `git revert`.
 - Tokens: —
+
+## tiempos-confiables-y-consistencia, grupo 2: código de corridas, tareas 2.2 a 2.7 (13-nov-2026)
+
+Sesión de código (Sonnet). Cambios en `comun/`: `variantes.py`, `metodos.py`, `correr.py`, `ledger.py`, `consolidar.py`,
+`reporte.py` (este, en 2.1). Un commit por tarea; la 2.1 va aparte (ver arriba).
+
+- **2.2** Registro con las 20 variantes de la grilla (`grilla` en cada variante, `FILAS_GRILLA`, `FUERA_DE_GRILLA`,
+  `CELDAS_SIN_CORRER` vacía: las 20 celdas tienen variante), 8 réplicas en todo el bloque A menos `C-rep` y los 17 pares de D12 con
+  lo que aísla cada uno (`PARES_INFO`; principales: los cuatro `H4O − U`). `fast-retrain-opt` toma la fracción de la
+  tasa y `pesos(metodo, datos, tasa)` la recibe; `fast-retrain` sigue en 0,5. `clase-peso` (H4P) busca como
+  `fast-retrain-opt` en `F{f}` y entrena el final como `opt-muestra`. Smoke con `--filas 20000` de `U0.5@1`, `H3-0.5`,
+  `H4O-0.25`, `H4P-0.1` y `B0.05` en `optimizar` y `final`, sin errores. Los tests de la réplica 0 comparan los índices de la
+  muestra con `muestreo.indices_por_clase`: no corrí contra el `hash_muestra` del ledger (hace falta el panel completo).
+  Los tests que describían el registro de entonces (`test_fase7.py`, `test_replicas.py`) quedan con el registro de la fase 7
+  escrito en el propio test.
+- **2.3** `python -m comun.consolidar` (sin `--experimento`, o con `--experimento sampling_1`) escribe
+  `sampling_1/ledger/pares.csv`: 24 pares declarados, 7 completos (los de antes, iguales a sus `replicas.csv` hasta el último
+  decimal) y 17 pendientes, cada uno con el nombre de la variante que falta (en `U0.25 − H3-0.25` no falta ninguna: `U0.25`
+  solo tiene la réplica 0 completa, y la nota lo dice).
+- **2.4** `tiempos_hp_fijos.py`: smoke con `--prueba` (1 juego, 2 tasas, 1 repetición, panel de 20.000 filas), calibración
+  de inicio y de fin, `--consolidar` y `--anclas`. Las anclas, leídas de los `.db` de `C` y `C@1…7` del bucket, dan 27,15 s
+  para `C` (como dice D6) y 21,6 a 40,1 s para los demás; las del final en el ledger, 50,163 s (fase 7) y 45,137 s (`C-rep`).
+  Los archivos de prueba van a `ledger/exploracion/tiempos/` y no se commitean.
+- **2.5 (parcial)** `vm.sh` calibra al empezar y al terminar y sube otra vez después de la del final; `lanzar_carriles.sh`
+  reparte 17 listas en 4 carriles (32 vCPU), verifica VMs y cuota, y detiene un carril si HEAD cambia entre listas. Verificado
+  en `tests/test_fase8.py` con `--en-seco` (los filtros de `vm.sh` no excluyen `tiempos/`, y dos listas no comparten archivo).
+  **Falta `requirements.txt`**: pide las versiones que instala una VM de prueba y esta sesión no puede lanzar VMs
+  (`ledger/sesiones/bloqueo.txt`).
+- **2.6** 17 listas en `experimentos/sampling_1/scripts/`: 67 estudios y 2.560 finales ((8 + 1 + 7 × 17) × 20), sin
+  repetir ni ya corridos, los estudios antes que sus finales y ninguna `_a` lee de una `_b`.
+- **2.7** `--sanity` suma "5.5 fase 8": 8 réplicas por 20 semillas en cada variante del bloque A y ningún archivo de
+  `corridas/` en un ledger que no es de su dueño. **Hoy falla a propósito** con las 128 celdas de la fase 8 que faltan.
+- `pytest` entero: ver el cierre de la sesión de revisión; las suites tocadas (`test_variantes`, `test_replicas`,
+  `test_fast_retrain_opt`, `test_fase5`, `test_fase7`, `test_fase8`, `test_grilla`, `test_pares`, `test_sanity_fase8`,
+  `test_tiempos_hp_fijos`, `test_mover_estudios`, `test_reporte`) pasan.
+- No se corrió ninguna VM ni se escribió en Zulip.
+- Tokens: —
