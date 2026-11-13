@@ -34,7 +34,7 @@ import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
 EXP = RAIZ / "experimentos"
-TABLA = EXP / "sampling_1/README.md"
+TABLA = EXP / "sampling_1/anexo.md"
 BLOQUE = "bloque-a-completo"
 GENERADO = re.compile(r"<!-- generado:([\w-]+) -->.*?<!-- /generado:\1 -->", re.S)
 
@@ -112,7 +112,7 @@ def main() -> int:
     informes = [i if i.is_absolute() else RAIZ / i for i in pedidos] if pedidos else sorted(EXP.glob("h*/README.md"))
     bloque = leer_bloque(TABLA.read_text(), BLOQUE) if TABLA.exists() else ""
     if not informes or not bloque.strip():
-        print("✗ falta el bloque bloque-a-completo en sampling_1/README.md o no hay README de hipótesis que revisar")
+        print("✗ falta el bloque bloque-a-completo en sampling_1/anexo.md o no hay README de hipótesis que revisar")
         return 1
     tabla = set(bloque.splitlines())
     fuentes = _fuentes(bloque)

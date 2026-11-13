@@ -17,7 +17,7 @@
   - encabezado más alto en el teléfono (D7b, con `sitio/overrides/partials/header.html`).
 
   El orquestador verifica con capturas a 1440 y 390 px, en claro y en oscuro.
-- [ ] 1.3 `comun/reporte.py`, `scripts/comparar_rondas.py` y los verificadores:
+- [x] 1.3 `comun/reporte.py`, `scripts/comparar_rondas.py` y los verificadores:
   - `experimentos/sampling_1/anexo.md` con los marcadores `bloque-a-completo`, `varianza`, `diferencias`, `ic-rondas` y
     `rondas`, que salen de `sampling_1/README.md`;
   - el bloque `figuras` se separa en `grilla`, `desglose` y `fraccion`;
