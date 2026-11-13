@@ -140,3 +140,34 @@ contrastes principales fijados en [`h4/docs/hipotesis.md`](../../h4/docs/hipotes
   sobre H3. Lo mismo vale para `H3R-0.25`, `H3L-0.25` y `H3-0.25`, y para `H3L-0.1`.
 - Las extensiones del aporte de Luis vienen de resultados ya vistos en 201910 y suman contrastes sin corrección por
   comparaciones múltiples (§ Extensiones del aporte de Luis).
+
+## `H3-0.5` (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Escrito el 13-nov-2026, antes de cualquier corrida de la variante, y revisado en sesión limpia antes de la primera. Lo de
+arriba no se reescribe. `H3-0.5` completa la fila "al azar, solo búsqueda" de la grilla común
+(`sampling_1/docs/diseno.md` § Grilla común), que tenía 0,25; 0,1 y 0,05.
+
+**Origen: se agrega después de ver 201910.** La variante se decide después de ver en 201910 todas las celdas vecinas
+(`H3-*` con réplicas, `U0.5` y `H4O-0.5`). Entra con predicción y regla escritas acá antes de correr, junto con el resto
+de la grilla, y no se elige ni se descarta por su resultado. El informe la lista entre las limitaciones ("Ideas que vienen
+de mirar el test").
+
+**"Siempre OP" (Zulip 211718).** Como el resto de H3, busca sobre una muestra y entrena el final con otra receta. Es un
+apartamiento decidido el 13-nov porque es la hipótesis misma, y se declara con su id en el informe.
+
+- **Variante.** `H3-0.5`, método `opt-muestra`: Optuna sobre la muestra al azar del 50 % (estudios `U0.5` / `U0.5@k`, de
+  `h1`, compartidos con `U0.5`), final con r = 1 y los hiperparámetros sin reescalar. 8 réplicas, 20 semillas finales.
+- **Qué se mide.** Ronda 201903–201908 ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda
+  201903–201908): N\* = 3.300 y δ = 0,02 · Ḡ_C de esa ronda (5,65 M$). Δ con réplicas e IC de Welch como en § H3 con
+  réplicas de optimización. A con una sola referencia y T como mediana entre réplicas
+  ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos).
+
+### Predicción y regla
+
+9. **`H3-0.5` contra `C`.**
+   - **Predicción**: *no pierde* con réplicas (cota inferior del IC de Welch de Δ con réplicas ≥ −δ) **y** A ≥ 2.
+   - **Se confirma** si se cumplen las dos; **se refuta** si sale *pierde* (media de Δ con réplicas < −δ) o A < 2; si
+     no, *indeterminado*.
+
+No cambia el veredicto de H3, que sigue siendo el de la regla 1. Las diferencias directas `U{r}` − `H3-{r}` y
+`H4P-{r}` − `H3-{r}` están en [`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md) § Grilla común.

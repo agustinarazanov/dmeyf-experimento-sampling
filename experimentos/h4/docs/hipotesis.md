@@ -114,6 +114,95 @@ peso 2), así que no cumple esa indicación. `H4O-0.5` usa la receta del final t
 El contraste `H4O-0.5` contra `H4F-0.05` es un resultado del experimento, no una limitación: el informe de `h4` lo da como
 respuesta a 211718. Es secundario (§ Comparaciones múltiples).
 
+## Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Escrito el 13-nov-2026, antes de cualquier corrida de estas variantes, y revisado en sesión limpia antes de la primera.
+Lo de arriba no se reescribe. Esta sección lleva H4 a la grilla común (`sampling_1/docs/diseno.md` § Grilla común): las
+mismas cuatro tasas {0,5; 0,25; 0,1; 0,05} y 8 réplicas en cada forma de muestrear, para que la receta con bajas se pueda
+comparar directamente con la muestra al azar de H1 y H3. Ronda 201903–201908
+([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ronda 201903–201908): 20 semillas finales, N\* = 3.300
+y δ = 0,02 · Ḡ_C de esa ronda (5,65 M$). Δ con réplicas e IC de Welch como en § `H4O-0.5`; A con una sola referencia y T
+como mediana entre réplicas ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos).
+
+**Origen: se agregan después de ver 201910.** Las variantes nuevas se deciden después de ver en 201910 todas las celdas
+vecinas (`H4O-0.5`, `H4U-0.1`, `H3-*`, `U*`). Entran todas juntas, con predicción y regla escritas acá antes de correr, y
+ninguna se elige ni se descarta por su resultado. El informe las lista entre las limitaciones ("Ideas que vienen de mirar
+el test").
+
+**"Siempre OP" (Zulip 211718).** `H4O-{f}` busca y entrena con la misma receta. `H4P-{f}` busca sobre la receta con bajas
+y entrena el final completo: es un apartamiento decidido el 13-nov porque es la hipótesis misma (como H3 y `H4F`), y se
+declara con su id en el informe.
+
+### Variantes nuevas
+
+| variante | búsqueda (Optuna) | final | estudio |
+|---|---|---|---|
+| `H4O-0.25`, `H4O-0.1`, `H4O-0.05` | todas las bajas + f de CONTINUA, peso 1/f | lo mismo, sobre 201903–201908 | `F{f}` / `F{f}@k` |
+| `H4P-0.5`, `H4P-0.25`, `H4P-0.1`, `H4P-0.05` | como `H4O-{f}` (comparte su estudio) | completo, sin peso | `F{f}` / `F{f}@k` |
+
+- `H4O-{f}` generaliza `H4O-0.5`: la fracción de CONTINUA pasa a ser la tasa de la variante. Los hiperparámetros no se
+  reescalan. `H4F-*` sigue con la mitad de CONTINUA en el final.
+- `H4P-{f}` comparte el estudio de `H4O-{f}`, como `H3-{r}` comparte el de `U{r}`; el tiempo del estudio entra en T de
+  las dos. La muestra de búsqueda de `H4P-0.1` es la misma que la de `H4U-0.1` (misma función y misma semilla): solo
+  cambia el peso.
+- La receta con bajas tiene más filas que la muestra al azar de la misma tasa (506.871 filas, 5.312 bajas):
+
+  | tasa | filas al azar | filas con bajas | cociente |
+  |---|---|---|---|
+  | 0,5 | 253.436 | 256.092 | 1,010 |
+  | 0,25 | 126.718 | 130.702 | 1,031 |
+  | 0,1 | 50.687 | 55.468 | 1,094 |
+  | 0,05 | 25.344 | 30.390 | 1,199 |
+
+### Pares directos
+
+Se declaran en el registro antes de correr. Cada par tiene su IC:
+- **Welch, sin aparear** (los lados no comparten estudio): D = media_k Ḡ_{a,k} − media_k Ḡ_{b,k}, IC 95% de Welch entre
+  las réplicas de cada lado.
+- **t, apareado** (comparten estudio): D = G(a) − G(b) por semilla dentro de cada réplica, media de D por réplica e IC t
+  95% entre réplicas (n − 1 g.l.), con el esquema de la regla 4 de [`h3/docs/hipotesis.md`](../../h3/docs/hipotesis.md).
+
+Una réplica entra en un par solo si tiene las 20 semillas en los dos lados; el par dice con cuántas réplicas se calculó.
+Un par al que le falta un lado sale como pendiente, con el nombre de la variante que falta. **Etiquetas**: *mejora* si la
+cota inferior del IC de D es > 0 M$, *empeora* si la cota superior es < 0 M$, *no cambia* en otro caso.
+
+| qué aísla | par (a − b) | tasas | IC | qué no aísla |
+|---|---|---|---|---|
+| conservar las bajas, búsqueda y final (**principal**) | `H4O-{r}` − `U{r}` | 4 | Welch | qué filas quedan, entre 1 y 20 % más filas y el peso 1/f, todo junto |
+| conservar las bajas, solo búsqueda | `H4P-{r}` − `H3-{r}` | 4 | Welch | lo mismo, en la búsqueda; el final es completo en los dos lados |
+| muestrear también el final, al azar | `U{r}` − `H3-{r}` | 4 | t apareado | nada más: comparten estudio |
+| muestrear también el final, con bajas | `H4O-{r}` − `H4P-{r}` | 4 | t apareado | en el final cambian a la vez las filas y el peso |
+| el peso en la búsqueda | `H4P-0.1` − `H4U-0.1` | 1 | Welch | nada más: misma muestra de búsqueda, mismo final |
+
+Los pares "conservar las bajas" se comparan a igual tasa de CONTINUA, que es lo que pregunta Zulip 212124, y la tabla
+del informe muestra las filas de entrenamiento de cada lado. Los pares entre experimentos (`h4` con `h1` o `h3`, y `h1`
+con `h3`) se calculan en `sampling_1`. H2 no entra en los pares (`h2/docs/hipotesis.md` § Réplicas de H2 y `B0.05`).
+
+### Predicciones y reglas
+
+Para los veredictos contra `C` valen las reglas comunes con Δ con réplicas: una predicción *no pierde* se confirma si la
+cota inferior del IC es ≥ −δ y se refuta si sale *pierde*; una predicción *pierde* se confirma si la media de Δ es < −δ y
+se refuta si sale *no pierde*; *indeterminado* no confirma ni refuta. Para los pares, una predicción se confirma si sale
+la etiqueta predicha y se refuta si sale otra.
+
+6. **Conservar las bajas, búsqueda y final** (`H4O-{r}` − `U{r}`, principal).
+   - **Predicción**: *no cambia* en 0,5; *mejora* en 0,1 y 0,05, donde la muestra al azar se queda con unas 531 y 266 de
+     las 5.312 bajas. En 0,25 no hay predicción firme y se informa.
+7. **`H4O-{r}` contra `C`.**
+   - **Predicción**: *no pierde* en 0,5 (ya medido, regla 4) y en 0,25; *pierde* en 0,05. En 0,1 se informa sin
+     predicción.
+8. **`H4P-{r}` contra `C`.**
+   - **Predicción**: *no pierde* en las cuatro tasas.
+9. **Conservar las bajas, solo búsqueda** (`H4P-{r}` − `H3-{r}`).
+   - **Predicción**: *no cambia* en las cuatro tasas.
+10. **El peso en la búsqueda** (`H4P-0.1` − `H4U-0.1`).
+    - **Predicción**: *mejora*.
+    - Si sale *no cambia*, la explicación del informe de H4 (la proporción distorsionada en la búsqueda hace perder a
+      `H4U-0.1`) queda sin sostén, y se dice.
+11. **Muestrear también el final** (`U{r}` − `H3-{r}` y `H4O-{r}` − `H4P-{r}`): se informan sin predicción.
+
+Cada variante nueva recibe además su A, con su intervalo. A no decide ninguna de las reglas 6 a 11.
+
 ## Comparaciones múltiples
 
 Entre `h4` y las extensiones de `h3` (`h3/docs/hipotesis.md` § Extensiones del aporte de Luis) hay más de diez
@@ -126,6 +215,18 @@ fijados acá antes de correr:
 - `H4F-0.05` contra `C`, con réplicas y a tiempo igual (regla 3).
 
 El resto de los contrastes se informa como secundario.
+
+*Grilla común (13-nov-2026, cambio `tiempos-confiables-y-consistencia`, antes de correr).* Se suman, sin corrección:
+- los **17 contrastes** de los pares directos (§ Grilla común): 4 `H4O-{r}` − `U{r}`, 4 `H4P-{r}` − `H3-{r}`,
+  4 `U{r}` − `H3-{r}`, 4 `H4O-{r}` − `H4P-{r}` y `H4P-0.1` − `H4U-0.1`;
+- **9 veredictos nuevos** contra `C`, de las variantes nuevas: `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`, las cuatro
+  `H4P` y `B0.05`;
+- los veredictos que **se vuelven a decidir** con réplicas: `U0.5`, `U0.25`, `U0.1`, `U0.05`, `B0.5`, `B0.25`, `B0.1` y
+  `GOSS`.
+
+Los contrastes principales de la grilla común son los cuatro `H4O-{r}` − `U{r}`; las conclusiones sobre la grilla se
+apoyan en ellos y el resto es secundario. Los tres principales de arriba siguen siéndolo para las variantes de la
+ronda anterior.
 
 ## Limitaciones previstas
 
@@ -142,3 +243,6 @@ El resto de los contrastes se informa como secundario.
   excepción declarada a la regla de `sampling_1` (`sampling_1/docs/hipotesis.md` § Pregunta): H4 sigue midiendo
   velocidad, con el final completo (`H4H-0.1`, `H4U-0.1`) o con la proporción ponderada restituida (`H4F-*`), y no
   compara proporciones de clases entre sí.
+- *Grilla común (13-nov):* en `H4O-0.05` y `H4P-0.05` el peso de CONTINUA es 20 en la búsqueda (y en el final de
+  `H4O-0.05`), con `min_data_in_leaf` sin reescalar. Es parte de la receta y se declara, como en `H4O-0.5`. Los pares
+  "conservar las bajas" mezclan qué filas quedan, cuántas y el peso (§ Grilla común).

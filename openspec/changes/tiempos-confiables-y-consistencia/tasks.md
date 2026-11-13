@@ -28,7 +28,7 @@ Qué puede ir en paralelo:
   - que la medición y la calibración son exploratorias y no cambian veredictos.
 
   Las predicciones las confirma o ajusta Agustina.
-- [ ] 1.2 Predicciones de la grilla (D13), cada una en una sección nueva con fecha, escrita antes de cualquier corrida y
+- [x] 1.2 Predicciones de la grilla (D13), cada una en una sección nueva con fecha, escrita antes de cualquier corrida y
   con la declaración de que la variante se agrega después de ver 201910:
   - `h1/docs/hipotesis.md` § Réplicas de H1;
   - `h2/docs/hipotesis.md` § Réplicas de H2 y `B0.05`;
