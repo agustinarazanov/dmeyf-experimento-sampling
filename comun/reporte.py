@@ -177,7 +177,7 @@ class Destino:
         self.archivos: dict[Path, bytes] = {}
 
 
-#: Mientras `generar_bloques` arma un README, las figuras van a archivos SVG; fuera de eso (salida vieja) van en línea.
+#: Mientras `generar_bloques` arma un README, las figuras van a archivos SVG; sin destino van en línea (hoy nadie lo usa).
 DESTINO: Destino | None = None
 
 
@@ -189,7 +189,7 @@ def _titulo_figura(fig) -> str:
 
 def figura(fig, nombre: str, figuras: Path | None, ajustar: bool = True) -> str:
     """Con `DESTINO`: SVG como archivo (texto con fuente genérica, sin CSS de la página) y `![título](figuras/x.svg)`;
-    con `figuras`, además PNG a 200 dpi. Sin `DESTINO` (salida vieja): SVG en línea sin declaración XML ni `<style>`.
+    con `figuras`, además PNG a 200 dpi. Sin `DESTINO` (no lo usa ningún llamador desde que se borró la salida vieja): SVG en línea sin declaración XML ni `<style>`.
     `ajustar=False` deja el layout que ya fijó la figura (p. ej. con lugar para una leyenda abajo)."""
     if ajustar:
         fig.tight_layout()
@@ -527,7 +527,7 @@ def bootstrap_tiempo_igual(fin: pd.DataFrame, datos: dict, n_est: int, n_boot: i
 
 def fila_bloque_a(ctx: Contexto, b: str, fin: pd.DataFrame, ap: pd.DataFrame, rep: pd.DataFrame,
                   ti_rep: dict | None, ti_boot: tuple | None, k0: tuple | None) -> dict:
-    """Una fila del bloque A, con todo lo que muestran la tabla HTML y `tabla_resultados.md`."""
+    """Una fila del bloque A, con todo lo que muestra la tabla HTML del bloque generado."""
     r, rr = fila(ap, b), (rep.loc[b] if b in rep.index else None)
     con_rep = rr is not None and pd.notna(rr.get("delta_g_media"))
     out = {"variante": b, "hipotesis": ctx.hip_de[b], "d0": None, "dR": None, "G": None, "T": None, "A": None, "dauc": "pendiente",
@@ -717,7 +717,7 @@ def tabla_md(cab, filas) -> str:
 
 
 def lista_b(b: list[dict]) -> str:
-    """Bloque B de `tabla_resultados.md`: un `### carpeta` por exploratorio con sus campos en viñetas."""
+    """Bloque B de los exploratorios: un `### carpeta` por exploratorio con sus campos en viñetas."""
     if not b:
         return "No hay exploratorios declarados.\n"
     out = []

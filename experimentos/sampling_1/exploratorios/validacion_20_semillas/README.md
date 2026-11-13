@@ -73,7 +73,7 @@ El control de Luis da G = 274,01 M$ con 20 semillas y T = 791 s; el nuestro, 276
 
 El punto 4 lo hizo el cambio `final-con-julio-agosto`: la ronda vigente del bloque A vuelve a correr todos los finales
 con 20 semillas publicadas (las 10 oficiales y 110017 + i · 19937, i = 0…9, en el orden de
-[`control/docs/hipotesis.md`](../../../control/README.md) § Ronda 201903–201908), desde los ledgers, con 8
+[`control/README.md`](../../../control/README.md) § Ronda 201903–201908), desde los ledgers, con 8
 réplicas de Optuna donde las hay y con la predicción escrita antes de correr. La pregunta de Luis (¿cambian los
 veredictos con 20 semillas?) tiene ahí su respuesta: ningún veredicto cambia de lado; los que se mueven lo hacen un
 escalón por semilla (por ejemplo, `H3-0.25` pasa a "gana"), y con réplicas no cambia ninguno

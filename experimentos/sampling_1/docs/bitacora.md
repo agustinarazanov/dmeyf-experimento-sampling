@@ -1995,3 +1995,35 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - Artefactos de openspec (`changes/` y `specs/`), que se actualizan al archivar.
 - Verificado: `pytest tests/test_reporte.py` (35), `python -m comun.reporte --todos` dos veces sin cambios en `git status`,
   `scripts/sitio.sh` y `pytest` entero (251) en verde.
+
+### 13-nov-2026 · sitio-legible grupo 4 · segunda revisión en sesión limpia (tarea 4.3, después de cerrar 4.1)
+
+- Sesión: `2a98183e-4192-44a2-aee1-ae5872024ea2` (sin contexto de la sesión que aplicó) · modelo: Opus · etapa:
+  **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 5, más las verificaciones de 4.1 y 4.2. Revisa
+  sobre todo `9310bd9` (4.1: salida vieja de `comun/reporte.py` borrada), que llegó después de la revisión anterior.
+- Comandos, todos en verde: `python -m pytest` 251 passed (5 min 45 s; eran 258 antes de borrar los tests de la salida
+  vieja); `python -m comun.variantes --verificar` sin `PROBLEMA`; `python -m scripts.verificar_readme` ✓ (5 números, 13
+  enlaces); `python -m scripts.verificar_informe_h3` (h1–h4: 623 números, 0 sin fuente); `scripts/sitio.sh` construye
+  sin nombres; `site/` sin `.py`, bitácoras, `.csv` ni restos de Jekyll; `python -m comun.reporte --todos` deja el árbol
+  igual. `git ls-files` no tiene `_config.yml`, `_sass/`, `Gemfile*`, `reporte.html`, `tabla_resultados.md` ni carpetas
+  `informe/`.
+- 4.1: el `git grep` de la tarea solo encuentra lo que la entrada de 4.1 clasifica como esperado (registros históricos,
+  `rutas.md`, D9, D2, `concordar_d3.py`, openspec). Está bien marcada.
+- Lista § 5: desde `fdec826` no cambió el texto escrito a mano de ningún README publicado, de `index.md`, de `sitio/` ni
+  del guion. Siguen valiendo los ✓ de la revisión anterior (regla escrita, fuentes, mismo peso para refutaciones y
+  empates, limitaciones, guion de 10 minutos sin el baseline, bibliografía). No quedan ✗ abiertos.
+- **Corregido**:
+  - `comun/reporte.py` (cambio en `comun/`, solo comentarios): cuatro docstrings y comentarios seguían nombrando
+    `tabla_resultados.md` o la «salida vieja» como si existieran. Ahora dicen que la rama sin `DESTINO` de `figura()`
+    no la usa ningún llamador. Esa rama es código muerto, pero no la borré porque eso es una decisión de diseño:
+    `scripts/comparar_rondas.py` y todos los generadores fijan `DESTINO`. `pytest tests/test_reporte.py` volvió a correr.
+  - `validacion_20_semillas/README.md`: el enlace que 4.1 apuntó a `control/README.md` todavía mostraba el texto
+    `control/docs/hipotesis.md`. Ahora el texto coincide con el destino.
+  - `ledger/sesiones/bloqueo.txt`: lo borró `4f520fe` (tiempos-confiables-y-consistencia 2.5) al levantar su propio
+    bloqueo, y con eso se perdieron los pendientes de sitio-legible. Lo volví a crear con lo que sigue abierto: los
+    escenarios después del push, las tareas 1.3 y 1.4 y el archivo del cambio.
+- Pendiente (necesita a una persona, está en `bloqueo.txt`): decidir el push y, después del push, verificar los
+  escenarios «Primera visita del tutor» y «Teléfono»; cerrar 1.3 y 1.4; archivar sitio-legible.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: 35 turnos · contexto ~56.000 por turno · ≈ US$ 1,1 (`tokens.py` todavía no tiene el costo de esta sesión).
+- Tutor: —
