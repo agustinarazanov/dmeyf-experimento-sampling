@@ -2039,3 +2039,43 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   la leyenda del mapa del tradeoff se cortaba; las etiquetas contra el borde o sobre un vecino ahora se corren; las
   tarjetas suman la idea en una línea. Revisado con capturas a 1280 y 390 px.
 - Se unió `origin/main` (PR #2, dos líneas en `h3/sensibilidad_muestra/README.md`) antes del push.
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (tarea 1.7)
+
+- Sesión: `e0f0768f-4f79-4114-8014-b3b26ac73ae5` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, más las verificaciones de 1.1–1.6. El
+  grupo 1 son los commits `cd6f1e8` (1.1, 1.2), `9dee99d` (1.3), `e743d1c` (1.5) y `16af289` (1.4, 1.6); `1bf8daf`
+  (1.12 parcial) y lo de 1.8–1.12 en `16af289` quedan para la revisión 1.11.
+- Comandos, todos en verde:
+  - `pytest tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py`: 93 passed (6 min 51 s).
+  - `pytest tests/test_figuras_nuevas.py tests/test_tablas_d9.py`: 6 passed, incluido el test de 1.4 (ensamble de K = 20
+    del control igual a «ensamble de 20 semillas del control» de `tiempo-igual`).
+  - `python -m comun.variantes --verificar`: 0 `PROBLEMA`.
+  - `python -m scripts.verificar_readme`: ✓, con 65 números y 31 enlaces.
+  - `python -m scripts.verificar_informe_h3`: 623 números, 0 sin fuente.
+  - `python -m comun.reporte --todos` y `python -m scripts.extraer_figuras_exploratorios` dejan `git status` igual.
+  - `scripts/sitio.sh` construye y no encuentra nombres.
+- Verificaciones de las tareas:
+  - ✓ 1.1: `site_name`, paleta con `media` y `toggle`, y en `site/index.html` la barra dice «H4 · Muestras informadas
+    por clase» y «Control y reglas».
+  - ✓ 1.2: sin `75ch` ni `89ch` en `estilos.css`, y hay variables para `slate`. El encabezado del teléfono se hace con
+    `sitio/hooks.py` en lugar de `overrides/partials/header.html`; el desvío está declarado en `cd6f1e8`. Las capturas
+    a 1440 y 390 px son del orquestador (n/a acá).
+  - ✓ 1.3: los marcadores de `anexo.md`, `index.md` y Resultados existen. Las tablas de `bloque-a-completo`,
+    `diferencias`, `varianza` y `rondas` tienen las mismas cifras que en `git show 5566e5d~:…/README.md`; los marcadores
+    salieron del README en `5566e5d`, no en `HEAD~` de 1.3. Faltan solo tres números (35.2, 0.05 y −5.9), que eran
+    del texto alternativo de dos figuras que ya no viven en esos bloques.
+  - ✓ 1.4: hay cuatro figuras nuevas, con test, y regenerar no cambia los SVG.
+  - ✓ 1.5: son diez PNG y no nueve (está declarado en `e743d1c`). Correr el script dos veces no cambia nada, y el test
+    de figura faltante está en `test_variantes.py`. Las leyendas no tienen autor: los únicos nombres son el dueño del
+    repo en las URL de GitHub.
+  - ✓ 1.6: están los tests de exploratorio sin CSV, de bloque B sin autor y de columna con escala, y las 37 `<img>` de
+    `site/` resuelven.
+- Lista § 3: el grupo no toca el corredor, `consolidar.py` ni `vm.sh`. Por eso son n/a el smoke test, el determinismo
+  del entrenamiento, que 201910 no se lea, las columnas del ledger, `codigo_sucio`, las filas de train, el apareo de
+  semillas y el borrado de la VM. El determinismo del generador sí se verificó (regenerar no cambia nada). ✓ No hay
+  datos del dataset en el repo: no hay `.csv.gz`, `.parquet` ni `.feather`, y los PNG son figuras.
+- Correcciones: ninguna. No queda ningún ✗ abierto, así que la revisión cierra.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: 25 turnos · contexto ~54.000 por turno · ≈ US$ 1.
+- Tutor: —

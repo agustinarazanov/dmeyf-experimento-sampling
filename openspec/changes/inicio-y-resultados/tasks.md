@@ -53,7 +53,7 @@
 
   Las columnas declaradas como texto siguen funcionando. Verificar con `pytest tests/test_reporte.py` (exploratorio sin
   CSV, bloque B sin autor, columna con escala) y con `mkdocs build`: las imágenes de los estudios resuelven en `site/`.
-- [ ] 1.7 Revisión en sesión limpia del grupo 1 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
+- [x] 1.7 Revisión en sesión limpia del grupo 1 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
   `comun/tokens.py`.
 - [x] 1.8 Tablas de resultado (D9), en `comun/reporte.py` y los verificadores:
   - el bloque `resultado` de cada `hN/README.md` va sin columna «hipótesis»;
