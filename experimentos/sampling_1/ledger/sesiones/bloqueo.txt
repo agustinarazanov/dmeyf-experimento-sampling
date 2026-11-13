@@ -1,0 +1,21 @@
+13-nov-2026 · sitio-legible · revisión del grupo 4 (tarea 4.3)
+
+Lo que queda abierto y necesita a una persona:
+
+1. Tarea 4.1 sigue sin marcar. El `git grep` de su verificación todavía encuentra resultados fuera de lo excluido.
+   Casi todos son registros históricos (ledger/sesiones/*.json y *.log, exploratorios/validacion_20_semillas/originales/,
+   referencia_grupo/ en el ledger de Martín, la procedencia de las predicciones en los README, docs/rutas.md), están
+   previstos por el diseño (comun/variantes.py y tests/test_variantes.py por D9; docs/revision.md «sin cambios» por D2;
+   scripts/concordar_d3.py es un script de una sola vez de D9) o son artefactos de openspec que se actualizan al archivar.
+   El único resultado vivo es la salida vieja de comun/reporte.py (página Jekyll informe/reporte.html y
+   tabla_resultados.md, más test_es_una_pagina_jekyll en tests/test_reporte.py). Hoy no la usa nadie: los siete README
+   tienen marcadores y `python -m comun.reporte --todos` no la ejecuta. Hay que elegir una de estas opciones:
+   a) borrar la salida vieja de comun/reporte.py y sus tests (es un cambio en comun/ y hay que anunciarlo en el commit), o
+   b) ampliar la verificación de 4.1 para excluir los registros históricos y esa salida, y marcar 4.1.
+   Después hay que archivar sitio-legible.
+
+2. Lo que viene después del push (4.3): verificar los escenarios «Primera visita del tutor» y «Teléfono» en el sitio
+   publicado. El push lo decide Agustina.
+
+3. Tareas 1.3 y 1.4, del grupo 1, siguen sin marcar. Para 1.3 hay que correr el workflow de Pages en una rama con
+   workflow_dispatch y verlo en verde, y eso pide un push.

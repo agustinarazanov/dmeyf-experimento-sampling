@@ -94,9 +94,10 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   `verificar_informe_h3.py` sobre los cuatro README de hipótesis y `scripts/sitio.sh`, todo en verde. Recorrer el sitio en
   `mkdocs serve` contra los escenarios de `sitio-informes`: ~12 páginas en la barra, índice a la derecha, cada
   resultado en una sola página, sin nombres y sin doble recuadro.
-- [ ] 4.3 Revisión en sesión limpia (Opus) con `docs/revision.md` § 5, cierre en la bitácora de `sampling_1` y
+- [x] 4.3 Revisión en sesión limpia (Opus) con `docs/revision.md` § 5, cierre en la bitácora de `sampling_1` y
   `comun/tokens.py`. El push lo decide Agustina. Después del push, verificar en el sitio publicado los escenarios
-  «Primera visita del tutor» y «Teléfono».
+  «Primera visita del tutor» y «Teléfono» (pendiente: depende del push, anotado en
+  `experimentos/sampling_1/ledger/sesiones/bloqueo.txt`).
 
 ## Workflow follow-up
 

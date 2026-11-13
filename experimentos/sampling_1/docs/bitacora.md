@@ -1904,7 +1904,7 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 
 ### 13-nov-2026 · sitio-legible grupo 4 · aplicar (tareas 4.1 y 4.2)
 
-- Etapa: **codigo** (Sonnet, headless). 4.1: se borraron `_config.yml`, `_sass/`, `Gemfile`, `Gemfile.lock`, `_site/` y
+- Sesión: `dd71be63-e352-4bfa-97d0-e6830bf212f3` (la agregó la revisión 4.3, desde `g4_aplicar_20261113T140709.json`) · etapa: **codigo** (Sonnet, headless). 4.1: se borraron `_config.yml`, `_sass/`, `Gemfile`, `Gemfile.lock`, `_site/` y
   `.jekyll-cache/` (no había `reporte.html` ni carpetas `informe/` versionados). Se corrigieron los comentarios de
   `comun/{baseline,ganancia,ledger,metodos,variantes}.py` y las rutas de `h3/sensibilidad_muestra`; el cambio en `comun/`
   es solo de comentarios. **4.1 queda sin marcar**: el `git grep` de la tarea todavía da resultados que no son bitácora,
@@ -1932,3 +1932,42 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   lateral está vacío (el panel existe). Lo visual no se miró: Teléfono, doble recuadro a 1280 px de las tablas fuera de
   Resultados, H2–H4 y Cómo medimos (el orquestador vio Inicio, H1 y las figuras de Resultados).
 - Tokens: no se corrió `comun/tokens.py` en esta sesión.
+
+### 13-nov-2026 · sitio-legible grupo 4 · revisión en sesión limpia (tarea 4.3)
+
+- Sesión: `b40fd38f-0ddd-4602-85d9-c94da91154aa` (headless, sin contexto de la sesión que aplicó) · modelo: Opus · etapa: **revision**. Revisor:
+  Claude (Opus). Lista: `docs/revision.md` § 5, más las verificaciones de 4.1 y 4.2. El grupo 4 son los commits
+  `21010dd`, `9be47fe` y `183d87f`.
+- Comandos, todos en verde: `python -m pytest` 258 passed (6 min 39 s); `python -m comun.variantes --verificar` sin
+  `PROBLEMA`; `python -m scripts.verificar_readme` ✓ (5 números, 13 enlaces); `python -m scripts.verificar_informe_h3`
+  (623 números, 0 sin fuente) y con `--informe` sobre h1–h4 (60, 56, 296 y 211, 0 sin fuente); `scripts/sitio.sh`
+  construye con `--strict` y sin nombres; `site/` no tiene `.py`, bitácoras, `.csv` ni restos de Jekyll.
+  `python -m comun.reporte --todos` deja el árbol igual, así que lo commiteado es lo que sale del generador.
+- Lista § 5: el texto escrito a mano de los README no cambió desde la revisión 3.11. El grupo 4 solo tocó comentarios
+  de `comun/`, tamaños y posiciones de las figuras, y una línea de idea en las tarjetas (generada desde el README). Por
+  eso valen los ✓ de 3.11:
+  - ✓ Decisión con la regla escrita (sin cambios desde 3.11).
+  - ✓ Afirmaciones con fuente (verificadores en 0 sin fuente).
+  - ✓ Refutaciones y empates con el mismo peso: las tarjetas muestran pierde, no pierde e indeterminada por igual.
+  - ✓ Limitaciones: semillas, un mes de test y adaptación de H2 (sin cambios).
+  - ✓ Guion: 10 minutos, estructura completa y no explica el baseline (sin cambios).
+  - ✓ Bibliografía (sin cambios).
+- 4.1 (✗ abierto, no es de la lista § 5): el `git grep` de la tarea todavía encuentra resultados. Los clasifiqué así:
+  - Registros históricos: `ledger/sesiones`, `originales/` y la procedencia de las predicciones en los README.
+  - Previstos por el diseño: D9 (`variantes.py`, `test_variantes.py`, `concordar_d3.py`) y D2 (`revision.md` sin
+    cambios).
+  - Artefactos de openspec que se actualizan al archivar.
+  - La salida vieja de `comun/reporte.py` (página Jekyll y `tabla_resultados.md`), que es lo único vivo. Ya no la
+    ejecuta nadie, porque los siete README tienen marcadores.
+
+  Borrarla o ampliar la verificación de la tarea es una decisión de diseño, así que 4.1 sigue sin marcar y queda en
+  `ledger/sesiones/bloqueo.txt`.
+- **Corregido**: `.gitignore` todavía tenía el bloque «Sitio Jekyll» (`_site/`, `.jekyll-cache/`, `.sass-cache/`,
+  `vendor/`, `.bundle/`); lo borré. La entrada del aplicar del grupo 4 no tenía id de sesión: le agregué `dd71be63`, que
+  sale de `g4_aplicar_20261113T140709.json`, para que `comun/tokens.py` la clasifique.
+- Pendiente después del push (lo decide Agustina): los escenarios «Primera visita del tutor» y «Teléfono» en el sitio
+  publicado, y 1.3 (el workflow en una rama). Están en `bloqueo.txt`.
+- La lista § 5 no tiene ✗ abiertos: la revisión cierra. 4.1 no se cierra hasta que se tome la decisión de `bloqueo.txt`.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~40 turnos · contexto ~73.000 por turno · ≈ US$ 1,5.
+- Tutor: —
