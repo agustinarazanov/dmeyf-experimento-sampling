@@ -71,15 +71,17 @@ y elige Optuna. Entre VMs la única evidencia es `C-rep` (una repetición, 4 %),
 - **Regla para variantes nuevas** en `docs/metodo.md` y `docs/revision.md`: toda variante nueva dice qué celda de la
   grilla ocupa, usa las cuatro tasas y 8 réplicas, o declara el hueco en la tabla de cobertura antes de correr.
 
-**Respuesta al tutor**
+**Respuesta a la pregunta del tutor, en el informe**
 
-- Una **primera respuesta**, que sale de los documentos apenas cierra la etapa de hipótesis: contesta las dos lecturas
-  de "mismos cortes" (las tasas de muestreo y el corte N* = 3.300), da las dos comparaciones que ya existen
-  (`U0.5` y `H4O-0.5` tienen Δ contra el control casi iguales; `H4U-0.1` pierde y `H3-0.1` no), aclara que todavía no
-  hay un contraste directo entre H1 y H4 y dice qué se va a correr.
-- Una **segunda respuesta** con la grilla completa y los tiempos, al cerrar el informe.
+- El informe conjunto suma una sección «Diálogo entre H1 y H4». Primero, apenas cierra la etapa de hipótesis, con lo que
+  ya se sabe: contesta las dos lecturas de "mismos cortes" (las tasas de muestreo y el corte N* = 3.300), da las dos
+  comparaciones que ya existen (`U0.5` y `H4O-0.5` tienen Δ contra el control casi iguales; `H4U-0.1` pierde y `H3-0.1`
+  no), aclara que todavía no hay un contraste directo entre H1 y H4 y dice qué se va a correr. Después, al cerrar el
+  informe, con la grilla completa y los tiempos.
 - El informe conjunto deja de decir que no se toca la proporción de clases sin matiz (H4 la toca) y justifica el corte
   fijo N* = 3.300 en las variantes cuyo final entrena con otra proporción reponderada.
+- El repo no guarda borradores de mensajes de Zulip y ninguna sesión escribe ni manda mensajes: los escribe y los manda
+  Agustina, leyendo el informe.
 
 **Correcciones de texto**
 
@@ -129,7 +131,8 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
     variable en `fast-retrain-opt`, dueño de `U{r}@k`.
   - `comun/ledger.py` y `comun/consolidar.py`: pares entre experimentos en `sampling_1` y el chequeo de la fase 8.
   - `scripts/comparar_rondas.py`.
-  - Un script que mueve los estudios `U{r}@k` de `h3` a `h1`, en el repo y en el bucket.
+  - Un script que mueve los estudios `U{r}@k` de `h3` a `h1`, en el repo y en el bucket, con respaldo, verificación y
+    modo en seco.
   - `experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (medición, calibración y su consolidado) y las listas de la
     fase 8.
   - `scripts/vm.sh`, para correr la calibración antes y después de la lista.
@@ -141,13 +144,13 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
   - `h4/ledger`: estudios `F0.25`, `F0.1`, `F0.05` (y `@k`), finales de `H4O-*` y `H4P-*`.
   - `sampling_1/ledger`: `pares.csv`, la carpeta `tiempos/` (un archivo por medición y por lista) y sus consolidados
     `tiempos_hp_fijos.csv` y `calibracion.csv`.
-  - El bucket: los 21 estudios `U{r}@k` cambian de carpeta.
+  - El bucket: los 21 estudios `U{r}@k` cambian de carpeta, y queda un respaldo de los ledgers de `h1` y `h3` hasta
+    archivar el cambio.
 - **Documentos**:
   - Predicciones pre-registradas en `control`, `h1`, `h2`, `h3` y `h4` (`docs/hipotesis.md` y `docs/diseno.md`).
   - Los informes de `sampling_1` y de `h1`–`h4`, más `decisiones.md`, `guion.md`, el README de `sampling_1` y el de la
     raíz, `tabla_resultados.md`, `comparacion_rondas.md` y las figuras.
   - `docs/metodo.md` y `docs/revision.md`.
-  - Dos borradores de respuesta en `experimentos/sampling_1/docs/zulip/`.
 - **Cómputo**: 67 estudios y 2.560 finales nuevos, más la medición. Unas 36 h de VM `n2-highmem-8` a pedido, en 17
   listas (dos por réplica y una para la medición). La cuota es de 32 vCPU por proyecto, o sea 4 VMs a la vez, y en el
   período de prueba no se puede pedir más. Se lanzan en tandas: de 8 si el segundo proyecto de la cuenta suma su cuota

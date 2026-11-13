@@ -74,7 +74,8 @@ Restricciones:
   pueda comparar.
 - Que lo que no se corrió quede dicho en el informe antes de que lo pregunten.
 - Informes coherentes con las tablas generadas.
-- Una respuesta al tutor sobre el diálogo entre H1 y H4, primero con lo que ya hay y después con la grilla completa.
+- Que el informe conjunto responda la pregunta del tutor sobre el diálogo entre H1 y H4, primero con lo que ya hay y
+  después con la grilla completa.
 
 **Non-Goals:**
 - Volver a correr lo que ya está corrido ni cambiar la definición de T.
@@ -86,6 +87,7 @@ Restricciones:
 - Corregir por comparaciones múltiples. Se declaran los contrastes principales, como hasta ahora.
 - Pedir más cuota o crear proyectos nuevos.
 - `Experimentos guion.md` en la raíz.
+- Borradores o mensajes de Zulip: no se guardan en el repo y ninguna sesión los escribe ni los manda.
 - Tocar `ledger/apareado.csv`. Su columna `aceleracion` queda como está, con la réplica 0, porque es el par por semilla
   de la réplica 0. El reporte calcula A desde los estudios.
 
@@ -224,9 +226,18 @@ una réplica: es la repetición del control, no una variante.
 - **Qué cambia en los documentos:** `## Dependencias` de `h3/docs/diseno.md` (todos los `U{r}` son de `h1`) y de
   `h4/docs/diseno.md` (deja de depender de `h3`; si no, `--verificar` falla por declarar de más).
 - **Qué se mueve:** los 21 estudios `U0.25@k`, `U0.1@k` y `U0.05@k`, de `h3/ledger` a `h1/ledger`: sus hp, sus filas
-  de `corridas/` y las de `estudios.csv`, sin cambiar ids ni contenido. **También en el bucket**, con `gsutil mv`: `vm.sh`
-  sincroniza sin borrar, así que si quedan en el bucket vuelven a `h3` con la primera VM y los estudios quedan
-  duplicados. Los archivos de `h3/ledger/exploracion/` no se mueven: son pruebas en la Mac y no entran en ninguna tabla.
+  de `corridas/` y las de `estudios.csv`, sin cambiar ids ni contenido. **También en el bucket**: `vm.sh` sincroniza sin
+  borrar, así que si quedan en el bucket vuelven a `h3` con la primera VM y los estudios quedan duplicados.
+- **Cómo se mueve en el bucket**, que es parte de este cambio y lo corre la sesión de código (tarea 2.1), no una persona
+  a mano:
+  1. copia de respaldo de `experimentos/h1/ledger/` y `experimentos/h3/ledger/` del bucket a
+     `$BUCKET/respaldo/2026-11-mover-U/`, y listado de los archivos a mover guardado en la bitácora;
+  2. copiar cada archivo a su carpeta nueva de `h1` y verificar que el tamaño y el hash coinciden con el original;
+  3. recién entonces borrar el original de `h3`;
+  4. bajar los dos ledgers del bucket a una carpeta temporal y comparar con los del repo: tienen que ser iguales.
+
+  El script tiene `--en-seco`, que imprime los pasos sin tocar nada, y se puede volver a correr si se corta. El respaldo
+  se borra al archivar el cambio. Los archivos de `h3/ledger/exploracion/` no se mueven: son pruebas en la Mac y no entran en ninguna tabla.
 - **Invariante:** antes y después de mover, dan las mismas tablas `python -m comun.consolidar` de `h3` y `h4` y
   `python -m comun.reporte` de `h3`, `h4` y `sampling_1`, salvo que los estudios cambian de archivo. Si el reporte de
   `h4` ya hoy no encuentra `U0.05@k` y `U0.25@k` para `H4F-*` (sospecha de la revisión, sin verificar), el cambio en
@@ -343,8 +354,11 @@ medición de tiempos.
 - **Las correcciones que no dependen de números nuevos** se hacen en paralelo con el código (tarea 4.1); las que citan
   A o veredictos, después de regenerar.
 
-**D17. Respuesta al tutor, en dos tiempos.** Las dos salen de los documentos y las postea Agustina.
-- **Primera**, `experimentos/sampling_1/docs/zulip/02_dialogo_h1_h4.md`, apenas cierra la revisión de hipótesis (1.5):
+**D17. La respuesta a la pregunta del tutor queda en el informe conjunto.** El repo no guarda borradores de mensajes
+de Zulip y ninguna sesión escribe ni manda mensajes: los escribe y los manda Agustina, leyendo el informe (decisión del
+13-nov). Lo que hace este cambio es que el informe tenga la respuesta, en dos tiempos.
+- **Primero**, apenas cierra la revisión de hipótesis (1.5): una sección «Diálogo entre H1 y H4» en el informe conjunto,
+  con lo que ya se sabe.
   - "Mismos cortes" se contesta en sus dos lecturas. Como tasas de muestreo: H4 no repite la grilla de H1, y hoy se
     cruzan en dos puntos (los del Context). Como corte de envíos: N* = 3.300 es el mismo para todas las variantes.
   - "¿Se verá alguna diferencia?": todavía no hay un contraste directo entre H1 y H4. En 0,5, los Δ contra el control
@@ -352,9 +366,9 @@ medición de tiempos.
     búsqueda, `H4U-0.1` pierde y `H3-0.1` no, con IC que no se tocan; ahí `H4U-0.1` tiene además un 9 % más de filas y
     no lleva peso. El contraste directo es parte de lo que se corre (D8, D12), con su predicción (D13).
   - Tiempos: cómo se midieron, qué se sabe del ruido y qué se va a medir (D4, D6).
-- **Segunda**, `03_grilla_y_tiempos.md`, al cerrar el informe: la tabla de cobertura, los cuatro contrastes principales
-  con las filas de cada lado y la sección de tiempos.
-- **En el informe conjunto:**
+- **Después**, al cerrar el informe: la misma sección con la tabla de cobertura, los cuatro contrastes principales con
+  las filas de cada lado y la sección de tiempos.
+- **Además, en el informe conjunto:**
   - el undersampling es H4, que conserva todas las bajas y recorta CONTINUA; H1 no toca la proporción;
   - el corte N* vale tal cual para las variantes que entrenan el final con la proporción original (`U*`, `B*`, H3,
     `H4H`, `H4U`, `H4P`); en `H4F` y `H4O` el peso 1/f de CONTINUA restituye la proporción ponderada del train, así que
@@ -377,8 +391,8 @@ medición de tiempos.
 - **Mover estudios de `h3` a `h1`** toca filas ya corridas, en el repo y en el bucket. Mitigación: commit propio,
   invariante de consolidado y de reportes idénticos (D10), chequeo de que no vuelven a `h3` después de la fase (5.3) y
   revisión de código antes de correr.
-- **El alcance creció**: el cambio pasó de una VM de 2–3 h a 17 VMs y 9 variantes nuevas. Mitigación: la primera
-  respuesta al tutor no espera a las corridas (D17), y las correcciones de texto van en paralelo (D16).
+- **El alcance creció**: el cambio pasó de una VM de 2–3 h a 17 VMs y 9 variantes nuevas. Mitigación: la sección del
+  informe que responde al tutor no espera a las corridas (D17), y las correcciones de texto van en paralelo (D16).
 - **Cuota.** 17 VMs no entran a la vez: van en tandas, y el reloj es de 4 a 12 h según funcione el segundo proyecto.
 - **Tandas en horarios distintos y, quizá, en dos proyectos.** Es el mismo tipo de máquina, la misma región y la misma
   imagen; la calibración mide si las VMs difieren, con la hora mezclada (D6).

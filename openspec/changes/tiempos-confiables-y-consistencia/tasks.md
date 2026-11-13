@@ -6,7 +6,7 @@ la raíz, queda fuera. Los números de línea que citan las tareas son orientati
 
 Qué puede ir en paralelo:
 - Después de cerrar 1.5: 2.1 (mover los estudios), 4.1 (correcciones de texto que no dependen de números nuevos) y
-  4.2 (primera respuesta al tutor).
+  4.2 (la sección del informe que responde al tutor).
 - Después de 2.1: el resto del grupo 2 (código de corridas) y el grupo 3 (código del reporte), en dos sesiones, cada una
   en su rama. 2.3 (pares entre experimentos) toca `comun/ledger.py` y `comun/consolidar.py`, y 3.6 los muestra: 3.5 a
   3.7 esperan a 2.2 y 2.3.
@@ -56,12 +56,12 @@ Qué puede ir en paralelo:
   - `comun/reporte.py`: `cargar_replicas` lee los estudios del dueño de cada estudio;
   - `tests/test_variantes.py` y `tests/test_replicas.py`: el dueño nuevo;
   - un script que mueve de `h3/ledger` a `h1/ledger` los 21 estudios `U0.25@k`, `U0.1@k` y `U0.05@k` (hp, `corridas/` y
-    `estudios.csv`), sin cambiar ids ni contenido, en el repo y en el bucket (`gsutil mv`), con `--en-seco`. No mueve
-    `exploracion/`;
-  - verificar el invariante contra las tablas guardadas y anotar cualquier diferencia en la bitácora;
+    `estudios.csv`), sin cambiar ids ni contenido, en el repo y en el bucket, con `--en-seco`. No mueve `exploracion/`;
+  - correrlo en el repo, verificar el invariante contra las tablas guardadas y anotar cualquier diferencia en la
+    bitácora;
+  - correrlo en el bucket con los cuatro pasos de D10 (respaldo, copiar y verificar, borrar el original, comparar el
+    bucket con el repo), primero con `--en-seco`. El listado de lo movido va a la bitácora;
   - `python -m comun.variantes --verificar` y `pytest`.
-
-  Agustina corre la parte del bucket.
 - [ ] 2.2 Variantes y métodos (D8, D9, D12):
   - `comun/metodos.py` y `comun/correr.py`: `fast-retrain-opt` con la fracción igual a la tasa de la variante y peso
     1/f, separado de `fast-retrain`, que sigue en 0,5; `pesos` recibe la tasa; `validar` acepta las cuatro tasas; el
@@ -161,14 +161,15 @@ Qué puede ir en paralelo:
     pre-registrada ("predecía que…").
 
   Verificar con `verificar_readme.py` y `verificar_informe_h3.py --informe`.
-- [ ] 4.2 Primera respuesta al tutor (D17): `experimentos/sampling_1/docs/zulip/02_dialogo_h1_h4.md`, que sale de los
-  informes vigentes y de las secciones de 1.1–1.3. No afirma un contraste directo entre H1 y H4: da los dos Δ contra el
-  control y dice qué se va a correr. Agustina la postea.
+- [ ] 4.2 Informe conjunto, sección «Diálogo entre H1 y H4» (D17), con lo que ya se sabe: sale de los informes
+  vigentes y de las secciones de 1.1–1.3. No afirma un contraste directo entre H1 y H4: da los dos Δ contra el control y
+  dice qué se va a correr. No se escribe ningún borrador de mensaje.
 
 ## 5. Corridas (VMs a pedido, las lanza Agustina)
 
 - [ ] 5.1 Antes de lanzar:
-  - la parte del bucket de 2.1 está hecha y `main` y el tag de corridas están pusheados;
+  - los estudios `U{r}@k` están en `h1` en el repo y en el bucket (2.1), y `main` y el tag de corridas están pusheados
+    (el push y el tag los decide Agustina);
   - verificar el crédito y la cuota de los dos proyectos (`CPUS_ALL_REGIONS`);
   - probar el segundo proyecto: darle a su cuenta de servicio acceso a la imagen y al bucket del primero, lanzar una
     lista en cada proyecto hasta tener 5 VMs y ver si la quinta arranca. Anotar el resultado en la bitácora: tandas de 8
@@ -212,8 +213,8 @@ Qué puede ir en paralelo:
 
   Verificar con `verificar_readme.py`.
 - [ ] 6.4 `docs/metodo.md` § Agregar una hipótesis y `docs/revision.md` § 2: la regla de D14.
-- [ ] 6.5 Segunda respuesta al tutor (D17): `experimentos/sampling_1/docs/zulip/03_grilla_y_tiempos.md`, que sale de los
-  documentos. Agustina la postea.
+- [ ] 6.5 Informe conjunto, sección «Diálogo entre H1 y H4» (D17), actualizada con la tabla de cobertura, los cuatro
+  contrastes principales con las filas de cada lado y la sección de tiempos. No se escribe ningún borrador de mensaje.
 - [ ] 6.6 Revisión en sesión limpia del informe con `docs/revision.md` § 5, cierre en las bitácoras y
   `comun/tokens.py`.
 
