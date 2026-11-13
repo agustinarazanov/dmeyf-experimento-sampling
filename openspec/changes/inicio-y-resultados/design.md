@@ -294,6 +294,28 @@ pantalla y no se encuentra nada. Tres reglas:
 Tope: a 1440 × 900, ninguna figura ni tabla de Resultados es más alta que 800 px. Si una no entra con 2 × 2, se parte
 en dos figuras (H1–H2 y H3–H4) y no se achica la letra.
 
+### D17. Zoom en las figuras y tablas ordenables (agregado el 13-nov)
+
+Las dos cosas son interactivas, casi gratis y no tocan el generador. Lo demás que es interactivo (gráficos con
+leyenda que oculta hipótesis, comparador de dos variantes, explorador del tradeoff con δ y 2× movibles, presupuesto de
+tiempo del ensamble) va en un cambio aparte, después de archivar este.
+
+- **Zoom**: plugin `mkdocs-glightbox` (`auto_caption: false`, `zoomable: true`). Un clic en una figura la abre a
+  pantalla completa. Se suma a `requirements-sitio.txt` con versión fija (0.5.3), para que lo instale el flujo de
+  GitHub Pages. El plugin envuelve cada imagen en `a.glightbox`, así que las reglas de ancho de `sitio/estilos.css`
+  (`p > img:only-child`) tienen que cubrir también `p > a.glightbox:only-child > img`.
+- **Tablas**: tablesort 5.3.0 (núcleo y `sorts/tablesort.number`) desde unpkg, en `extra_javascript`, más
+  `sitio/tablas.js`, que se suma a la lista blanca. Corre en cada página con `document$.subscribe` de Material:
+  - antes de iniciar tablesort pone `data-sort` en cada celda con su primer número, porque los números del sitio llevan
+    «−» (U+2212), coma decimal, punto de miles y texto alrededor (IC, «×»);
+  - en las tablas de 8 filas o más agrega un campo «Filtrar filas» que oculta las filas sin el texto buscado;
+  - ignora las tablas sin `tbody`, porque hay tablas así y en la prueba del 13-nov rompieron el script.
+  
+  Los encabezados muestran ▲/▼ y el cursor de clic. El campo usa las variables del tema, así que vale en los dos modos.
+
+Lo verifica el orquestador en el navegador: ordenar por Δ en las dos direcciones, filtrar «H3», abrir una figura, a
+1440 y 390 px y en claro y oscuro.
+
 ## Risks / Trade-offs
 
 - [Unir `main` en la rama de `tiempos-confiables-y-consistencia` choca con `sampling_1/README.md` y con

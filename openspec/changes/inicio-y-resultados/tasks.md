@@ -149,6 +149,9 @@ Cada tarea:
 
 ## 3. Integración (sesión: Sonnet)
 
+- [ ] 3.0 Zoom en las figuras y tablas ordenables y filtrables (D17). **La hace el orquestador; una sesión headless no
+  la toca ni la marca.** Verificar en el navegador: ordenar por Δ en las dos direcciones, filtrar «H3», abrir una figura,
+  a 1440 y 390 px y en claro y oscuro, y que `mkdocs build` pase con `requirements-sitio.txt`.
 - [ ] 3.1 `pytest` entero, `python -m comun.variantes --verificar`, los dos verificadores y `scripts/sitio.sh`, todo en
   verde. Ancho único medido en `site/` (texto, figura, código, recuadro y plegable con el mismo ancho a 1440 px). Las
   ~13 páginas no desbordan a 390 px. Las capturas en claro y en oscuro las hace el orquestador.
