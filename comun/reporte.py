@@ -1520,10 +1520,18 @@ def tabla_resumen(filas_a: list[dict]) -> str:
 
 
 def pestanas_bloque_a(ctx: Contexto, filas_a: list[dict]) -> str:
-    """El resumen del bloque A en pestañas (D16): «Valen la pena» primero y una por hipótesis. Las pestañas van dentro del
-    marcador; el contenido de cada una, sangrado cuatro espacios, como lo pide `pymdownx.tabbed`."""
-    vale = [f for f in filas_a if clase_veredicto(f["veredicto"]) == "ok" and f["A"] is not None and f["A"] >= A_VALE]
-    grupos = [("Valen la pena", vale)] + [(h, [f for f in filas_a if f["hipotesis"] == h]) for h in ctx.hipotesis]
+    """El resumen del bloque A en pestañas (D16): «Lo mejor de cada hipótesis» primero y una por hipótesis. Las pestañas
+    van dentro del marcador; el contenido de cada una, sangrado cuatro espacios, como lo pide `pymdownx.tabbed`."""
+    def mejor(fs: list[dict]) -> list[dict]:
+        """La variante más rápida entre las que valen la pena o, si ninguna vale la pena, la de mayor Δ."""
+        vale = [f for f in fs if clase_veredicto(f["veredicto"]) == "ok" and f["A"] is not None and f["A"] >= A_VALE]
+        if vale:
+            return [max(vale, key=lambda f: f["A"])]
+        con_delta = [f for f in fs if delta(f)]
+        return [max(con_delta, key=lambda f: delta(f)[0])] if con_delta else []
+
+    por_hipotesis = [(h, [f for f in filas_a if f["hipotesis"] == h]) for h in ctx.hipotesis]
+    grupos = [("Lo mejor de cada hipótesis", [m for _, fs in por_hipotesis for m in mejor(fs)])] + por_hipotesis
     sangrar = lambda t: "\n".join("    " + linea if linea else "" for linea in t.splitlines())  # noqa: E731
     return "\n\n".join(f'=== "{titulo}"\n\n' + sangrar(tabla_resumen(fs) if fs else pendiente("sin variantes")) for titulo, fs in grupos)
 

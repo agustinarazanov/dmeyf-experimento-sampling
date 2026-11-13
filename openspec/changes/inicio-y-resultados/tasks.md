@@ -87,7 +87,7 @@
   Quedan dos ✗ abiertos que necesitan una decisión humana, en `sampling_1/ledger/sesiones/bloqueo.txt`: la pestaña
   «Valen la pena» mide 1031 px (más que el tope de 800) y regenerar no siempre da lo mismo en «tiempo igual, réplicas».
   Decididos el 13-nov: tareas 1.13 a 1.16.
-- [ ] 1.13 Primera pestaña del bloque A de Resultados: «Lo mejor de cada hipótesis» en lugar de «Valen la pena» (D16).
+- [x] 1.13 Primera pestaña del bloque A de Resultados: «Lo mejor de cada hipótesis» en lugar de «Valen la pena» (D16).
   Verificar con `python -m scripts.medir_sitio --pagina experimentos/sampling_1/` sin problemas y con los dos
   verificadores.
 - [ ] 1.14 Predicciones fuera del repo (D18), solo código:

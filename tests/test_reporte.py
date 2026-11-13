@@ -224,8 +224,10 @@ def test_resumen_corto(pagina_s1):
 
 def test_resaltado(pagina_s1):
     tablas = re.findall(r"<table><tr><th>variante</th><th>hipótesis</th><th>R</th>.*?</table>", pagina_s1, re.S)
-    assert len(tablas) == 5  # «Valen la pena» y una pestaña por hipótesis
+    assert len(tablas) == 5  # «Lo mejor de cada hipótesis» y una pestaña por hipótesis
     por_tabla = [_filas(t) for t in tablas]
+    assert 1 <= len(por_tabla[0]) <= 4  # a lo sumo una fila por hipótesis
+    assert '=== "Lo mejor de cada hipótesis"' in pagina_s1 and "Valen la pena" not in pagina_s1
     filas = {v: c for t in por_tabla[1:] for v, c in t.items()}
     assert "class='sig-neg'" in filas["U0.05"][3]
     assert "<span class='pill pierde'>pierde</span>" in filas["U0.05"][5]
