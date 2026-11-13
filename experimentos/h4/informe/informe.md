@@ -123,7 +123,6 @@ los IC contienen a 0. En `H4H-0.1` y `H4U-0.1` van juntas: las dos bajan (ΔAUC 
 Solo lo que no está justificado en el diseño; los apartamientos con id (208135, 211210, 211718) están en § Ronda
 201903–201908.
 
-- **Ventana del final en duda.** Si el tutor quería una ventana corrida 201905–201908, es otra ronda (no corrida).
 - **Hiperparámetros de cuatro meses en un final de seis**, sin reescalar `min_data_in_leaf`. En `H4F-*` y `H4O-0.5` el
   final además usa la mitad de CONTINUA, así que el número de filas del final cambia en los dos sentidos.
 - **Test ya mirado.** Las cuatro variantes de Luis salen de estrategias que eligió o descartó mirando su ganancia en

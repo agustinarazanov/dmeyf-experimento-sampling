@@ -40,8 +40,7 @@ N* = 3.300 envíos (fijo), Ḡ_C = 282,48 M$, δ = 5,65 M$, 20 semillas en comú
 
 Solo lo que no está justificado en el diseño:
 
-- **Ventana del final en duda**: si el tutor quería 201905–201908, es otra ronda (no corrida). Los hiperparámetros
-  elegidos con cuatro meses se usan sin cambios en un final de seis.
+- Los hiperparámetros elegidos con cuatro meses se usan sin cambios en un final de seis.
 - Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
 - Los estudios de U0.25 y U0.1 los usa también H3 (`h3`): Δ(U0.25) y Δ(H3-0.25) no son evidencia independiente entre sí.
 - Un solo año (2019), un solo mes de test (201910) y un solo tipo de máquina; el resto en el informe conjunto.

@@ -80,14 +80,13 @@ siguiente; el resto (Optuna, espacio, G, Δ, regla de δ, veredictos, T, A) qued
 
 ### Apartamientos del baseline
 
-Cada uno con su id y su motivo. Los tres están justificados; van a § Limitaciones del informe solo dos cosas que la
-tabla nombra: la duda abierta sobre la ventana (si el tutor quería 201905–201908) y el uso sin cambios de los
-hiperparámetros de cuatro meses en un final de seis.
+Cada uno con su id y su motivo. Los tres están justificados; va a § Limitaciones del informe solo una cosa que la
+tabla nombra: el uso sin cambios de los hiperparámetros de cuatro meses en un final de seis.
 
 | apartamiento | id | justificación |
 |---|---|---|
 | El veredicto sale de la ganancia G y no del AUC, aunque el baseline dice "métrica auc". El AUC en 201910 se reporta al lado: ΔAUC con su IC por semilla y con réplicas en todas las tablas. | Zulip 208135 | La regla de veredicto se escribió en pesos antes de la primera corrida y δ está definido en pesos. Un umbral de AUC sería una regla nueva escrita después de haber visto los AUC de la ronda anterior. Optuna sí elige por AUC en validación, como pide 208135. |
-| Ventana del final 201903–201908 (seis meses) y no una ventana corrida 201905–201908. | Zulip 211210 | La respuesta dice que se reentrena incluyendo 07 y 08, no que se saquen 03 y 04. Agustina eligió los seis meses. Si el tutor aclara que es 201905–201908, es otra ronda y otro cambio; hasta entonces se declara como duda abierta en las limitaciones. |
+| Ventana del final 201903–201908 (seis meses). | Zulip 211210 | La respuesta dice que se reentrena incluyendo 07 y 08, no que se saquen 03 y 04. Agustina confirmó los seis meses el 13-nov-2026. |
 | Los hiperparámetros elegidos con cuatro meses se usan sin cambios en un final de seis, incluido `min_data_in_leaf`, que es absoluto. | Zulip 211210 | Es lo que pide la consigna (reentrenar con los hiperparámetros ya elegidos), no una variante. Reescalar sería una variante nueva y la idea ya está en `H3R` y `H3L`. Se declara como limitación porque cambia el régimen del final. |
 
 ### Predicción y regla de la ronda

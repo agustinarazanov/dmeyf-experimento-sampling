@@ -167,8 +167,6 @@ Las reglas 5 a 8 son secundarias: la respuesta al tutor se apoya en los contrast
 Solo lo que no está justificado en el diseño; los apartamientos con id (208135, 211210, 211718) están en § Ronda
 201903–201908.
 
-- **Ventana del final en duda.** Si el tutor quería una ventana corrida 201905–201908 en vez de 201903–201908, es otra
-  ronda (no corrida).
 - **Hiperparámetros de cuatro meses en un final de seis**, sin reescalar `min_data_in_leaf` (absoluto). `H3R` y `H3L`
   muestran que reescalarlo no mejora a no hacerlo en las muestras de búsqueda, pero eso no se probó para el salto de
   cuatro a seis meses.

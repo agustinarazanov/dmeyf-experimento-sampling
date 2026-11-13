@@ -40,8 +40,7 @@ N* = 3.300 envíos (fijo), Ḡ_C = 282,48 M$, δ = 5,65 M$, 20 semillas en comú
 
 Solo lo que no está justificado en el diseño:
 
-- **Ventana del final en duda**: si el tutor quería 201905–201908, es otra ronda (no corrida). Los hiperparámetros
-  elegidos con cuatro meses se usan sin cambios en un final de seis.
+- Los hiperparámetros elegidos con cuatro meses se usan sin cambios en un final de seis.
 - **GOSS es descriptivo**: no tiene una regla que decida; su fila se lee como referencia y no como veredicto de H2.
 - Adaptación de H2: en las variantes `B*` `bagging_fraction` es la variable y sale del espacio de Optuna, mientras que el
   control y `uniforme` la siguen optimizando. Por eso `bagging` y `uniforme` no tienen la misma fracción efectiva por

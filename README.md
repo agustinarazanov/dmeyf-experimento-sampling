@@ -88,8 +88,7 @@ comparación en dos bloques; [`incorporar-aportes`](openspec/changes/archive/202
 de Martín y Luis y sumó `h4` y las extensiones de `h3`: el grupo queda con cuatro hipótesis.
 [`final-con-julio-agosto`](openspec/changes/final-con-julio-agosto/proposal.md) volvió a correr todos los finales con
 201903–201908 y 20 semillas, sumó `H4O-0.5` y el AUC al lado de la ganancia. Lo que falta es otro mes de test, que
-separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4, y la ventana corrida
-201905–201908 si el tutor confirma que es esa.
+separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4.
 
 ## Ver el sitio localmente
 

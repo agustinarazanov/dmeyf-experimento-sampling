@@ -135,8 +135,7 @@ arriba sigue valiendo para la ronda anterior, que no se borra ni se pisa.
   Cada fila final lleva `meses_final = 201903-201908` y el id la ventana; el consolidado no mezcla rondas.
 - **Apartamientos de los que se hace cargo este diseño** (detalle en `hipotesis.md`): ganancia como métrica que decide,
   con ΔAUC al lado (Zulip 208135); ventana del final de seis meses (Zulip 211210). Solo el uso sin cambios de los
-  hiperparámetros de cuatro meses en un final de seis y la duda abierta sobre la ventana (si el tutor quería
-  201905–201908) quedan como limitaciones.
+  hiperparámetros de cuatro meses en un final de seis queda como limitación.
 - **Ejecución**: fase 7 de `sampling_1`, tag `corridas-v4` (listas, horas y costo en
   [`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Reparto y fases).
 

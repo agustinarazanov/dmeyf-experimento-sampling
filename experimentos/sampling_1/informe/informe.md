@@ -319,8 +319,6 @@ de `control`:
 
 Solo lo que no está justificado en § Diseño (los tres apartamientos con id están justificados ahí):
 
-- **Ventana del final en duda.** Elegimos 201903–201908; si el tutor quería una ventana corrida 201905–201908, es otra
-  ronda, que no corrimos.
 - **Hiperparámetros de cuatro meses en un final de seis.** Se usan sin cambios, incluido `min_data_in_leaf`, que es
   absoluto y ahora se aplica sobre más filas. Reescalarlo sería una variante nueva (la idea está en `H3R` y `H3L`).
 - **Test ya mirado.** H4 y las extensiones de H3 salen del aporte de Luis, que eligió y descartó estrategias mirando su
@@ -383,7 +381,6 @@ de seis meses y 20 semillas la respuesta es la misma que con cuatro meses y 10.
 
 - Otro mes de test, para separar el ruido de 201910 del efecto de las variantes y para tener uno que no se haya mirado
   al elegir H4 y las extensiones de H3.
-- La ventana corrida 201905–201908, si el tutor confirma que es la del baseline: es una ronda más.
 - Fast-retrain sobre otras búsquedas (por ejemplo, `H3-0.1`) y con otras fracciones de CONTINUA, con réplicas desde el
   principio: la suerte de la optimización es del mismo orden que las diferencias entre variantes.
 

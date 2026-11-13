@@ -1614,3 +1614,11 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
      réplica 0 (h3: H3-0.25 «gana» en la tabla, «no pierde (con réplicas)» en el bloque A). El color coincide.
   7. (nit) `fig_tiempo_ganancia` quedó sin uso desde antes de este cambio.
 - Sin ✗ abiertos: la etapa cierra. Archivar el cambio lo decide Agustina; 3, 5 y 6 quedan para un cambio posterior.
+
+### 13-nov-2026 · ventana del final confirmada
+
+- Agustina confirma que la ventana del final es 201903–201908; la ventana corrida 201905–201908 (duda abierta por
+  Zulip 212249) queda descartada. Se borró la «ventana del final en duda» de las limitaciones y del «qué sigue» en los
+  informes de `h1`–`h4` y `sampling_1`, el guion, el README y `control/docs/` (`hipotesis.md` § Apartamientos del
+  baseline, `diseno.md`). Las entradas anteriores de esta bitácora y `openspec/changes/final-con-julio-agosto/` no se
+  tocan: son historia. Ningún número cambia.
