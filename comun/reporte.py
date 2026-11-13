@@ -971,39 +971,47 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
 
 
 def fig_fraccion(ctx: Contexto, a: dict, figuras: Path | None) -> str:
-    """Δ contra la fracción de muestra (`Variante.tasa`): una línea por `Variante.metodo` con dos tasas o más, con la banda
-    de su IC y la línea de −δ."""
-    por: dict[str, list[tuple]] = {}
+    """Δ contra la fracción de muestra (`Variante.tasa`) en paneles de 2 × 2, uno por hipótesis (D16): una línea por
+    `Variante.metodo` con dos tasas o más, con la banda de su IC y la línea de −δ; ejes compartidos."""
+    por: dict[tuple[str, str], list[tuple]] = {}
     for f in a["filas"]:
         v, d = reg.VARIANTES.get(f["variante"]), delta(f)
         if v is not None and d is not None:
-            por.setdefault(v.metodo, []).append((v.tasa, *d, f["variante"]))
-    familias = {m: sorted(p) for m, p in por.items() if len({x[0] for x in p}) >= 2}
+            por.setdefault((v.dueno.upper(), v.metodo), []).append((v.tasa, *d, f["variante"]))
+    familias = {k: sorted(p) for k, p in por.items() if len({x[0] for x in p}) >= 2}
     if not familias:
         return pendiente("ninguna familia de variantes tiene dos fracciones con datos")
-    fig, ax = plt.subplots(figsize=(ANCHO, 5.0))
-    for j, (m, p) in enumerate(familias.items()):
-        t = np.array([x[0] for x in p])
-        d, lo, hi = (np.array([x[i] for x in p]) / 1e6 for i in (1, 2, 3))
-        color = PALETA[j % len(PALETA)]
-        ax.fill_between(t, lo, hi, color=color, alpha=0.16, lw=0)
-        ax.plot(t, d, "-" + MARCAS[j % len(MARCAS)], ms=6, mec="white", mew=1, lw=2, color=color, label=m)
+    hips = [h for h in ctx.hipotesis if any(k[0] == h for k in familias)]
+    cols = 2 if len(hips) > 1 else 1
+    nf = math.ceil(len(hips) / cols)
+    fig, axs = plt.subplots(nf, cols, figsize=(ANCHO, 3.2 * nf + 1.0), sharex=True, sharey=True, squeeze=False)
     d_m = a["delta"] / 1e6
-    ax.axhline(0, color=COLOR_C, lw=0.8)
-    ax.axhline(-d_m, color=COLOR_C, ls=":", lw=1, label="−δ")
-    ax.set_xscale("log")
     tasas = sorted({x[0] for p in familias.values() for x in p})
-    ax.set_xticks(tasas, [f"{t:g}" for t in tasas])
-    ax.minorticks_off()
+    for ax, h in zip(axs.flat, hips):
+        for j, ((_, m), p) in enumerate(k for k in familias.items() if k[0][0] == h):
+            t = np.array([x[0] for x in p])
+            d, lo, hi = (np.array([x[i] for x in p]) / 1e6 for i in (1, 2, 3))
+            ax.fill_between(t, lo, hi, color=ctx.color[h], alpha=0.16, lw=0)
+            ax.plot(t, d, "-" + MARCAS[j % len(MARCAS)], ms=6, mec="white", mew=1, lw=2, color=ctx.color[h], label=m)
+        ax.axhline(0, color=COLOR_C, lw=0.8)
+        ax.axhline(-d_m, color=COLOR_C, ls=":", lw=1)
+        ax.set_xscale("log")
+        ax.set_xticks(tasas, [f"{t:g}" for t in tasas])
+        ax.minorticks_off()
+        ax.set_title(h, fontsize=12, loc="left", color=ctx.color[h], fontweight="bold")
+        ax.legend(frameon=False, fontsize=10, loc="lower right")
+        _ejes(ax)
+    for ax in axs.flat[len(hips):]:
+        ax.set_visible(False)
+    for ax in axs[-1]:
+        ax.set_xlabel("fracción de la muestra (log)")
+    for ax in axs[:, 0]:
+        ax.set_ylabel("Δ contra el control (M$)")
     peor = min((x for p in familias.values() for x in p), key=lambda x: x[1])
-    fig.suptitle(f"Δ contra la fracción de muestra: el punto más bajo es {peor[4]} ({peor[1] / 1e6:+.1f} M$), "
-                 f"{'por debajo de' if peor[1] / 1e6 < -d_m else 'dentro de'} −δ", fontsize=14, x=0.01, ha="left")
-    ax.set_xlabel("fracción de la muestra (escala log); banda: IC 95% de Δ")
-    ax.set_ylabel("Δ contra el control (M$)")
-    ax.legend(frameon=False, fontsize=11, ncol=min(len(familias) + 1, 4), loc="upper center",
-              bbox_to_anchor=(0.5, -0.14))
-    _ejes(ax)
-    return figura(fig, "fraccion", figuras)
+    fig.suptitle(f"Δ contra la fracción de muestra: el punto más bajo es {peor[4]} ({peor[1] / 1e6:+.1f} M\\$), "
+                 f"{'por debajo de' if peor[1] / 1e6 < -d_m else 'dentro de'} −δ (punteada)", fontsize=13, x=0.01, ha="left", wrap=True)
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    return figura(fig, "fraccion", figuras, ajustar=False)
 
 
 def fig_desglose(ctx: Contexto, a: dict, figuras: Path | None) -> str:

@@ -150,7 +150,7 @@ Las tablas de varianza y de diferencias entre variantes están en el [Anexo](ane
 <!-- generado:fraccion -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
-![Δ contra la fracción de muestra: el punto más bajo es U0.05 (-30.1 M$), por debajo de −δ](figuras/fraccion.svg)
+![Δ contra la fracción de muestra: el punto más bajo es U0.05 (-30.1 M$), por debajo de −δ (punteada)](figuras/fraccion.svg)
 
 <!-- /generado:fraccion -->
 
