@@ -1817,3 +1817,27 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   tabla con texto de exploratorios (`git grep` de filas de tabla con sus carpetas: solo los README internos de cada
   exploratorio, que no se publican). `grep -ci autor` sobre `exploratorios/README.md` da 0. `scripts/sitio.sh`: solo
   fallan `index.md` (3.9) y el README raíz (3.10).
+- 3.9 `index.md`, `sitio/hipotesis.md`, `sitio/como-medimos.md` y `docs/metodo.md`. Destino de cada sección vieja:
+  - `index.md`: encabezado YAML de Jekyll → descartado. Integrantes y tutor → descartados (D8). Pregunta → primer
+    párrafo, sin «del tutor». Párrafos de respuesta (con A de una ronda vieja: 4,53 a 11,82 y 13,17) → callout de tres
+    líneas sin números (los números están en Resultados). Botón al informe conjunto → botón a Resultados. § Dónde seguir
+    → descartado (D8: la barra lateral y las tarjetas llevan a cada página). Nuevo: mapa del tradeoff y bloque
+    `tarjetas`.
+  - `sitio/{resultados,experimentos,proceso,especificaciones}.md` → borrados. Los reemplazan `sitio/hipotesis.md`
+    (bloque `tarjetas`) y `sitio/como-medimos.md` (tarjetas a control, corridas y exploratorios); las bitácoras y las
+    specs pasan a enlaces de GitHub en `docs/metodo.md` § Registros.
+  - `docs/metodo.md`: § Etapas, § Modelo por etapa y § Tokens → iguales («devolución del tutor» → «del curso»;
+    `docs/revision.md` como enlace a GitHub). § Agregar un experimento → fundido en § Agregar una hipótesis (repetía los
+    pasos). § Agregar una hipótesis › 1 y 2 → con la estructura nueva (README con secciones fijas, `## Dependencias` en el
+    README, `reporte --exp hN` escribe el bloque `resultado`, verificador del texto, alta en `nav` y `exclude_docs` de
+    `mkdocs.yml` en lugar de `defaults:` de `_config.yml`). › 3 → igual. › 4 (ejemplo ficticio con `informado` y
+    `pesado`) → el H4 real. Nuevo: § Registros con los enlaces a GitHub a las seis bitácoras, las siete specs, los cambios
+    archivados, `docs/revision.md`, el guion y las rutas.
+  - `mkdocs.yml`: `nav` final (Inicio · Resultados · Hipótesis con H1–H4 · Cómo medimos con control, corridas y
+    exploratorios · Cómo trabajamos) y `exclude_docs` con cada página y sus figuras.
+- Verificado («Llegar a una bitácora»): ninguna bitácora está en `nav` ni en `site/` (`find site -path '*bitacora*'`
+  vacío), y `site/docs/metodo/index.html` tiene el enlace a
+  `https://github.com/…/blob/main/experimentos/h3/docs/bitacora.md`. `mkdocs build --strict` pasa sin advertencias; la
+  búsqueda de nombres solo encuentra el README raíz (3.10).
+- Observación para la revisión: las tarjetas generadas dicen el veredicto de cada hipótesis pero no su idea en una
+  línea (escenario «Abrir Hipótesis» de `sitio-informes`). El generador es del grupo 2; no lo toqué.

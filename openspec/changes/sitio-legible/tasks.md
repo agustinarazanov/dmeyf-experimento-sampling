@@ -76,7 +76,7 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   y por fase) y `experimentos/sampling_1/exploratorios/README.md` (bloque B, una sección por estudio, enlaces a los
   README de cada exploratorio en GitHub). Verificar que la tabla con texto de exploratorios ya no existe y que
   `comun.variantes --verificar` pasa.
-- [ ] 3.9 `index.md` (pregunta, respuesta en ≤ 3 líneas, mapa del tradeoff, tarjetas), `sitio/hipotesis.md`,
+- [x] 3.9 `index.md` (pregunta, respuesta en ≤ 3 líneas, mapa del tradeoff, tarjetas), `sitio/hipotesis.md`,
   `sitio/como-medimos.md` y `docs/metodo.md` (Cómo trabajamos: método, § Agregar una hipótesis con la estructura
   nueva y enlaces a GitHub a bitácoras, specs, `docs/revision.md` y guion). Se borran los `sitio/*.md` viejos.
   Verificar con el escenario «Llegar a una bitácora».
