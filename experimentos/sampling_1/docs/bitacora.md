@@ -1878,3 +1878,46 @@ Sesión de código (Sonnet). Cambios en `comun/`: `variantes.py`, `metodos.py`, 
   optuna 5.0.0, scikit-learn 1.9.1, matplotlib 3.11.2, pytest 9.2.0. La Mac tiene numpy 2.5.3, pandas 3.0.6 y pyarrow
   26.0.0, que no corren fases.
 - Se levanta el bloqueo de 2.5 (`bloqueo.txt` borrado). Queda la revisión 2.8.
+
+### 2026-11-13 — cierre revisión del grupo 2 de `tiempos-confiables-y-consistencia` (código de corridas, tarea 2.8)
+- Sesión: revisión headless del grupo 2 · modelo: Opus · etapa: **revision** (grupo 2, tareas 2.1–2.7), rama
+  `tiempos-confiables`.
+- Revisor: sesión limpia headless (Opus, sin contexto de las sesiones que aplicaron el grupo).
+- Lista: `docs/revision.md` § 3 sobre `git diff e42c231..HEAD` (`comun/` `consolidar`, `correr`, `ledger`, `metodos`,
+  `reporte`, `variantes`; `scripts/vm.sh`, `lanzar_carriles.sh`, `mover_estudios.py`; `sampling_1/scripts/fase8_*.txt` y
+  `tiempos_hp_fijos.py`; sus tests). Ningún ✗ abierto.
+  - ✓ Smoke `--filas 20000 --trials 2` en la Mac, una fila cada uno en `exploracion/` del dueño: optimizar `U0.5@1` (h1),
+    `B0.05@1` (h2), `F0.1@1` desde una línea `clase-peso 0.1` (corre `F0.1`, no `U0.1`) y `F0.25@1` (h4); finales
+    `B0.05`, `H3-0.5`, `H4O-0.25` (3.411 filas, bajas + ¼ de CONTINUA) y `H4P-0.1` (13.271 filas, el train entero, sin peso).
+  - ✓ Determinismo: los finales de `H4O-0.25` y `H4P-0.1` (réplica 1, semilla 100003) repetidos dan el mismo hash
+    (`5253bb3559189715`, `ba75d46cf1440064`), AUC 201910 (0,861993; 0,832686) y ganancia (2.475.000; 1.650.000).
+  - ✓ La réplica 0 de lo que ya existe no cambia, contra el `hash_muestra` del ledger (el test de 2.2 compara con la
+    función actual; esto lo cierra con datos): con el panel completo y el código de HEAD, la búsqueda de `H4O-0.5`
+    (`a3f0f77fc17d83f1`) y la de `H4U-0.1` (`690237362c64488b`) son iguales a las del ledger. En los finales de `H4O-0.5` y
+    `H4F-0.05` el ledger da el mismo hash a los dos por semilla, y HEAD también da el mismo a los dos (la misma llamada
+    `indices_por_clase(y, 0.5, s)`; `muestreo.py` no cambió), pero no reproduje el valor del ledger porque el
+    `panel_2019.parquet` local (9-nov) no tiene 201907 (638.646 filas en 201903–201908 contra ~776.000 en la VM);
+    `asegurar_panel` lo reconstruye si se corre un final completo. No es ✗ del código.
+  - ✓ `optimizar` no lee 201910: logs de `F0.1@1`, `F0.25@1`, `U0.5@1`, `B0.05@1` con `MESES_LEIDOS` 201903–201906 y 201908.
+  - ✓ Columnas obligatorias: `ledger.escribir_fila` falla nombrando la que falta (sin cambios en este grupo; tests pasan).
+  - ✓ `codigo_sucio` = True en las filas del smoke (había `reporte.html` y `costos.csv` sin commitear).
+  - ✓ Filas de train: `--sanity` 5.2 OK (±0,1 %); en `H4O-{f}` todas las bajas y round(f · CONTINUA)
+    (`test_la_muestra_de_h4o_tiene_todas_las_bajas_y_f_de_las_continua`).
+  - ✓ Apareamiento: `pares.csv` usa solo réplicas con las 20 semillas en los dos lados (`tests/test_pares.py`).
+  - ✓ `vm.sh` borra la VM (`trap borrar EXIT`, `--delete-disks=all`, sin cambios); la calibración no toca ese camino.
+  - ✓ Sin datos del dataset en el repo (ningún `.parquet`, `.gz` ni `.db` versionado).
+- Corrido además: `python -m comun.variantes --verificar` OK; `pytest` entero **296 passed** (6 min 54 s);
+  `python -m comun.consolidar --sanity`: todo OK menos "5.5 fase 8: faltan 128" (esperado antes de correrla) y el árbol
+  queda igual; `tiempos_hp_fijos` sin `--prueba` se niega ("solo corre en n2-highmem-8 (acá: local)") e importa solo de
+  `comun/`. `lanzar_carriles.sh --en-seco` no lo pude correr en esta sesión (permisos); lo cubre `tests/test_fase8.py`.
+- Corregido:
+  - `scripts/vm.sh`: el encabezado y el `--en-seco` decían "spot", pero el default es a pedido (`PROVISIONING=STANDARD`).
+    Ahora el `--en-seco` imprime el modelo que se va a usar. `tests/test_fase8.py` pasa.
+- Hallazgos que no son ✗:
+  - (baja) El test de la réplica 0 de 2.2 compara contra `muestreo.indices_por_clase` actual; la comparación con el ledger
+    de arriba es la que lo prueba.
+  - (baja) El `panel_2019.parquet` local no tiene 201907; solo afecta corridas completas en la Mac, que lo reconstruyen.
+- `comun/tokens.py --experimento sampling_1` corrido: siguen sesiones sin etapa (`4f4c3f05`, `99905ac1`, `171cafa4`,
+  `fbbfbd6f`, `7888c003`) que no son de esta revisión.
+- Tokens: ~45 turnos · contexto ~60.000 por turno · ≈ US$ 2.
+- Tutor: —

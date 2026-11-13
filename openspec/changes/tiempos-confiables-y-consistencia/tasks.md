@@ -123,7 +123,7 @@ Qué puede ir en paralelo:
   `scripts/lanzar_fase.sh --en-seco` de todas: 67 estudios y 2.560 finales en total, y ninguna corrida repetida.
 - [x] 2.7 `comun/consolidar.py --sanity`: un chequeo de la fase 8, leído del registro: 8 réplicas por 20 semillas en
   cada variante del bloque A, y ningún estudio con dueño `h1` en `h3/ledger/corridas`.
-- [ ] 2.8 Revisión en sesión limpia de 2.1–2.7 con `docs/revision.md` § 3. Commit que anuncia el cambio en `comun/`.
+- [x] 2.8 Revisión en sesión limpia de 2.1–2.7 con `docs/revision.md` § 3. Commit que anuncia el cambio en `comun/`.
 
 ## 2b. Unión con `main` (después del grupo 5 y de que `sitio-legible` esté archivado)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Ciclo completo de una tanda de corridas en una VM spot n2-highmem-8: crea la VM desde el template del curso, copia el
-# repo en el commit actual, instala dependencias, lanza la lista de configuraciones con nohup, sube los ledgers al
+# Ciclo completo de una tanda de corridas en una VM n2-highmem-8 (a pedido; spot con PROVISIONING=SPOT): crea la VM
+# desde el template del curso, copia el repo en el commit actual, instala dependencias, lanza la lista de configuraciones con nohup, sube los ledgers al
 # bucket, los trae de vuelta y BORRA la VM (también si algo falla).
 #
 #   PROYECTO=proj-uba-... BUCKET=gs://mi-bucket scripts/vm.sh configuraciones.txt [--filas 20000] [--en-seco]
@@ -101,7 +101,7 @@ REMOTO
 
 if [ -n "$EN_SECO" ]; then
   echo "== en seco: no se ejecuta gcloud ni gsutil"
-  echo "VM: $NOMBRE (n2-highmem-8, Ice Lake, spot) en $ZONA, proyecto $PROYECTO, template $TEMPLATE"
+  echo "VM: $NOMBRE (n2-highmem-8, Ice Lake, ${PROVISIONING:-STANDARD}) en $ZONA, proyecto $PROYECTO, template $TEMPLATE"
   echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM; historia: git bundle -> ~/repo_git"
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
   if [ -n "$CALIBRAR" ]; then
