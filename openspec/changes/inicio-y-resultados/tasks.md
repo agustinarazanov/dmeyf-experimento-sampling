@@ -182,7 +182,7 @@ Cada tarea:
   recuadro, plegable y diagrama con el ancho de la columna; las tablas más anchas, solo como aviso), ninguna de las
   ~13 páginas desborda a 390 px y Resultados respeta el tope de alto de D16. Las capturas en claro y en oscuro las
   hace el orquestador.
-- [ ] 3.2 Revisión en sesión limpia (Opus) del cambio completo contra los escenarios de `sitio-informes` y
+- [x] 3.2 Revisión en sesión limpia (Opus) del cambio completo contra los escenarios de `sitio-informes` y
   `reporte-visual`, cierre en la bitácora y `comun/tokens.py`.
 
 ## Workflow follow-up

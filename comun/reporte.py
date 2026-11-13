@@ -1708,7 +1708,7 @@ def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, st
         "fraccion": fig_fraccion(ctx, a, figuras),
         "ensamble": fig_ensamble(ctx, fin, ap, a, figuras),
         "tiempo-igual": tiempo_igual(ctx, fin, ap) + "\n\n" + fig_tiempo_igual_ic(ctx, a, figuras),
-        "semillas": fig_semillas(ctx, a, figuras) if len(a["rep"]) else pendiente("ninguna variante tiene réplicas"),
+        "semillas": fig_semillas(ctx, a, figuras),
     }
 
 

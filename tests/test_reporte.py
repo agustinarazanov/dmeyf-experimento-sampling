@@ -184,7 +184,7 @@ def test_desplazador_separa_etiquetas_en_el_mismo_punto():
     assert max(y for _, y in pos) <= 0.97 and len({round(y, 6) for _, y in pos}) == 3
 
 
-def test_sin_replicas_los_tres_graficos_salen_pendientes(ronda_anterior, monkeypatch):
+def test_sin_replicas_semillas_se_dibuja_y_varianza_y_diferencias_salen_pendientes(ronda_anterior, monkeypatch):
     import pandas as pd
     ctx = reporte.Contexto(reg.AGREGADOR)
     a = {"filas": [], "rep": pd.DataFrame(), "g_rep": {}, "semillas": {}, "desglose": []}
@@ -196,7 +196,7 @@ def test_sin_replicas_los_tres_graficos_salen_pendientes(ronda_anterior, monkeyp
                         lambda exps, n: (*cargar(exps, n)[:2], pd.DataFrame(columns=["variante"]).set_index("variante")))
     bloques = generar(reg.AGREGADOR)[0]
     assert "](figuras/tradeoff.svg)" in bloques["mapa"]
-    assert "class='pend'" in bloques["semillas"]
+    assert "](figuras/semillas_replicas.svg)" in bloques["semillas"]
     anexo = anexo_de(reg.AGREGADOR)
     assert "class='pend'" in anexo["varianza"] and "class='pend'" in anexo["diferencias"]
 

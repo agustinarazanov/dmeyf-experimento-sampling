@@ -2386,3 +2386,53 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   2.7b (supera el objetivo de contexto por turno).
 - Tokens: ~40 turnos · contexto ~78.000 por turno · ≈ US$ 1,6 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
 - Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados 3.1 · sesión de aplicación (anotada en la revisión)
+
+- Sesión: `3740c881-ea86-4200-b29a-51a49eae2ec4` (headless, `ledger/sesiones/g3_aplicar_20261113T200358.json`) ·
+  modelo: Sonnet · etapa: **codigo**. Aplicó 3.1 (commit `b378e7c`) y no dejó entrada propia; la clasifica la
+  revisión 3.2 para que `comun/tokens.py` no la cuente sin etapa. 31 turnos, contexto ~67.000 por turno.
+
+### 13-nov-2026 · inicio-y-resultados grupo 3 · revisión en sesión limpia del cambio completo (tarea 3.2)
+
+- Sesión: `6b3c391e-8127-4621-b95b-7de49841c666` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: los escenarios de `sitio-informes` y `reporte-visual` del cambio
+  (tarea 3.2), con `docs/revision.md` § 3 para el cambio de código. Commits revisados: `27482e5` (3.0), `0b82c95`
+  (3.0b) y `b378e7c` (3.1), y el cambio entero sobre `site/`.
+- Comandos: `pytest` entero, 267 en verde (219 en `tests/`, 48 fuera); `comun.variantes --verificar` sin problemas;
+  `verificar_readme` ✓ (53 números, 32 enlaces); `verificar_informe_h3` (623 números, 0 sin fuente);
+  `comun.reporte --todos` tres veces (antes y después de la corrección) sin cambios en `git status` (escenarios
+  «Regenerar dos veces» y «Regenerar con las predicciones fuera del repo»); `scripts/sitio.sh` en verde;
+  `python -m scripts.medir_sitio`: 0 problemas en 13 páginas (desborde a 390 px, ancho único a 1440 px y tope de 800 px
+  en Resultados; solo avisos de tablas anchas en H1 a H4 y el Anexo, que se desplazan en su recuadro).
+- Escenarios sobre `site/` (`tmp_etapas/r32_escenarios.py`):
+  - ✓ Contenido publicado: 13 páginas; no existen bitácora de h3, `comun/reporte.py`, `openspec/`, `docs/revision.md`,
+    el guion ni la plantilla. «Cómo trabajamos» enlaza bitácoras y `openspec/specs` en GitHub.
+  - ✓ Navegación: `site_name` «Sampling_1 · DMEyF 2026», «H4 · Muestras informadas por clase» igual en la barra y en el
+    título, «Control y reglas», Anexo como hija de Resultados; botón de modo con `media` y `toggle`. «GOSS» en la
+    búsqueda devuelve H2.
+  - ✓ Portada: tradeoff, desglose y ensamble desde `figuras/`, recuadro de limitaciones, botón a Resultados, tarjetas
+    y ninguna tabla. Hipótesis: H1 a H4 con su veredicto.
+  - ✓ Resultados: pestañas con «Lo mejor de cada hipótesis» (4 columnas visibles), ninguna tabla entre Limitaciones
+    comunes y Conclusiones; el bloque B se enlaza en una línea con «no se comparan una a una».
+  - ✓ H1 a H4: el primer párrafo dice qué se prueba; Veredicto con un solo recuadro; Limitaciones en lista con negritas
+    y sin recuadros; en H3 el diagrama va antes de la primera tabla.
+  - ✓ Exploratorios: diagrama, pregunta y advertencia por estudio, `validacion_50_semillas` con figuras; las 11
+    imágenes resuelven en `site/`.
+  - ✓ Corridas y Cómo trabajamos con diagramas; ninguna línea de código de más de 80 caracteres.
+  - ✓ «envío» no aparece ni en el HTML de `site/` ni en los SVG.
+  - ✓ Con tests: hipótesis nueva sin tocar el generador, ledger vacío pendiente, exploratorio sin CSV, marcador faltante,
+    PNG con `--figuras`, curva de `U0.05` debajo de 0 en N\*, bloque B sin autor; «Gráfico sin ronda anterior» en
+    `fig_rondas` (solo el punto vigente, sin segmento).
+  - ✗ → corregido: «Gráfico sin datos» pide que, sin réplicas, el gráfico de semillas y réplicas muestre solo las
+    semillas; `bloques_sampling` lo dejaba pendiente («ninguna variante tiene réplicas») aunque `fig_semillas` ya
+    dibuja sin rombos cuando no hay réplicas.
+  - Sin verificar acá (capturas del orquestador, 1.2, 1.10, 3.0 y 3.1): encabezado en el teléfono, barras laterales
+    parejas, modo oscuro recordado y contraste de tablas y figuras en oscuro.
+- Correcciones: `comun/reporte.py` (`bloques_sampling`): el bloque `semillas` llama siempre a `fig_semillas`. Test
+  renombrado a `test_sin_replicas_semillas_se_dibuja_y_varianza_y_diferencias_salen_pendientes`, que ahora espera
+  la figura. `pytest tests/test_reporte.py tests/test_verificadores.py` (42) en verde; regenerar no cambia nada porque
+  hoy hay réplicas.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~40 turnos · contexto ~70.000 por turno · ≈ US$ 1,5 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —
