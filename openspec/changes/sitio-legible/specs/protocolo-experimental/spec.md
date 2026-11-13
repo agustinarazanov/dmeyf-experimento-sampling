@@ -52,8 +52,14 @@ corridas SHALL describirse por máquina y por fase, no por persona.
 - **THEN** puede identificar qué configuraciones faltan y lanzarlas con el corredor sin consultar a nadie
 
 ### Requirement: Comunicación con el tutor desde los documentos
-El post al tópico `sampling_1` y cualquier respuesta posterior SHALL derivarse de las secciones Predicción y Diseño de
-los `README.md`, y las devoluciones del curso SHALL volcarse en la bitácora con la fecha y el id del mensaje de Zulip.
+Lo que se responde al curso SHALL poder leerse en las secciones Predicción, Diseño y Resultados de los `README.md`. El
+repo SHALL NOT guardar borradores de mensajes de Zulip, y ninguna sesión SHALL escribir ni mandar mensajes: los escribe
+y los manda Agustina. El archivo de Zulip se lee solo cuando Agustina lo pide. Las devoluciones del curso SHALL volcarse
+en la bitácora con la fecha y el id del mensaje de Zulip.
+
+#### Scenario: Responder una pregunta del curso
+- **WHEN** el curso hace una pregunta sobre el experimento
+- **THEN** la respuesta queda como texto en el `README.md` que corresponde, y no como borrador de mensaje en el repo
 
 #### Scenario: Devolución del tutor
 - **WHEN** una devolución en Zulip pide un cambio en el diseño
@@ -97,6 +103,6 @@ guion.
   el README de `h4` como resultado, no como limitación
 
 #### Scenario: Aclaración nueva en Zulip
-- **WHEN** aparece en Zulip una aclaración del baseline que el repo no cumple
+- **WHEN** Agustina pide leer Zulip y aparece una aclaración del baseline que el repo no cumple
 - **THEN** la bitácora de `sampling_1` la anota con su id y, hasta que se corrija, se justifique en el diseño o se declare
   como limitación, la revisión de la etapa informe (`docs/revision.md` § 5) tiene un ✗ abierto

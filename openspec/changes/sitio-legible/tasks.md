@@ -78,7 +78,7 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   `comun.variantes --verificar` pasa.
 - [ ] 3.9 `index.md` (pregunta, respuesta en ≤ 3 líneas, mapa del tradeoff, tarjetas), `sitio/hipotesis.md`,
   `sitio/como-medimos.md` y `docs/metodo.md` (Cómo trabajamos: método, § Agregar una hipótesis con la estructura
-  nueva y enlaces a GitHub a bitácoras, Zulip, specs, `docs/revision.md` y guion). Se borran los `sitio/*.md` viejos.
+  nueva y enlaces a GitHub a bitácoras, specs, `docs/revision.md` y guion). Se borran los `sitio/*.md` viejos.
   Verificar con el escenario «Llegar a una bitácora».
 - [ ] 3.10 README raíz recortado (qué es, enlace al sitio, cómo correr, estructura) e impersonal; `CLAUDE.md` con el mapa de
   archivos nuevo. Verificar con `python -m scripts.verificar_readme` y con la búsqueda de nombres de D8.
@@ -96,17 +96,10 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   `comun/tokens.py`. El push lo decide Agustina. Después del push, verificar en el sitio publicado los escenarios
   «Primera visita del tutor» y «Teléfono».
 
-## 5. Cambio en curso (sesión: Opus)
-
-- [ ] 5.1 Correr `/opsx:update` sobre `tiempos-confiables-y-consistencia` (D10): rutas del D2, gráficos y tablas como
-  bloques generados, sin «tutor» en lo que se publica, y su delta de `reporte-visual` rebasado sobre la spec de este
-  cambio. Verificar con `openspec validate tiempos-confiables-y-consistencia --strict` y con que
-  `grep -rnE "informe\.md|tabla_resultados|docs/(hipotesis|diseno)\.md" openspec/changes/tiempos-confiables-y-consistencia`
-  no dé resultados.
-
 ## Workflow follow-up
 
-- Archivar `sitio-legible` después de la revisión 4.3 y antes de aplicar `tiempos-confiables-y-consistencia`. En el
+- Archivar `sitio-legible` después de la revisión 4.3 y antes de archivar `tiempos-confiables-y-consistencia`, que
+  después une `main` en su rama (no se modifica desde acá). En el
   archivo, actualizar el `## Purpose` de `openspec/specs/sitio-informes/spec.md` y de `reporte-visual` para que no
   nombren al tutor.
 - Al entrar los números de `tiempos-confiables-y-consistencia`, regenerar con `comun/reporte.py`. Solo cambian los

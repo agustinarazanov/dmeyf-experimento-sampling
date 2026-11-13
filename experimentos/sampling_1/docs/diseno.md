@@ -190,7 +190,8 @@ de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
 
 ## Devolución del tutor
 
-_Sin devolución todavía._ El post `docs/zulip/01_hipotesis.md` no se envió.
+Las devoluciones del curso se anotan en la bitácora con su id de Zulip. El repo no guarda borradores de mensajes
+(decisión de Agustina, 13-nov).
 
 ## Dependencias
 

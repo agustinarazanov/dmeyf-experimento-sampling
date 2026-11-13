@@ -18,15 +18,16 @@ Motivación: ver `proposal.md` § Why. Estado actual que condiciona el enfoque:
 - Los ledgers ya tienen el tiempo por fase (`tiempo_preparacion_s`, `tiempo_optimizacion_s`,
   `tiempo_entrenamiento_s`, `tiempo_lgbtrain_s` en `estudios.csv` y `resultados.csv`). El desglose del tiempo no
   necesita corridas nuevas.
-- Está abierto `tiempos-confiables-y-consistencia` (0/30 tareas), que nombra `informe.md`, `tabla_resultados.md`,
-  `docs/hipotesis.md`, `docs/diseno.md` y `decisiones.md`, y modifica `reporte-visual`.
+- Está abierto `tiempos-confiables-y-consistencia`, que se aplica en paralelo en la rama `tiempos-confiables` (worktree
+  `../experimento-sampling-tiempos`). Nombra `informe.md`, `tabla_resultados.md`, `docs/hipotesis.md`, `docs/diseno.md`
+  y `decisiones.md`, y modifica `reporte-visual`.
 
 ## Goals / Non-Goals
 
 **Goals:**
 - Que los archivos del repo sean las páginas, sin un paso que arme páginas aparte.
 - Que el generador sea la única fuente de números y figuras, y que regenerar no pise el texto escrito a mano.
-- Dejar la estructura lista para que los números de `tiempos-confiables-y-consistencia` entren solo regenerando.
+- Dejar la estructura lista para que los números de `tiempos-confiables-y-consistencia` entren regenerando.
 
 **Non-Goals:**
 - Cambiar números, veredictos, ledgers o corridas.
@@ -184,10 +185,14 @@ tutor» → «pregunta del experimento», «aporte de Luis/Martín» → «explo
 
 ### D10. Orden respecto de `tiempos-confiables-y-consistencia`
 
-Este cambio se aplica y se archiva primero, con los números de la ronda vigente. Su última tarea corre `/opsx:update`
-sobre `tiempos-confiables-y-consistencia`. Esa pasada reemplaza en su proposal, design, tasks y deltas las rutas viejas
-por las del D2, pasa sus gráficos y tablas a bloques generados, saca «tutor» de los textos que se publican y rebasa su
-delta de `reporte-visual` sobre la spec ya archivada. Sus números nuevos entran después, regenerando.
+Los dos cambios se aplican en paralelo (decisión de Agustina, 13-nov). Este, en `main`, con los números de la ronda
+vigente. `tiempos-confiables-y-consistencia`, en la rama `tiempos-confiables`: predicciones, código de corridas y
+corridas. Su reporte y sus informes se hacen después de unir la rama.
+
+Este cambio **no modifica** los artefactos de `tiempos-confiables-y-consistencia`. Cuando este se archive, aquel une
+`main` en su rama, resuelve los conflictos y actualiza sus propias rutas, gráficos, tablas y su delta de `reporte-visual`
+(su grupo 2b). Este cambio solo tiene que archivarse antes que aquel, porque los dos modifican «Comparación limpia en
+dos bloques».
 
 ## Risks / Trade-offs
 
@@ -203,8 +208,8 @@ delta de `reporte-visual` sobre la spec ya archivada. Sus números nuevos entran
   es la vista principal.
 - [El README de Resultados queda muy largo] → Bloques plegables (`??? note`) para las tablas completas y el índice a la
   derecha. Si supera ~1.500 líneas, `bloque-a-completo` se mueve a un anexo publicado.
-- [El cambio en curso se aplica antes que este] → D10. Hasta que este se archive, `tiempos-confiables-y-consistencia` no
-  se aplica.
+- [Los dos cambios tocan los mismos archivos] → D10. `tiempos-confiables-y-consistencia` trabaja en su rama y une
+  `main` cuando este se archiva; los conflictos se resuelven de su lado.
 - [La lista de nombres prohibidos da falsos positivos (por ejemplo «Luis» en una cita o «autor» en otra acepción)] → La
   búsqueda admite una lista de excepciones por archivo y línea en `scripts/sitio.sh`, y cada excepción lleva motivo.
 
@@ -215,7 +220,7 @@ delta de `reporte-visual` sobre la spec ya archivada. Sus números nuevos entran
    `sampling_1`, exploratorios.
 3. Borrar los archivos fundidos, Jekyll y Ruby. Verificadores, tests y `mkdocs build --strict` en verde.
 4. Revisión en sesión limpia con `docs/revision.md`, y push a criterio de Agustina.
-5. Archivar este cambio y actualizar `tiempos-confiables-y-consistencia`.
+5. Archivar este cambio. `tiempos-confiables-y-consistencia` une `main` en su rama después.
 
 Vuelta atrás: `git revert` de los commits del cambio. El sitio publicado no cambia hasta el push, y si el build nuevo
 falla en CI queda la versión anterior.

@@ -15,7 +15,7 @@ viejo usa esta tabla.
 |---|---|
 | `docs/hipotesis.md` | `experimentos/sampling_1/docs/hipotesis.md` (pregunta y comparación); G, Δ, δ, T, A, N\*, veredictos y control en `experimentos/control/docs/hipotesis.md`; cada H en `experimentos/h1`, `h2`, `h3` `/docs/hipotesis.md` |
 | `docs/diseno.md` | `experimentos/sampling_1/docs/diseno.md` (fases, reparto, estimación, tutor); control, máquina y parámetros en `experimentos/control/docs/diseno.md`; variantes de cada H en su `docs/diseno.md` |
-| `docs/bitacora.md`, `docs/operacion.md`, `docs/zulip/` | `experimentos/sampling_1/docs/` (la de cada hipótesis, en la suya) |
+| `docs/bitacora.md`, `docs/operacion.md` | `experimentos/sampling_1/docs/` (la de cada hipótesis, en la suya) |
 | `src/correr.py`, `src/metodos.py`, `src/muestreo.py` | `comun/correr.py`, `comun/metodos.py`, `comun/muestreo.py` |
 | `src/consolidar.py` | `comun/consolidar.py` (`--experimento X`; sin argumento, todos) |
 | `scripts/vm.sh` | `scripts/vm.sh` en la raíz del repo (`lanzar_fase.sh` es nuevo, en la raíz y con un atajo en `experimentos/sampling_1/scripts/`) |

@@ -33,7 +33,7 @@ lugar, y un sitio que los muestra tal cual.
   `mkdocs build --strict` verifica los enlaces. Se borran `_config.yml`, `_sass/`, `Gemfile*` y el uso de Ruby.
 - Navegación de ~12 páginas: Inicio · Resultados · Hipótesis (H1–H4) · Cómo medimos (control y reglas, corridas,
   exploratorios) · Cómo trabajamos. Las páginas padre solo tienen tarjetas hacia sus hijas.
-- **BREAKING** Bitácoras, Zulip, specs, `docs/revision.md`, el guion del video y los README de cada exploratorio
+- **BREAKING** Bitácoras, specs, `docs/revision.md`, el guion del video y los README de cada exploratorio
   quedan en el repo pero fuera del sitio. «Cómo trabajamos» los enlaza en GitHub.
 - Redacción impersonal en todo lo publicado y en el README raíz: sin «tutor», «Bolaños», autores, nombres de
   integrantes ni reparto de tareas. «Baseline de Bolaños» pasa a ser «baseline», y el bloque B del reporte deja de mostrar
@@ -41,8 +41,6 @@ lugar, y un sitio que los muestra tal cual.
 - Se corrige el doble recuadro de las tablas generadas.
 - `plantilla/`, `docs/metodo.md` § Agregar una hipótesis, `comun/variantes.py` (lee § Dependencias y § Variantes),
   los verificadores y los tests pasan a la estructura de un README por experimento.
-- Al terminar, se actualizan los artefactos del cambio en curso `tiempos-confiables-y-consistencia` para que apunten a
-  los archivos nuevos y no repongan los viejos. Sus números nuevos entran después, regenerando.
 
 ## Capabilities
 
@@ -76,6 +74,6 @@ Ninguna.
 - **Sitio y CI**: `mkdocs.yml` y `requirements-sitio.txt` nuevos, `.github/workflows/pages.yml` (Python en lugar de
   Ruby), `scripts/sitio.sh` reescrito sobre MkDocs. Se borran `_config.yml`, `_sass/`, `Gemfile`, `Gemfile.lock` y
   `_site/`.
-- **Cambio en curso**: `openspec/changes/tiempos-confiables-y-consistencia/` (proposal, design, tasks y deltas de
-  `reporte-visual`) se reescribe para la estructura nueva al final de este cambio.
+- **Cambio en curso**: `tiempos-confiables-y-consistencia` se aplica en paralelo en su rama y no se toca desde acá:
+  une `main` cuando este se archiva y se adapta solo a la estructura nueva.
 - **Sin cambios**: ledgers, corridas, números y veredictos. `comun/tokens.py` sigue leyendo `docs/bitacora.md`.
