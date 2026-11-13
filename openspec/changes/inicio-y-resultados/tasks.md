@@ -135,7 +135,7 @@ Cada tarea:
 - [x] 2.4 `experimentos/sampling_1/exploratorios/README.md`: diagrama de motivaciones (D5) y una sección por estudio con
   qué mostró, alrededor del bloque B. Verificar con los escenarios «Figuras de un exploratorio» y «Exploratorios» y con
   `scripts/sitio.sh` (sin autor).
-- [ ] 2.5 `experimentos/sampling_1/corridas.md`:
+- [x] 2.5 `experimentos/sampling_1/corridas.md`:
   - § Protocolo (viene de Resultados);
   - línea de tiempo de las fases y diagrama del recorrido de una corrida (D5);
   - tabla de fases con columnas cortas y una lista por fase;

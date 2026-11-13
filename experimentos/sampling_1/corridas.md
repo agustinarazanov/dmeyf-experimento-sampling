@@ -20,9 +20,13 @@ muestra). Las fases, el reparto por máquina y el costo están abajo; los aparta
   de 256 GB, script de arranque) y se sobrescriben el tipo y la plataforma:
 
   ```bash
-  gcloud compute instances create <nombre> --zone=northamerica-northeast2-b \
-    --source-instance-template=projects/<proyecto>/regions/northamerica-northeast2/instanceTemplates/to-064ram-08vcpu \
-    --machine-type=n2-highmem-8 --min-cpu-platform="Intel Ice Lake"
+  # T=projects/<proyecto>/regions/northamerica-northeast2/
+  #   instanceTemplates/to-064ram-08vcpu
+  gcloud compute instances create <nombre> \
+    --zone=northamerica-northeast2-b \
+    --source-instance-template="$T" \
+    --machine-type=n2-highmem-8 \
+    --min-cpu-platform="Intel Ice Lake"
   ```
 
   e2 queda descartada porque no deja fijar la plataforma de CPU. Región `northamerica-northeast2`, donde están los
@@ -42,10 +46,19 @@ muestra). Las fases, el reparto por máquina y el costo están abajo; los aparta
 ## Una configuración
 
 ```bash
-python -m comun.correr --metodo uniforme --tasa 0.25 --semilla 0 --etapa optimizar        # estudio U0.25 (h1/ledger)
-python -m comun.correr --metodo uniforme --tasa 0.25 --semilla todas --etapa final        # variante U0.25, todas las semillas
-python -m comun.correr --metodo opt-muestra --tasa 0.25 --semilla todas --etapa final     # variante H3-0.25 (h3/ledger)
-python -m comun.correr --metodo uniforme --tasa 1 --semilla todas --etapa final --variante C-rep --hp experimentos/control/ledger/hp/C.json
+# estudio U0.25 (h1/ledger)
+python -m comun.correr --metodo uniforme --tasa 0.25 \
+  --semilla 0 --etapa optimizar
+# variante U0.25, todas las semillas
+python -m comun.correr --metodo uniforme --tasa 0.25 \
+  --semilla todas --etapa final
+# variante H3-0.25 (h3/ledger)
+python -m comun.correr --metodo opt-muestra --tasa 0.25 \
+  --semilla todas --etapa final
+# réplica del control con los hiperparámetros de C
+python -m comun.correr --metodo uniforme --tasa 1 \
+  --semilla todas --etapa final --variante C-rep \
+  --hp experimentos/control/ledger/hp/C.json
 ```
 
 | método | `--tasa` | estudio | variante |
@@ -78,21 +91,27 @@ es la suma de la duración de los trials más el armado del `Dataset`.
 ## Consolidar y regenerar
 
 ```bash
-python -m comun.consolidar --experimento h1   # resultados.csv, reemplazadas.csv, estudios.csv y apareado.csv de h1
-python -m comun.consolidar                    # los de todos los dueños de variantes
-python -m comun.reporte --todos               # bloques generados de cada README (--figuras DIR guarda también los PNG)
-python -m scripts.comparar_rondas             # bloque rondas de Resultados
+# resultados.csv, reemplazadas.csv, estudios.csv y apareado.csv de h1
+python -m comun.consolidar --experimento h1
+# los de todos los dueños de variantes
+python -m comun.consolidar
+# bloques generados de cada página (--figuras DIR guarda también los PNG)
+python -m comun.reporte --todos
+# bloque rondas del Anexo
+python -m scripts.comparar_rondas
 ```
 
 `apareado.csv` trae N\*, δ, Δ de ganancia por variante (media, desvío, IC 95%, semillas ganadas, veredicto), Δ de AUC, T
-y la aceleración A. Los tiempos solo se comparan con el control si la máquina, la CPU y los hilos coinciden; si no, la
+y la aceleración. Los tiempos solo se comparan con el control si la máquina, la CPU y los hilos coinciden; si no, la
 columna `nota` lo dice.
 
 ## VM
 
 ```bash
-scripts/lanzar_fase.sh <lista>                # una VM por lista; vuelve enseguida y deja la VM trabajando
-scripts/vm.sh configuraciones.txt --en-seco   # muestra qué haría, sin crear nada
+# una VM por lista; vuelve enseguida y deja la VM trabajando
+scripts/lanzar_fase.sh <lista>
+# muestra qué haría, sin crear nada
+scripts/vm.sh configuraciones.txt --en-seco
 ```
 
 `PROYECTO` y `BUCKET` salen de `.env` en la raíz del repo (ver `.env.ejemplo`). `vm.sh` crea la VM con `n2-highmem-8` e
@@ -108,31 +127,58 @@ cada experimento y los SQLite al bucket, trae los ledgers y **borra la VM** al t
 
 Las corridas se lanzaron todas desde una sola cuenta.
 
-| fase | definida | tag | qué corre | VMs | carga |
-|---|---|---|---|---|---|
-| 1 | 1-nov | `corridas-v1` | estudios `C`, `U0.25`, `U0.1`; finales `C`, `H3-0.25`, `H3-0.1`, `U0.25`, `U0.1` | A | ~100 u·min |
-| 2 | 1-nov | `corridas-v1` | estudios y finales de `U0.5` y `U0.05`; después `C-rep` (con el JSON de `C`) | B | ~48 u·min |
-| 3 | 1-nov | `corridas-v1` | estudios y finales de `B0.5`, `B0.25`, `B0.1` y `GOSS` | C | ~120 u·min |
-| 4 | 2-nov | `corridas-v1` | solo finales de las 12 variantes, guardando predicciones | D | ~60 u·min |
-| 5 | 8-nov | `corridas-v2` | réplicas de optimización: `fase5_r1` … `fase5_r7` (estudios `C@k`, `U0.25@k`, `U0.1@k`, `U0.05@k` y finales de las 5 variantes en k) y `fase5_r0` (`H3-0.05` y `H3R-0.1` en k = 0) | 8 | ~5,6 h |
-| 6 | 9-nov | `corridas-v3` | `fase6_r0` … `fase6_r7` (estudios `K0.1`, `NH0.1`, `NU0.1` y finales de las 8 variantes nuevas en k) y la replicación de los exploratorios | 18 | ~12 h |
-| 7 | 12-nov | `corridas-v4` | ronda 201903–201908: `fase7_r0` (23 celdas) y `fase7_r1` … `fase7_r7` (14 cada una), cada una empezando por el estudio `F0.5@k` | 8, en dos tandas de 4 | ~24 h |
+```mermaid
+timeline
+    1-nov : Fases 1 a 3 : H1, H2, H3 y el control
+    2-nov : Fase 4 : finales con predicciones
+    8-nov : Fase 5 : réplicas de la optimización
+    9-nov : Fase 6 : H4, extensiones de H3 y exploratorios
+    12-nov : Fase 7 : ronda 201903–201908
+```
 
-Notas por fase:
+Recorrido de una corrida, de la lista a las páginas:
 
+```mermaid
+flowchart TB
+    L["scripts/lanzar_fase.sh lista"] --> V["VM n2-highmem-8"]
+    V --> B["bucket"]
+    B --> G["gsutil rsync"]
+    G --> D["ledger de cada experimento"]
+    D --> R["comun/reporte.py"]
+    R --> P["páginas del sitio"]
+```
+
+| fase | fecha | tag | VMs | carga |
+|---|---|---|---|---|
+| 1 | 1-nov | `corridas-v1` | A | ~100 u·min |
+| 2 | 1-nov | `corridas-v1` | B | ~48 u·min |
+| 3 | 1-nov | `corridas-v1` | C | ~120 u·min |
+| 4 | 2-nov | `corridas-v1` | D | ~60 u·min |
+| 5 | 8-nov | `corridas-v2` | 8 | ~5,6 h |
+| 6 | 9-nov | `corridas-v3` | 18 | ~12 h |
+| 7 | 12-nov | `corridas-v4` | 8, en dos tandas de 4 | ~24 h |
+
+Qué corrió cada fase:
+
+- **Fase 1**: estudios `C`, `U0.25` y `U0.1`; finales `C`, `H3-0.25`, `H3-0.1`, `U0.25` y `U0.1`.
+- **Fase 2**: estudios y finales de `U0.5` y `U0.05`; después `C-rep` (con el JSON de `C`).
+- **Fase 3**: estudios y finales de `B0.5`, `B0.25`, `B0.1` y `GOSS`.
 - **Fases 1 a 3**: once variantes (el control y las diez de H1–H3) más `C-rep`; 9 estudios × 40 trials y 12 variantes ×
   10 semillas. Cada variante tiene su estudio y sus finales en la misma VM; T(variante) y T(C) vienen de VMs distintas, y
   `C-rep` en otra VM mide cuánto varía el tiempo entre VMs. La fase 1 va primero: calibra u y produce los JSON de `C`,
   `U0.25` y `U0.1`; `C-rep` espera el JSON de `C`.
-- **Fase 4** (agregada el 2-nov): las fases 1 a 3 guardaron curvas y no predicciones, y el tiempo igual necesita
+- **Fase 4** (agregada el 2-nov): solo los finales de las 12 variantes, guardando predicciones. Las fases 1 a 3 guardaron curvas y no predicciones, y el tiempo igual necesita
   promediar probabilidades. Repite los finales en una sola VM guardando `ledger/predicciones/<id>.parquet`. Por la clave
   del ledger esas filas reemplazan a las anteriores: las ganancias son las mismas (determinismo, como mostró `C-rep`) y
   los tiempos finales quedan medidos en la misma máquina.
-- **Fase 5**: Optuna `C@1…7` 7 × 748 s ≈ 87 min; Optuna `U0.25@k`, `U0.1@k`, `U0.05@k` ≈ 35 min; finales 370 × ~35 s
+- **Fase 5**: réplicas de la optimización. `fase5_r1` … `fase5_r7` corren los estudios `C@k`, `U0.25@k`, `U0.1@k` y
+  `U0.05@k` y los finales de las 5 variantes en k; `fase5_r0`, `H3-0.05` y `H3R-0.1` en k = 0. Optuna `C@1…7` 7 × 748 s ≈ 87 min; Optuna `U0.25@k`, `U0.1@k`, `U0.05@k` ≈ 35 min; finales 370 × ~35 s
   ≈ 216 min. Cada VM de réplica tarda unos 47 min y el total de pared queda en ~50 min.
-- **Fase 6**: variantes ~5,9 h de VM (~3,3 h de `h3` y ~2,6 h de `h4`); los exploratorios, ~5,8 h más (una VM por
+- **Fase 6**: `fase6_r0` … `fase6_r7` corren los estudios `K0.1`, `NH0.1` y `NU0.1` y los finales de las 8 variantes
+  nuevas en k, y además se replican los exploratorios. Variantes ~5,9 h de VM (~3,3 h de `h3` y ~2,6 h de `h4`); los exploratorios, ~5,8 h más (una VM por
   estrategia de `validacion_50_semillas` y una para `sensibilidad_muestra`). Unas 2 h de pared.
-- **Fase 7**: 121 celdas × 20 semillas = 2.420 finales y 8 estudios `F0.5@k`. Los finales con seis meses promediaron
+- **Fase 7**: ronda 201903–201908. `fase7_r0` (23 celdas) y `fase7_r1` … `fase7_r7` (14 cada una), cada una empezando
+  por el estudio `F0.5@k`. 121 celdas × 20 semillas = 2.420 finales y 8 estudios `F0.5@k`. Los finales con seis meses promediaron
   ~36 s; `fase7_r0` lleva 460 finales (~4,5 h) y las otras 280 (~2,8 h). Unas 7 h de pared. Antes de lanzar, el ledger del
   bucket se migró con `scripts/agregar_meses_final.py` y se verificó bajándolo de nuevo.
 
@@ -155,7 +201,3 @@ variante termina con menos semillas, el apareo usa las que tiene y se anota en l
   del crédito del trial. Las horas y el costo reales de cada fase están en la
   [bitácora de sampling_1](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/sampling_1/docs/bitacora.md).
 - Al terminar cada fase no queda ninguna VM encendida.
-
-## Devoluciones del curso
-
-Se anotan en la bitácora del experimento que corresponda, con su id de Zulip. El repo no guarda borradores de mensajes.

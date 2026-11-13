@@ -2271,3 +2271,18 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   figuras. Escenario «Figuras de un exploratorio»: las de `validacion_50_semillas` dicen «Reporte original (50 semillas,
   hiperparámetros fijos)», sin autor. `scripts/sitio.sh` sin avisos (incluido el control de nombres); el diagrama sale
   en el HTML.
+
+### 13-nov-2026 · inicio-y-resultados 2.5 · Corridas
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- Texto movido o borrado y destino:
+  - columna «qué corre» de la tabla de fases: a la lista «Qué corrió cada fase», un ítem por fase (fases 1, 2 y 3 por
+    separado; en 4 a 7, al principio del ítem que ya existía);
+  - columna «definida»: pasa a llamarse «fecha»;
+  - § Devoluciones del curso: se borra (lo pide la tarea); que la bitácora anota la devolución del curso ya lo dice
+    `docs/metodo.md` § Etapas;
+  - comentarios al final de las líneas de código: pasan a una línea propia arriba del comando.
+- § Protocolo vino de Resultados en 2.1. Se suman la línea de tiempo de las fases (`timeline`) y el recorrido de una
+  corrida (`flowchart TB`: `lanzar_fase.sh`, VM, bucket, `gsutil rsync`, ledger, `comun/reporte.py`, páginas).
+- ✓ Ninguna línea de código pasa de 80 caracteres ni ninguna celda de 60 (`tmp_etapas/anchos.py`). `scripts/sitio.sh`
+  sin avisos.
