@@ -124,7 +124,7 @@ Cada tarea:
 - [x] 2.2 `experimentos/sampling_1/anexo.md`: título «Anexo de resultados», una línea por sección, y en Rondas los tres
   resultados de la predicción de la ronda que hoy están en Resultados. Verificar con que el bloque A completo tiene las
   mismas filas que antes del cambio.
-- [ ] 2.3 `index.md` (Inicio, D8):
+- [x] 2.3 `index.md` (Inicio, D8):
   - pregunta y respuesta;
   - tres hallazgos con su bloque y 2–3 líneas;
   - recuadro con tres limitaciones;

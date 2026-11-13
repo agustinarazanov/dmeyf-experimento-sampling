@@ -12,6 +12,9 @@ Optuna), cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) 
 
 ### ¿Cuánto se pierde y cuánto se gana?
 
+Un panel por hipótesis y un punto por variante, con su intervalo: a la derecha, más rápida que el control; abajo, pierde
+ganancia. Las que valen la pena quedan arriba y a la derecha del 2×, y casi todas achican solo la optimización.
+
 <!-- generado:hallazgo-tradeoff -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
@@ -21,6 +24,9 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
 ### ¿Dónde se va el tiempo?
 
+En el control, la búsqueda de hiperparámetros se lleva el 94 % del tiempo y el modelo final, el resto. Por eso achicar
+la búsqueda acelera mucho más que achicar el final, y no toca el modelo que se entrega.
+
 <!-- generado:hallazgo-tiempo -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
@@ -29,6 +35,10 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 <!-- /generado:hallazgo-tiempo -->
 
 ### ¿Y con el tiempo ahorrado?
+
+Con el mismo tiempo que tarda el control, una variante rápida entrena varios modelos finales con semillas distintas y
+promedia sus probabilidades. Arriba, la ganancia del ensamble según el tiempo gastado; abajo, según la cantidad de
+modelos. Ensamblar el control también suma, así que buena parte de la ventaja es el ensamble.
 
 <!-- generado:hallazgo-ensamble -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
@@ -40,6 +50,13 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 ![G del ensamble según K: el control con sus 20 semillas llega a 286.6 M$](experimentos/sampling_1/figuras/ensamble_k.svg)
 
 <!-- /generado:hallazgo-ensamble -->
+
+!!! warning "Limitaciones principales"
+    - **Test ya mirado.** H4 y las extensiones de H3 salen de un estudio que miró 201910, y no hay otro mes de test.
+    - **Un mes, un año, una máquina.** Solo 2019, solo 201910 como test y tiempos medidos en `n2-highmem-8`.
+    - **Réplicas solo en parte de las variantes.** H1 y H2 se deciden con una sola búsqueda de hiperparámetros.
+
+    El resto, en [Resultados § Limitaciones comunes](experimentos/sampling_1/README.md#limitaciones-comunes).
 
 [Ver los resultados](experimentos/sampling_1/README.md){ .md-button .md-button--primary }
 

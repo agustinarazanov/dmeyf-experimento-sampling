@@ -2250,3 +2250,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - ✓ Bloque A completo contra `efdf873~1` (antes del cambio): las mismas 21 variantes en el mismo orden y 48 filas de
   tabla iguales salvo el encabezado, que cambió con D9 («A» → «aceleración (×)», «veredicto» → «ganancia contra el
   control»). `verificar_readme` y `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.3 · Inicio
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- No se borra ni se mueve texto. `index.md` suma 2–3 líneas por hallazgo (qué mirar y por qué) y un recuadro con
+  «Test ya mirado», «Un mes, un año, una máquina» y «Réplicas solo en parte de las variantes», con enlace a Resultados
+  § Limitaciones comunes. El único número a mano es el 94 %, que sale del título del desglose (D2).
+- ✓ Escenario «Primera visita del tutor» en `site/index.html`: pregunta, respuesta, `tradeoff.svg`,
+  `desglose_tiempo.svg`, `ensamble.svg` con su explicación, recuadro de limitaciones, botón primario a Resultados y
+  tarjetas hasta H4. `verificar_readme` (53 números, 31 enlaces) y `scripts/sitio.sh` sin avisos.
