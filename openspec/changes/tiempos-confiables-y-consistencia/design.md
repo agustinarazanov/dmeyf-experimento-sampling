@@ -354,7 +354,7 @@ la de D1. Las de diferencias usan las etiquetas de D12.
   lo declara y los informes lo listan entre las limitaciones ("Ideas que vienen de mirar el test"). Entran todas juntas
   y ninguna se elige ni se descarta por su resultado.
 - **Comparaciones múltiples.** Este cambio suma, sin corrección, los 17 contrastes de D12, 9 veredictos nuevos contra
-  `C` (las variantes nuevas) y 9 veredictos que se vuelven a decidir con réplicas (`U*`, `B*` menos `B0.05`, y `GOSS`).
+  `C` (las variantes nuevas) y 8 veredictos que se vuelven a decidir con réplicas (`U*`, `B*` menos `B0.05`, y `GOSS`).
   Los principales son los cuatro `H4O-{r}` − `U{r}`; el resto es secundario.
 
 **D14. Regla para variantes nuevas.** `docs/metodo.md` § Agregar una hipótesis suma un paso: la variante declara su fila

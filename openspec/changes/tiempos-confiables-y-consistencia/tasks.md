@@ -35,7 +35,7 @@ Qué puede ir en paralelo:
   - `h3/docs/hipotesis.md` § `H3-0.5`;
   - `h4/docs/hipotesis.md` § Grilla común: `H4O-0.25`, `H4O-0.1`, `H4O-0.05`, las cuatro `H4P`, los pares de D12 con lo
     que aísla cada uno y lo que no (filas y peso), y los cuatro contrastes principales. § Comparaciones múltiples suma
-    los 17 contrastes, los 9 veredictos nuevos y los 9 que se vuelven a decidir.
+    los 17 contrastes, los 9 veredictos nuevos y los 8 que se vuelven a decidir.
 
   Las predicciones las confirma o ajusta Agustina.
 - [x] 1.3 Diseño:
@@ -47,7 +47,7 @@ Qué puede ir en paralelo:
 - [x] 1.4 Anotar en la bitácora de `sampling_1` el mensaje del tutor (Zulip 212124, 12-nov), la revisión del 13-nov que
   originó este cambio, la ampliación a la grilla común y las dos revisiones en sesión limpia de la propuesta (13-nov,
   incorporadas).
-- [ ] 1.5 Revisión en sesión limpia de 1.1–1.4 con `docs/revision.md` § 1 y § 2, y cierre en la bitácora. Ninguna
+- [x] 1.5 Revisión en sesión limpia de 1.1–1.4 con `docs/revision.md` § 1 y § 2, y cierre en la bitácora. Ninguna
   corrida antes de este cierre.
 
 ## 2. Código de corridas (sesión: Sonnet)

@@ -1,0 +1,9 @@
+tiempos-confiables-y-consistencia, revisión 1.5 (13-nov-2026)
+
+La revisión del grupo 1 cerró sin ✗ abiertos, pero falta algo que solo puede hacer Agustina:
+confirmar o ajustar las predicciones propuestas por una sesión que ya había visto la ronda 201903–201908:
+  - control/docs/hipotesis.md § Medición de tiempos (D5: A_fijo, cociente entre recetas, CV ≤ 5 %; D6: calibración);
+  - h1 § Réplicas de H1, h2 § Réplicas de H2 y B0.05, h3 § H3-0.5, h4 § Grilla común (reglas 6 a 11) (D13).
+El texto de control dice que se confirman "antes de la revisión"; no consta en la bitácora.
+Ninguna VM de la fase 8 se lanza hasta que Agustina lo anote en experimentos/sampling_1/docs/bitacora.md
+(confirmadas tal cual, o con los ajustes escritos en cada sección antes de correr). Después se borra este archivo.

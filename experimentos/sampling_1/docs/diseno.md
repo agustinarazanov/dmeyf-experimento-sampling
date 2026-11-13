@@ -175,6 +175,8 @@ hipótesis: § Réplicas y grilla común de [`h1`](../../h1/docs/diseno.md), § 
 [`h4`](../../h4/docs/diseno.md). Ronda 201903–201908, 20 semillas, N\* = 3.300 y δ de la ronda (5,65 M$). Una corrida a
 la vez por VM, como siempre: el paralelismo es entre VMs y no cambia la medición de tiempos.
 
+- **Quién**: todo lo corre Agustina, desde su cuenta (el proyecto del curso), en VMs `n2-highmem-8` a demanda; no se
+  reparte entre integrantes.
 - **Listas**: 17, cada una en su VM, todas con `--semilla todas`. Dentro de cada lista, cada estudio va antes que sus
   finales. Ninguna `_a` lee nada de una `_b`.
 

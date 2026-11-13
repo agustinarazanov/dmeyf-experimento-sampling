@@ -1730,3 +1730,58 @@ Rama `tiempos-confiables`, worktree `../experimento-sampling-tiempos`. Etapa: **
   - Las reglas de confirmación de las predicciones nuevas (cuándo se confirma, se refuta o ninguna de las dos) las
     completó esta sesión siguiendo el esquema de las reglas existentes; D5, D6 y D13 dan la predicción.
 - Ninguna VM lanzada; ninguna corrida antes del cierre de 1.5.
+
+### 2026-11-13 — cierre revisión del grupo 1 de `tiempos-confiables-y-consistencia` (predicciones y diseño, tarea 1.5)
+- Sesión: revisión headless del grupo 1 · modelo: Opus · etapa: **revision** (grupo 1, tareas 1.1–1.4), rama
+  `tiempos-confiables`.
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que aplicó el grupo).
+- Lista: `docs/revision.md` § 1 y § 2 sobre las secciones nuevas del 13-nov de `control`, `h1`–`h4` y `sampling_1`
+  (`hipotesis.md` y `diseno.md`), contra D1–D15 del design. Ningún ✗ abierto después de las correcciones.
+  - § 1 ✓ Pregunta del tutor con id: Zulip 212124 en `sampling_1/docs/hipotesis.md` § Pregunta y en h4 § Grilla común.
+  - § 1 ✓ Control sin cambios: § Medición de tiempos no reescribe § Métricas y reglas comunes ni la definición de T.
+  - § 1 ✓ Una variable por hipótesis: tasa de U (h1), fracción de bagging (h2), tasa de la búsqueda (h3), receta con
+    bajas y peso a la tasa f (h4); los pares de h4 dicen qué aíslan y qué no (filas, cantidad y peso juntos).
+  - § 1 ✓ Una métrica que decide: Δ con réplicas contra `C` (con A ≥ 2 solo donde la regla es "vale la pena", como las
+    reglas existentes) y la D de cada par con las etiquetas de D12. La medición y la calibración son exploratorias.
+  - § 1 ✓ Umbral numérico en cada predicción (δ = 5,65 M$, A ≥ 2, D > 0 / < 0, [1,6; 2,4], < 10, 0,9–1,1, ≤ 5 %).
+  - § 1 ✓ Confirma / refuta / ninguna sin zona gris sin nombre: h1, h2, `H3-0.5` (regla 9) y h4 6–11 cubren todos los
+    casos; las celdas sin predicción (h4 6 en 0,25; 7 en 0,1; 11) dicen "se informa".
+  - § 1 ✓ Adaptaciones declaradas: "siempre OP" (211718) en `H3-0.5` y `H4P-*`; peso 20 con `min_data_in_leaf` sin
+    reescalar en f = 0,05; `B0.05` fuera del espacio de Optuna como las otras `B`.
+  - § 1 ✓ Proporción de clases: h1–h3 no la tocan; h4 es preexistente (el undersampling de este grupo es H4, D17) y en
+    la búsqueda y en `H4O` el peso 1/f restituye la proporción ponderada.
+  - § 1 ✓ Regla de "vale la pena": h1 dice qué pasa si `U0.5` sale indeterminado o con A < 2; h2 predice que ninguna `B`.
+  - § 1 ✓ 201910 no elige nada: cada sección declara que las variantes se agregan después de ver 201910, entran juntas y
+    no se eligen ni descartan por su resultado (va a "Ideas que vienen de mirar el test").
+  - § 2 ✓ Grilla completa con totales: 67 estudios (h1 7, h2 36, h4 24) y 2.560 finales (h1 560, h2 720, h3 160, h4
+    1.120); las 17 listas suman lo mismo ((9 + 7 × 17) × 20).
+  - § 2 ✓ Cada variante de `hipotesis.md` está en la grilla y al revés (`H3-0.5`, `H4O-0.25/0.1/0.05`, cuatro `H4P`,
+    `B0.05`, réplicas de `U*`, `B*`, `GOSS`); `fase8_medicion` no es variante.
+  - § 2 ✓ Control apareado: las mismas 20 semillas finales de la ronda 201903–201908.
+  - § 2 ✓ Trials, semilla y espacio iguales salvo H2 (40 trials; `F{f}@k` como `F0.5@k`).
+  - § 2 ✗ → ✓ Un tipo de máquina nombrado: la fase 8 decía "4 VMs de 8 vCPU" sin el tipo. Corregido (abajo).
+  - § 2 ✓ Horas y costo: recalculadas por lista (~37 h con arranques; carril 1 ≈ 9,5 h, carriles 2–4 ≈ 9,1 h);
+    36 h × 0,52 × 1,15 ≈ US$ 21,5, dentro de los US$ 283 de crédito.
+  - § 2 ✗ → ✓ Reparto por persona y fase: la fase 8 tenía carriles pero no decía quién corre. Corregido (abajo), como en
+    la fase 5.
+  - § 2 ✓ Devolución del tutor: 212124 incorporada (grilla común, pares, sección «Diálogo entre H1 y H4» en D17).
+- Números verificados corriendo: el comando del CV entre semillas da 121 celdas, mediana 2,43 %, de 0,76 a 6,20 %; finales
+  de `C` réplica 0 y `C-rep` con la semilla 100003 (la primera): 50,163 y 45,137 s; mejor trial del estudio `C` = el 31
+  de 40, `duracion_s` 27,151 s (`C.db` del bucket local); A(`U0.5`) = 2,25 en `apareado.csv` y los A con mediana
+  (2,83; `B0.25` 1,54; `B0.5` 0,99; `B0.1` 2,31) son coherentes con una sola T_C mediana ≈ 1.002 s; filas de la receta
+  con bajas (256.092; 130.702; 55.468; 30.390) y 531 / 266 bajas recalculadas de 506.871 y 5.312.
+- `python -m comun.variantes --verificar`: `h4: falta declarar ['h3']`, esperado y anotado por el grupo 1; se resuelve
+  en 2.1 con el registro nuevo. No es un ✗ de esta compuerta.
+- Corregido:
+  - `sampling_1/docs/diseno.md` fase 8: bullet **Quién** (Agustina, desde su cuenta, `n2-highmem-8` a demanda).
+  - D13 de `design.md` y la tarea 1.2 decían "9 veredictos que se vuelven a decidir"; la lista da 8 (`U0.5`, `U0.25`,
+    `U0.1`, `U0.05`, `B0.5`, `B0.25`, `B0.1`, `GOSS`), como ya decía `h4/docs/hipotesis.md`. Pasan a 8.
+- Hallazgos que no son ✗:
+  - (alta, de un humano) Las predicciones de 1.1 (D5, D6) y 1.2 (D13) siguen sin confirmar por Agustina, aunque
+    `control/docs/hipotesis.md` dice que las confirma "antes de la revisión". Va a `ledger/sesiones/bloqueo.txt`:
+    ninguna VM de la fase 8 antes de esa confirmación.
+  - (baja) El reparto de carriles es una propuesta; lo fija `scripts/lanzar_carriles.sh` (grupo 2).
+- `comun/tokens.py --experimento sampling_1` corrido: siguen tres sesiones sin etapa (`99905ac1`, `171cafa4`, que
+  superan el objetivo, y `fddfd322`); no son de esta revisión y no las puedo clasificar.
+- Tokens: ~35 turnos · contexto ~50.000 por turno · ≈ US$ 1,6.
+- Tutor: —
