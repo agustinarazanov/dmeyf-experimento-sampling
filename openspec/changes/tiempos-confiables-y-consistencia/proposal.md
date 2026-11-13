@@ -135,7 +135,8 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
     modo en seco.
   - `experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (medición, calibración y su consolidado) y las listas de la
     fase 8.
-  - `scripts/vm.sh`, para correr la calibración antes y después de la lista.
+  - `scripts/vm.sh`, para correr la calibración antes y después de la lista; `scripts/lanzar_carriles.sh`, nuevo; y
+    `requirements.txt` con versiones fijas.
   - Los cambios en `comun/` se anuncian en el commit.
 - **Ledger**:
   - `h1/ledger`: estudios `U0.5@k`, los `U{r}@k` movidos desde `h3`, y los finales de las réplicas de `U*`.
@@ -152,8 +153,9 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
     raíz, `tabla_resultados.md`, `comparacion_rondas.md` y las figuras.
   - `docs/metodo.md` y `docs/revision.md`.
 - **Cómputo**: 67 estudios y 2.560 finales nuevos, más la medición. Unas 36 h de VM `n2-highmem-8` a pedido, en 17
-  listas (dos por réplica y una para la medición). La cuota es de 32 vCPU por proyecto, o sea 4 VMs a la vez, y en el
-  período de prueba no se puede pedir más. Se lanzan en tandas: de 8 si el segundo proyecto de la cuenta suma su cuota
-  (se prueba antes de lanzar), de 4 si no. De reloj, entre 4 y 12 h. Agustina las lanza.
+  listas (dos por réplica y una para la medición). La cuota es de 32 vCPU, o sea 4 VMs a la vez, y en el período de
+  prueba no se puede pedir más: las listas se reparten en cuatro carriles que se encadenan solos, unas 12 h de reloj.
+- **Otro cambio en curso**: `sitio-legible` se aplica en `main` al mismo tiempo. Este cambio corre predicciones, código
+  de corridas y corridas en la rama `tiempos-confiables`; el reporte y los informes se hacen después de unir.
 - **Specs de base**: `final-con-julio-agosto` quedó archivado el 13-nov. Los deltas de este cambio que modifican
   "Comparación limpia en dos bloques" y "Réplicas de la optimización" parten de la versión que dejó.

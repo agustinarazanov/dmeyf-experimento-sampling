@@ -1651,6 +1651,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   este experimento.
 - La propuesta del cambio pasó por una revisión en sesión limpia (subagente `general-purpose`, Opus): 4 hallazgos altos,
   9 medios y 10 bajos, incorporados en `001c09e`.
+- **Sin borradores de Zulip** en el repo: la respuesta a la pregunta 212124 queda como sección del informe conjunto, y
+  los mensajes los escribe y manda Agustina.
+- **Segunda revisión en sesión limpia** de la propuesta (subagente `general-purpose`, Opus): ningún hallazgo de la
+  primera sin resolver; dos altos nuevos (el segundo proyecto no anda con los scripts; el orden con `sitio-legible` se
+  contradecía) y siete medios, incorporados. Se descarta el segundo proyecto: las 17 listas van en cuatro carriles en el
+  proyecto del curso.
+- **En paralelo con `sitio-legible`**: ese cambio se aplica en `main`; este, en la rama `tiempos-confiables` (worktree
+  `../experimento-sampling-tiempos`), con los grupos 1, 2 y 5. El reporte y los informes (grupos 3, 4 y 6) van después
+  de unir la rama, con `sitio-legible` ya archivado.
 
 ### 13-nov-2026 · sitio-legible, grupo 1 (sitio en MkDocs Material)
 

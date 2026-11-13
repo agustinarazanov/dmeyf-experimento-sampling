@@ -15,6 +15,14 @@ resultados de todos los dueños, con la misma cuenta que las diferencias dentro 
 - **WHEN** a un par declarado en el registro le faltan las corridas de una de sus variantes
 - **THEN** el par figura como pendiente, con el nombre de la variante que falta, y no se saltea en silencio
 
+#### Scenario: Quién lo arma
+- **WHEN** se corre `python -m comun.consolidar` sin `--experimento`, o con `--experimento sampling_1`
+- **THEN** `pares.csv` queda escrito después de consolidar a los dueños
+
+#### Scenario: Réplica incompleta
+- **WHEN** una réplica no tiene las 20 semillas en alguno de los dos lados de un par
+- **THEN** no entra en el par, que se calcula con las réplicas completas y dice cuántas son
+
 #### Scenario: Misma cuenta que dentro de un experimento
 - **WHEN** un par de un solo experimento se calcula también con el agregador
 - **THEN** da la misma diferencia y el mismo IC que en el `replicas.csv` de su experimento

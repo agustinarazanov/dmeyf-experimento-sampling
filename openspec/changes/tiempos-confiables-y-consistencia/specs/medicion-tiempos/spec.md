@@ -31,7 +31,12 @@ semilla fija. El intervalo no SHALL depender de cómo se emparejen las réplicas
 
 #### Scenario: A cerca del umbral
 - **WHEN** el intervalo de A de una variante que *no pierde* contiene el 2
-- **THEN** el informe la marca como "vale la pena" según la mediana y aclara que el intervalo cruza el umbral
+- **THEN** su "vale la pena" sale de la A calculada con las medianas, y el informe aclara que el intervalo cruza el
+  umbral
+
+#### Scenario: Fila del control
+- **WHEN** se lee la fila del control
+- **THEN** su intervalo de A es `—`
 
 #### Scenario: Fila sin réplicas
 - **WHEN** una variante del bloque A tiene solo la réplica 0
@@ -53,7 +58,16 @@ solo en `n2-highmem-8`, y la predicción y su regla SHALL quedar escritas en `do
 - **WHEN** se mide una celda
 - **THEN** se sortea la muestra con la semilla de la repetición, se arma el `Dataset`, se entrena con los parámetros
   fijos del control y se predice 201908, y queda una fila con receta, tasa, juego de hiperparámetros, repetición,
-  semilla, filas de la muestra, los tres tiempos, tipo de máquina, instancia, CPU, carga y commit
+  semilla, filas de la muestra, los tiempos de `Dataset`, de entrenamiento y de predicción, tipo de máquina, instancia,
+  CPU, carga, commit y versiones de LightGBM, numpy y Optuna
+
+#### Scenario: Comparable con un trial ya corrido
+- **WHEN** se compara una medición con la duración guardada de un trial de Optuna
+- **THEN** se usa entrenamiento más predicción, sin el armado del `Dataset`, que es lo que mide esa duración
+
+#### Scenario: La VM se relanza a la mitad
+- **WHEN** la medición vuelve a empezar después de un corte
+- **THEN** saltea las mediciones que ya quedaron guardadas y completa las que faltan
 
 #### Scenario: Reporte de la medición
 - **WHEN** existe la medición consolidada
@@ -84,20 +98,25 @@ descartarse por su calibración después de conocer su ganancia.
 #### Scenario: Ruido entre máquinas
 - **WHEN** las VMs de una fase corrieron sus listas con calibración
 - **THEN** el informe da el coeficiente de variación entre las medias de calibración de todas, y dice que junta la VM y
-  la hora si se lanzaron en tandas
+  la hora si no corrieron todas a la vez
 
 #### Scenario: Ancla con las fases anteriores
 - **WHEN** se consolida la calibración
 - **THEN** cada VM se compara con la duración guardada del mismo trial en el estudio del control y con el tiempo del
-  mismo final en el ledger de la ronda, sin corridas extra
+  mismo final en el ledger de la ronda, sin corridas extra, y el informe dice que cada ancla es una sola medición
+
+#### Scenario: Mismas versiones en toda la fase
+- **WHEN** se lanzan las VMs de una fase
+- **THEN** todas instalan las mismas versiones exactas de las librerías, y la calibración guarda las de LightGBM, numpy
+  y Optuna
 
 #### Scenario: Máquina fuera de rango
 - **WHEN** la calibración de una VM queda fuera del rango pre-registrado
 - **THEN** el informe nombra la lista, marca sus filas en la sección de tiempos y no las saca del bloque A
 
 ### Requirement: Mediciones de tiempo que vuelven de la VM
-Las mediciones a hiperparámetros fijos y las de calibración SHALL escribirse un archivo por celda o por lista y momento,
-en una subcarpeta del ledger de `sampling_1` que se sincroniza con el bucket igual que las corridas. Un paso local SHALL
+Las mediciones a hiperparámetros fijos y las de calibración SHALL escribirse un archivo por medición o por lista y
+momento, en una subcarpeta del ledger de `sampling_1` que se sincroniza con el bucket igual que las corridas. Un paso local SHALL
 consolidarlas en un CSV de cada tipo.
 
 #### Scenario: Varias VMs a la vez
@@ -106,7 +125,7 @@ consolidarlas en un CSV de cada tipo.
 
 #### Scenario: La VM se borra
 - **WHEN** una VM termina bien y se borra
-- **THEN** sus mediciones están en el bucket y vuelven al repo con los ledgers
+- **THEN** sus mediciones, incluida la calibración del final, están en el bucket y vuelven al repo con los ledgers
 
 ### Requirement: Búsqueda, final y preparación por separado
 El reporte de `sampling_1` SHALL mostrar, para cada variante del bloque A, la mediana del tiempo de búsqueda, la mediana

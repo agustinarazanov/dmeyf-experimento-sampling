@@ -32,8 +32,14 @@ cambiar sus ids, sus hiperparámetros ni sus tiempos.
 
 #### Scenario: Estudios que cambian de dueño
 - **WHEN** se mueven `U0.25@k`, `U0.1@k` y `U0.05@k` del ledger de `h3` al de `h1`
-- **THEN** las tablas consolidadas y los reportes de `h3`, `h4` y `sampling_1` son los mismos que antes de mover, y
-  `python -m comun.variantes --verificar` no encuentra ciclos
+- **THEN** las tablas consolidadas de `h3` y `h4` y los reportes de `h3` y `sampling_1` son los mismos que antes de
+  mover, `h1` gana solo las 21 filas de optimización, el reporte de `h4` pasa a usar los tiempos de las réplicas en
+  `H4F-*`, y `python -m comun.variantes --verificar` no encuentra ciclos
+
+#### Scenario: Deshacer la mudanza
+- **WHEN** la mudanza del bucket se corta o su verificación falla
+- **THEN** se puede restaurar el estado anterior de `h1` y `h3` desde un respaldo que la sincronización de las VMs no
+  toca
 
 #### Scenario: Los estudios movidos no vuelven
 - **WHEN** una VM sincroniza los ledgers con el bucket después de mover los estudios
