@@ -2211,3 +2211,33 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Causa (D18): el repo está en `~/Documents`, que iCloud sincroniza («Escritorio y Documentos»). Con ~10 GB de parquet
   en sincronización, un archivo podía no verse por un rato, y el generador lo tomaba como faltante sin avisar.
 - `bloqueo.txt` de la revisión 1.11 resuelto con las decisiones de `9e44863` y borrado.
+
+### 13-nov-2026 · inicio-y-resultados 2.1 · Resultados en el orden de D1
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- Secciones viejas de `sampling_1/README.md` y su destino (antes de mover):
+  - § Pregunta, § Respuesta y el bloque `mapa`: quedan arriba.
+  - § Predicción (la del 1-nov, las notas del 2-nov y del 9-nov y la línea de la ronda): a `control/README.md`
+    § Predicción, como «Predicción del experimento (1-nov)», antes de la de la ronda.
+  - § Comparación entre hipótesis: a «¿Qué conviene achicar?», con `grilla`, `desglose`, `bloque-a` y los hallazgos
+    por hipótesis. El ítem «AUC y ganancia» pasa a «¿Qué tan estable es?».
+  - § Varianza entre réplicas y entre semillas: a «¿Qué tan estable es?», con `semillas`.
+  - § Más figuras: se reparte. `fraccion` va a «¿Cuánto se puede achicar?»; `desglose` y `grilla` van a «¿Qué conviene
+    achicar?».
+  - § A tiempo igual: a «¿Qué se hace con el tiempo ahorrado?», con `ensamble` y `tiempo-igual`.
+  - § Rondas: tres puntos en «¿Qué tan estable es?», con enlace al Anexo. Los tres resultados completos van a
+    `anexo.md` § Rondas (2.2).
+  - § Exploratorios: una línea, después de § Qué sigue.
+  - § Diseño: a `corridas.md` § Protocolo.
+  - § Dependencias: queda al final.
+  - § Limitaciones comunes: queda, pero sin recuadros, como lista con el nombre en negrita (D11).
+  - § Conclusiones: queda, y suma si la predicción acertó, con enlace a `control/README.md` § Predicción.
+  - § Qué sigue: queda.
+  - § Bibliografía: a `docs/metodo.md` § Bibliografía.
+- La página se arma con `tmp_etapas/armar_resultados.py`, que copia los ocho bloques generados sin tocarlos y pone el
+  texto a mano alrededor. «Envíos» pasa a «clientes contactados» en el protocolo (D14).
+- ✓ `verificar_readme` (52 números, 30 enlaces), `verificar_informe_h3`, `comun.variantes --verificar` (lee
+  § Dependencias) y `scripts/sitio.sh` sin avisos. El ancla `#prediccion-del-experimento-1-nov` existe en el HTML.
+- Entre la respuesta y las conclusiones ya no queda ninguna tabla completa: las del Anexo (bloque A completo, varianza,
+  diferencias, rondas) se enlazan. Quedan el bloque A resumen (detalle plegado) y las pestañas de tiempo igual, que
+  D1 pone en Resultados. Las pestañas de tiempo igual no están plegadas: eso lo decide el generador, no se toca a mano.

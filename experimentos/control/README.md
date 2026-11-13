@@ -175,6 +175,32 @@ Cada uno con su id y su motivo. Los tres están justificados. Va a Limitaciones 
 
 ## Predicción
 
+### Predicción del experimento (1-nov)
+
+!!! info "Predicción"
+    Fijada el 2026-11-01 en `sampling_1/docs/hipotesis.md` (commit `2f05cae`), antes de cualquier corrida real. Las
+    predicciones de cada hipótesis están en su página.
+
+- **Qué vale la pena**: H3 con ambas tasas y H1 con r = 0,25. Para un pipeline acotado en tiempo, como el de la segunda
+  entrega, lo que más sirve es H3 con r_opt = 0,1, porque la optimización domina el tiempo total.
+- **A tiempo igual**: la pregunta no es velocidad contra ganancia sino qué se hace con el tiempo ahorrado. Si no se
+  reinvierte, no vale la pena perder ni un 1 %. Por eso, además de la comparación a datos iguales, hay una comparación a
+  tiempo igual: el control completo contra la variante rápida con el tiempo sobrante gastado en más semillas (ensamble
+  de K modelos de la variante, con K tal que el tiempo total iguale al del control). Predicción: a tiempo igual la
+  variante rápida gana, y H3 es la que más rinde. (Nota del 2-nov, después de las fases 1 a 3 y antes de ver ningún
+  ensamble: el ledger guardaba curvas y no predicciones, así que se agregó una fase que repite los finales guardando
+  predicciones. La predicción no cambió.)
+- **Contrastes principales** (9-nov, cambio `incorporar-aportes`, antes de correr H4 y las extensiones de H3): con cuatro
+  hipótesis hay más de diez contrastes sin corrección por comparaciones múltiples, así que la respuesta se apoya en
+  `H3-0.1`, `H4H-0.1` y `H4F-0.05` contra `C`, con réplicas (y `H4F-0.05` también a tiempo igual), fijados en
+  [H4](../h4/README.md). El resto se informa como secundario.
+- **Ronda 201903–201908** (12-nov): ningún veredicto cambia de lado, el IC por semilla se angosta del orden de √2 y el de
+  réplicas menos. Las reglas están abajo.
+
+Cómo salió está en [Resultados](../sampling_1/README.md#conclusiones).
+
+### Predicción de la ronda 201903–201908
+
 !!! info "Predicción de la ronda 201903–201908"
     Fijada el 2026-11-12, commit `159ee0d`, antes del tag `corridas-v4` y de cualquier final de la ronda.
 
@@ -194,8 +220,8 @@ Cada uno con su id y su motivo. Los tres están justificados. Va a Limitaciones 
   - **Se confirma** si se cumplen las dos desigualdades; **se refuta** si no se cumple alguna.
 - `H4O-0.5`, que solo existe en la ronda vigente, tiene su predicción y su regla en [H4](../h4/README.md).
 
-Un veredicto que cambie no se descarta ni se reemplaza: la tabla de rondas de [Resultados](../sampling_1/README.md)
-muestra, por variante, Δ y veredicto en las dos rondas, con los dos δ.
+Un veredicto que cambie no se descarta ni se reemplaza: la tabla de rondas del
+[Anexo de resultados](../sampling_1/anexo.md#rondas) muestra, por variante, Δ y veredicto en las dos rondas, con los dos δ.
 
 ## Dependencias
 

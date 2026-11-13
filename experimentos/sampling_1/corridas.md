@@ -3,6 +3,14 @@
 Cómo se corren, retoman y consolidan las corridas de todas las hipótesis, en qué máquina y en qué fases. Todos los
 comandos se corren desde la raíz del repo.
 
+## Protocolo
+
+Cada variante tiene su Optuna (40 trials, train 201903–201906, AUC en validación, 201908) y un final que entrena con
+201903–201908 y se evalúa en test (201910) con 20 semillas. Decide la ganancia al corte N\* = 3.300 clientes
+contactados; el AUC va al lado. `C`, H3 y H4 tienen 8 réplicas de la optimización (otra semilla de Optuna y otra
+muestra). Las fases, el reparto por máquina y el costo están abajo; los apartamientos del baseline, con su id, en
+[Control y reglas](../control/README.md).
+
 ## Máquina
 
 - Todas las corridas que cuentan van en **`n2-highmem-8`** (8 vCPU, 64 GB) con CPU **Intel Ice Lake**, que es lo que

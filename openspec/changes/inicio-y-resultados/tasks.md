@@ -112,7 +112,7 @@ Cada tarea:
 - redacción impersonal, sin «tutor» ni nombres; «A» se escribe «aceleración» (D9) y «envíos», «clientes contactados» (D14);
 - correr `python -m scripts.verificar_readme` y `scripts/sitio.sh`.
 
-- [ ] 2.1 `experimentos/sampling_1/README.md` (Resultados) en el orden de D1:
+- [x] 2.1 `experimentos/sampling_1/README.md` (Resultados) en el orden de D1:
   - pregunta y respuesta;
   - las cuatro preguntas, cada una con su texto, sus bloques y el detalle plegado;
   - limitaciones comunes, conclusiones (dicen si la predicción acertó, con enlace), qué sigue, exploratorios en una

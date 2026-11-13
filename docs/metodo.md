@@ -148,3 +148,12 @@ con negativos difíciles o uniformes, final fast-retrain con peso) en `comun/met
 `variantes.nombre()`; variantes `H4H-0.1` y `H4U-0.1` con estudios propios de `h4`, y `H4F-0.05` y `H4F-0.25` con los
 estudios `U0.05` y `U0.25` de `h1` y sus réplicas de `h3`, así que `h4` declara `control`, `h1` y `h3`; `--verificar`,
 correr, consolidar y regenerar. Ni `control` ni `h1`–`h3` se modificaron. El resultado está en [H4](../experimentos/h4/README.md).
+
+## Bibliografía
+
+- Ke, G. et al. (2017). *LightGBM: A Highly Efficient Gradient Boosting Decision Tree*. NeurIPS 30. (GOSS)
+- Friedman, J. H. (2002). *Stochastic Gradient Boosting*. Computational Statistics & Data Analysis 38(4). (bagging por
+  iteración)
+- Akiba, T. et al. (2019). *Optuna: A Next-generation Hyperparameter Optimization Framework*. KDD.
+- Bergstra, J. et al. (2011). *Algorithms for Hyper-Parameter Optimization*. NeurIPS 24. (TPE)
+- Baseline oficial del experimento colaborativo, Zulip 208135 (28-oct-2026).
