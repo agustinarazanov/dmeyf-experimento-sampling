@@ -11,7 +11,7 @@ import pandas as pd
 
 #: Valores de la cátedra (copiados de `competencia-2/src/fe_panel.py`): 2,2 M de valor anual del cliente por 50% de
 #: aceptación, menos el costo del estímulo. Si la cátedra los cambia para 2019, se cambian acá y se recalcula desde las
-#: curvas guardadas (`docs/diseno.md` § Preguntas abiertas).
+#: curvas guardadas (`experimentos/sampling_1/corridas.md`).
 GANANCIA_ACIERTO: int = 1_072_500
 COSTO_ESTIMULO: int = 27_500
 

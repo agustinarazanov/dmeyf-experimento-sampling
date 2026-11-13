@@ -2,7 +2,7 @@
 
 Cada corrida escribe `<ledger>/corridas/<id>.csv`; `consolidar` arma `resultados.csv` (solo corridas válidas, sin
 duplicados por clave) y `apareado.csv` (diferencia contra el control por semilla). Las reglas de decisión son las de
-`docs/hipotesis.md` y el cálculo, el de `docs/diseno.md` § Métricas.
+`experimentos/control/README.md` y el cálculo, el de `experimentos/sampling_1/corridas.md`.
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ CLAVE: list[str] = ["variante", "metodo", "tasa", "replica_opt", "semilla", "eta
 #: Ventana de train de los finales anteriores al cambio `final-con-julio-agosto`.
 MESES_FINAL_VIEJA = "201903-201906"
 CONTROL = "C"
-#: Variantes que no entran en Δ: el control y su réplica (`docs/diseno.md` § Grilla).
+#: Variantes que no entran en Δ: el control y su réplica (`experimentos/sampling_1/corridas.md`).
 SIN_DELTA = {"C", "C-rep"}
 DELTA_REL = 0.02  # δ = 2% de la ganancia media del control
 

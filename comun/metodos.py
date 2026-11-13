@@ -1,7 +1,7 @@
 """Los cuatro métodos como funciones `(datos, params)`.
 
 Cada una recibe el train completo y devuelve las filas con las que se entrena y los parámetros de LightGBM que la variante
-fija encima del baseline. Valen igual en los trials de Optuna y en el final. `docs/diseno.md` § Variantes.
+fija encima del baseline. Valen igual en los trials de Optuna y en el final. `experimentos/<hipótesis>/README.md` § Variantes.
 """
 
 from __future__ import annotations

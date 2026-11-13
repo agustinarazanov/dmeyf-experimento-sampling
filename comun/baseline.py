@@ -1,4 +1,4 @@
-"""El baseline oficial (Bolaños, 28-oct, Zulip 208135) y las decisiones de `docs/hipotesis.md` § Control.
+"""El baseline oficial (Bolaños, 28-oct, Zulip 208135) y las decisiones de `experimentos/control/README.md`.
 
 Solo constantes y el espacio de búsqueda; nada de este módulo lee datos.
 """
@@ -65,7 +65,7 @@ PARAMS_FIJOS: dict = {
 #: Parámetros del `lgb.Dataset` (Optuna cambia `min_data_in_leaf` entre trials).
 PARAMS_DATASET: dict = {"feature_pre_filter": False, "verbosity": -1}
 
-#: Espacio de búsqueda: nombre -> (tipo, mínimo, máximo, escala log). `docs/hipotesis.md` § Control.
+#: Espacio de búsqueda: nombre -> (tipo, mínimo, máximo, escala log). `experimentos/control/README.md`.
 ESPACIO: dict[str, tuple[str, float, float, bool]] = {
     "num_leaves": ("int", 8, 1024, True),
     "learning_rate": ("float", 0.01, 0.3, True),

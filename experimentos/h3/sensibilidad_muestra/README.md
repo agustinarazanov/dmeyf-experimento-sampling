@@ -5,7 +5,7 @@ muestra la configuración que elige H3?** Se repite la búsqueda de H3 con diez 
 las mismas 20 configuraciones. Después se mide en 201910 la ganancia del modelo que eligió cada muestra.
 
 Es **exploratorio y complementario**: no es una variante de `comun/variantes.py`, no escribe en `h3/ledger/` y no cambia
-el veredicto de `h3/informe/informe.md`. Usa su propio protocolo (búsqueda aleatoria emparejada, float64, 4 hilos),
+el veredicto de `h3/README.md`. Usa su propio protocolo (búsqueda aleatoria emparejada, float64, 4 hilos),
 que se describe abajo, y no se puede comparar uno a uno con las variantes `H3-0.25` y `H3-0.1`.
 
 Todo se corre desde la **raíz del repo**. El paquete importa solo de `comun/` y de esta carpeta.
@@ -65,7 +65,7 @@ ajustes de Control, están en `resumen.json`.
   mitad de evaluación, pero no en la de selección. Es ruido entre dos mitades del mismo mes.
 - **201908 completo ya se había usado en 06** para elegir y evaluar, así que la mitad de evaluación no es un holdout
   virgen. La elección para 201910 también se hizo con 201908.
-- **No se puede comparar uno a uno con `h3/informe/informe.md`.** Allí G es la media de 10 semillas finales, con 40
+- **No se puede comparar uno a uno con `h3/README.md`.** Allí G es la media de 10 semillas finales, con 40
   pruebas de Optuna, otro espacio de búsqueda, float32, 8 hilos y una sola muestra compartida con `h1`.
 
 ## Requisitos
@@ -235,7 +235,7 @@ Las elecciones, los AUC y las ganancias salieron idénticos pese al cambio de si
     evaluación.
   - El final de H3 es el ajuste completo de Control de la configuración elegida (06 mostró que reentrenarlo da
     exactamente lo mismo).
-- **Ganancia.** Corte fijo de 3.300 envíos, el N\* del control del grupo en 201908 (`h3/informe/informe.md`).
+- **Ganancia.** Corte fijo de 3.300 envíos, el N\* del control del grupo en 201908 (`h3/README.md`).
   - +1.072.500 por cada BAJA+2 y −27.500 por cada otro estimulado.
   - A igual probabilidad, el menor `numero_de_cliente`.
 
