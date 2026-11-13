@@ -3,7 +3,7 @@
     python -m comun.variantes --verificar
 
 De acá salen el nombre de la variante y del estudio de cada `(método, tasa)`, el ledger al que va cada fila y las
-dependencias implícitas entre experimentos. `## Dependencias` de cada `docs/diseno.md` las escribe una persona y
+dependencias implícitas entre experimentos. `## Dependencias` de cada `README.md` las escribe una persona y
 `--verificar` las compara con lo que implica el registro (`openspec/specs/dependencias-entre-experimentos`).
 """
 
@@ -187,17 +187,25 @@ def implicitas(variantes: dict[str, Variante] | None = None, estudios: dict[str,
     return dep
 
 
+_SECCION_DEPENDENCIAS = re.compile(r"^## Dependencias[^\n]*\n(.*?)(?=^## |\Z)", re.S | re.M)
+
+
 def declaradas(raiz: Path, conocidos: Iterable[str]) -> dict[str, set[str] | None]:
-    """Lo que declara la sección `## Dependencias` de cada `experimentos/*/docs/diseno.md` (None si falta el archivo
-    o la sección). Cuenta cada nombre de experimento entre comillas invertidas."""
+    """Lo que declara la sección `## Dependencias` de cada `experimentos/*/README.md` (None si falta la sección). Cuenta
+    cada nombre de experimento entre comillas invertidas."""
     conocidos = set(conocidos)
     out: dict[str, set[str] | None] = {}
-    base = raiz / "experimentos"
-    for diseno in sorted(base.glob("*/docs/diseno.md")):
-        exp = diseno.parents[1].name
-        m = re.search(r"^## Dependencias[^\n]*\n(.*?)(?=^## |\Z)", diseno.read_text(), re.S | re.M)
-        out[exp] = None if m is None else {n for n in re.findall(r"`([^`\n]+)`", m.group(1)) if n in conocidos}
+    for readme in sorted((raiz / "experimentos").glob("*/README.md")):
+        m = _SECCION_DEPENDENCIAS.search(readme.read_text())
+        out[readme.parent.name] = None if m is None else {n for n in re.findall(r"`([^`\n]+)`", m.group(1))
+                                                           if n in conocidos}
     return out
+
+
+def diseno_viejo(raiz: Path) -> list[str]:
+    """Experimentos con un `docs/diseno.md` que todavía tiene `## Dependencias`: la sección se mudó al README."""
+    return [d.parents[1].name for d in sorted((raiz / "experimentos").glob("*/docs/diseno.md"))
+            if _SECCION_DEPENDENCIAS.search(d.read_text())]
 
 
 def ciclos(grafo: dict[str, set[str]]) -> list[list[str]]:
@@ -275,11 +283,14 @@ def verificar(raiz: Path = rutas.RAIZ, variantes: dict[str, Variante] | None = N
         if not (raiz / "experimentos" / exp).is_dir():
             problemas.append(f"falta la carpeta experimentos/{exp}/ (la usa el registro de variantes)")
         elif declarado.get(exp) is None:
-            problemas.append(f"{exp}: falta la sección `## Dependencias` en docs/diseno.md")
+            problemas.append(f"{exp}: falta la sección `## Dependencias` en experimentos/{exp}/README.md")
         elif declarado[exp] != implicito[exp]:
             falta, sobra = sorted(implicito[exp] - declarado[exp]), sorted(declarado[exp] - implicito[exp])
             problemas.append(f"{exp}: `## Dependencias` no coincide con el registro"
                              + (f"; falta declarar {falta}" if falta else "") + (f"; declara de más {sobra}" if sobra else ""))
+    for exp in diseno_viejo(raiz):
+        problemas.append(f"{exp}: experimentos/{exp}/docs/diseno.md todavía tiene `## Dependencias`; la sección va en "
+                         f"experimentos/{exp}/README.md y el archivo viejo se borra")
     grafo = {e: set(d or ()) for e, d in declarado.items()}
     for e, d in implicito.items():
         grafo.setdefault(e, set())

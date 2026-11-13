@@ -1,16 +1,18 @@
-"""Genera `experimentos/<exp>/informe/reporte.html` desde los ledgers y los documentos.
+"""Genera las tablas y figuras de los README de `experimentos/` desde los ledgers, en bloques entre marcadores.
 
-    python -m comun.reporte --experimento h1 [--salida HTML] [--figuras DIR]
+    python -m comun.reporte --exp h1 [--figuras DIR]
     python -m comun.reporte --todos
 
-Un reporte por experimento. Para `control`: su sección de `docs/hipotesis.md` y el estado de C. Para cada `hN`: su
-hipótesis, la tabla de sus variantes contra el control y las bandas de curvas. Para `sampling_1`: todas las variantes de
-todas las hipótesis registradas en `comun/variantes.py`, tiempo contra ganancia, tiempo igual y enlaces a los demás.
-Lee `resultados.csv`, `apareado.csv` y las curvas de los ledgers de `experimentos/*/` (los finales de C salen de
-`control`). Una única página del sitio Jekyll (encabezado YAML y cuerpo HTML, sin `<html>`, `<head>` ni `<style>`; estilos en
-`_sass/custom/custom.scss`) con las figuras embebidas como SVG en línea (texto como texto, salida determinista). Se ve con
-`scripts/sitio.sh serve`. Las variantes sin datos salen como pendientes; ningún número se escribe a mano. Con `--figuras`
-además guarda cada figura como PNG a 200 dpi (para el video y los `informe.md`).
+En cada README, `<!-- generado:NOMBRE -->` … `<!-- /generado:NOMBRE -->` delimita un bloque que se reemplaza; el resto
+del archivo no se toca (sitio-legible D4). Si falta un marcador, falla nombrando archivo y marcador antes de escribir
+nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `bloque-a`,
+`bloque-a-completo`, `varianza`, `diferencias`, `tiempo-igual`, `figuras` (y `rondas`, de `scripts/comparar_rondas.py`);
+`sampling_1/exploratorios/README.md` → `bloque-b`; `index.md` y `sitio/hipotesis.md` → `tarjetas`. Las figuras salen como
+SVG en `experimentos/<exp>/figuras/` (con `--figuras` también PNG a 200 dpi para el video).
+
+Un archivo sin ningún marcador todavía no migró (grupo 3): su experimento sigue con la salida vieja, una página Jekyll
+`informe/reporte.html` (y `tabla_resultados.md` en `sampling_1`) con las figuras en línea. Las variantes sin datos salen
+como pendientes; ningún número se escribe a mano.
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from __future__ import annotations
 import argparse
 import html
 import io
+import json
 import math
 import re
 import subprocess
@@ -44,13 +47,27 @@ N_SEMILLAS = len(SEMILLAS_FINALES)  # 20 en la ronda vigente (D5)
 VENTANA = bl.VENTANA_FINAL
 MES = 201910
 SIN_REPORTE = {"C", "C-rep"}  # variantes del control: no tienen Δ, van en la fila C
-PALETA = ["#2a6fb0", "#c4501b", "#2e8b57", "#8e5ea2", "#b8860b", "#c0392b"]
+#: Categórica de la skill `dataviz` (references/palette.md), en su orden fijo; los colores de veredicto van aparte.
+PALETA = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
 COLOR_C = "#555555"
 A_VALE = 2.0  # hipotesis.md § Respuesta: vale la pena si no pierde y A ≥ 2
 ANCHO = 12.0  # pulgadas: las figuras ocupan el ancho de la página; más ancho que alto para que el texto no crezca
 #: Marcas por veredicto: los tonos de `custom.scss` (td.pierde, td.ok, td.ind), más saturados (D3).
 COLOR_VEREDICTO = {"pierde": "#c0392b", "ok": "#2e8b57", "ind": "#b8860b", "pend": "#999999", "": "#999999"}
 NOMBRE_VEREDICTO = {"ok": "no pierde", "pierde": "pierde", "ind": "indeterminado", "pend": "pendiente"}
+
+
+def _titulo_hipotesis(e: str) -> tuple[str, str]:
+    """(`H1`, título) del experimento `e`: del `# H1 · título` de su README y, mientras no migró, del `## H1 — título`
+    de `docs/hipotesis.md`."""
+    readme = rutas.experimento(e) / "README.md"
+    if readme.exists() and (m := re.search(r"^# (H\d+)\s*[·—-]\s*(.*)$", readme.read_text(), re.M)):
+        return m.group(1), m.group(2).strip()
+    md = rutas.docs(e) / "hipotesis.md"
+    sec = secciones(md.read_text()) if md.exists() else {}
+    clave = next((k for k in sec if re.match(r"^H\d+\b", k)), e.upper())
+    nombre, titulo = re.match(r"^(\S+)\s*(?:—\s*)?(.*)$", clave).groups()
+    return nombre, titulo or nombre
 
 
 class Contexto:
@@ -63,10 +80,7 @@ class Contexto:
             ([] if exp == reg.CONTROL else [exp])
         self.hipotesis: dict[str, tuple[str, list[str]]] = {}  # "H1" -> (título, variantes)
         for e in self.exps:
-            md = rutas.docs(e) / "hipotesis.md"
-            sec = secciones(md.read_text()) if md.exists() else {}
-            clave = next((k for k in sec if re.match(r"^H\d+\b", k)), e.upper())
-            nombre, titulo = re.match(r"^(\S+)\s*(?:—\s*)?(.*)$", clave).groups()
+            nombre, titulo = _titulo_hipotesis(e)
             self.hipotesis[nombre] = (titulo or nombre,
                                       [b.nombre for b in reg.variantes_de(e) if b.nombre not in SIN_REPORTE])
         self.variantes = [b for _, bs in self.hipotesis.values() for b in bs]
@@ -212,14 +226,45 @@ def g_control(fin: pd.DataFrame, ap: pd.DataFrame) -> float | None:
 
 # --- figuras ---
 
-plt.rcParams.update({"svg.hashsalt": "sampling_1", "svg.fonttype": "none"})
+plt.rcParams.update({"svg.hashsalt": "sampling_1", "svg.fonttype": "none", "font.family": "sans-serif"})
+
+
+class Destino:
+    """Dónde van las figuras de un README (D5): `svg_dir` junto al README y, con `png_dir`, también PNG. Los archivos se
+    juntan en `archivos` y se escriben después de validar los marcadores de todos los README (nada a medias)."""
+
+    def __init__(self, svg_dir: Path):
+        self.svg_dir = svg_dir
+        self.archivos: dict[Path, bytes] = {}
+
+
+#: Mientras `generar_bloques` arma un README, las figuras van a archivos SVG; fuera de eso (salida vieja) van en línea.
+DESTINO: Destino | None = None
+
+
+def _titulo_figura(fig) -> str:
+    if fig._suptitle is not None:
+        return fig._suptitle.get_text()
+    return next((ax.get_title() for ax in fig.axes if ax.get_title()), "")
 
 
 def figura(fig, nombre: str, figuras: Path | None, ajustar: bool = True) -> str:
-    """SVG en línea (sin declaración XML ni `<style>`, que el sitio no admite) y, con `figuras`, PNG a 200 dpi.
+    """Con `DESTINO`: SVG como archivo (texto con fuente genérica, sin CSS de la página) y `![título](figuras/x.svg)`;
+    con `figuras`, además PNG a 200 dpi. Sin `DESTINO` (salida vieja): SVG en línea sin declaración XML ni `<style>`.
     `ajustar=False` deja el layout que ya fijó la figura (p. ej. con lugar para una leyenda abajo)."""
     if ajustar:
         fig.tight_layout()
+    titulo = _titulo_figura(fig)
+    if DESTINO is not None:
+        if figuras:
+            png = io.BytesIO()
+            fig.savefig(png, format="png", dpi=200, metadata={"Software": None})
+            DESTINO.archivos[figuras / f"{nombre}.png"] = png.getvalue()
+        buf = io.StringIO()
+        fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": None})
+        plt.close(fig)
+        DESTINO.archivos[DESTINO.svg_dir / f"{nombre}.svg"] = buf.getvalue().encode()
+        return f"\n![{titulo.replace(chr(10), ' ')}](figuras/{nombre}.svg)\n"
     if figuras:
         figuras.mkdir(parents=True, exist_ok=True)
         fig.savefig(figuras / f"{nombre}.png", dpi=200, metadata={"Software": None})
@@ -230,64 +275,9 @@ def figura(fig, nombre: str, figuras: Path | None, ajustar: bool = True) -> str:
     return f'<figure class="fig" id="fig-{nombre}" aria-label="{nombre}">{svg}</figure>'
 
 
-def fig_tiempo_ganancia(ctx: Contexto, ap: pd.DataFrame, figuras: Path | None) -> str:
-    if ap.empty:
-        return "<p class='pend'>pendiente: no hay apareado.csv (falta el control)</p>"
-    fig, ax = plt.subplots(figsize=(7.5, 4.5))
-    gc, tc = ap["g_control"].iloc[0], ap["tiempo_total_control_s"].iloc[0]
-    ax.scatter([tc], [gc / 1e6], s=90, color=COLOR_C, marker="s", zorder=3, label="control")
-    for h in ctx.hipotesis:
-        sub = ap[ap.index.isin(ctx.hipotesis[h][1])]
-        if sub.empty:
-            continue
-        g = (sub["g_control"] + sub["delta_g_media"]) / 1e6
-        ax.errorbar(sub["tiempo_total_s"], g, yerr=[(sub["delta_g_media"] - sub["delta_g_ic_inf"]) / 1e6,
-                                                     (sub["delta_g_ic_sup"] - sub["delta_g_media"]) / 1e6],
-                    fmt="o", color=ctx.color[h], capsize=3, label=h, zorder=2)
-        for b, x, y in zip(sub.index, sub["tiempo_total_s"], g):
-            ax.annotate(b, (x, y), textcoords="offset points", xytext=(5, 4), fontsize=8, color=ctx.color[h])
-    ax.axhline((gc - ap["delta_g_margen"].iloc[0]) / 1e6, color=COLOR_C, ls=":", lw=1, label="control − δ")
-    ax.set_xscale("log")
-    ax.set_xlabel("tiempo del pipeline T (s, escala log)")
-    ax.set_ylabel(f"ganancia media en {MES} al corte N* (M$)")
-    ax.set_title("Tiempo contra ganancia (barras: IC 95% de Δ apareado)")
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=8)
-    return figura(fig, "tiempo_vs_ganancia", figuras)
-
-
-def banda(fin: pd.DataFrame, variante: str) -> pd.DataFrame | None:
-    if f"curva_{MES}" not in fin:
-        return None
-    rutas = fin.loc[fin["variante"] == variante, f"curva_{MES}"]
-    if rutas.empty:
-        return None
-    m = pd.concat([lg.leer_curva(Path(), r).set_index("envios")["ganancia"] for r in rutas], axis=1)
-    return pd.DataFrame({"min": m.min(axis=1), "mediana": m.median(axis=1), "max": m.max(axis=1)})
-
-
-def fig_bandas(ctx: Contexto, h: str, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:
-    variantes = [b for b in ctx.hipotesis[h][1] if estado(b, fin)[0]]
-    bc = banda(fin, lg.CONTROL)
-    if bc is None or not variantes:
-        return "<p class='pend'>pendiente: faltan curvas del control o de las variantes</p>"
-    n = len(variantes)
-    fig, axs = plt.subplots(1, n, figsize=(3.6 * n, 3.4), sharey=True, squeeze=False)
-    n_est = int(ap["n_estrella"].iloc[0]) if not ap.empty else None
-    for ax, b in zip(axs[0], variantes):
-        for nombre, color, bd in (("C", COLOR_C, bc), (b, ctx.color[h], banda(fin, b))):
-            ax.fill_between(bd.index, bd["min"] / 1e6, bd["max"] / 1e6, color=color, alpha=0.2, lw=0)
-            ax.plot(bd.index, bd["mediana"] / 1e6, color=color, lw=1.4, label=nombre)
-        if n_est:
-            ax.axvline(n_est, color="#999999", ls=":", lw=1)
-        ax.set_xlim(0, 15000)
-        ax.set_title(b, fontsize=10)
-        ax.set_xlabel("envíos")
-        ax.spines[["top", "right"]].set_visible(False)
-        ax.legend(frameon=False, fontsize=8)
-    axs[0][0].set_ylabel(f"ganancia {MES} (M$)")
-    fig.suptitle(f"{h}: mediana y banda mín–máx entre semillas; punteada: N*", fontsize=10)
-    return figura(fig, f"bandas_{h}", figuras)
+def pendiente(texto: str) -> str:
+    """Un gráfico sin datos: aviso en HTML (en el Markdown del sitio es un párrafo con la clase `pend`)."""
+    return f"<p class='pend'>pendiente: {texto}</p>"
 
 
 # --- tablas ---
@@ -379,7 +369,8 @@ def marcar_mejores(filas: list[list], veredictos: list, columnas: dict[int, list
 
 
 def html_tabla(cab, filas, notas: dict[str, str] | None = None) -> str:
-    """Tabla envuelta en `.table-wrapper` (se desplaza sola en pantallas angostas). Cada celda es texto (si es un
+    """Tabla HTML sin envoltorio propio: el recuadro y el desplazamiento los pone el tema con un solo contenedor (D4).
+    Con una línea en blanco antes y después, para que Markdown la tome como bloque. Cada celda es texto (si es un
     veredicto lleva td.pierde/ok/ind/pend) o un dict de `celda()`. Las barras de IC de una columna comparten escala, que
     siempre incluye el 0. Debajo, las `notas` al pie que alguna celda usa."""
     escala = {}
@@ -413,8 +404,7 @@ def html_tabla(cab, filas, notas: dict[str, str] | None = None) -> str:
 
     cuerpo = "".join("<tr>" + "".join(td(c, j) for j, c in enumerate(f)) + "</tr>" for f in filas)
     pie = "".join(f"<p class='nota'><sup>{k}</sup> {html.escape(notas[k])}</p>" for k in sorted(usadas)) if notas else ""
-    return ("<div class='table-wrapper'><table><tr>" + "".join(f"<th>{html.escape(c)}</th>" for c in cab) + "</tr>"
-            + cuerpo + "</table></div>" + pie)
+    return ("<table><tr>" + "".join(f"<th>{html.escape(c)}</th>" for c in cab) + "</tr>" + cuerpo + "</table>" + pie)
 
 
 def ensamble(fin: pd.DataFrame, variante: str, k: int, n_est: int) -> float | None:
@@ -488,7 +478,7 @@ def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
     return (intro + f"<p>{html.escape(ref)}.</p>"
             + html_tabla(("variante", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)",
                           "G − Ḡ_C (M$)", f"G − ensamble {N_SEMILLAS} de C (M$)"), filas)
-            + "<p>El gráfico de tiempo igual, con los intervalos de réplicas y de bootstrap, está en el bloque A.</p>")
+            )
 
 
 # --- comparación limpia: tiempo igual con intervalo, bloque A y bloque B (`h3-semillas-optuna` D6, D7) ---
@@ -622,9 +612,49 @@ def fila_bloque_a(ctx: Contexto, b: str, fin: pd.DataFrame, ap: pd.DataFrame, re
     return out
 
 
+def desglose_tiempo(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> list[dict]:
+    """T de la réplica 0 partido en optimización, entrenamiento final (`lgb.train`) y el resto del final (armado y
+    predicción): un dict por variante, el control primero. La suma es el T de `apareado.csv`."""
+    out = []
+    for b in [lg.CONTROL, *ctx.variantes]:
+        r = None if b == lg.CONTROL else fila(ap, b)
+        sub = fin[fin["variante"] == b]
+        if sub.empty or (b != lg.CONTROL and r is None) or "tiempo_lgbtrain_s" not in sub:
+            continue
+        t_total = float(ap["tiempo_total_control_s"].iloc[0] if r is None else r["tiempo_total_s"])
+        t_ent, t_lgb = float(sub["tiempo_entrenamiento_s"].mean()), float(sub["tiempo_lgbtrain_s"].mean())
+        out.append({"variante": b, "hipotesis": "control" if r is None else ctx.hip_de[b], "optimizacion": t_total - t_ent,
+                    "final": t_lgb, "resto": t_ent - t_lgb})
+    return out
+
+
+def delta_semillas(ctx: Contexto, finr: pd.DataFrame) -> dict[str, dict]:
+    """Δ de cada semilla de la réplica 0 (contra la misma semilla del control) y Δ de cada réplica (media de sus semillas
+    contra la del control en esa réplica, o contra la media de las réplicas del control si esa no se corrió)."""
+    if not len(finr) or "g" not in finr or "replica_opt" not in finr:
+        return {}
+    g = finr.groupby(["variante", "replica_opt", "semilla"])["g"].mean()
+    if lg.CONTROL not in g.index.get_level_values(0):
+        return {}
+    c = g[lg.CONTROL]
+    c_rep = c.groupby(level=0).mean()
+    out = {}
+    for b in ctx.variantes:
+        if b not in g.index.get_level_values(0):
+            continue
+        v = g[b]
+        sem = v.loc[0] if 0 in v.index.get_level_values(0) else None
+        d_sem = [] if sem is None or 0 not in c.index.get_level_values(0) else \
+            [float(x - c.loc[0][s]) for s, x in sem.items() if s in c.loc[0].index]
+        d_rep = [float(m - (c_rep[r] if r in c_rep.index else c_rep.mean())) for r, m in v.groupby(level=0).mean().items()]
+        out[b] = {"semillas": d_sem, "replicas": d_rep if len(d_rep) >= 2 else []}
+    return out
+
+
 def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot: int = N_BOOT) -> dict:
     """Todo el bloque A y las tablas de réplicas, calculado una vez desde el ledger."""
-    vacio = {"filas": [], "rep": pd.DataFrame(), "g_c1": None, "g_c10": None, "ti": {}, "g_rep": {}}
+    vacio = {"filas": [], "rep": pd.DataFrame(), "g_c1": None, "g_c10": None, "ti": {}, "g_rep": {}, "desglose": [],
+             "semillas": {}}
     if ap.empty or not estado(lg.CONTROL, fin)[1]:
         return vacio
     n_est = int(ap["n_estrella"].iloc[0])
@@ -647,6 +677,7 @@ def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot
             if len(s) >= 2:
                 g_rep[v] = [float(x) for x in s.to_numpy()]
     return {"filas": filas, "rep": rep, "g_c1": g_c1, "g_c10": g_c10, "n_est": n_est,
+            "desglose": desglose_tiempo(ctx, fin, ap), "semillas": delta_semillas(ctx, finr),
             "g_cR": None if c_rep is None else float(c_rep["g_media_replicas"]),
             "n_cR": None if c_rep is None else int(c_rep["n_replicas"]), "t_cR": t_cr,
             "delta": float(ap["delta_g_margen"].iloc[0]), "g_c0": float(ap["g_control"].iloc[0]),
@@ -735,7 +766,7 @@ def bloque_b(raiz: Path = rutas.RAIZ) -> list[dict]:
             df = pd.read_csv(ruta)
             for c in t["columnas"]:
                 cifras.append(f"{ruta.name}, {c}: " + (_resumen_columna(df[c]) if c in df else f"pendiente: falta la columna {c}"))
-        filas.append({"carpeta": str(m.parent.relative_to(raiz)), "autor": d.get("autor", ""), "pregunta": d.get("pregunta", ""),
+        filas.append({"carpeta": str(m.parent.relative_to(raiz)), "pregunta": d.get("pregunta", ""),
                       "protocolo": d.get("protocolo", ""), "cifras": cifras, "advertencia": d.get("advertencia", "")})
     return filas
 
@@ -752,7 +783,7 @@ def lista_b(b: list[dict]) -> str:
         return "No hay exploratorios declarados.\n"
     out = []
     for f in b:
-        out += [f"### {f['carpeta']}\n", f"- **Autor:** {f['autor']}", f"- **Pregunta:** {f['pregunta']}",
+        out += [f"### {f['carpeta']}\n", f"- **Pregunta:** {f['pregunta']}",
                 f"- **Protocolo:** {f['protocolo']}", "- **Cifras principales:**", *[f"  - {c}" for c in f["cifras"]],
                 f"- **Advertencia:** {f['advertencia']}\n"]
     return "\n".join(out)
@@ -810,66 +841,328 @@ def _marcas_veredicto(clases: list[str]) -> tuple[list, list[str]]:
             [NOMBRE_VEREDICTO[c] for c in usadas])
 
 
-def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tradeoff") -> str:
-    """A: Δ con su IC por veredicto a la izquierda y la aceleración A a la derecha, una fila por variante (D3)."""
-    filas = [f for f in a["filas"] if f["variante"] in ctx.variantes and delta(f) is not None]
-    if not filas:
-        return "<p class='pend'>pendiente: ninguna variante tiene Δ contra el control</p>"
-    fig, (izq, der) = plt.subplots(1, 2, figsize=(ANCHO, 0.3 * len(filas) + 1.8), sharey=True,
-                                   gridspec_kw={"width_ratios": [3, 2]})
-    clases = [clase_veredicto(f["veredicto"]) for f in filas]
-    for i, (f, c) in enumerate(zip(filas, clases)):
-        d, lo, hi = (x / 1e6 for x in delta(f))
-        izq.errorbar([d], [i], xerr=[[d - lo], [hi - d]], fmt="o", ms=4, capsize=2, color=COLOR_VEREDICTO[c])
-        if f["A"] is not None:
-            der.barh([i], [f["A"]], height=0.6, color=COLOR_VEREDICTO[c])
-    izq.axvline(0, color=COLOR_C, lw=0.8)
-    izq.axvline(-a["delta"] / 1e6, color=COLOR_C, ls=":", lw=1)
-    der.axvline(A_VALE, color=COLOR_C, ls="--", lw=1)
-    der.text(A_VALE, 1.0, f" A = {A_VALE:g}", transform=der.get_xaxis_transform(), fontsize=8, color=COLOR_C, va="bottom")
-    _filas_por_variante(izq, filas, [_etiqueta(f) for f in filas], der)
-    marcas, nombres = _marcas_veredicto(clases)
-    izq.legend(marcas + [Line2D([], [], color=COLOR_C, ls=":", lw=1)], nombres + ["−δ"], frameon=False, fontsize=8,
-               loc="lower left")
-    izq.set_xlabel("Δ contra el control (M$), con su IC 95%")
-    der.set_xlabel("aceleración A = T(C) / T")
-    fig.suptitle("Tradeoff por variante: Δ con réplicas si las hay, si no de la réplica 0", fontsize=10)
-    _ejes(izq, der)
-    return figura(fig, nombre, figuras)
-
-
 MARCAS = "osD^v<>p"
+TINTA = "#0b0b0b"  # texto en tinta primaria, nunca en el color de la serie
+
+
+def _etiquetas_sin_pisar(ax, puntos: list[tuple[float, float]], textos: list[str], alto: float = 0.055,
+                         ancho: float = 0.09) -> None:
+    """Etiqueta cada punto (en datos) sin que dos etiquetas se pisen ni tapen puntos vecinos: un punto aislado lleva su
+    etiqueta a la derecha; los puntos pegados en x forman un grupo, con sus etiquetas en una columna a la derecha del
+    grupo (ordenadas por y) unidas a su punto por una línea. Lo que aun choque se corre con `desplazar_dentro`. Los
+    límites de `ax` ya tienen que estar fijados."""
+    a_fraccion = ax.transScale + ax.transLimits
+    pts = [tuple(a_fraccion.transform(p)) for p in puntos]
+    grupos: list[list[int]] = []
+    for i in sorted(range(len(pts)), key=lambda i: pts[i][0]):
+        cerca = next((g for g in grupos if any(pts[i][0] - pts[j][0] < 0.045 and abs(pts[i][1] - pts[j][1]) < 0.2
+                                               for j in g)), None)
+        if cerca is not None:
+            cerca.append(i)
+        else:
+            grupos.append([i])
+    pos: list = [None] * len(pts)
+    for g in grupos:
+        if len(g) == 1:
+            pos[g[0]] = (pts[g[0]][0] + 0.012, pts[g[0]][1])
+            continue
+        x = max(pts[j][0] for j in g) + 0.03
+        centro = sum(pts[j][1] for j in g) / len(g)
+        for k, j in enumerate(sorted(g, key=lambda j: -pts[j][1])):
+            pos[j] = (x, centro + (len(g) / 2 - k - 0.5) * alto)
+    for i, (lx, ly) in enumerate(desplazar_dentro(pos, alto, ancho)):
+        (px, py), t = pts[i], textos[i]
+        der = lx > 0.9
+        ax.annotate(t, puntos[i], xytext=(lx - 0.012 if der else lx, ly), textcoords="axes fraction", fontsize=8,
+                    color=TINTA, va="center", ha="right" if der else "left",
+                    arrowprops=dict(arrowstyle="-", color="#aaaaaa", lw=0.6, shrinkA=1, shrinkB=4,
+                                    relpos=(1.0 if der else 0.0, 0.5)) if (lx - px > 0.02 or abs(ly - py) > 1e-9) else None)
+
+
+def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tradeoff") -> str:
+    """Mapa del tradeoff: A (log) contra Δ con su IC, un punto por variante coloreado por veredicto, la zona Δ > −δ
+    sombreada y la línea A = 1. Con réplicas, una barra ancha con el rango entre réplicas."""
+    filas = [f for f in a["filas"] if f["variante"] in ctx.variantes and delta(f) is not None and f["A"] is not None]
+    if not filas:
+        return pendiente("ninguna variante tiene Δ contra el control")
+    d_m = a["delta"] / 1e6
+    clases = [clase_veredicto(f["veredicto"]) for f in filas]
+    ics = [tuple(x / 1e6 for x in delta(f)) for f in filas]
+    aes = [f["A"] for f in filas]
+    lo, hi = min(min(i[1] for i in ics), -d_m), max(max(i[2] for i in ics), 0.0)
+    pad = 0.08 * (hi - lo)
+    fig, ax = plt.subplots(figsize=(ANCHO, 5.8))
+    ax.set_xscale("log")
+    ax.set_xlim(min(min(aes), 1) / 1.35, max(max(aes), A_VALE) * 1.35)
+    ax.set_ylim(lo - pad, hi + pad)
+    ax.axhspan(-d_m, hi + pad, color=COLOR_VEREDICTO["ok"], alpha=0.07, lw=0)
+    ax.axhline(0, color=COLOR_C, lw=0.8)
+    ax.axhline(-d_m, color=COLOR_C, ls=":", lw=1)
+    ax.axvline(1, color=COLOR_C, ls="--", lw=1)
+    rep, g_cr = a["rep"], a.get("g_cR")
+    for f, c, (d, l, h_), x in zip(filas, clases, ics, aes):
+        col = COLOR_VEREDICTO[c]
+        if f["dR"] and f["variante"] in rep.index and g_cr is not None:
+            r = rep.loc[f["variante"]]
+            ax.vlines([x], (r["g_min_replicas"] - g_cr) / 1e6, (r["g_max_replicas"] - g_cr) / 1e6, color=col, lw=6,
+                      alpha=0.22, zorder=1)
+        ax.errorbar([x], [d], yerr=[[d - l], [h_ - d]], fmt="o", ms=7, mec="white", mew=1, capsize=2, color=col, zorder=3)
+    _etiquetas_sin_pisar(ax, list(zip(aes, [i[0] for i in ics])), [f["variante"] for f in filas])
+    sin_perder = [f for f, c in zip(filas, clases) if c == "ok" and f["A"] >= A_VALE]
+    if sin_perder:
+        mejor = max(sin_perder, key=lambda f: f["A"])
+        titulo = (f"{len(sin_perder)} de {len(filas)} variantes no pierden y aceleran {A_VALE:g}× o más; "
+                  f"la más rápida entre ellas es {mejor['variante']} ({mejor['A']:.1f}×)")
+    else:
+        titulo = f"Ninguna de las {len(filas)} variantes no pierde y acelera {A_VALE:g}× o más"
+    fig.suptitle(titulo, fontsize=11, x=0.01, ha="left")
+    ax.set_xlabel("aceleración A = T(C) / T (escala log; a la derecha, más rápida)")
+    ax.set_ylabel("Δ contra el control (M$, IC 95%); arriba, mejor")
+    ax.set_xticks([x for x in (0.5, 1, 2, 5, 10, 20, 50) if ax.get_xlim()[0] <= x <= ax.get_xlim()[1]],
+                  [f"{x:g}×" for x in (0.5, 1, 2, 5, 10, 20, 50) if ax.get_xlim()[0] <= x <= ax.get_xlim()[1]])
+    ax.minorticks_off()
+    _ejes(ax)
+    marcas, nombres = _marcas_veredicto(clases)
+    fig.legend(marcas + [Line2D([], [], color=COLOR_C, ls=":", lw=1), Line2D([], [], color=COLOR_C, ls="--", lw=1)]
+               + ([Line2D([], [], color=COLOR_C, lw=6, alpha=0.3)] if any(f["dR"] for f in filas) else []),
+               nombres + ["−δ (debajo, pierde; sombreado: no pierde)", "A = 1 (como el control)"]
+               + (["rango entre réplicas"] if any(f["dR"] for f in filas) else []),
+               frameon=False, fontsize=8, loc="lower center", ncol=6)
+    fig.tight_layout(rect=(0, 0.06, 1, 0.96))
+    return figura(fig, nombre, figuras, ajustar=False)
 
 
 def fig_fraccion(ctx: Contexto, a: dict, figuras: Path | None) -> str:
-    """B: Δ contra la fracción de muestra (`Variante.tasa`), una línea por `Variante.metodo` con dos tasas o más."""
+    """Δ contra la fracción de muestra (`Variante.tasa`): una línea por `Variante.metodo` con dos tasas o más, con la banda
+    de su IC y la línea de −δ."""
     por: dict[str, list[tuple]] = {}
     for f in a["filas"]:
         v, d = reg.VARIANTES.get(f["variante"]), delta(f)
         if v is not None and d is not None:
-            por.setdefault(v.metodo, []).append((v.tasa, *d))
-    familias = {m: sorted(p) for m, p in por.items() if len({t for t, *_ in p}) >= 2}
+            por.setdefault(v.metodo, []).append((v.tasa, *d, f["variante"]))
+    familias = {m: sorted(p) for m, p in por.items() if len({x[0] for x in p}) >= 2}
     if not familias:
-        return "<p class='pend'>pendiente: ninguna familia de variantes tiene dos fracciones con datos</p>"
-    fig, ax = plt.subplots(figsize=(ANCHO, 4.5))
-    k = len(familias)
+        return pendiente("ninguna familia de variantes tiene dos fracciones con datos")
+    fig, ax = plt.subplots(figsize=(ANCHO, 5.0))
     for j, (m, p) in enumerate(familias.items()):
-        t = np.array([x[0] for x in p]) * (1 + 0.04 * (j - (k - 1) / 2))  # corrimiento para que no se pisen los IC
+        t = np.array([x[0] for x in p])
         d, lo, hi = (np.array([x[i] for x in p]) / 1e6 for i in (1, 2, 3))
-        ax.errorbar(t, d, yerr=[d - lo, hi - d], fmt="-" + MARCAS[j % len(MARCAS)], ms=5, capsize=2, lw=1.2,
-                    color=PALETA[j % len(PALETA)], label=m)
+        color = PALETA[j % len(PALETA)]
+        ax.fill_between(t, lo, hi, color=color, alpha=0.16, lw=0)
+        ax.plot(t, d, "-" + MARCAS[j % len(MARCAS)], ms=6, mec="white", mew=1, lw=2, color=color, label=m)
+    d_m = a["delta"] / 1e6
     ax.axhline(0, color=COLOR_C, lw=0.8)
-    ax.axhline(-a["delta"] / 1e6, color=COLOR_C, ls=":", lw=1, label="−δ")
+    ax.axhline(-d_m, color=COLOR_C, ls=":", lw=1, label="−δ")
     ax.set_xscale("log")
     tasas = sorted({x[0] for p in familias.values() for x in p})
     ax.set_xticks(tasas, [f"{t:g}" for t in tasas])
     ax.minorticks_off()
-    ax.set_xlabel("fracción de la muestra (escala log; cada familia corrida un poco para que no se pisen los IC)")
+    peor = min((x for p in familias.values() for x in p), key=lambda x: x[1])
+    fig.suptitle(f"Δ contra la fracción de muestra: el punto más bajo es {peor[4]} ({peor[1] / 1e6:+.1f} M$), "
+                 f"{'por debajo de' if peor[1] / 1e6 < -d_m else 'dentro de'} −δ", fontsize=11, x=0.01, ha="left")
+    ax.set_xlabel("fracción de la muestra (escala log); banda: IC 95% de Δ")
     ax.set_ylabel("Δ contra el control (M$)")
-    ax.set_title("Δ contra fracción de muestra, por familia de variantes", fontsize=10)
-    ax.legend(frameon=False, fontsize=8, ncol=min(k + 1, 4))
+    ax.legend(frameon=False, fontsize=8, ncol=min(len(familias) + 1, 4), loc="upper center",
+              bbox_to_anchor=(0.5, -0.14))
     _ejes(ax)
     return figura(fig, "fraccion", figuras)
+
+
+def fig_desglose(ctx: Contexto, a: dict, figuras: Path | None) -> str:
+    """Desglose del tiempo T de la réplica 0 por variante y para el control: optimización, entrenamiento final y el
+    resto del final (armado y predicción), en barras apiladas."""
+    d = a.get("desglose", [])
+    if len(d) < 2:
+        return pendiente("faltan los tiempos del control o de las variantes")
+    fig, ax = plt.subplots(figsize=(ANCHO, 5.2))
+    x, base = np.arange(len(d)), np.zeros(len(d))
+    for clave, color, etiqueta in (("optimizacion", PALETA[0], "optimización (Optuna)"),
+                                   ("final", PALETA[1], "entrenamiento final"),
+                                   ("resto", PALETA[2], "armado y predicción del final")):
+        v = np.array([r[clave] for r in d])
+        ax.bar(x, v, bottom=base, width=0.72, color=color, edgecolor="white", linewidth=1.2, label=etiqueta)
+        base += v
+    ax.set_xticks(x, [r["variante"] for r in d], rotation=60, ha="right", fontsize=8)
+    c, corta = d[0], min(d[1:], key=lambda r: r["optimizacion"])
+    t_c = c["optimizacion"] + c["final"] + c["resto"]
+    fig.suptitle(f"En el control la optimización es el {100 * c['optimizacion'] / t_c:.0f} % de T ({c['optimizacion']:.0f} s "
+                 f"de {t_c:.0f} s); la variante con la optimización más corta, {corta['variante']}, la baja a "
+                 f"{corta['optimizacion']:.0f} s", fontsize=11, x=0.01, ha="left")
+    ax.set_ylabel("tiempo T de la réplica 0 (s)")
+    ax.legend(frameon=False, fontsize=8, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.22))
+    _ejes(ax)
+    return figura(fig, "desglose_tiempo", figuras)
+
+
+def fig_semillas(ctx: Contexto, a: dict, figuras: Path | None) -> str:
+    """Δ de cada semilla (un punto) por variante; las réplicas de Optuna, con otro marcador (media de sus semillas)."""
+    s = a.get("semillas", {})
+    filas = [f for f in a["filas"] if s.get(f["variante"], {}).get("semillas")]
+    if not filas:
+        return pendiente("ninguna variante tiene Δ por semilla")
+    fig, ax = plt.subplots(figsize=(ANCHO, 0.34 * len(filas) + 1.9))
+    hay_rep = False
+    for i, f in enumerate(filas):
+        col = COLOR_VEREDICTO[clase_veredicto(f["veredicto"])]
+        sem = np.array(s[f["variante"]]["semillas"]) / 1e6
+        ax.scatter(sem, i + (np.arange(len(sem)) % 5 - 2) * 0.09, s=16, color=col, alpha=0.65, lw=0, zorder=2)
+        rep = np.array(s[f["variante"]]["replicas"]) / 1e6
+        if len(rep):
+            hay_rep = True
+            ax.scatter(rep, [i] * len(rep), s=46, marker="D", facecolor="white", edgecolor=col, linewidth=1.5, zorder=3)
+    ax.axvline(0, color=COLOR_C, lw=0.8)
+    ax.axvline(-a["delta"] / 1e6, color=COLOR_C, ls=":", lw=1)
+    _filas_por_variante(ax, filas, [_etiqueta(f) for f in filas])
+    amplio = max(filas, key=lambda f: np.ptp(s[f["variante"]]["semillas"]))
+    fig.suptitle(f"Cada punto es una semilla: la dispersión entre semillas llega a "
+                 f"{np.ptp(s[amplio['variante']]['semillas']) / 1e6:.1f} M$ ({amplio['variante']})", fontsize=11, x=0.01,
+                 ha="left")
+    ax.set_xlabel("Δ contra la misma semilla del control (M$); punteada: −δ")
+    marcas = [Line2D([], [], color=COLOR_C, marker="o", ms=4, ls="")]
+    nombres = ["semilla (réplica 0)"]
+    if hay_rep:
+        marcas.append(Line2D([], [], color=COLOR_C, marker="D", mfc="white", ls=""))
+        nombres.append("réplica de Optuna (media de sus semillas)")
+    fig.legend(marcas, nombres, frameon=False, fontsize=8, ncol=2, loc="lower center")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.96))
+    _ejes(ax)
+    return figura(fig, "semillas_replicas", figuras, ajustar=False)
+
+
+def fig_grilla(ctx: Contexto, a: dict, figuras: Path | None) -> str:
+    """Grilla de veredictos: familia (`Variante.metodo`) contra tasa; cada celda con el color y el texto del veredicto, y
+    vacía si esa combinación no está en el registro."""
+    from matplotlib.patches import Rectangle
+    celdas: dict[tuple[str, float], list[dict]] = {}
+    for f in a["filas"]:
+        v = reg.VARIANTES.get(f["variante"])
+        if v is not None:
+            celdas.setdefault((v.metodo, v.tasa), []).append(f)
+    if not celdas:
+        return pendiente("no hay variantes registradas con datos")
+    metodos = list(dict.fromkeys(m for m, _ in celdas))
+    tasas = sorted({t for _, t in celdas})
+    fig, ax = plt.subplots(figsize=(ANCHO, 0.72 * len(metodos) + 1.8))
+    for (m, t), fs in celdas.items():
+        i, j = metodos.index(m), tasas.index(t)
+        c = clase_veredicto(fs[0]["veredicto"]) or "pend"
+        ax.add_patch(Rectangle((j - 0.46, i - 0.46), 0.92, 0.92, facecolor=COLOR_VEREDICTO[c], alpha=0.25, lw=0))
+        ax.text(j, i, "\n".join(f"{f['variante']}\n{NOMBRE_VEREDICTO[clase_veredicto(f['veredicto']) or 'pend']}"
+                                for f in fs), ha="center", va="center", fontsize=8, color=TINTA)
+    ax.set_xlim(-0.5, len(tasas) - 0.5)
+    ax.set_ylim(len(metodos) - 0.5, -0.5)
+    ax.set_xticks(range(len(tasas)), [f"{t:g}" for t in tasas])
+    ax.set_yticks(range(len(metodos)), [f"{m} ({celdas[next(k for k in celdas if k[0] == m)][0]['hipotesis']})"
+                                        for m in metodos], fontsize=8)
+    ax.set_xlabel("fracción de la muestra")
+    ax.tick_params(length=0)
+    ax.spines[:].set_visible(False)
+    cuenta = {c: sum(clase_veredicto(f["veredicto"]) == c for fs in celdas.values() for f in fs) for c in ("ok", "pierde", "ind")}
+    total = sum(len(fs) for fs in celdas.values())
+    pend = total - sum(cuenta.values())
+    fig.suptitle(f"De {total} variantes: no pierden {cuenta['ok']}, pierden {cuenta['pierde']}, indeterminadas "
+                 f"{cuenta['ind']}, pendientes {pend}", fontsize=11, x=0.01, ha="left")
+    return figura(fig, "grilla_veredictos", figuras)
+
+
+def delta_ronda_anterior(raiz: Path = rutas.RAIZ) -> pd.DataFrame:
+    """Δ apareado (réplica 0) de la ronda anterior de todos los ledgers, por variante (`ronda_201903-201906/`)."""
+    tablas = []
+    for e in reg.duenos():
+        f = rutas.ledger(e) / "ronda_201903-201906" / "apareado.csv"
+        if f.exists():
+            tablas.append(lg.leer_csv(f))
+    if not tablas:
+        return pd.DataFrame()
+    return pd.concat(tablas, ignore_index=True).drop_duplicates("variante").set_index("variante")
+
+
+def fig_rondas(ctx: Contexto, a: dict, figuras: Path | None, anterior: pd.DataFrame | None = None) -> str:
+    """Comparación entre rondas: por variante, Δ de la ronda anterior (círculo hueco) unido por un segmento al de la
+    vigente (círculo lleno); sin ronda anterior, solo el punto vigente."""
+    anterior = delta_ronda_anterior() if anterior is None else anterior
+    filas = [f for f in a["filas"] if f["d0"] is not None]
+    if not filas:
+        return pendiente("ninguna variante tiene Δ en la ronda vigente")
+    fig, ax = plt.subplots(figsize=(ANCHO, 0.32 * len(filas) + 1.9))
+    cambios = []
+    for i, f in enumerate(filas):
+        col = COLOR_VEREDICTO[clase_veredicto(f["veredicto"])]
+        nuevo = f["d0"][0] / 1e6
+        if len(anterior) and f["variante"] in anterior.index:
+            viejo = float(anterior.loc[f["variante"], "delta_g_media"]) / 1e6
+            ax.plot([viejo, nuevo], [i, i], color="#aaaaaa", lw=1.6, zorder=1)
+            ax.scatter([viejo], [i], s=46, facecolor="white", edgecolor=col, linewidth=1.5, zorder=2)
+            cambios.append((abs(nuevo - viejo), f["variante"], nuevo - viejo))
+        ax.scatter([nuevo], [i], s=46, color=col, zorder=3)
+    ax.axvline(0, color=COLOR_C, lw=0.8)
+    _filas_por_variante(ax, filas, [_etiqueta(f) for f in filas])
+    if cambios:
+        _, v, dd = max(cambios)
+        titulo = f"La mayor diferencia entre rondas es la de {v}: Δ cambia {dd:+.1f} M$"
+    else:
+        titulo = "Ninguna variante tiene ronda anterior para comparar"
+    fig.suptitle(titulo, fontsize=11, x=0.01, ha="left")
+    ax.set_xlabel("Δ apareado de la réplica 0 contra el control (M$); hueco: ronda anterior, lleno: vigente")
+    _ejes(ax)
+    return figura(fig, "rondas", figuras)
+
+
+def _curvas(fin: pd.DataFrame, variante: str) -> dict[int, pd.Series]:
+    """Curva de ganancia en `MES` (por envíos) de cada semilla final de `variante`."""
+    col = f"curva_{MES}"
+    if col not in fin:
+        return {}
+    sub = fin[fin["variante"] == variante]
+    return {int(s): lg.leer_curva(Path(), r).set_index("envios")["ganancia"] for s, r in zip(sub["semilla"], sub[col])
+            if isinstance(r, str)}
+
+
+def curvas_diferencia(fin: pd.DataFrame, variante: str) -> pd.DataFrame | None:
+    """G(variante) − G(C) por envíos, una columna por semilla (la misma semilla en las dos curvas)."""
+    cc, cv = _curvas(fin, lg.CONTROL), _curvas(fin, variante)
+    semillas = sorted(set(cc) & set(cv))
+    if not semillas:
+        return None
+    return pd.concat([(cv[s] - cc[s]).rename(s) for s in semillas], axis=1).dropna(how="all")
+
+
+def fig_curva_diferencia(ctx: Contexto, h: str, fin: pd.DataFrame, ap: pd.DataFrame, figuras: Path | None) -> str:
+    """Curva de diferencia de la hipótesis `h`: G(variante) − G(C) contra envíos, un panel por variante, con la mediana, la
+    banda mín–máx entre semillas, la línea de 0 y el corte N*."""
+    difs = {b: curvas_diferencia(fin, b) for b in ctx.hipotesis[h][1]}
+    difs = {b: d for b, d in difs.items() if d is not None}
+    if not difs or ap.empty:
+        return pendiente("faltan curvas del control o de las variantes")
+    n_est = int(ap["n_estrella"].iloc[0])
+    cols = min(len(difs), 3)
+    filas = math.ceil(len(difs) / cols)
+    fig, axs = plt.subplots(filas, cols, figsize=(ANCHO, 3.1 * filas + 0.9), sharex=True, sharey=True, squeeze=False)
+    debajo = []
+    for ax, (b, d) in zip(axs.flat, difs.items()):
+        med = d.median(axis=1) / 1e6
+        ax.fill_between(d.index, d.min(axis=1) / 1e6, d.max(axis=1) / 1e6, color=ctx.color[h], alpha=0.2, lw=0)
+        ax.plot(d.index, med, color=ctx.color[h], lw=1.6)
+        ax.axhline(0, color=COLOR_C, lw=0.8)
+        ax.axvline(n_est, color="#999999", ls=":", lw=1)
+        ax.set_xlim(0, 15000)
+        ax.set_xticks([0, 5000, 10000, 15000])
+        ax.set_title(b, fontsize=10, loc="left")
+        _ejes(ax)
+        if float(med.loc[:n_est].iloc[-1]) < 0:
+            debajo.append(b)
+    for ax in axs.flat[len(difs):]:
+        ax.set_visible(False)
+    for ax in axs[-1]:
+        ax.set_xlabel("envíos")
+    for ax in axs[:, 0]:
+        ax.set_ylabel(f"G(variante) − G(C), {MES} (M$)")
+    resumen = ", ".join(debajo[:3]) + ("…" if len(debajo) > 3 else "")
+    fig.suptitle(f"{h}: en N* = {n_est:,} envíos, {len(debajo)} de {len(difs)} variantes quedan por debajo del control"
+                 + (f" ({resumen})" if debajo else "") + "; línea: mediana, banda: mín–máx entre semillas",
+                 fontsize=11, x=0.01, ha="left")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    return figura(fig, f"curva_diferencia_{h}", figuras, ajustar=False)
 
 
 def desplazar(puntos: list[tuple[float, float]], alto: float, ancho: float) -> list[tuple[float, float]]:
@@ -895,62 +1188,6 @@ def desplazar_dentro(puntos: list[tuple[float, float]], alto: float, ancho: floa
     return [(x, 1 - y) for x, y in desplazar([(x, 1 - y) for x, y in puntos], alto, ancho)]
 
 
-def fig_tiempo_ganancia_paneles(ctx: Contexto, a: dict, figuras: Path | None) -> str:
-    """C: tiempo contra ganancia, un panel por hipótesis con el control en cada uno y etiquetas que no se pisan (D4)."""
-    hips = {h: [f for f in a["filas"] if f["hipotesis"] == h and f["G"] is not None and f["T"] is not None]
-            for h in ctx.hipotesis}
-    hips = {h: fs for h, fs in hips.items() if fs}
-    if not hips:
-        return "<p class='pend'>pendiente: no hay apareado.csv (falta el control)</p>"
-    rep, cols = a["rep"], min(len(hips), 2)
-    nf = math.ceil(len(hips) / cols)
-    fig, axs = plt.subplots(nf, cols, figsize=(ANCHO, 3.8 * nf + 0.6), sharex=True, sharey=True, squeeze=False)
-    rango = lambda r, y: [[y - r["g_min_replicas"] / 1e6], [r["g_max_replicas"] / 1e6 - y]]
-    for ax, (h, fs) in zip(axs.flat, hips.items()):
-        ax.scatter([a["t_c0"]], [a["g_c0"] / 1e6], s=50, color=COLOR_C, marker="s", zorder=3)
-        if a.get("g_cR") is not None and a.get("t_cR") is not None:
-            y = a["g_cR"] / 1e6
-            ax.errorbar([a["t_cR"]], [y], yerr=rango(rep.loc[lg.CONTROL], y), fmt="D", ms=6, mfc="white",
-                        color=COLOR_C, capsize=3, zorder=3)
-        ax.axhline((a["g_c0"] - a["delta"]) / 1e6, color=COLOR_C, ls=":", lw=1)
-        for f in fs:
-            y, c = f["G"] / 1e6, COLOR_VEREDICTO[clase_veredicto(f["veredicto"])]
-            if f["dR"] and f["variante"] in rep.index:
-                ax.errorbar([f["T"]], [y], yerr=rango(rep.loc[f["variante"]], y), fmt="o", ms=5, color=c, capsize=3)
-            else:
-                ax.scatter([f["T"]], [y], s=25, color=c, zorder=2)
-        ax.set_xscale("log")
-        ax.set_title(f"{h} — {ctx.hipotesis[h][0]}", fontsize=9)
-        _ejes(ax)
-    for ax in axs.flat[len(hips):]:
-        ax.set_visible(False)
-    for ax, fs in zip(axs.flat, hips.values()):
-        ax.autoscale_view()
-        a_fraccion = ax.transScale + ax.transLimits  # datos -> fracción de los ejes, sin depender del layout
-        pts = [tuple(a_fraccion.transform((f["T"], f["G"] / 1e6))) for f in fs]
-        for f, (px, py), (lx, ly) in zip(fs, pts, desplazar_dentro(pts, 0.075, 0.2)):
-            der = lx > 0.8
-            ax.annotate(f["variante"], (f["T"], f["G"] / 1e6), xytext=(lx - 0.02 if der else lx + 0.02, ly),
-                        textcoords="axes fraction", fontsize=8, va="center", ha="right" if der else "left",
-                        arrowprops=dict(arrowstyle="-", color="#aaaaaa", lw=0.6) if ly != py else None)
-    for ax in axs[-1]:
-        ax.set_xlabel("T del pipeline (s, escala log; mediana entre réplicas)")
-    for ax in axs[:, 0]:
-        ax.set_ylabel(f"Ḡ en {MES} al corte N* (M$)")
-    marcas, nombres = _marcas_veredicto([clase_veredicto(f["veredicto"]) for fs in hips.values() for f in fs])
-    fig.legend([Line2D([], [], color=COLOR_C, marker="s", ls=""),
-                Line2D([], [], color=COLOR_C, marker="D", mfc="white", ls=""),
-                Line2D([], [], color=COLOR_C, ls=":", lw=1)] + marcas,
-               ["control (réplica 0)",
-                f"control (media de {a['n_cR']} réplicas)" if a.get("n_cR") else "control (sin réplicas)",
-                "control − δ"] + nombres,
-               frameon=False, fontsize=8, loc="lower center", ncol=4 + len(marcas))
-    fig.suptitle("Tiempo contra ganancia por hipótesis (barras: rango entre réplicas; sin barra: una sola réplica)",
-                 fontsize=10)
-    fig.tight_layout(rect=(0, 0.06, 1, 1))
-    return figura(fig, "tiempo_vs_ganancia", figuras, ajustar=False)
-
-
 def fig_tiempo_igual_ic(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     """D: G del ensamble de K semillas − Ḡ_C, con el IC entre réplicas y el de bootstrap de clientes."""
     filas = []
@@ -960,7 +1197,7 @@ def fig_tiempo_igual_ic(ctx: Contexto, a: dict, figuras: Path | None) -> str:
         if r or f["ti_boot"]:
             filas.append((f, r, f["ti_boot"]))
     if not filas:
-        return "<p class='pend'>pendiente: ninguna variante tiene su ensamble a tiempo igual</p>"
+        return pendiente("ninguna variante tiene su ensamble a tiempo igual")
     fig, ax = plt.subplots(figsize=(ANCHO, 0.32 * len(filas) + 1.8))
     for i, (_, r, b) in enumerate(filas):
         for t, dy, marca, color, relleno in ((r, -0.15, "o", PALETA[0], PALETA[0]), (b, 0.15, "s", PALETA[1], "white")):
@@ -975,51 +1212,12 @@ def fig_tiempo_igual_ic(ctx: Contexto, a: dict, figuras: Path | None) -> str:
               frameon=False, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.32 * len(filas) + 1.8)),
               ncol=2)
     ax.set_xlabel(f"G del ensamble de K semillas en {MES} − Ḡ_C (M$)")
-    ax.set_title("A tiempo igual: ensamble de K semillas de cada variante contra el control", fontsize=10)
+    intervalos = [t for _, r, b in filas for t in (r or b,)]
+    ganan = sum(t[1] > 0 for t in intervalos)
+    ax.set_title(f"A tiempo igual, {ganan} de {len(filas)} variantes superan al control (intervalo entero sobre 0)",
+                 fontsize=11, loc="left")
     _ejes(ax)
     return figura(fig, "tiempo_igual", figuras)
-
-
-def fig_replicas(ctx: Contexto, a: dict, figuras: Path | None) -> str:
-    """E: la Ḡ de cada réplica como un punto, junto a las del control."""
-    g = a.get("g_rep", {})
-    filas = [f for f in a["filas"] if f["variante"] in g]
-    if not len(a["rep"]) or not filas or lg.CONTROL not in g:
-        return "<p class='pend'>pendiente: ninguna variante tiene réplicas</p>"
-    filas = [{"variante": lg.CONTROL, "hipotesis": "control", "veredicto": ""}] + filas
-    fig, ax = plt.subplots(figsize=(ANCHO, 0.32 * len(filas) + 1.8))
-    for i, f in enumerate(filas):
-        v = np.array(g[f["variante"]]) / 1e6
-        c = COLOR_C if i == 0 else COLOR_VEREDICTO[clase_veredicto(f["veredicto"])]
-        ax.scatter(v, [i] * len(v), s=16, color=c, alpha=0.6, lw=0)
-        ax.scatter([v.mean()], [i], s=180, marker="|", color=c)
-    ax.axvline(np.mean(g[lg.CONTROL]) / 1e6, color=COLOR_C, ls="--", lw=0.8)
-    _filas_por_variante(ax, filas, [_etiqueta(f) for f in filas])
-    ax.set_xlabel(f"Ḡ de cada réplica en {MES} al corte N* (M$; media de sus semillas)")
-    ax.set_title("Réplicas de optimización: un punto por réplica; raya: media entre réplicas; punteada: la del control",
-                 fontsize=10)
-    _ejes(ax)
-    return figura(fig, "replicas", figuras)
-
-
-def fig_varianza(ctx: Contexto, a: dict, figuras: Path | None) -> str:
-    """F: sd entre réplicas y sd entre semillas de cada variante, en barras."""
-    rep = a["rep"]
-    r = rep[[" - " not in v for v in rep.index]] if len(rep) else rep
-    if r.empty:
-        return "<p class='pend'>pendiente: ninguna variante tiene réplicas</p>"
-    fig, ax = plt.subplots(figsize=(ANCHO, 0.45 * len(r) + 1.6))
-    y, h = np.arange(len(r)), 0.38
-    ax.barh(y - h / 2, r["sd_entre_replicas"] / 1e6, height=h, color=PALETA[0], label="sd entre réplicas (suerte de Optuna)")
-    ax.barh(y + h / 2, r["sd_dentro_medio"] / 1e6, height=h, color=PALETA[1], label="sd entre semillas (media por réplica)")
-    ax.set_yticks(y, list(r.index), fontsize=8)
-    ax.invert_yaxis()
-    ax.set_xlabel("desvío estándar de G (M$)")
-    ax.set_title("Varianza de la ganancia: entre réplicas y entre semillas", fontsize=10)
-    ax.legend(frameon=False, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.45 * len(r) + 1.6)),
-              ncol=2)
-    _ejes(ax)
-    return figura(fig, "varianza", figuras)
 
 
 def fig_diferencias(ctx: Contexto, a: dict, figuras: Path | None) -> str:
@@ -1027,7 +1225,7 @@ def fig_diferencias(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     rep = a["rep"]
     r = rep[[" - " in v for v in rep.index]] if len(rep) else rep
     if r.empty:
-        return "<p class='pend'>pendiente: no hay diferencias entre variantes con réplicas</p>"
+        return pendiente("no hay diferencias entre variantes con réplicas")
     fig, ax = plt.subplots(figsize=(ANCHO, 0.4 * len(r) + 1.6))
     clases = [clase_veredicto(v) for v in r["veredicto"]]
     textos = dict(zip(clases, r["veredicto"].astype(str)))  # leyenda con el veredicto de los pares (mejora, no cambia…)
@@ -1044,7 +1242,8 @@ def fig_diferencias(ctx: Contexto, a: dict, figuras: Path | None) -> str:
               frameon=False, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.4 * len(r) + 1.6)),
               ncol=len(textos))
     ax.set_xlabel("Δ entre variantes (M$), IC entre réplicas" + ("; punteada: −δ" if margen else ""))
-    ax.set_title("Diferencias entre variantes", fontsize=10)
+    ax.set_title(f"{sum(not (lo <= 0 <= hi) for lo, hi in zip(r['delta_g_ic_inf'], r['delta_g_ic_sup']))} de {len(r)} "
+                 "diferencias entre variantes tienen el intervalo fuera de 0", fontsize=11, loc="left")
     _ejes(ax)
     return figura(fig, "diferencias", figuras)
 
@@ -1107,7 +1306,7 @@ def tarjetas_b(b: list[dict]) -> str:
     for f in b:
         cifras = "".join(f"<li class='pend'>{e(c)}</li>" if c.startswith("pendiente") else f"<li>{e(c)}</li>"
                          for c in f["cifras"])
-        tarjetas.append(f"<article><h4>{e(f['carpeta'])}</h4><p class='autor'>{e(f['autor'])}</p>"
+        tarjetas.append(f"<article><h4>{e(f['carpeta'])}</h4>"
                         f"<dl><dt>Pregunta</dt><dd>{e(f['pregunta'])}</dd><dt>Protocolo</dt><dd>{e(f['protocolo'])}</dd>"
                         f"<dt>Cifras principales</dt><dd><ul>{cifras}</ul></dd>"
                         f"<dt>Advertencia</dt><dd class='advertencia'>{e(f['advertencia'])}</dd></dl></article>")
@@ -1120,14 +1319,13 @@ def html_resultados(ctx: Contexto, a: dict, b: list[dict], figuras: Path | None)
     if not a["filas"]:
         return "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
     out = ["<h3>Bloque A: mismo protocolo</h3>", f"<p>{html.escape(referencia_control(a))}</p>",
-           fig_tradeoff(ctx, a, figuras), fig_tiempo_ganancia_paneles(ctx, a, figuras), fig_tiempo_igual_ic(ctx, a, figuras),
-           fig_fraccion(ctx, a, figuras), f"<p>{html.escape(AVISO_A_HTML)}</p>", tabla_resumen(a["filas"]),
+           fig_tradeoff(ctx, a, figuras), fig_desglose(ctx, a, figuras), fig_tiempo_igual_ic(ctx, a, figuras),
+           fig_fraccion(ctx, a, figuras), fig_grilla(ctx, a, figuras), f"<p>{html.escape(AVISO_A_HTML)}</p>", tabla_resumen(a["filas"]),
            "<details><summary>Detalle del bloque A</summary>"
            + html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS) + "</details>",
-           fig_replicas(ctx, a, figuras)]
+           fig_semillas(ctx, a, figuras)]
     if len(a["rep"]):
-        out += ["<h3>Varianza entre réplicas y entre semillas</h3>", html_tabla(CAB_VAR, varianza(a["rep"], ctx)),
-                fig_varianza(ctx, a, figuras)]
+        out += ["<h3>Varianza entre réplicas y entre semillas</h3>", html_tabla(CAB_VAR, varianza(a["rep"], ctx))]
         if pares_replicas(a["rep"]):
             out += ["<h3>Diferencias entre variantes</h3>", tabla_pares(a["rep"]), fig_diferencias(ctx, a, figuras)]
     out += ["<h3>Bloque B: exploratorios</h3>", f"<p>{html.escape(AVISO_B)}</p>", tarjetas_b(b)]
@@ -1151,7 +1349,7 @@ def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: p
             f"<details open><summary>Predicción y regla (de <code>docs/hipotesis.md</code>)</summary>"
             f"{markdown(md_h, 1)}</details>"
             + html_tabla(("variante", "veredicto", "Δ [IC 95%] (M$)", "ΔAUC [IC 95%]", "A"), filas)
-            + fig_bandas(ctx, h, fin, ap, figuras) + "</section>")
+            + fig_curva_diferencia(ctx, h, fin, ap, figuras) + "</section>")
 
 
 def commit() -> str:
@@ -1193,8 +1391,7 @@ def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str |
         intro = (markdown("## Variantes\n" + seccion(dis, "Variantes"))
                  + "<p>Las reglas, G, Δ, δ, T, A y N* están en <code>control/docs/hipotesis.md</code> "
                    "(<a href='../../control/informe/reporte.html'>reporte del control</a>).</p>")
-    n_est = f"Final entrenado con {VENTANA}, {N_SEMILLAS} semillas; N* = {int(ap['n_estrella'].iloc[0]):,} envíos (fijo, de la ronda anterior); δ = {_m(ap['delta_g_margen'].iloc[0])} M$" \
-        if not ap.empty else "N* pendiente"
+    n_est = linea_ronda(ap)
     completos = sum(estado(b, fin)[1] for b in ["C", *ctx.variantes])
     titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)
     md = None
@@ -1222,6 +1419,193 @@ def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str |
     return f"{ENCABEZADO}{cuerpo}\n", md
 
 
+# --- bloques entre marcadores (sitio-legible D4) ---
+
+class MarcadorFaltante(Exception):
+    """Un README no tiene el marcador de un bloque que el generador produce."""
+
+
+def marcadores(nombre: str) -> tuple[str, str]:
+    return f"<!-- generado:{nombre} -->", f"<!-- /generado:{nombre} -->"
+
+
+def bloque(nombre: str, contenido: str, fecha: str) -> str:
+    """El bloque completo, con sus marcadores y la línea que avisa que no se edita."""
+    ini, fin = marcadores(nombre)
+    return f"{ini}\nGenerado por `comun/reporte.py` el {fecha}; no editar.\n\n{contenido.strip()}\n\n{fin}"
+
+
+def reemplazar_bloques(texto: str, bloques: dict[str, str], archivo: str = "", fecha: str | None = None) -> str:
+    """`texto` con el contenido de cada bloque reemplazado y el resto intacto. Falla, sin devolver nada, si falta el
+    marcador de apertura o de cierre de alguno."""
+    fecha = fecha or f"{datetime.now():%Y-%m-%d}"
+    posiciones = {}
+    for nombre in bloques:
+        ini, fin = marcadores(nombre)
+        i = texto.find(ini)
+        j = texto.find(fin, i + len(ini)) if i >= 0 else -1
+        if i < 0 or j < 0:
+            faltante = ini if i < 0 else fin
+            raise MarcadorFaltante(f"{archivo}: falta el marcador {faltante}")
+        posiciones[nombre] = (i, j + len(fin))
+    for nombre, (i, j) in sorted(posiciones.items(), key=lambda kv: -kv[1][0]):
+        texto = texto[:i] + bloque(nombre, bloques[nombre], fecha) + texto[j:]
+    return texto
+
+
+def escribir_bloques(plan: list[tuple[Path, dict[str, str]]], archivos: dict[Path, bytes] | None = None,
+                     fecha: str | None = None) -> list[Path]:
+    """Valida los marcadores de todos los archivos del `plan` y recién entonces escribe los README y las figuras
+    (`archivos`): un error no deja la mitad regenerada."""
+    nuevos = {ruta: reemplazar_bloques(ruta.read_text(), bl, str(ruta), fecha) for ruta, bl in plan}
+    for ruta, texto in nuevos.items():
+        ruta.write_text(texto)
+    for ruta, datos in (archivos or {}).items():
+        ruta.parent.mkdir(parents=True, exist_ok=True)
+        ruta.write_bytes(datos)
+    return list(nuevos)
+
+
+def tiene_marcadores(ruta: Path) -> bool:
+    return ruta.is_file() and "<!-- generado:" in ruta.read_text()
+
+
+def linea_ronda(ap: pd.DataFrame) -> str:
+    if ap.empty:
+        return "N* pendiente"
+    return (f"Final entrenado con {VENTANA}, {N_SEMILLAS} semillas; N* = {int(ap['n_estrella'].iloc[0]):,} envíos (fijo, "
+            f"de la ronda anterior); δ = {_m(ap['delta_g_margen'].iloc[0])} M$")
+
+
+def _plegable(titulo: str, cuerpo: str) -> str:
+    """`<details>` con Markdown adentro: el sitio lo interpreta (`md_in_html`) y GitHub lo muestra plegado."""
+    return f'<details markdown="1">\n<summary>{html.escape(titulo)}</summary>\n\n{cuerpo.strip()}\n\n</details>'
+
+
+def _agregador(memo: dict) -> tuple[Contexto, pd.DataFrame, pd.DataFrame, dict]:
+    """Contexto, finales, apareado y bloque A del agregador; se calcula una vez por corrida."""
+    if "a" not in memo:
+        ctx = Contexto(reg.AGREGADOR)
+        fin, ap = cargar([reg.CONTROL, *ctx.exps])
+        memo["a"] = (ctx, fin, ap, calcular_bloque_a(ctx, fin, ap))
+    return memo["a"]
+
+
+def bloques_control(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    fin, ap = cargar([reg.CONTROL])
+    n, completo = estado(lg.CONTROL, fin)
+    if ap.empty:
+        return {"estado": pendiente("el control no tiene resultados finales")}
+    lineas = [f"- {linea_ronda(ap)}.",
+              f"- Ḡ_C (réplica 0) = {_m(ap['g_control'].iloc[0])} M$; T_C = {ap['tiempo_total_control_s'].iloc[0]:,.0f} s.",
+              f"- Finales del control: {n} de {N_SEMILLAS} semillas" + ("." if completo else " (pendiente).")]
+    return {"estado": "\n".join(lineas)}
+
+
+def bloques_hipotesis(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    ctx = Contexto(exp)
+    fin, ap = cargar([reg.CONTROL, *ctx.exps])
+    partes = [f"{linea_ronda(ap)}. Vale la pena: no pierde y A ≥ {A_VALE:g}."]
+    if ctx.variantes:
+        a = _agregador(memo)[3]
+        partes.append(fig_tradeoff(ctx, a, figuras, f"tradeoff_{exp}"))
+    partes.append(tabla_variantes(ctx, fin, ap))
+    partes += [fig_curva_diferencia(ctx, h, fin, ap, figuras) for h in ctx.hipotesis]
+    return {"resultado": "\n\n".join(partes)}
+
+
+def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    ctx, fin, ap, a = _agregador(memo)
+    if not a["filas"]:
+        sin = pendiente("el control no tiene sus semillas")
+        return {n: sin for n in ("mapa", "bloque-a", "bloque-a-completo", "varianza", "diferencias", "tiempo-igual",
+                                 "figuras")}
+    notas = [f"- `{f['variante']}`: {f['nota']}" for f in a["filas"] if f["nota"]]
+    completo = ["#### Bloque A: mismo protocolo\n", referencia_control(a) + "\n", AVISO_A + "\n",
+                tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
+    if notas:
+        completo += ["Notas:\n", "\n".join(notas) + "\n"]
+    if len(a["rep"]):
+        completo += ["#### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
+        if pares_replicas(a["rep"]):
+            completo += ["#### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares_replicas(a["rep"]))]
+    sin_rep = pendiente("ninguna variante tiene réplicas")
+    return {
+        "mapa": fig_tradeoff(ctx, a, figuras),
+        "bloque-a": "\n\n".join([referencia_control(a), AVISO_A_HTML, tabla_resumen(a["filas"]),
+                                 _plegable("Detalle del bloque A", html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS))]),
+        "bloque-a-completo": _plegable("Tablas completas del bloque A", "\n".join(completo)),
+        "varianza": html_tabla(CAB_VAR, varianza(a["rep"], ctx)) + "\n\n" + fig_semillas(ctx, a, figuras) if len(a["rep"]) else sin_rep,
+        "diferencias": (tabla_pares(a["rep"]) + "\n\n" + fig_diferencias(ctx, a, figuras)
+                        if pares_replicas(a["rep"]) else pendiente("no hay diferencias entre variantes con réplicas")),
+        "tiempo-igual": tiempo_igual(ctx, fin, ap) + "\n\n" + fig_tiempo_igual_ic(ctx, a, figuras),
+        "figuras": "\n\n".join([fig_fraccion(ctx, a, figuras), fig_desglose(ctx, a, figuras), fig_grilla(ctx, a, figuras)]),
+    }
+
+
+def bloques_exploratorios(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    return {"bloque-b": AVISO_B + "\n\n" + lista_b(bloque_b())}
+
+
+def tarjetas(a: dict, ctx: Contexto, prefijo: str) -> str:
+    """Una tarjeta por hipótesis con su veredicto leído de las filas del bloque A (que salen del ledger); `prefijo` es la
+    ruta desde la página que las muestra hasta la raíz del repo."""
+    out = ['<div class="grid cards" markdown>\n']
+    por_exp = {e: _titulo_hipotesis(e) for e in ctx.exps}
+    for e, (nombre, titulo) in por_exp.items():
+        filas = [f for f in a["filas"] if f["hipotesis"] == nombre]
+        if not filas:
+            resumen = "pendiente: sin resultados todavía."
+        else:
+            clases = [clase_veredicto(f["veredicto"]) for f in filas]
+            partes = [f"{sum(c == k for c in clases)} {NOMBRE_VEREDICTO[k]}" for k in ("ok", "pierde", "ind", "pend")
+                      if k in clases]
+            rapidas = [f for f, c in zip(filas, clases) if c == "ok" and f["A"] is not None and f["A"] >= A_VALE]
+            resumen = f"{len(filas)} variantes: " + ", ".join(partes) + "."
+            if rapidas:
+                mejor = max(rapidas, key=lambda f: f["A"])
+                resumen += f" La más rápida que no pierde: {mejor['variante']} ({mejor['A']:.1f}×)."
+        out.append(f"-   **[{nombre} · {titulo}]({prefijo}experimentos/{e}/README.md)**\n\n    ---\n\n    {resumen}\n")
+    out.append("</div>")
+    return "\n".join(out)
+
+
+def bloques_tarjetas(prefijo: str):
+    def generar_tarjetas(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+        ctx, _, _, a = _agregador(memo)
+        return {"tarjetas": tarjetas(a, ctx, prefijo) if a["filas"] else pendiente("el control no tiene sus semillas")}
+    return generar_tarjetas
+
+
+def destinos(exp: str) -> list[tuple[Path, object]]:
+    """(archivo, función que arma sus bloques) de cada archivo que genera `exp`; el primero es su README."""
+    base = rutas.experimento(exp)
+    if exp == reg.CONTROL:
+        return [(base / "README.md", bloques_control)]
+    if exp == reg.AGREGADOR:
+        return [(base / "README.md", bloques_sampling), (base / "exploratorios" / "README.md", bloques_exploratorios),
+                (rutas.RAIZ / "index.md", bloques_tarjetas("")), (rutas.RAIZ / "sitio" / "hipotesis.md", bloques_tarjetas("../"))]
+    return [(base / "README.md", bloques_hipotesis)]
+
+
+def planificar(exps: list[str], figuras: Path | None = None) -> tuple[list[tuple[Path, dict[str, str]]], dict[Path, bytes], list[Path]]:
+    """(plan, archivos de figuras, archivos omitidos por no tener marcadores todavía). No escribe nada."""
+    global DESTINO
+    plan, archivos, omitidos, memo = [], {}, [], {}
+    for exp in exps:
+        for ruta, fn in destinos(exp):
+            if not tiene_marcadores(ruta):
+                omitidos.append(ruta)
+                continue
+            DESTINO = Destino(rutas.experimento(exp) / "figuras")
+            try:
+                plan.append((ruta, fn(exp, figuras, memo)))
+                archivos.update(DESTINO.archivos)
+            finally:
+                DESTINO = None
+    return plan, archivos, omitidos
+
+
 def generar(exp: str, figuras: Path | None = None) -> str:
     return generar_con_tabla(exp, figuras)[0]
 
@@ -1229,13 +1613,22 @@ def generar(exp: str, figuras: Path | None = None) -> str:
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     g = p.add_mutually_exclusive_group(required=True)
-    g.add_argument("--experimento", help="carpeta de experimentos/ (control, h1, ..., sampling_1)")
-    g.add_argument("--todos", action="store_true", help="un reporte por cada experimento del registro")
-    p.add_argument("--salida", type=Path, help="página de salida (solo con --experimento)")
+    g.add_argument("--exp", "--experimento", dest="exp", help="carpeta de experimentos/ (control, h1, ..., sampling_1)")
+    g.add_argument("--todos", action="store_true", help="todos los experimentos del registro")
+    p.add_argument("--salida", type=Path, help="página de salida de la salida vieja (solo con --exp)")
     p.add_argument("--figuras", type=Path, help="además guarda las figuras como PNG en este directorio")
     a = p.parse_args()
-    exps = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR] if a.todos else [a.experimento]
-    for exp in exps:
+    exps = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR] if a.todos else [a.exp]
+    plan, archivos, omitidos = planificar(exps, a.figuras)
+    try:
+        escritos = escribir_bloques(plan, archivos)
+    except MarcadorFaltante as e:
+        raise SystemExit(f"error: {e}; no se escribió nada")
+    for ruta in escritos:
+        print(ruta)
+    for exp in exps:  # los experimentos cuyo README todavía no tiene marcadores siguen con la salida vieja
+        if tiene_marcadores(destinos(exp)[0][0]):
+            continue
         salida = a.salida or rutas.informe(exp) / "reporte.html"
         salida.parent.mkdir(parents=True, exist_ok=True)
         pagina, md = generar_con_tabla(exp, a.figuras)

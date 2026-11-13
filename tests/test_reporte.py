@@ -155,13 +155,13 @@ def _textos(svg: str) -> list[str]:
 def test_tradeoff_una_variante_por_fila_y_el_titulo(ronda_anterior, exp, nombre):
     pagina = reporte.generar(exp)
     textos = _textos(_figura(pagina, nombre))
-    assert any(t.startswith("Tradeoff por variante") for t in textos)
+    assert any("variantes no pierden" in t or t.startswith("Ninguna de las") for t in textos)
     ctx = reporte.Contexto(exp)
     ap = reporte.cargar([reg.CONTROL, *ctx.exps])[1]
-    for b in ctx.variantes:  # las que tienen Δ, una fila cada una; las pendientes no se dibujan
-        assert textos.count(f"{b} ({ctx.hip_de[b]})") == (1 if b in ap.index else 0)
+    for b in ctx.variantes:  # las que tienen Δ, una etiqueta cada una; las pendientes no se dibujan
+        assert textos.count(b) == (1 if b in ap.index else 0)
     # va antes de las tablas de resultados (las generadas; las de los docs vienen antes, en la introducción)
-    assert pagina.index(f'id="fig-{nombre}"') < pagina.index("<div class='table-wrapper'>")
+    assert pagina.index(f'id="fig-{nombre}"') < pagina.index("<th>Δ [IC 95%] (M$)</th>")
 
 
 def test_fraccion_sin_familias_de_dos_tasas_sale_pendiente(monkeypatch):
@@ -183,14 +183,15 @@ def test_desplazador_separa_etiquetas_en_el_mismo_punto():
 def test_sin_replicas_los_tres_graficos_salen_pendientes(ronda_anterior, monkeypatch):
     import pandas as pd
     ctx = reporte.Contexto(reg.AGREGADOR)
-    a = {"filas": [], "rep": pd.DataFrame(), "g_rep": {}}
-    for fig in (reporte.fig_replicas, reporte.fig_varianza, reporte.fig_diferencias):
+    a = {"filas": [], "rep": pd.DataFrame(), "g_rep": {}, "semillas": {}, "desglose": []}
+    for fig in (reporte.fig_semillas, reporte.fig_diferencias, reporte.fig_desglose, reporte.fig_grilla,
+                reporte.fig_tradeoff, reporte.fig_fraccion, reporte.fig_rondas, reporte.fig_tiempo_igual_ic):
         assert "class='pend'" in fig(ctx, a, None)
     cargar = reporte.cargar_replicas
     monkeypatch.setattr(reporte, "cargar_replicas",
                         lambda exps, n: (*cargar(exps, n)[:2], pd.DataFrame(columns=["variante"]).set_index("variante")))
     pagina = reporte.generar(reg.AGREGADOR)
-    assert "pendiente: ninguna variante tiene réplicas" in pagina and 'id="fig-tradeoff"' in pagina
+    assert 'id="fig-semillas_replicas"' in pagina and 'id="fig-tradeoff"' in pagina
 
 
 def _tabla(pagina: str, primera: str) -> str:
@@ -236,3 +237,114 @@ def test_tabla_de_resultados_conserva_el_bloque_a(ronda_anterior):
     assert "| " + " | ".join(reporte.CAB_A) + " |" in bloque_a
     assert "(R=8)" in bloque_a and "sin réplicas" in bloque_a
     assert "### experimentos/" in md.split("## Bloque B")[1]
+
+
+# --- sitio-legible grupo 2: marcadores, figuras como archivo, figuras nuevas ---
+
+def test_regenerar_no_toca_el_texto_de_afuera():
+    texto = "# H9\n\nantes\n\n<!-- generado:resultado -->\nviejo\n<!-- /generado:resultado -->\n\n## Limitaciones\n\nmías\n"
+    nuevo = reporte.reemplazar_bloques(texto, {"resultado": "tabla nueva"}, fecha="2026-11-13")
+    assert "tabla nueva" in nuevo and "viejo" not in nuevo
+    assert "Generado por `comun/reporte.py` el 2026-11-13; no editar." in nuevo
+    assert nuevo.split("<!-- generado:resultado -->")[0] == texto.split("<!-- generado:resultado -->")[0]
+    assert nuevo.split("<!-- /generado:resultado -->")[1] == texto.split("<!-- /generado:resultado -->")[1]
+    assert reporte.reemplazar_bloques(nuevo, {"resultado": "tabla nueva"}, fecha="2026-11-13") == nuevo
+
+
+def test_marcador_faltante_falla_sin_escribir_nada(tmp_path):
+    bueno, malo = tmp_path / "a.md", tmp_path / "b.md"
+    bueno.write_text("<!-- generado:x -->\nviejo\n<!-- /generado:x -->\n")
+    malo.write_text("<!-- generado:x -->\nviejo\n<!-- /generado:x -->\n")
+    figura = tmp_path / "figuras" / "f.svg"
+    with pytest.raises(reporte.MarcadorFaltante, match=r"b\.md.*generado:y"):
+        reporte.escribir_bloques([(bueno, {"x": "nuevo"}), (malo, {"x": "nuevo", "y": "falta"})], {figura: b"<svg/>"})
+    assert "viejo" in bueno.read_text() and "viejo" in malo.read_text() and not figura.exists()
+
+
+def test_figura_como_archivo_svg_identico_en_dos_corridas(monkeypatch, tmp_path):
+    import matplotlib.pyplot as plt
+    def una():
+        monkeypatch.setattr(reporte, "DESTINO", reporte.Destino(tmp_path / "figuras"))
+        fig, ax = plt.subplots()
+        ax.plot([1, 2, 3])
+        fig.suptitle("Qué mirar")
+        enlace = reporte.figura(fig, "prueba", None)
+        return enlace, dict(reporte.DESTINO.archivos)
+    (e1, a1), (e2, a2) = una(), una()
+    assert e1 == e2 and "![Qué mirar](figuras/prueba.svg)" in e1
+    assert a1 == a2 and list(a1) == [tmp_path / "figuras" / "prueba.svg"]
+    assert b"<svg" in a1[tmp_path / "figuras" / "prueba.svg"]
+
+
+def test_figura_con_png_guarda_los_dos(monkeypatch, tmp_path):
+    import matplotlib.pyplot as plt
+    monkeypatch.setattr(reporte, "DESTINO", reporte.Destino(tmp_path / "figuras"))
+    fig, _ = plt.subplots()
+    reporte.figura(fig, "p", tmp_path / "png")
+    assert {k.suffix for k in reporte.DESTINO.archivos} == {".svg", ".png"}
+
+
+def test_etiquetas_del_mapa_no_se_pisan():
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.set_xscale("log")
+    ax.set_xlim(0.5, 20)
+    ax.set_ylim(-5, 5)
+    puntos = [(2.0, 0.0)] * 4 + [(2.05, 0.1), (10.0, 1.0), (10.0, 1.1)]
+    reporte._etiquetas_sin_pisar(ax, puntos, [f"V{i}" for i in range(len(puntos))])
+    fig.canvas.draw()
+    from matplotlib.text import Text
+    cajas = [Text.get_window_extent(t) for t in ax.texts]  # el texto solo, sin la línea al punto
+    for i, c in enumerate(cajas):
+        assert not any(c.overlaps(o) for o in cajas[i + 1:])
+    plt.close(fig)
+
+
+def test_figuras_nuevas_sin_datos_salen_pendientes_y_la_curva_tambien(ronda_anterior):
+    import pandas as pd
+    ctx = reporte.Contexto("h1")
+    assert "class='pend'" in reporte.fig_curva_diferencia(ctx, "H1", pd.DataFrame(columns=["variante"]), pd.DataFrame(), None)
+
+
+def test_curva_de_u005_queda_por_debajo_de_cero_en_n_estrella(ronda_anterior):
+    ctx = reporte.Contexto("h1")
+    fin, ap = reporte.cargar([reg.CONTROL, "h1"])
+    d = reporte.curvas_diferencia(fin, "U0.05")
+    n_est = int(ap["n_estrella"].iloc[0])
+    assert float(d.median(axis=1).loc[:n_est].iloc[-1]) < 0
+    assert "curva_diferencia_H1" in reporte.fig_curva_diferencia(ctx, "H1", fin, ap, None)
+
+
+def test_desglose_suma_el_tiempo_de_apareado(ronda_anterior):
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    fin, ap = reporte.cargar([reg.CONTROL, *ctx.exps])
+    for r in reporte.desglose_tiempo(ctx, fin, ap):
+        t = ap["tiempo_total_control_s"].iloc[0] if r["variante"] == "C" else ap.loc[r["variante"], "tiempo_total_s"]
+        assert r["optimizacion"] + r["final"] + r["resto"] == pytest.approx(t)
+
+
+def test_bloque_b_sin_autor(tmp_path):
+    import json
+    carpeta = tmp_path / "experimentos" / "h3" / "sm"
+    carpeta.mkdir(parents=True)
+    (carpeta / "exploratorio.json").write_text(json.dumps(dict(
+        autor="Fulano", fecha="2026-11-04", pregunta="p", protocolo="q", advertencia="w", tablas=[])))
+    b = reporte.bloque_b(tmp_path)
+    assert "Fulano" not in reporte.lista_b(b) + reporte.tarjetas_b(b)
+    assert reporte.lista_b(b).lower().count("autor") == 0
+
+
+def test_html_tabla_sin_recuadro_propio():
+    assert "table-wrapper" not in reporte.html_tabla(("a",), [["1"]])
+
+
+def test_tarjetas_leen_el_veredicto_de_las_filas(ronda_anterior):
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    fin, ap = reporte.cargar([reg.CONTROL, *ctx.exps])
+    a = reporte.calcular_bloque_a(ctx, fin, ap, n_boot=20)
+    texto = reporte.tarjetas(a, ctx, "../")
+    assert texto.count("](../experimentos/") == len(ctx.exps)
+    for nombre in ctx.hipotesis:
+        filas = [f for f in a["filas"] if f["hipotesis"] == nombre]
+        ok = sum(reporte.clase_veredicto(f["veredicto"]) == "ok" for f in filas)
+        assert f"{len(filas)} variantes: " in texto and (f"{ok} no pierde" in texto or ok == 0)
