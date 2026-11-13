@@ -1,0 +1,125 @@
+# Tasks
+
+## 1. Sitio y generador (sesión: Sonnet; cambio en `comun/`, se anuncia en el commit)
+
+- [ ] 1.1 `mkdocs.yml`:
+  - `nav` sin etiquetas en las páginas (D7), Resultados como sección con `anexo.md` de hija;
+  - lista blanca con `anexo.md` y `!/experimentos/**/figuras/**`;
+  - `site_name: Sampling_1 · DMEyF 2026`;
+  - `theme.palette` claro/oscuro con `toggle` y `media` (D6).
+
+  Verificar con `mkdocs build` y el HTML de `site/`: la barra dice «H4 · Muestras informadas por clase» y «Control y
+  reglas», y el encabezado tiene el botón de modo.
+- [ ] 1.2 `sitio/estilos.css`:
+  - una columna (D6): sin topes de 75ch ni `calc(89ch …)`, todo al 100 % de `.md-content__inner`;
+  - colores de veredicto, pills e IC en variables, con valores para `slate`;
+  - figuras con fondo blanco, borde redondeado y margen en oscuro;
+  - encabezado más alto en el teléfono (D7b, con `sitio/overrides/partials/header.html`).
+
+  El orquestador verifica con capturas a 1440 y 390 px, en claro y en oscuro.
+- [ ] 1.3 `comun/reporte.py`, `scripts/comparar_rondas.py` y los verificadores:
+  - `experimentos/sampling_1/anexo.md` con los marcadores `bloque-a-completo`, `varianza`, `diferencias`, `ic-rondas` y
+    `rondas`, que salen de `sampling_1/README.md`;
+  - el bloque `figuras` se separa en `grilla`, `desglose` y `fraccion`;
+  - `index.md` suma `hallazgo-tradeoff`, `hallazgo-tiempo` y `hallazgo-ensamble`;
+  - `comparar_rondas.py` escribe en `anexo.md`;
+  - `verificar_readme.py` y `verificar_informe_h3.py` leen `bloque-a-completo` de `anexo.md`, y `verificar_readme.py`
+    también revisa los números escritos a mano en `index.md` y `sampling_1/README.md` (D2).
+
+  Mientras el grupo 2 no reescriba Resultados, sus secciones quedan en su orden actual, con los marcadores nuevos donde
+  estaban los viejos. Verificar con `pytest tests/test_reporte.py tests/test_verificadores.py`, con
+  `python -m comun.reporte --todos` dos veces (la segunda sin cambios), con `python -m scripts.verificar_readme` y con
+  que las tablas completas del Anexo coinciden con las de `git show HEAD~:experimentos/sampling_1/README.md`.
+- [ ] 1.4 Cargar la skill `dataviz`. Figuras nuevas de D3:
+  - ensamble según K y según el tiempo;
+  - cajas por semilla, dentro de `semillas_replicas`;
+  - IC por ronda;
+  - curvas de ganancia por hipótesis, que suman al bloque `resultado` de cada `hN/README.md`.
+
+  Cada una lleva su título generado, sale pendiente sin datos y tiene un test. Verificar con
+  `pytest tests/test_reporte.py`, con regenerar dos veces sin cambios en los SVG, y con un test que comprueba que el
+  ensamble de K = 20 del control coincide con «ensamble de 20 semillas del control» del bloque `tiempo-igual`.
+- [ ] 1.5 `scripts/extraer_figuras_exploratorios.py` (de una sola vez, determinista) guarda los nueve PNG de los reportes
+  HTML en `<estudio>/figuras/`. Los tres `exploratorio.json` suman `figuras` con su leyenda (sin autor) y columnas con
+  `etiqueta`, `escala` y `unidad` (D4). `sensibilidad_muestra` declara una figura generada desde su CSV. Verificar con
+  correr el script dos veces sin cambios en `git status`, y con `python -m comun.variantes --verificar`, que falla si se
+  borra una figura declarada (test en `tests/test_variantes.py`).
+- [ ] 1.6 Bloque B (`comun/reporte.py`), una sección por estudio:
+  - la pregunta en `!!! question`;
+  - el protocolo;
+  - las figuras con su leyenda;
+  - las cifras en una tabla numérica con etiqueta y unidad, plegada;
+  - la advertencia en `!!! warning`.
+
+  Las columnas declaradas como texto siguen funcionando. Verificar con `pytest tests/test_reporte.py` (exploratorio sin
+  CSV, bloque B sin autor, columna con escala) y con `mkdocs build`: las imágenes de los estudios resuelven en `site/`.
+- [ ] 1.7 Revisión en sesión limpia del grupo 1 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
+  `comun/tokens.py`.
+
+## 2. Redacción (sesión: Opus; un commit por página)
+
+Cada tarea:
+- antes de borrar o mover texto, listar en la bitácora de `sampling_1` cada sección vieja con su destino;
+- números escritos a mano solo si están en un bloque generado (D2);
+- redacción impersonal, sin «tutor» ni nombres;
+- correr `python -m scripts.verificar_readme` y `scripts/sitio.sh`.
+
+- [ ] 2.1 `experimentos/sampling_1/README.md` (Resultados) en el orden de D1:
+  - pregunta y respuesta;
+  - las cuatro preguntas, cada una con su texto, sus bloques y el detalle plegado;
+  - limitaciones comunes, conclusiones (dicen si la predicción acertó, con enlace), qué sigue, exploratorios en una
+    línea y dependencias.
+
+  Se mudan la predicción conjunta a `control/README.md` § Predicción, el diseño a `corridas.md` § Protocolo y la
+  bibliografía a `docs/metodo.md`. Verificar con que ninguna tabla de consulta queda entre la respuesta y las
+  conclusiones, con `python -m comun.variantes --verificar` (lee § Dependencias) y con `verificar_informe_h3.py`.
+- [ ] 2.2 `experimentos/sampling_1/anexo.md`: título «Anexo de resultados», una línea por sección, y en Rondas los tres
+  resultados de la predicción de la ronda que hoy están en Resultados. Verificar con que el bloque A completo tiene las
+  mismas filas que antes del cambio.
+- [ ] 2.3 `index.md` (Inicio, D8):
+  - pregunta y respuesta;
+  - tres hallazgos con su bloque y 2–3 líneas;
+  - recuadro con tres limitaciones;
+  - botón a Resultados y tarjetas.
+
+  Verificar con el escenario «Primera visita del tutor» en el HTML de `site/` y con `verificar_readme` sobre
+  `index.md`.
+- [ ] 2.4 `experimentos/sampling_1/exploratorios/README.md`: diagrama de motivaciones (D5) y una sección por estudio con
+  qué mostró, alrededor del bloque B. Verificar con los escenarios «Figuras de un exploratorio» y «Exploratorios» y con
+  `scripts/sitio.sh` (sin autor).
+- [ ] 2.5 `experimentos/sampling_1/corridas.md`:
+  - § Protocolo (viene de Resultados);
+  - línea de tiempo de las fases y diagrama del recorrido de una corrida (D5);
+  - tabla de fases con columnas cortas y una lista por fase;
+  - comentarios de código cortados para que entren en la columna;
+  - se borra § Devoluciones del curso.
+
+  Verificar con que ninguna línea de código supera los 80 caracteres y ninguna celda de tabla tiene más de ~60.
+- [ ] 2.6 `docs/metodo.md` (Cómo trabajamos):
+  - diagrama de etapas con compuertas, diagrama de una etapa sin supervisión y diagrama de § Agregar una hipótesis
+    (D5);
+  - § Bibliografía (viene de Resultados);
+  - comentarios de código cortados.
+
+  Verificar con el escenario «Cómo trabajamos» y con que ninguna línea de código supera los 80 caracteres.
+- [ ] 2.7 `experimentos/sampling_1/docs/guion.md`: secciones y figuras citadas que se mudaron, y la figura de ensamble
+  según el tiempo donde corresponda. `CLAUDE.md` y el README raíz suman `anexo.md` al mapa de archivos. Verificar con
+  `python -m scripts.verificar_readme` y con que cada figura que cita el guion existe.
+- [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 5 (comparando contra
+  `git show <commit previo>:experimentos/sampling_1/README.md` que no se perdió texto), cierre en la bitácora de
+  `sampling_1` y `comun/tokens.py`.
+
+## 3. Integración (sesión: Sonnet)
+
+- [ ] 3.1 `pytest` entero, `python -m comun.variantes --verificar`, los dos verificadores y `scripts/sitio.sh`, todo en
+  verde. Ancho único medido en `site/` (texto, figura, código, recuadro y plegable con el mismo ancho a 1440 px). Las
+  ~13 páginas no desbordan a 390 px. Las capturas en claro y en oscuro las hace el orquestador.
+- [ ] 3.2 Revisión en sesión limpia (Opus) del cambio completo contra los escenarios de `sitio-informes` y
+  `reporte-visual`, cierre en la bitácora y `comun/tokens.py`.
+
+## Workflow follow-up
+
+- Push a `main` y verificación del sitio publicado en claro y en oscuro, a 1440 y 390 px.
+- Archivar `inicio-y-resultados`.
+- Anotar en la bitácora, para quien una `main` en la rama de `tiempos-confiables-y-consistencia`, que
+  `bloque-a-completo` y `rondas` viven en `sampling_1/anexo.md`.
