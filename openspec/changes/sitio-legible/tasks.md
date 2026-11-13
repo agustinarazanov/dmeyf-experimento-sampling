@@ -56,7 +56,7 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
 - [x] 3.1 `plantilla/README.md` con las secciones de D3 y los marcadores vacíos. Se borran `plantilla/docs/{hipotesis,diseno}.md`
   y `plantilla/informe/`. Verificar copiando la plantilla a una carpeta temporal: `comun.variantes --verificar` acepta
   la estructura.
-- [ ] 3.2 `experimentos/control/README.md`: baseline, reglas (G, Δ, δ, T, A, N\*, veredictos), regla de veredicto como
+- [x] 3.2 `experimentos/control/README.md`: baseline, reglas (G, Δ, δ, T, A, N\*, veredictos), regla de veredicto como
   diagrama Mermaid, línea de tiempo de meses (train / validación 201908 / test 201910), apartamientos con sus ids de
   Zulip, bloque `estado`. Verificar que todo lo de `control/docs/{hipotesis,diseno}.md` tiene destino.
 - [ ] 3.3 `experimentos/h1/README.md` (Idea con diagrama del pipeline, Predicción con fecha y commit del

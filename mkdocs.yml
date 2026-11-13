@@ -53,10 +53,13 @@ exclude_docs: |
   !/index.md
   !/sitio/estilos.css
   !/experimentos/h1/informe/informe.md
+  !/experimentos/control/README.md
 
 nav:
   - Inicio: index.md
   - H1: experimentos/h1/informe/informe.md
+  - Cómo medimos:
+    - Control y reglas: experimentos/control/README.md
 
 validation:
   links:
