@@ -287,8 +287,12 @@ pantalla y no se encuentra nada. Tres reglas:
 - **Se quedan como están** el gráfico de barras (`desglose_tiempo`) y la matriz de veredictos (`grilla_veredictos`):
   se leen bien con todas las variantes (pedido del 13-nov). Solo toman el color de la hipótesis en los nombres, si eso
   no cambia su forma.
-- **Tablas en pestañas**: el bloque A de Resultados va en pestañas `pymdownx.tabbed` (ya habilitado): «Valen la pena»
-  (solo esas variantes, la primera que se ve), «H1», «H2», «H3» y «H4». La tabla completa sigue entera en el Anexo.
+- **Tablas en pestañas**: el bloque A de Resultados va en pestañas `pymdownx.tabbed` (ya habilitado): «Lo mejor de
+  cada hipótesis» (la primera que se ve), «H1», «H2», «H3» y «H4».
+  - «Lo mejor de cada hipótesis» tiene una fila por hipótesis: la variante más rápida entre las que valen la pena o, si
+    ninguna vale la pena, la de mayor Δ.
+  - Reemplaza a «Valen la pena» (las 12 variantes medían 1031 px, más que el tope; decidido el 13-nov). Las 12 siguen
+    en las pestañas de cada hipótesis y en el Anexo. La tabla completa sigue entera en el Anexo.
   Para que la pestaña no rompa el bloque generado, el generador escribe las pestañas dentro del marcador.
 
 Tope: a 1440 × 900, ninguna figura ni tabla de Resultados es más alta que 800 px. Si una no entra con 2 × 2, se parte
@@ -315,6 +319,25 @@ tiempo del ensamble) va en un cambio aparte, después de archivar este.
 
 Lo verifica el orquestador en el navegador: ordenar por Δ en las dos direcciones, filtrar «H3», abrir una figura, a
 1440 y 390 px y en claro y oscuro.
+
+### D18. Predicciones fuera del repo (agregado el 13-nov)
+
+Las predicciones de test por semilla (`experimentos/<exp>/ledger/predicciones/*.parquet`, ~10 GB y 4950 archivos)
+viven dentro del repo, excluidas de git por `.git/info/exclude`. El repo está en `~/Documents`, que iCloud sincroniza.
+En la revisión 1.11, regenerar tres veces dio dos resultados distintos en «tiempo igual, réplicas»: R bajó a 7 o 6 y
+apareció un «pendiente». El generador no encontraba por un rato un parquet que sí existía.
+
+- **Dónde quedan:** las predicciones van a `DATOS_DIR/ledger/<exp>/predicciones/`, donde ya están los demás datos
+  (`~/datos/experimentos-dmeyf`, fuera de `~/Documents`).
+- **El ledger no cambia:** la columna `predicciones_201910` conserva la ruta relativa de siempre. Una función de
+  `comun/rutas.py` la resuelve, primero en `DATOS_DIR` y, si no está, en la ruta vieja del repo. Así funciona antes y
+  después de mover los archivos, y también en la rama de `tiempos-confiables-y-consistencia` hasta que una `main`.
+- **Escritura y VMs:** `comun/correr.py` escribe las nuevas en `DATOS_DIR`, y `scripts/vm.sh` las sincroniza con el
+  bucket desde ahí.
+- **Quién mueve los archivos:** el orquestador, porque las sesiones headless no pueden mover archivos fuera del repo.
+  Es un renombre en el mismo disco.
+- **Alternativa descartada:** el sufijo `.nosync` con un enlace simbólico deja los datos dentro del repo, al revés de
+  la regla de `CLAUDE.md` («datos fuera del repo, en `DATOS_DIR`»).
 
 ## Risks / Trade-offs
 

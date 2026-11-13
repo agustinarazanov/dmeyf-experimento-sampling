@@ -92,7 +92,13 @@ condiciones:
 - **WHEN** se recorre Resultados a 1440 × 900
 - **THEN** ninguna figura ni tabla mide más de 800 px de alto
 - **AND** cada hipótesis tiene el mismo color en todas las figuras
-- **AND** el bloque A está en pestañas, con «Valen la pena» abierta, mientras el Anexo tiene la tabla entera
+- **AND** el bloque A está en pestañas, con «Lo mejor de cada hipótesis» abierta (una fila por hipótesis), mientras
+  el Anexo tiene la tabla entera
+
+#### Scenario: Regenerar con las predicciones fuera del repo
+- **WHEN** se corre `python -m comun.reporte --todos` tres veces seguidas con las predicciones en `DATOS_DIR`
+- **THEN** las tres dan el mismo resultado y `git status` no cambia
+- **AND** una fila del ledger con la ruta vieja de predicciones se resuelve igual si el archivo está solo en el repo
 
 #### Scenario: Tabla de una hipótesis sin redundancias
 - **WHEN** se lee el bloque `resultado` de `h3/README.md` y todas sus variantes tienen 20 semillas

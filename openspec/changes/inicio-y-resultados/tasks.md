@@ -86,6 +86,23 @@
 - [x] 1.11 Revisión en sesión limpia de 1.8, 1.9 y 1.12 con `docs/revision.md` § 3 y `python -m scripts.medir_sitio` (tope de 800 px de D16), cierre en la bitácora de `sampling_1`.
   Quedan dos ✗ abiertos que necesitan una decisión humana, en `sampling_1/ledger/sesiones/bloqueo.txt`: la pestaña
   «Valen la pena» mide 1031 px (más que el tope de 800) y regenerar no siempre da lo mismo en «tiempo igual, réplicas».
+  Decididos el 13-nov: tareas 1.13 a 1.16.
+- [ ] 1.13 Primera pestaña del bloque A de Resultados: «Lo mejor de cada hipótesis» en lugar de «Valen la pena» (D16).
+  Verificar con `python -m scripts.medir_sitio --pagina experimentos/sampling_1/` sin problemas y con los dos
+  verificadores.
+- [ ] 1.14 Predicciones fuera del repo (D18), solo código:
+  - `comun/correr.py` escribe las predicciones nuevas en `DATOS_DIR/ledger/<exp>/predicciones/`;
+  - la ruta del ledger (`predicciones_201910`) no cambia: una función de `comun/rutas.py` la resuelve, primero en
+    `DATOS_DIR` y, si no está, en la ruta vieja del repo;
+  - `comun/reporte.py` y quien lea predicciones usan esa función;
+  - `scripts/vm.sh` baja y sube las predicciones desde y hacia `DATOS_DIR`.
+
+  No mueve archivos (eso es 1.15). Verificar con `pytest` (un test por cada lado de la resolución: en `DATOS_DIR` y en
+  la ruta vieja) y con `python -m comun.reporte --todos` sin cambios en `git status`.
+- [ ] 1.15 Mover `experimentos/*/ledger/predicciones/` a `DATOS_DIR` (D18). **La hace el orquestador; una sesión
+  headless no la toca ni la marca.** Verificar con `python -m comun.reporte --todos` tres veces sin cambios en
+  `git status` y con `experimentos/*/ledger/predicciones/` vacío.
+- [ ] 1.16 Revisión en sesión limpia de 1.13 y 1.14 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.
 
 ## 2. Redacción (sesión: Opus; un commit por página)
 
