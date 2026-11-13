@@ -110,3 +110,103 @@ tabla nombra: el uso sin cambios de los hiperparámetros de cuatro meses en un f
 
 Un veredicto que cambie no se descarta ni se reemplaza: la tabla de rondas
 (`sampling_1/informe/comparacion_rondas.md`) muestra, por variante, Δ y veredicto en las dos rondas, con los dos δ.
+
+## Medición de tiempos (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Escrito el 13-nov-2026, antes de cualquier corrida de la fase 8 y antes de lanzar la VM de la medición. Lo de arriba no
+se reescribe: la definición de T no cambia, y § Métricas y reglas comunes queda como estaba. Esta sección fija una sola
+referencia para A, su intervalo y dos mediciones exploratorias de tiempo. Las predicciones las propuso una sesión que ya
+había visto la ronda 201903–201908; Agustina las confirma o las ajusta antes de la revisión (bitácora de `sampling_1`).
+
+### A con una sola referencia
+
+- **Regla nueva.** A(v) = mediana_k T(`C`, k) / T(v). La mediana de T del control se toma **una sola vez**, sobre las 8
+  réplicas de `C`, y es la misma en todas las filas del bloque A. T(v) es la mediana entre las réplicas de v, o la T de
+  la réplica 0 si v no tiene réplicas. La calcula el reporte; el ledger (`apareado.csv`) no cambia.
+- **Motivo.** La regla vieja usaba dos referencias de T(`C`): el ledger calcula A contra la T de la réplica 0, y el
+  reporte la reemplazaba por la mediana solo en las variantes con réplicas, y además la tomaba sobre las réplicas que la
+  variante tiene en común con el control. Con eso A(`U0.5`) daba 2,25 con la réplica 0 y 2,83 con la mediana, y con
+  réplicas incompletas la referencia cambiaría de una fila a otra. La regla nueva no cambia ningún veredicto de "vale la
+  pena" de la ronda (`U0.5` pasa de 2,25 a 2,83; `B0.25` queda en 1,54 y `B0.5` en 0,99).
+- **Lo que sigue con la réplica 0.** El tiempo igual de las filas sin réplicas (K y bootstrap de clientes) sigue usando
+  T(`C`) de la réplica 0, porque se aparea con el Δ de la réplica 0. El tiempo igual con réplicas sigue apareado por k:
+  el ensamble de la réplica k se compara con la ganancia del control en esa misma réplica.
+- **Intervalo de A.** Bootstrap por percentiles (2,5 y 97,5) del cociente de medianas: se remuestrean con reposición las
+  réplicas del control y, por separado, las de la variante, 10.000 veces con semilla fija.
+  - Mide la variación entre réplicas, que junta la de Optuna y la de la VM, porque cada réplica corrió en su propia VM.
+    Cuánto es de la VM lo dice la calibración (§ Calibración por máquina).
+  - No se usa el mínimo y el máximo de T(`C`, k) / T(v, k): aparear por k es arbitrario, porque la misma semilla de TPE
+    no relaciona las trayectorias de dos estudios con datos distintos.
+  - Límites: con 8 réplicas la mediana remuestreada toma pocos valores y el intervalo queda cerca del segundo y el
+    séptimo valor de cada lado, así que una réplica rara lo mueve. Remuestrear por separado supone lados
+    independientes; en las fases 5 a 7 la réplica k del control y la de la variante compartían VM, y eso lo hace
+    conservador.
+  - La fila del control no lleva intervalo (A = 1 por definición). Sin réplicas en la variante solo se remuestrea el
+    control, y el intervalo es un piso de la incertidumbre de A.
+
+### Medición a hiperparámetros fijos (exploratoria)
+
+- **Qué se mide.** Los 8 juegos de hiperparámetros del control (estudios `C` y `C@1…7`), con 3 repeticiones, sobre la
+  muestra al azar con r ∈ {1; 0,5; 0,25; 0,1; 0,05} (120 mediciones) y sobre la receta de H4 (todas las bajas + f de
+  CONTINUA con peso 1/f), f ∈ {0,5; 0,25; 0,1; 0,05} (96 mediciones). Cada medición reproduce un trial: muestra con la
+  semilla 1000 + repetición, `Dataset` con los parámetros del control, entrenamiento de 100 iteraciones y predicción de
+  201908. El orden de las 216 mediciones se aleatoriza con semilla fija.
+- **Qué se cronometra.** Tres tiempos por separado: el armado del `Dataset`, el entrenamiento y la predicción de 201908.
+  El tiempo de la medición t es entrenamiento más predicción, lo mismo que guarda Optuna como duración de un trial (el
+  `Dataset` queda fuera del reloj), así que se puede comparar con los trials ya corridos.
+- **Definiciones.**
+  - A_fijo(r) = mediana, entre los 8 juegos de hiperparámetros, de t(1) / t(r), con t como media de las 3 repeticiones.
+  - Cociente entre recetas a la tasa f: mediana entre juegos de t(receta de H4, f) / t(al azar, f), comparado con el
+    cociente de filas (al azar contra con bajas: 1,010 en 0,5; 1,031 en 0,25; 1,094 en 0,1 y 1,199 en 0,05).
+  - CV entre repeticiones: desvío / media de las 3 repeticiones de cada celda (juego, receta, tasa).
+- **Predicción.**
+  - A_fijo(0,5) ∈ [1,6; 2,4] y A_fijo(0,05) < 10, porque la predicción de 201908 no se achica con r.
+  - El cociente entre recetas queda entre 0,9 y 1,1 veces el cociente de filas en las cuatro tasas (hasta 1,32 en
+    0,05): el tiempo sigue a las filas y el peso no lo cambia.
+  - La mediana del CV entre repeticiones es ≤ 5 %.
+- **Regla.** Cada una de las tres partes se confirma si se cumple y se refuta si no.
+
+### Calibración por máquina (exploratoria)
+
+- **Qué se mide.** Al empezar y al terminar la lista de cada VM de la fase 8:
+  - el trial de calibración: hiperparámetros de `C` réplica 0, r = 1, la semilla del trial original, 2 repeticiones,
+    cronometrado como en la medición a hiperparámetros fijos;
+  - un final viejo: `C` réplica 0 con la primera semilla final (100003), cronometrado como un final del corredor
+    (`Dataset`, entrenamiento y predicción de 201910, sin la carga de datos) y sin escribir en el ledger de `control`.
+- **Anclas con las fases anteriores**, sin corridas extra:
+  - el trial de calibración contra el mejor trial del estudio `C` (el 31 de 40, 27,15 s en la VM de la fase 1); los
+    mejores trials de `C@1…7`, que repite la medición a hiperparámetros fijos, contra su duración en los `.db`;
+  - el final viejo contra la misma corrida en el ledger de la fase 7 (50,16 s) y contra `C-rep` con la misma semilla
+    (45,14 s).
+
+  **Cada ancla es una sola medición vieja, sin repeticiones**: un cociente fuera de rango puede ser la VM nueva o la
+  vieja.
+- **Qué se informa.** CV entre VMs (entre las medias de cada VM), cociente fin / inicio por VM y cociente de cada VM
+  contra las dos anclas. Las VMs corren en horarios distintos, así que el CV entre VMs junta la máquina y la hora.
+- **Predicción.** CV entre VMs ≤ 5 %, cociente fin / inicio en [0,9; 1,1] y cociente contra las anclas en [0,9; 1,1], en
+  todas las VMs.
+- **Regla.** Se confirma si se cumplen las tres en todas las VMs. Si alguna VM queda fuera, el informe lo dice y marca
+  sus filas; no se descarta ninguna corrida, y menos después de ver la ganancia.
+
+### CV entre semillas dentro de una VM
+
+Lo que ya mide la ronda 201903–201908: el mismo final, con los mismos hiperparámetros y otra semilla, en la misma VM.
+Es el CV de `tiempo_entrenamiento_s` entre las 20 semillas de cada celda (variante, réplica). En las 121 celdas la
+mediana es 2,43 % (de 0,76 a 6,20 %); en las variantes sin réplicas va de 1,78 a 6,12 % (6,20 % en `C-rep`). Se obtiene
+desde la raíz del repo con:
+
+```bash
+python -c "
+import glob, pandas as pd
+d = pd.concat([pd.read_csv(f) for f in glob.glob('experimentos/*/ledger/resultados.csv')])
+f = d[(d.etapa == 'final') & (d.meses_final == '201903-201908')]
+g = f.groupby(['variante', 'replica_opt']).tiempo_entrenamiento_s.agg(['mean', 'std'])
+cv = 100 * g['std'] / g['mean']
+print(len(cv), cv.median().round(2), cv.min().round(2), cv.max().round(2))
+"
+```
+
+### Alcance
+
+La medición a hiperparámetros fijos y la calibración son **exploratorias**: no cambian ningún veredicto. Dicen cuánto
+del A del bloque A es tamaño de los datos y cuánto es la elección de Optuna, y cuánto ruido agrega cambiar de VM.

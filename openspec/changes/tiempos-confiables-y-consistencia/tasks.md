@@ -17,7 +17,7 @@ Qué puede ir en paralelo:
 
 ## 1. Predicciones y diseño (sesión: Opus)
 
-- [ ] 1.1 `control/docs/hipotesis.md` § Medición de tiempos (13-nov):
+- [x] 1.1 `control/docs/hipotesis.md` § Medición de tiempos (13-nov):
   - la regla nueva de A y de su intervalo (D1, D2), con el motivo: la regla vieja usaba dos referencias de T_C. El texto
     viejo de § Métricas y reglas comunes no se reescribe;
   - la definición de A_fijo(r), del cociente entre recetas y del CV entre repeticiones, qué se cronometra, y la
