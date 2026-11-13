@@ -118,6 +118,7 @@ El reporte y el `informe.md` de `sampling_1` SHALL presentar todos los resultado
 - ganancia media;
 - Δ apareado de la réplica 0 con su IC;
 - Δ con réplicas, su IC y el número de réplicas, cuando existe;
+- ΔAUC en 201910 con su IC (con réplicas cuando existen, si no apareado de la réplica 0), al lado de Δ de ganancia;
 - T y A, con T como mediana entre réplicas cuando hay varias;
 - tiempo igual con su intervalo;
 - el veredicto, que es el de Δ con réplicas cuando existe y si no el de Δ apareado, junto con cuál de los dos se usó.
@@ -168,6 +169,10 @@ formato, porque lo copian los `informe.md` y lo leen los verificadores.
 - **WHEN** se regenera `tabla_resultados.md` con este cambio
 - **THEN** su bloque A, la tabla de varianza y la de diferencias son idénticos a los de antes del cambio
 - **AND** `python -m scripts.verificar_readme` pasa sin cambios en el README
+
+#### Scenario: AUC junto a la ganancia
+- **WHEN** se lee la fila de `H3-0.1` en el bloque A
+- **THEN** muestra ΔAUC con su IC al lado de Δ de ganancia, y el veredicto sigue saliendo de la ganancia
 
 ### Requirement: Tiempo igual con intervalo
 La comparación a tiempo igual SHALL tener intervalo:

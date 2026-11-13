@@ -86,7 +86,7 @@ en carpetas están en [`experimentos/sampling_1/README.md`](experimentos/samplin
 [`h3-semillas-optuna`](openspec/changes/archive/2026-11-09-h3-semillas-optuna/proposal.md) sumó 8 réplicas de la optimización y la
 comparación en dos bloques; [`incorporar-aportes`](openspec/changes/archive/2026-11-10-incorporar-aportes/proposal.md) replicó los aportes
 de Martín y Luis y sumó `h4` y las extensiones de `h3`: el grupo queda con cuatro hipótesis.
-[`final-con-julio-agosto`](openspec/changes/final-con-julio-agosto/proposal.md) volvió a correr todos los finales con
+[`final-con-julio-agosto`](openspec/changes/archive/2026-11-13-final-con-julio-agosto/proposal.md) volvió a correr todos los finales con
 201903–201908 y 20 semillas, sumó `H4O-0.5` y el AUC al lado de la ganancia. Lo que falta es otro mes de test, que
 separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al elegir H4.
 

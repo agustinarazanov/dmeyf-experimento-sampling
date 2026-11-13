@@ -1622,3 +1622,19 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   informes de `h1`–`h4` y `sampling_1`, el guion, el README y `control/docs/` (`hipotesis.md` § Apartamientos del
   baseline, `diseno.md`). Las entradas anteriores de esta bitácora y `openspec/changes/final-con-julio-agosto/` no se
   tocan: son historia. Ningún número cambia.
+
+### 13-nov-2026 · final-con-julio-agosto archivado
+
+- Agustina pide archivar. Estado: 19 de 19 tareas, cuatro artefactos completos.
+- **Chequeo de Zulip que pedía `bloqueo.txt`** (archivo local hasta el 13-nov 11:27, último id 212456): después de
+  212249 hay un solo mensaje en los hilos del baseline, 212456 (Tschopp, `Meses`), que explica el walk-forward con meses
+  ficticios y dice que antes de pasar a test se vuelve a entrenar con el mes de validación. No suma un requisito y es
+  compatible con el final 201903–201908, que Agustina confirmó hoy. 212124 (Aramendía) lo toma el cambio
+  `tiempos-confiables-y-consistencia`. Queda sin confirmar con el tutor si "siempre OP" (211718, 211719, 212043) admite
+  buscar sobre una muestra (H3, `H4F`): sigue declarado como apartamiento con id en los informes. `bloqueo.txt` se borra.
+- **Specs**: deltas sincronizados en `openspec/specs/` (`corrida-reproducible`, `ledger-resultados`,
+  `protocolo-experimental`, `reporte-visual`). En `reporte-visual`, «Comparación limpia en dos bloques» se fusionó a mano:
+  el delta era anterior a `reporte-graficos-y-ancho` y habría borrado el resumen plegable y dos escenarios; se sumó solo
+  ΔAUC y su escenario. El cambio pasa a `openspec/changes/archive/2026-11-13-final-con-julio-agosto`.
+- `tiempos-confiables-y-consistencia`: la fase 8 pasa a 17 VMs (dos listas por réplica y la medición), por decisión de
+  Agustina.
