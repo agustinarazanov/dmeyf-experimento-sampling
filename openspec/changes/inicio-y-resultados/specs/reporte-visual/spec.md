@@ -84,8 +84,19 @@ condiciones:
 
 #### Scenario: Ver el tradeoff de un vistazo
 - **WHEN** se abre Resultados
-- **THEN** antes de las tablas aparece el mapa del tradeoff, y las variantes que no pierden y aceleran más quedan
-  arriba a la derecha
+- **THEN** antes de las tablas aparece el mapa del tradeoff: una fila por variante con Δ e IC a la izquierda y la
+  aceleración a la derecha, las que valen la pena marcadas
+- **AND** a 1440 px entra en la columna sin etiquetas pisadas
+
+#### Scenario: Tabla de una hipótesis sin redundancias
+- **WHEN** se lee el bloque `resultado` de `h3/README.md` y todas sus variantes tienen 20 semillas
+- **THEN** no hay columnas «hipótesis» ni «semillas», una línea debajo dice que todas tienen 20 semillas, las semillas
+  ganadas se ven como una barrita con su número, y los encabezados dicen «aceleración (×)», «ganancia contra el control»
+  y «vale la pena (no pierde y ≥ 2×)»
+
+#### Scenario: Clientes contactados
+- **WHEN** se busca «envíos» en el sitio generado
+- **THEN** no aparece; N\* se lee como «clientes contactados»
 
 #### Scenario: Por qué H3 es rápida
 - **WHEN** se mira el desglose del tiempo

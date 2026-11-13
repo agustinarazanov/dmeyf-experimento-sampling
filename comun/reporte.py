@@ -1314,12 +1314,36 @@ def bloques_hipotesis(exp: str, figuras: Path | None, memo: dict) -> dict[str, s
     return {"resultado": "\n\n".join(partes)}
 
 
+def _sin_datos(nombres: tuple[str, ...]) -> dict[str, str]:
+    sin = pendiente("el control no tiene sus semillas")
+    return {n: sin for n in nombres}
+
+
+BLOQUES_SAMPLING = ("mapa", "grilla", "desglose", "bloque-a", "fraccion", "tiempo-igual", "semillas")
+BLOQUES_ANEXO = ("bloque-a-completo", "varianza", "diferencias", "ic-rondas")
+BLOQUES_INICIO = ("hallazgo-tradeoff", "hallazgo-tiempo", "hallazgo-ensamble")
+
+
 def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
     ctx, fin, ap, a = _agregador(memo)
     if not a["filas"]:
-        sin = pendiente("el control no tiene sus semillas")
-        return {n: sin for n in ("mapa", "bloque-a", "bloque-a-completo", "varianza", "diferencias", "tiempo-igual",
-                                 "figuras")}
+        return _sin_datos(BLOQUES_SAMPLING)
+    return {
+        "mapa": fig_tradeoff(ctx, a, figuras),
+        "grilla": fig_grilla(ctx, a, figuras),
+        "desglose": fig_desglose(ctx, a, figuras),
+        "bloque-a": "\n\n".join([referencia_control(a), AVISO_A_HTML, tabla_resumen(a["filas"]),
+                                 _plegable("Detalle del bloque A", html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS))]),
+        "fraccion": fig_fraccion(ctx, a, figuras),
+        "tiempo-igual": tiempo_igual(ctx, fin, ap) + "\n\n" + fig_tiempo_igual_ic(ctx, a, figuras),
+        "semillas": fig_semillas(ctx, a, figuras) if len(a["rep"]) else pendiente("ninguna variante tiene réplicas"),
+    }
+
+
+def bloques_anexo(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    ctx, fin, ap, a = _agregador(memo)
+    if not a["filas"]:
+        return _sin_datos(BLOQUES_ANEXO)
     notas = [f"- `{f['variante']}`: {f['nota']}" for f in a["filas"] if f["nota"]]
     completo = ["#### Bloque A: mismo protocolo\n", referencia_control(a) + "\n", AVISO_A + "\n",
                 tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
@@ -1329,17 +1353,25 @@ def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, st
         completo += ["#### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
         if pares_replicas(a["rep"]):
             completo += ["#### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares_replicas(a["rep"]))]
-    sin_rep = pendiente("ninguna variante tiene réplicas")
     return {
-        "mapa": fig_tradeoff(ctx, a, figuras),
-        "bloque-a": "\n\n".join([referencia_control(a), AVISO_A_HTML, tabla_resumen(a["filas"]),
-                                 _plegable("Detalle del bloque A", html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS))]),
         "bloque-a-completo": _plegable("Tablas completas del bloque A", "\n".join(completo)),
-        "varianza": html_tabla(CAB_VAR, varianza(a["rep"], ctx)) + "\n\n" + fig_semillas(ctx, a, figuras) if len(a["rep"]) else sin_rep,
+        "varianza": html_tabla(CAB_VAR, varianza(a["rep"], ctx)) if len(a["rep"]) else pendiente("ninguna variante tiene réplicas"),
         "diferencias": (tabla_pares(a["rep"]) + "\n\n" + fig_diferencias(ctx, a, figuras)
                         if pares_replicas(a["rep"]) else pendiente("no hay diferencias entre variantes con réplicas")),
-        "tiempo-igual": tiempo_igual(ctx, fin, ap) + "\n\n" + fig_tiempo_igual_ic(ctx, a, figuras),
-        "figuras": "\n\n".join([fig_fraccion(ctx, a, figuras), fig_desglose(ctx, a, figuras), fig_grilla(ctx, a, figuras)]),
+        "ic-rondas": fig_rondas(ctx, a, figuras),
+    }
+
+
+def bloques_inicio(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    """Una figura por hallazgo de la portada y las tarjetas; las figuras se enlazan desde la raíz del repo."""
+    ctx, fin, ap, a = _agregador(memo)
+    if not a["filas"]:
+        return _sin_datos(BLOQUES_INICIO)
+    desde_raiz = lambda md: md.replace("](figuras/", f"](experimentos/{exp}/figuras/")  # noqa: E731
+    return {
+        "hallazgo-tradeoff": desde_raiz(fig_tradeoff(ctx, a, figuras)),
+        "hallazgo-tiempo": desde_raiz(fig_desglose(ctx, a, figuras)),
+        "hallazgo-ensamble": desde_raiz(fig_tiempo_igual_ic(ctx, a, figuras)),
     }
 
 
@@ -1380,14 +1412,19 @@ def bloques_tarjetas(prefijo: str):
     return generar_tarjetas
 
 
+def bloques_inicio_y_tarjetas(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
+    return {**bloques_inicio(exp, figuras, memo), **bloques_tarjetas("")(exp, figuras, memo)}
+
+
 def destinos(exp: str) -> list[tuple[Path, object]]:
     """(archivo, función que arma sus bloques) de cada archivo que genera `exp`; el primero es su README."""
     base = rutas.experimento(exp)
     if exp == reg.CONTROL:
         return [(base / "README.md", bloques_control)]
     if exp == reg.AGREGADOR:
-        return [(base / "README.md", bloques_sampling), (base / "exploratorios" / "README.md", bloques_exploratorios),
-                (rutas.RAIZ / "index.md", bloques_tarjetas("")), (rutas.RAIZ / "sitio" / "hipotesis" / "README.md", bloques_tarjetas("../../"))]
+        return [(base / "README.md", bloques_sampling), (base / "anexo.md", bloques_anexo),
+                (base / "exploratorios" / "README.md", bloques_exploratorios),
+                (rutas.RAIZ / "index.md", bloques_inicio_y_tarjetas), (rutas.RAIZ / "sitio" / "hipotesis" / "README.md", bloques_tarjetas("../../"))]
     return [(base / "README.md", bloques_hipotesis)]
 
 

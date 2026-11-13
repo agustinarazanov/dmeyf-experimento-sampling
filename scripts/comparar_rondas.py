@@ -88,12 +88,8 @@ def tabla(experimentos: Path, titulo: bool = True) -> str:
 
 
 def bloque_rondas(experimentos: Path) -> str:
-    """Contenido del bloque `rondas`: el gráfico (dumbbell, archivo SVG junto al README) y la tabla."""
-    from comun import reporte
-    ctx = reporte.Contexto(reporte.reg.AGREGADOR)
-    fin, ap = reporte.cargar([reporte.reg.CONTROL, *ctx.exps])
-    a = reporte.calcular_bloque_a(ctx, fin, ap, n_boot=1)
-    return reporte.fig_rondas(ctx, a, None) + "\n\n" + tabla(experimentos, titulo=False)
+    """Contenido del bloque `rondas` del Anexo: la tabla (el gráfico es el bloque `ic-rondas`, de `comun/reporte.py`)."""
+    return tabla(experimentos, titulo=False)
 
 
 def con_marcadores(ruta: Path) -> bool:
@@ -105,7 +101,7 @@ def main() -> int:
     ap.add_argument("--experimentos", type=Path, default=Path("experimentos"))
     ap.add_argument("--salida", type=Path, default=None)
     a = ap.parse_args()
-    readme = a.experimentos / "sampling_1" / "README.md"
+    readme = a.experimentos / "sampling_1" / "anexo.md"
     if not a.salida and con_marcadores(readme):
         from comun import reporte
         reporte.DESTINO = reporte.Destino(readme.parent / "figuras")

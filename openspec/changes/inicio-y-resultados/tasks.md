@@ -55,6 +55,26 @@
   CSV, bloque B sin autor, columna con escala) y con `mkdocs build`: las imágenes de los estudios resuelven en `site/`.
 - [ ] 1.7 Revisión en sesión limpia del grupo 1 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
   `comun/tokens.py`.
+- [ ] 1.8 Tablas de resultado (D9), en `comun/reporte.py` y los verificadores:
+  - el bloque `resultado` de cada `hN/README.md` va sin columna «hipótesis»;
+  - sin columna «semillas» cuando todas las filas tienen las mismas, con la línea debajo de la tabla;
+  - semillas ganadas como barrita de proporción con su número;
+  - encabezados «aceleración (×)», «ganancia contra el control» y «vale la pena (no pierde y ≥ 2×)», también en el
+    bloque A completo del Anexo, con los verificadores leyendo los nuevos.
+
+  Verificar con el escenario «Tabla de una hipótesis sin redundancias», con `pytest` (incluye un test con semillas
+  distintas: la columna vuelve) y con los dos verificadores.
+- [ ] 1.9 Figuras (D10, D14):
+  - `tradeoff.svg` en dos paneles con una fila por variante;
+  - `ANCHO` menor;
+  - las curvas contra clientes contactados siempre en dos columnas de paneles;
+  - «envíos» pasa a «clientes contactados» en ejes, títulos y textos del generador.
+
+  Verificar con los escenarios «Ver el tradeoff de un vistazo» y «Clientes contactados» (sobre el texto generado), con
+  `pytest tests/test_reporte.py` y con regenerar dos veces sin cambios.
+- [ ] 1.10 Barras laterales (D13). **La hace el orquestador; una sesión headless no la toca ni la marca.** Verificar con
+  el escenario «Barras laterales parejas» en capturas a 1440 px en claro y en oscuro.
+- [ ] 1.11 Revisión en sesión limpia de 1.8 y 1.9 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.
 
 ## 2. Redacción (sesión: Opus; un commit por página)
 
@@ -105,6 +125,15 @@ Cada tarea:
 - [ ] 2.7 `experimentos/sampling_1/docs/guion.md`: secciones y figuras citadas que se mudaron, y la figura de ensamble
   según el tiempo donde corresponda. `CLAUDE.md` y el README raíz suman `anexo.md` al mapa de archivos. Verificar con
   `python -m scripts.verificar_readme` y con que cada figura que cita el guion existe.
+- [ ] 2.7b `control/README.md` y `h1` a `h4/README.md`:
+  - Veredicto con un solo recuadro (la conclusión) y Limitaciones sin recuadros, en listas con el nombre en negrita
+    (D11; lo mismo en Resultados § Limitaciones comunes);
+  - diagramas en `flowchart TB` o en dos filas, con etiquetas cortas (D12);
+  - § Variantes con la columna «búsqueda de hiperparámetros» y la línea que explica estudio y réplica (D15);
+  - «envíos» pasa a «clientes contactados» en todo el texto escrito a mano (D14).
+
+  Antes, listar en la bitácora cada recuadro con su destino. Verificar con el escenario «Veredicto y limitaciones
+  legibles», con `grep -rn envío` vacío en las páginas publicadas y con los dos verificadores.
 - [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 5 (comparando contra
   `git show <commit previo>:experimentos/sampling_1/README.md` que no se perdió texto), cierre en la bitácora de
   `sampling_1` y `comun/tokens.py`.

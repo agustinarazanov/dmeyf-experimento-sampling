@@ -140,6 +140,16 @@ escritorio: en una línea en escritorio y, en pantallas angostas, en un encabeza
 - **WHEN** se abre el sitio a 1280 px
 - **THEN** el nombre del sitio («Sampling_1 · DMEyF 2026») se ve en una sola línea
 
+#### Scenario: Barras laterales parejas
+- **WHEN** se abre una página con índice a 1440 px, en claro y en oscuro
+- **THEN** las dos barras muestran su título, arrancan a la misma altura, van en un recuadro, y la página activa y la
+  sección que se lee están marcadas
+
+#### Scenario: Veredicto y limitaciones legibles
+- **WHEN** se abre la página de H3
+- **THEN** Veredicto tiene un solo recuadro (la conclusión) y Limitaciones ninguno: listas con el nombre en negrita
+- **AND** el diagrama de la hipótesis entra en la columna a 1440 px con la letra a tamaño de texto
+
 #### Scenario: Encabezado en el teléfono
 - **WHEN** se abre el sitio a 390 px
 - **THEN** el encabezado es más alto que el de escritorio y muestra «Sampling_1» y «DMEyF 2026» completos, en dos líneas,

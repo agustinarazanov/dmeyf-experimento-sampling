@@ -10,7 +10,32 @@ Optuna), cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) 
 
 ## Resultados
 
-![Mapa del tradeoff: cada variante con su aceleración y su diferencia de ganancia contra el control](experimentos/sampling_1/figuras/tradeoff.svg)
+### ¿Cuánto se pierde y cuánto se gana?
+
+<!-- generado:hallazgo-tradeoff -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+![12 de 21 variantes no pierden y aceleran 2× o más; la más rápida entre ellas es H4F-0.05 (12.5×)](experimentos/sampling_1/figuras/tradeoff.svg)
+
+<!-- /generado:hallazgo-tradeoff -->
+
+### ¿Dónde se va el tiempo?
+
+<!-- generado:hallazgo-tiempo -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+![En el control la optimización es el 94 % de T (748 s de 797 s); la variante con la optimización más corta, U0.05, la baja a 67 s](experimentos/sampling_1/figuras/desglose_tiempo.svg)
+
+<!-- /generado:hallazgo-tiempo -->
+
+### ¿Y con el tiempo ahorrado?
+
+<!-- generado:hallazgo-ensamble -->
+Generado por `comun/reporte.py` el 2026-11-13; no editar.
+
+![](experimentos/sampling_1/figuras/tiempo_igual.svg)
+
+<!-- /generado:hallazgo-ensamble -->
 
 [Ver los resultados](experimentos/sampling_1/README.md){ .md-button .md-button--primary }
 

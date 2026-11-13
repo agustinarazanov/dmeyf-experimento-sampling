@@ -186,6 +186,89 @@ El texto de cada hallazgo explica qué mirar y por qué, en 2–3 líneas. Los n
 una máquina», «Réplicas solo en parte de las variantes») en una línea cada una, con enlace a Resultados § Limitaciones
 comunes.
 
+### D9. Tablas de resultado sin columnas redundantes (agregado el 13-nov)
+
+El bloque `resultado` de cada `hN/README.md` es la tabla que se lee en la página de la hipótesis. No repite lo que ya es
+igual en todas sus filas:
+
+- **hipótesis**: no va en la página de una sola hipótesis; sigue en Resultados y en el Anexo, donde hay varias.
+- **semillas**: si todas las filas tienen las mismas semillas (hoy 20), la columna no va y una línea debajo de la tabla lo
+  dice («Todas las variantes con 20 semillas»). Las 20 semillas, como regla, quedan en Control y reglas. Si una fila
+  difiere, la columna vuelve.
+- **semillas ganadas**: una barrita de proporción en la celda (ganadas sobre el total, con el número al lado), en lugar de
+  «14/20». Se descarta la torta: una torta por fila no se compara entre filas, y las barras alineadas sí.
+- **A** pasa a llamarse **aceleración (×)** en todas las tablas y figuras: A es T(C) / T(variante), no AUC, y la letra sola
+  se confunde con el AUC de la columna de al lado.
+- **veredicto** y **vale la pena** se distinguen desde el encabezado: «ganancia contra el control» (gana, no pierde,
+  pierde, indeterminado) y «vale la pena (no pierde y ≥ 2×)».
+
+El bloque A completo del Anexo conserva todas sus columnas, porque es la tabla de consulta, con los encabezados nuevos.
+Los verificadores leen los encabezados nuevos.
+
+### D10. Figura del tradeoff en filas (agregado el 13-nov)
+
+`tradeoff.svg` pasa del gráfico de dispersión de 12 pulgadas (Δ contra A en escala log, con etiquetas que se pisan
+alrededor de 4,5×) a dos paneles con las filas compartidas, una fila por variante agrupada por hipótesis:
+
+- a la izquierda, Δ con su IC y −δ punteado;
+- a la derecha, la aceleración en escala log con la línea de 2×;
+- el color es el de «ganancia contra el control» y las que valen la pena llevan una marca.
+
+Se lee al ancho de la columna (D6) sin etiquetas pisadas, y crece en alto con las variantes. `ANCHO` baja para que la
+letra de las figuras no quede más chica que la del texto al escalar a la columna. El escenario «Ver el tradeoff de un
+vistazo» cambia en consecuencia.
+
+### D11. Veredicto y Limitaciones sin pila de recuadros (agregado el 13-nov)
+
+En cada `hN/README.md`, en `control/README.md` y en Resultados:
+
+- **Veredicto** lleva un solo recuadro, el de la conclusión, primero. Las reglas o rondas que la sostienen van debajo
+  como lista: el resultado en negrita y una o dos líneas.
+- **Limitaciones** va sin recuadros: una lista con el nombre de la limitación en negrita y una o dos líneas cada una.
+
+El texto no se pierde, solo cambia de forma (el grupo 2 lo compara contra el commit previo).
+
+### D12. Diagramas que entran en la columna (agregado el 13-nov)
+
+Los diagramas Mermaid de las hipótesis (`flowchart LR` con seis o siete nodos) se escalan hasta que la letra no se lee.
+Pasan a `flowchart TB`, o a dos filas, con etiquetas cortas, de modo que a 1440 px el diagrama entre en la columna con
+su letra a tamaño de texto.
+
+### D13. Barras laterales (agregado el 13-nov)
+
+Se revierte el «nombre del sitio oculto arriba de la barra lateral» de `sitio/estilos.css`: la barra izquierda vuelve a
+mostrar su título. Las dos barras, en escritorio:
+
+- arrancan con el mismo espacio arriba, más chico que el de Material;
+- llevan el mismo título (versalitas chicas con una línea debajo) y un recuadro de fondo tenue;
+- la página activa y la sección que se lee se marcan con una barrita del color de acento y fondo suave;
+- los subniveles van con sangría y una guía vertical.
+
+Los colores salen de las variables del tema, así que valen en los dos modos. Esta tarea la hace el orquestador, con
+capturas.
+
+### D14. Vocabulario: clientes contactados (agregado el 13-nov)
+
+«Envíos» viene de la competencia (a cuántos clientes se les manda el estímulo), y en el sitio se lee como si algo se
+enviara. Pasa a «clientes contactados»: N\* = 3.300 clientes contactados, ejes «N clientes contactados». Lo cambia el
+generador (ejes, títulos y textos de `comun/reporte.py`), y el grupo 2 cambia el texto escrito a mano. Las variables y
+columnas de los CSV no cambian.
+
+Los gráficos contra clientes contactados (`curvas_<H>.svg` y la curva de diferencia de cada hipótesis) van **siempre en
+dos columnas** de paneles, con las filas que hagan falta, en lugar de `min(n, 3)`.
+
+### D15. Estudios y réplicas, dichos en palabras (agregado el 13-nov)
+
+La tabla de § Variantes de cada hipótesis tiene la columna «estudio (réplica 0 / réplica k ≥ 1)» con valores como
+«`U0.25` / `U0.25@k`», que no se entienden sin leer § Estudios y réplicas. Pasa a decirse en palabras:
+
+- la columna se llama «búsqueda de hiperparámetros»;
+- una línea antes de la tabla explica la notación: un *estudio* es una búsqueda de Optuna; `U0.25` busca sobre una
+  muestra uniforme del 25 % de train; `U0.25@k` es la misma búsqueda repetida con semilla k (las *réplicas*, que miden
+  cuánto depende el resultado de la suerte de la búsqueda); la réplica 0 es la búsqueda original.
+
+Los ids no cambian, porque son los del ledger.
+
 ## Risks / Trade-offs
 
 - [Unir `main` en la rama de `tiempos-confiables-y-consistencia` choca con `sampling_1/README.md` y con
