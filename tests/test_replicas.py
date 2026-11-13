@@ -11,8 +11,8 @@ def _ctx(*argv):
 
 def test_regla_de_duenos_de_los_estudios_con_replica():
     assert variantes.dueno_estudio("U0.1") == "h1"
-    assert variantes.dueno_estudio("U0.1@3") == "h3"
-    assert variantes.dueno_estudio("U0.05@7") == "h3"
+    assert variantes.dueno_estudio("U0.1@3") == "h1"  # D10: las réplicas de U{r} son de h1, no de h3
+    assert variantes.dueno_estudio("U0.05@7") == "h1"
     assert variantes.dueno_estudio("C") == "control"
     assert variantes.dueno_estudio("C@2") == "control"
 
@@ -57,7 +57,7 @@ def test_replica_negativa_falla():
 
 def test_dueno_de_la_fila_de_una_optimizacion_con_replica():
     assert variantes.dueno_variante("U0.1") == "h1"
-    assert variantes.dueno_variante("U0.1", 3) == "h3"
+    assert variantes.dueno_variante("U0.1", 3) == "h1"
     assert variantes.dueno_variante("C", 3) == "control"
     assert variantes.dueno_variante("H3-0.1", 3) == "h3"
 
@@ -103,10 +103,11 @@ def test_replica_0_conserva_estudio_semilla_e_id():
 
 
 def test_replica_3_de_h3_usa_estudio_semilla_y_dueno_de_la_replica():
+    """D10: la optimización `U0.1@3` es de h1 (como `U0.1`), aunque la pida una línea de método de h3."""
     a = correr.parsear(["--metodo", "opt-muestra", "--tasa", "0.1", "--etapa", "optimizar", "--replica", "3"])
     cx = correr.Contexto(a)
     assert (cx.replica, cx.semilla_opt, cx.estudio, cx.variante) == (3, 3, "U0.1@3", "U0.1")
-    assert cx.raiz == rutas.ledger("h3") and cx.ruta_hp() == rutas.ledger("h3") / ("exploracion" if cx.explora else "") / "hp" / "U0.1@3.json"
+    assert cx.raiz == rutas.ledger("h1") and cx.ruta_hp() == rutas.ledger("h1") / ("exploracion" if cx.explora else "") / "hp" / "U0.1@3.json"
     assert "U0.1@3_" in cx.id(3, "optimizar") or cx.id(3, "optimizar").startswith("exp-U0.1@3_")
     assert cx.fila()["replica_opt"] == 3
 
@@ -136,3 +137,11 @@ def test_el_corredor_rechaza_replicas_invalidas_antes_de_cargar_datos(argv, nomb
 
 def test_la_columna_replica_opt_es_del_esquema_y_de_la_clave():
     assert "replica_opt" in lg.COLUMNAS and "replica_opt" in lg.CLAVE
+
+
+def test_cargar_replicas_lee_los_estudios_del_dueno_de_cada_estudio():
+    """D10: el reporte de h4 no pasa por h1, pero `H4F-*` usa `U0.05@k` y `U0.25@k`, que son de h1."""
+    from comun import reporte
+
+    _, estudios, _ = reporte.cargar_replicas(["control", "h4"], 3300)
+    assert {"U0.05@1", "U0.25@7"} <= set(estudios["estudio"])

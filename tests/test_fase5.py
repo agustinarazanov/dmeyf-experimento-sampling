@@ -4,7 +4,7 @@ from collections import Counter
 
 import pytest
 
-from comun import correr, rutas
+from comun import correr, rutas, variantes
 
 LISTAS = rutas.experimento("sampling_1") / "scripts"
 NOMBRES = [f"fase5_r{k}" for k in range(8)]
@@ -68,7 +68,9 @@ def test_destinos_de_ledger_y_de_hp(corridas):
             elif cx.variante == "C":
                 assert cx.raiz == rutas.ledger("control") and cx.ruta_hp().parent.parent == rutas.ledger("control")
             else:
-                assert cx.raiz == rutas.ledger("h3") and cx.ruta_hp().parent.parent == rutas.ledger("h3")
+                # D10: los estudios `U{r}@k` son de h1, aunque los lea una variante de h3
+                assert cx.raiz == rutas.ledger(variantes.dueno_variante(cx.variante, cx.replica))
+                assert cx.ruta_hp().parent.parent == rutas.ledger(variantes.dueno_estudio(cx.estudio))
                 assert cx.ruta_hp().name == f"{cx.estudio}.json"
 
 

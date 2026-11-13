@@ -170,17 +170,20 @@ def cargar(exps: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def cargar_replicas(exps: list[str], n_est: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """(finales de todas las réplicas con `g` al corte `n_est`, tiempos de estudio, `replicas.csv` de los ledgers)."""
+    """(finales de todas las réplicas con `g` al corte `n_est`, tiempos de estudio, `replicas.csv` de los ledgers).
+    Los tiempos de estudio salen también del dueño de cada estudio que usan las variantes de `exps` (`U{r}@k` es de `h1`)."""
     finales, estudios, tablas = [], [], []
+    duenos_estudio = {reg.dueno_estudio(b.estudio) for e in exps for b in reg.variantes_de(e)}
     for e in exps:
         led = rutas.ledger(e)
         if (led / "resultados.csv").exists():
             r = lg.leer_csv(led / "resultados.csv")
             finales.append(_absolutas(_ronda(r), led))
-        if (led / "estudios.csv").exists():
-            estudios.append(lg.leer_csv(led / "estudios.csv"))
         if (led / "replicas.csv").exists():
             tablas.append(lg.leer_csv(led / "replicas.csv"))
+    for e in [*exps, *sorted(duenos_estudio - set(exps))]:
+        if (rutas.ledger(e) / "estudios.csv").exists():
+            estudios.append(lg.leer_csv(rutas.ledger(e) / "estudios.csv"))
     fin = lg.con_replica(pd.concat(finales, ignore_index=True)) if finales else pd.DataFrame(columns=["variante", "replica_opt"])
     if len(fin):
         fin = lg.agregar_ganancia(fin, pd.read_csv, n_est)

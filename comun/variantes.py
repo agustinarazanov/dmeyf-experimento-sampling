@@ -136,13 +136,12 @@ def validar_replica(nombre_variante: str, replica: int) -> None:
 
 
 def dueno_variante(nombre_variante: str, replica: int = 0) -> str:
-    """Dueño de las filas de la variante. Las réplicas k ≥ 1 de las optimizaciones `U{r}` son de `h3`, no de `h1`."""
-    dueno = variante(nombre_variante).dueno
-    return "h3" if replica and dueno == "h1" else dueno
+    """Dueño de las filas de la variante, con o sin réplica: las réplicas k ≥ 1 de `U{r}` también son de `h1`."""
+    return variante(nombre_variante).dueno
 
 
 def dueno_estudio(estudio: str) -> str:
-    """Dueño del estudio. `U{r}` es de `h1`, sus réplicas `U{r}@k` son de `h3`; `C@k` es de `control`."""
+    """Dueño del estudio, el mismo con o sin réplica: `U{r}` y `U{r}@k` son de `h1`, `C@k` es de `control`."""
     base, k = partir_estudio(estudio)
     try:
         dueno = ESTUDIOS[base]
@@ -151,7 +150,7 @@ def dueno_estudio(estudio: str) -> str:
                          f"(estudios: {', '.join(ESTUDIOS)})") from None
     if k and not any(b.replicas and b.estudio == base for b in VARIANTES.values()):
         raise ValueError(f"estudio {estudio!r}: el estudio {base} no admite réplicas de optimización")
-    return "h3" if k and dueno == "h1" else dueno
+    return dueno
 
 
 def variantes_de(exp: str) -> list[Variante]:
@@ -179,10 +178,6 @@ def implicitas(variantes: dict[str, Variante] | None = None, estudios: dict[str,
         dueno_est = estudios[b.estudio]
         if dueno_est != b.dueno:
             dep[b.dueno].add(dueno_est)
-        # las réplicas k ≥ 1 de los estudios de `h1` son de `h3` (`dueno_estudio`)
-        dueno_replica = "h3" if dueno_est == "h1" else dueno_est
-        if b.replicas and dueno_replica != b.dueno:
-            dep[b.dueno].add(dueno_replica)
     dep[AGREGADOR] = set(dueños)
     return dep
 

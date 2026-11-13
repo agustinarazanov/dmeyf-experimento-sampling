@@ -1785,3 +1785,40 @@ Rama `tiempos-confiables`, worktree `../experimento-sampling-tiempos`. Etapa: **
   superan el objetivo, y `fddfd322`); no son de esta revisión y no las puedo clasificar.
 - Tokens: ~35 turnos · contexto ~50.000 por turno · ≈ US$ 1,6.
 - Tutor: —
+
+
+## tiempos-confiables-y-consistencia, tarea 2.1: los estudios `U{r}@k` pasan de `h3` a `h1` (13-nov-2026)
+
+Sesión de código (Sonnet), grupo 2. Commit propio, sin ninguna VM viva (`gcloud compute instances list`: 0 instancias,
+antes y dentro del script).
+
+- **Código:** `comun/variantes.py` (`dueno_variante`, `dueno_estudio`, `implicitas` sin el caso especial de `h3`),
+  `comun/reporte.py` (`cargar_replicas` lee `estudios.csv` también del dueño de cada estudio que usan las variantes del
+  reporte), `tests/test_variantes.py`, `tests/test_replicas.py` y `tests/test_fase5.py` con el dueño nuevo,
+  `tests/test_mover_estudios.py` y `scripts/mover_estudios.py` (`--en-seco`, `--bucket`, `--deshacer`, `--comparar`).
+  `## Dependencias` de `h3` y `h4` ya estaban actualizadas por 1.3; `--verificar` pasa (h4 ya no declara `h3`).
+- **Tablas de antes** guardadas con el dueño viejo (consolidar de `h1`, `h3`, `h4`; reportes de `h1`, `h3`, `h4`,
+  `sampling_1`) y comparadas con las de después, byte a byte:
+  - `apareado.csv` de `h1`, `h3`, `h4` y `replicas.csv` de `h3`, `h4`: **idénticos**. `reemplazadas.csv` idénticos.
+  - `h1/ledger/resultados.csv` y `estudios.csv`: **+21 filas** (las optimizaciones `U0.25@k`, `U0.1@k`, `U0.05@k`, k = 1…7);
+    `h3`: las mismas 21 filas menos. `python -m comun.consolidar`: h1 124 → 145 corridas válidas, h3 1.949 → 1.928; control,
+    h2 y h4 sin cambio. `git diff` muestra solo esas líneas movidas.
+  - Reportes HTML de `h1`, `h3`, `h4` y `sampling_1`: iguales salvo la hora de generación.
+  - **El reporte de `h4` no cambia** (D10 esperaba que pasara a mostrar T y A con réplicas en `H4F-*`): el bloque A solo
+    se dibuja en el reporte de `sampling_1`, que ya leía los estudios de todos los dueños. Lo que cambia es el cálculo:
+    `calcular_bloque_a` para `h4` antes daba T y A de la réplica 0 y ahora los da con las 8 réplicas:
+    `H4F-0.05` T 84,28 → 80,17 s y A 9,455 → 12,500; `H4F-0.25` T 170,32 → 209,93 s y A 4,679 → 4,774 (R = 8, mediana).
+    Sin el cambio de `cargar_replicas`, `U0.05@k` y `U0.25@k` no se leían desde `h4`.
+- **Bucket** (`python -m scripts.mover_estudios --bucket`, primero `--en-seco`): paso 1, ninguna VM; paso 2, respaldo de
+  `h1/ledger` y `h3/ledger` en `$BUCKET/respaldo/2026-11-mover-U/` (se borra al archivar el cambio); paso 3, 42 archivos
+  copiados con tamaño y crc32c iguales; paso 4, originales borrados; paso 5, ningún `U*@k` en `h3/`, los 42 en `h1/` con el
+  crc32c del respaldo, y los nombres de archivo del bucket y del repo coinciden en los cinco ledgers (con los filtros de
+  `vm.sh`: no hay archivos solo en el repo; solo en el bucket hay `predicciones/`, que el repo no versiona). `rsync -n` no
+  sirve para comparar porque marca todo como distinto (mtime del checkout), así que el script compara nombres.
+  Lo movido, de `h3` a `h1`: `hp/` 21 archivos (U0.05@1.json … U0.25@7.json) y `corridas/` 21 archivos
+  (U0.05@1_uniforme_0.05_1_optimizar_dcd06d6.csv … U0.25@7_uniforme_0.25_7_optimizar_dcd06d6.csv).
+  Listado completo: `hp/U{r}@k.json` y `corridas/U{r}@k_uniforme_{r}_k_optimizar_dcd06d6.csv`, para r ∈ {0.05, 0.1, 0.25} y
+  k = 1…7 (21 + 21 = 42 archivos; `hp/` y `corridas/`, nada de `curvas/` ni `predicciones/`).
+- Vuelta atrás: `python -m scripts.mover_estudios --deshacer` (repo) y `--bucket --deshacer` (respaldo); el commit, con
+  `git revert`.
+- Tokens: —

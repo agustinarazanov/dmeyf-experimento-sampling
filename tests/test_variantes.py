@@ -105,7 +105,7 @@ def test_las_dependencias_implicitas_del_registro():
     dep = variantes.implicitas()
     assert dep["control"] == set() and dep["h1"] == {"control"} and dep["h2"] == {"control"}
     assert dep["h3"] == {"control", "h1"}
-    assert dep["h4"] == {"control", "h1", "h3"}
+    assert dep["h4"] == {"control", "h1"}  # D10: las réplicas de U{r} son de h1, así que h4 no lee de h3
     assert dep["sampling_1"] == {"control", "h1", "h2", "h3", "h4"}
 
 

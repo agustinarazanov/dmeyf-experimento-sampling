@@ -52,7 +52,7 @@ Qué puede ir en paralelo:
 
 ## 2. Código de corridas (sesión: Sonnet)
 
-- [ ] 2.1 Dueño de `U{r}@k` (D10), en un commit propio y sin ninguna VM viva en el proyecto:
+- [x] 2.1 Dueño de `U{r}@k` (D10), en un commit propio y sin ninguna VM viva en el proyecto:
   - guardar antes las tablas de `python -m comun.consolidar` de `h1`, `h3` y `h4` y de `python -m comun.reporte` de
     `h3`, `h4` y `sampling_1`;
   - `comun/variantes.py`: `dueno_estudio`, `dueno_variante` e `implicitas` sin el caso especial de `h3`;
