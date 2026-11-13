@@ -4,6 +4,8 @@ Las tablas de consulta de [Resultados](README.md): cada una sale de los ledgers 
 
 ## Tablas completas del bloque A
 
+Las 21 variantes con todas las columnas, la varianza por variante y las diferencias entre variantes, como texto.
+
 <!-- generado:bloque-a-completo -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
@@ -88,6 +90,8 @@ Notas:
 
 ## Varianza entre réplicas y entre semillas
 
+Qué parte de la varianza de G es suerte de la optimización (entre réplicas) y qué parte es suerte del final.
+
 <!-- generado:varianza -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
@@ -96,6 +100,8 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 <!-- /generado:varianza -->
 
 ## Diferencias entre variantes
+
+Contrastes entre variantes de H3 y de H4, sin pasar por el control.
 
 <!-- generado:diferencias -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
@@ -109,7 +115,16 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
 ## Rondas
 
-IC por ronda y tabla de las dos rondas.
+La ronda anterior (final con 201903–201906 y 10 semillas) contra la vigente (201903–201908 y 20 semillas), con el
+resultado de la predicción de la ronda ([Control y reglas](../control/README.md#prediccion-de-la-ronda-201903201908)):
+
+- **Veredictos estables: se confirma.** 0 cambios de lado. Cambian 8 veredictos, todos desde o hacia *indeterminado* o
+  entre *gana* y *no pierde* (por semilla); con réplicas no cambia ninguno.
+- **IC más angosto: se confirma.** La mediana de la razón de anchos del IC por semilla (ronda anterior / vigente) es
+  1,44, dentro de [1,2; 1,9].
+- **Con réplicas el ancho baja menos: se confirma.** La mediana de la razón con réplicas es 0,96: con 8 réplicas el IC
+  prácticamente no se angosta, porque la suerte de Optuna no depende de las semillas finales.
+- T y la aceleración no se comparan entre rondas: el final de seis meses es más largo y se midió en otras VMs.
 
 <!-- generado:ic-rondas -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.

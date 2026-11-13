@@ -121,7 +121,7 @@ Cada tarea:
   Se mudan la predicción conjunta a `control/README.md` § Predicción, el diseño a `corridas.md` § Protocolo y la
   bibliografía a `docs/metodo.md`. Verificar con que ninguna tabla de consulta queda entre la respuesta y las
   conclusiones, con `python -m comun.variantes --verificar` (lee § Dependencias) y con `verificar_informe_h3.py`.
-- [ ] 2.2 `experimentos/sampling_1/anexo.md`: título «Anexo de resultados», una línea por sección, y en Rondas los tres
+- [x] 2.2 `experimentos/sampling_1/anexo.md`: título «Anexo de resultados», una línea por sección, y en Rondas los tres
   resultados de la predicción de la ronda que hoy están en Resultados. Verificar con que el bloque A completo tiene las
   mismas filas que antes del cambio.
 - [ ] 2.3 `index.md` (Inicio, D8):

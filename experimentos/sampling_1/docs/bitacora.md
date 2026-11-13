@@ -2241,3 +2241,12 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Entre la respuesta y las conclusiones ya no queda ninguna tabla completa: las del Anexo (bloque A completo, varianza,
   diferencias, rondas) se enlazan. Quedan el bloque A resumen (detalle plegado) y las pestañas de tiempo igual, que
   D1 pone en Resultados. Las pestañas de tiempo igual no están plegadas: eso lo decide el generador, no se toca a mano.
+
+### 13-nov-2026 · inicio-y-resultados 2.2 · Anexo de resultados
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- `anexo.md`: una línea por sección; en § Rondas, los tres resultados de la predicción de la ronda que estaban en
+  Resultados § Rondas, con enlace a la predicción en `control/README.md`. Resultados conserva un resumen en tres puntos.
+- ✓ Bloque A completo contra `efdf873~1` (antes del cambio): las mismas 21 variantes en el mismo orden y 48 filas de
+  tabla iguales salvo el encabezado, que cambió con D9 («A» → «aceleración (×)», «veredicto» → «ganancia contra el
+  control»). `verificar_readme` y `scripts/sitio.sh` sin avisos.
