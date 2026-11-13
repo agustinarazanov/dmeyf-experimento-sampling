@@ -41,7 +41,19 @@ Bash(git grep:*),Bash(shasum:*),Bash(sha256sum:*),Bash(gsutil rsync:*),Bash(gsut
 Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/vm.sh:*),\
 Bash(scripts/sitio.sh:*),Bash(bash scripts/sitio.sh:*),Bash(mkdocs build:*),Bash(git show:*),Bash(cp:*),Bash(mktemp:*),Bash(diff:*),\
 Bash(sed:*),Bash(git check-ignore:*),Bash(git restore --staged:*),Bash(pip list:*),Bash(pip show:*),Bash(sort:*),Bash(uniq:*),\
-Bash(echo:*),Bash(cut:*),Bash(awk:*),Bash(bash -n:*),Bash(git ls-files:*),Bash(git ls-tree:*)"
+Bash(echo:*),Bash(cut:*),Bash(awk:*),Bash(bash -n:*),Bash(git ls-files:*),Bash(git ls-tree:*),\
+Bash(scripts/lanzar_carriles.sh --en-seco:*),Bash(bash scripts/lanzar_carriles.sh --en-seco:*)"
+
+# Reglas de shell para las dos sesiones: lo que las sesiones headless intentaban y se les negaba (cada negación las deja
+# ~2 min paradas). Sale de las denegaciones de 88 sesiones de main y 4 de tiempos-confiables-y-consistencia.
+TMP_ETAPAS="tmp_etapas"   # carpeta ignorada en la raíz del repo: scripts auxiliares y salidas temporales
+REGLAS_SHELL="Reglas de shell (un comando fuera de la lista permitida no falla enseguida: la sesión queda parada unos 2 minutos y después se deniega). \
+Ya corrés en la raíz del repo: nunca 'cd <ruta> &&' ni 'git -C <ruta>'. \
+Nunca antepongas variables de entorno ni export: 'PYENV_VERSION=facultad python -m comun.variantes --verificar' se deniega; 'python -m comun.variantes --verificar' anda. \
+Un comando por llamada, sin variables de shell (f=...; ... \$f), sin bucles for/while, sin \$(...) y sin heredocs (python - <<EOF, cat >> archivo <<EOF). \
+Para crear o modificar archivos del repo usá Edit o Write, no la shell. \
+Los scripts auxiliares y las salidas temporales van en $TMP_ETAPAS/ (ignorada por git; mkdir -p $TMP_ETAPAS): escribilos con Write y corrélos con python -m $TMP_ETAPAS.<nombre> o python $TMP_ETAPAS/<archivo>.py. \
+Nunca escribas ni leas en /tmp ni fuera del repo (salvo los datos en $DATOS)."
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
     claude -p "$4" --model "$1" --permission-mode acceptEdits --max-budget-usd "$2" \
@@ -90,10 +102,10 @@ correr_claude "$MODELO" "$PRESUPUESTO_APLICAR" "$J_APLICAR" \
     "Aplicá solo el grupo $GRUPO de tasks.md del cambio $CAMBIO siguiendo \
 .claude/skills/openspec-apply-change/SKILL.md (openspec instructions apply --change $CAMBIO --json). \
 El experimento es experimentos/$EXP; leé CLAUDE.md y docs/metodo.md antes de empezar. \
+$REGLAS_SHELL \
 PROYECTO y BUCKET ya están definidos: los carga .env (en la raíz del repo, ignorado por git) y los lee vm.sh; \
 no los busques en los documentos ni pidas que los definan. \
-Corré python y pytest a secas desde la raíz del repo (python -m comun.X, o python -m experimentos.$EXP.src.X para lo que todavía no pasó a comun/): el entorno ya está resuelto; \
-no antepongas variables de entorno (PYENV_VERSION=..., PYTHONPATH=...) ni export, porque esa forma no está en la lista de comandos permitidos y te la van a negar. \
+Corré python y pytest a secas desde la raíz del repo (python -m comun.X, o python -m experimentos.$EXP.src.X para lo que todavía no pasó a comun/): el entorno ya está resuelto. \
 Marcá cada tarea al terminarla, solo con la evidencia que pide su texto. Las tareas del grupo que dicen 'Revisar' o 'revisión en sesión limpia' no las hagas, \
 no las marques y no las bloquees: las hace la sesión de revisión que corre después de esta. Las corridas en VM se lanzan solo con el lanzador y las listas que definen las tareas del cambio \
 (scripts/lanzar_fase.sh <lista>), que vuelve enseguida y deja las VMs trabajando; nunca gcloud, ni vm.sh sin --en-seco. Si lanzaste fases y las \
@@ -101,9 +113,6 @@ tareas dependen de sus resultados, no bloquees ni marques: escribí EN_CURSO y q
 el loop espera a que las VMs terminen y vuelve a correr este grupo, y entonces consolidás, verificás y marcás. \
 Si los resultados ya están (ledger/corridas con filas, sin vm.sh corriendo: pgrep -f vm.sh), consolidá y marcá. Commiteá al cerrar cada tarea (sin Co-Authored-By). No hagas push y no cambies el diseño. \
 No publiques en Zulip ni mandes mensajes fuera del repo. \
-Un comando fuera de la lista permitida no falla enseguida: la sesión queda parada unos 2 minutos y después se deniega. \
-No escribas en /tmp ni fuera del repo: los archivos temporales van en $DATOS/tmp_etapas (mkdir -p). No leas archivos de fuera del repo. \
-Se deniegan siempre, aunque cada comando suelto esté permitido: heredocs (python - <<EOF, cat > archivo <<EOF), bucles for/while, $(...) y git -C. Para un script de más de una línea, escribilo con Write en $DATOS/tmp_etapas y corré python <archivo>; para editar, usá Edit. \
 Si una tarea necesita algo que no podés hacer (una decisión de diseño), escribí BLOQUEADO y el motivo en $BLOQUEO y terminá. $INDICACIONES" || RC=$?
 registrar "$J_APLICAR" "$GRUPO" aplicar "$RC"
 if [ -f "$BLOQUEO" ]; then echo "== BLOQUEADO:"; cat "$BLOQUEO"; exit 2; fi
@@ -116,6 +125,7 @@ RC=0
 correr_claude "$MODELO_REV" "$PRESUPUESTO_REVISAR" "$J_REVISAR" \
     "Sos la revisión en sesión limpia del grupo $GRUPO de tasks.md del cambio $CAMBIO, \
 experimento experimentos/$EXP. No conocés la sesión que lo implementó. \
+$REGLAS_SHELL \
 Usá la lista correspondiente de docs/revision.md: verificá cada ítem corriendo lo que haga falta, \
 corregí lo que no pase y anotalo, cerrá la etapa en $DIR/docs/bitacora.md con el formato de cierre \
 (fecha, sesión, revisor, hallazgos, correcciones, tokens), marcá como hecha la tarea de revisión del grupo en tasks.md \
