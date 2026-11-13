@@ -897,11 +897,51 @@ def _etiquetas_sin_pisar(ax, puntos: list[tuple[float, float]], textos: list[str
 
 
 def _marcador_veredicto(ax, x, d, ic, color, clase, **kw) -> None:
-    """Punto con su IC vertical: lleno si no pierde, vacío si pierde, vacío con borde punteado si es indeterminado (D16)."""
+    """Punto con su IC vertical: círculo lleno si no pierde, círculo vacío si pierde, rombo gris claro si es indeterminado (D16)."""
     ax.errorbar([x], [d], yerr=[[d - ic[0]], [ic[1] - d]], fmt="none", capsize=2, color=color, lw=1.2, zorder=2)
-    lleno = clase == "ok"
-    ax.scatter([x], [d], s=64, marker="o", facecolor=color if lleno else "white", edgecolor=color,
-               linewidth=1.6, linestyle="--" if clase == "ind" else "-", zorder=3, **kw)
+    cara = {"ok": color, "ind": "#d9d9d9"}.get(clase, "white")
+    ax.scatter([x], [d], s=64 if clase != "ind" else 56, marker="D" if clase == "ind" else "o", facecolor=cara,
+               edgecolor=color, linewidth=1.6, zorder=3, **kw)
+
+
+def _etiquetas_en_columna(ax, puntos: list[tuple[float, float]], textos: list[str]) -> None:
+    """Para un panel denso: las etiquetas van en una columna a la izquierda de los puntos, cada una unida a su punto por
+    una línea fina. El orden de la columna sale de minimizar los cruces entre las líneas (intercambios de a pares, en
+    orden fijo, así que regenerar da lo mismo)."""
+    a_fraccion = ax.transScale + ax.transLimits
+    pts = [tuple(a_fraccion.transform(p)) for p in puntos]
+    n = len(pts)
+    x_col = max(0.3, min(p[0] for p in pts) - 0.08)
+    ys = [0.95 - k * 0.9 / (n - 1) for k in range(n)]
+    orden = sorted(range(n), key=lambda i: -pts[i][1])
+
+    def cruza(a, b, c, d) -> bool:
+        def ccw(p, q, r):
+            return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+        return ccw(a, c, d) * ccw(b, c, d) < 0 and ccw(a, b, c) * ccw(a, b, d) < 0
+
+    def cruces(o) -> int:
+        seg = [((x_col + 0.01, ys[k]), pts[i]) for k, i in enumerate(o)]
+        return sum(cruza(*seg[i], *seg[j]) for i in range(n) for j in range(i + 1, n))
+
+    mejor = cruces(orden)
+    mejoro = True
+    while mejoro and mejor:
+        mejoro = False
+        for i in range(n):
+            for j in range(i + 1, n):
+                orden[i], orden[j] = orden[j], orden[i]
+                c = cruces(orden)
+                if c < mejor:
+                    mejor, mejoro = c, True
+                else:
+                    orden[i], orden[j] = orden[j], orden[i]
+    lugar = {i: k for k, i in enumerate(orden)}
+    for i in range(n):  # en el orden de `puntos`, que es el de `ax.texts`
+        ax.annotate(textos[i], puntos[i], xytext=(x_col, ys[lugar[i]]), textcoords="axes fraction", fontsize=11,
+                    color=TINTA, va="center", ha="right",
+                    bbox=dict(boxstyle="square,pad=0.1", fc="white", ec="none", alpha=0.8),
+                    arrowprops=dict(arrowstyle="-", color="#aaaaaa", lw=0.6, shrinkA=1, shrinkB=4, relpos=(1.0, 0.5)))
 
 
 def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tradeoff") -> str:
@@ -942,7 +982,10 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
             textos.append(f["variante"])
             vale.append(c == "ok" and f["A"] >= A_VALE)
         n0 = len(ax.texts)
-        _etiquetas_sin_pisar(ax, puntos, textos, alto=0.1, ancho=0.2)
+        if len(puntos) >= 6:
+            _etiquetas_en_columna(ax, puntos, textos)
+        else:
+            _etiquetas_sin_pisar(ax, puntos, textos, alto=0.1, ancho=0.2)
         for t, v in zip(ax.texts[n0:], vale):
             t.set_color(ctx.color[h])
             t.set_fontweight("bold" if v else "normal")
@@ -964,12 +1007,12 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
     else:
         titulo = f"Ninguna de las {len(filas)} variantes no pierde y acelera {A_VALE:g}× o más"
     fig.suptitle(titulo, fontsize=13, x=0.01, ha="left", wrap=True)
-    marcas = [Line2D([], [], color=TINTA, marker="o", ls="", mfc=TINTA), Line2D([], [], color=TINTA, marker="o", ls="", mfc="white"),
+    marcas = [Line2D([], [], color=TINTA, marker="o", ls="", mfc=TINTA), Line2D([], [], color=TINTA, marker="o", ls="", mfc="white", mew=1.6),
               Line2D([], [], color=COLOR_C, marker="o", ls="")]
-    nombres = ["no pierde", "pierde (vacío)", "control (1×, 0)"]
+    nombres = ["no pierde (círculo lleno)", "pierde (círculo vacío)", "control (1×, 0)"]
     if "ind" in clases:
-        marcas.insert(2, Line2D([], [], color=TINTA, marker="o", ls="", mfc="white", mew=1.6))
-        nombres.insert(2, "indeterminado")
+        marcas.insert(2, Line2D([], [], color=TINTA, marker="D", ls="", mfc="#d9d9d9", mew=1.6))
+        nombres.insert(2, "indeterminado (rombo gris)")
     marcas += [Line2D([], [], color=COLOR_C, ls=":", lw=1), Line2D([], [], color=COLOR_C, ls="-.", lw=0.8)]
     nombres += ["−δ (debajo, pierde)", f"{A_VALE:g}×"]
     fig.legend(marcas, nombres, frameon=False, fontsize=10, loc="lower center", ncol=3)

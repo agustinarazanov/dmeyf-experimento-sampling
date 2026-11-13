@@ -376,15 +376,15 @@ z
 " style="stroke: #0b0b0b"/>
     </defs>
     <g>
-     <use xlink:href="#md4cddb9764" x="181.344531" y="300.896875" style="fill: #0b0b0b; stroke: #0b0b0b"/>
+     <use xlink:href="#md4cddb9764" x="156.626562" y="300.896875" style="fill: #0b0b0b; stroke: #0b0b0b"/>
     </g>
    </g>
    <g id="text_20">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="199.344531" y="304.396875" transform="rotate(-0 199.344531 304.396875)">no pierde</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="174.626562" y="304.396875" transform="rotate(-0 174.626562 304.396875)">no pierde (círculo lleno)</text>
    </g>
    <g id="line2d_26">
     <defs>
-     <path id="mfa3c352f89" d="M 0 3 
+     <path id="m0360d71a9d" d="M 0 3 
 C 0.795609 3 1.55874 2.683901 2.12132 2.12132 
 C 2.683901 1.55874 3 0.795609 3 0 
 C 3 -0.795609 2.683901 -1.55874 2.12132 -2.12132 
@@ -394,14 +394,14 @@ C -2.683901 -1.55874 -3 -0.795609 -3 0
 C -3 0.795609 -2.683901 1.55874 -2.12132 2.12132 
 C -1.55874 2.683901 -0.795609 3 0 3 
 z
-" style="stroke: #0b0b0b"/>
+" style="stroke: #0b0b0b; stroke-width: 1.6"/>
     </defs>
     <g>
-     <use xlink:href="#mfa3c352f89" x="181.344531" y="316.297656" style="fill: #ffffff; stroke: #0b0b0b"/>
+     <use xlink:href="#m0360d71a9d" x="156.626562" y="316.297656" style="fill: #ffffff; stroke: #0b0b0b; stroke-width: 1.6"/>
     </g>
    </g>
    <g id="text_21">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="199.344531" y="319.797656" transform="rotate(-0 199.344531 319.797656)">pierde (vacío)</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="174.626562" y="319.797656" transform="rotate(-0 174.626562 319.797656)">pierde (círculo vacío)</text>
    </g>
    <g id="line2d_27">
     <defs>
@@ -418,29 +418,29 @@ z
 " style="stroke: #555555"/>
     </defs>
     <g>
-     <use xlink:href="#m25f2348f57" x="298.485156" y="300.896875" style="fill: #555555; stroke: #555555"/>
+     <use xlink:href="#m25f2348f57" x="323.203125" y="300.896875" style="fill: #555555; stroke: #555555"/>
     </g>
    </g>
    <g id="text_22">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="316.485156" y="304.396875" transform="rotate(-0 316.485156 304.396875)">control (1×, 0)</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="341.203125" y="304.396875" transform="rotate(-0 341.203125 304.396875)">control (1×, 0)</text>
    </g>
    <g id="line2d_28">
-    <path d="M 288.485156 315.897656 
-L 298.485156 315.897656 
-L 308.485156 315.897656 
+    <path d="M 313.203125 315.897656 
+L 323.203125 315.897656 
+L 333.203125 315.897656 
 " style="fill: none; stroke-dasharray: 1,1.65; stroke-dashoffset: 0; stroke: #555555"/>
    </g>
    <g id="text_23">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="316.485156" y="319.397656" transform="rotate(-0 316.485156 319.397656)">−δ (debajo, pierde)</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="341.203125" y="319.397656" transform="rotate(-0 341.203125 319.397656)">−δ (debajo, pierde)</text>
    </g>
    <g id="line2d_29">
-    <path d="M 433.913281 300.896875 
-L 443.913281 300.896875 
-L 453.913281 300.896875 
+    <path d="M 458.63125 300.896875 
+L 468.63125 300.896875 
+L 478.63125 300.896875 
 " style="fill: none; stroke-dasharray: 5.12,1.28,0.8,1.28; stroke-dashoffset: 0; stroke: #555555; stroke-width: 0.8"/>
    </g>
    <g id="text_24">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="461.913281" y="304.396875" transform="rotate(-0 461.913281 304.396875)">2×</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="486.63125" y="304.396875" transform="rotate(-0 486.63125 304.396875)">2×</text>
    </g>
   </g>
  </g>

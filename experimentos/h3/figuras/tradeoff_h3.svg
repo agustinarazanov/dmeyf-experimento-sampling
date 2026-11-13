@@ -396,68 +396,132 @@ z
     </g>
    </g>
    <g id="patch_6">
-    <path d="M 534.523576 152.274293 
-Q 532.70387 145.683861 530.884165 139.093429 
+    <path d="M 328.031519 83.559292 
+Q 426.987283 108.902126 525.943047 134.24496 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_14">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #1baf7a" x="536.789606" y="163.338604" transform="rotate(-0 536.789606 163.338604)">H3-0.05</text>
+    <g id="patch_7">
+     <path d="M 276.301841 89.630082 
+L 327.065123 89.630082 
+L 327.065123 76.430082 
+L 276.301841 76.430082 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="85.887504" transform="rotate(-0 325.965123 85.887504)">H3-0.05</text>
    </g>
-   <g id="patch_7">
-    <path d="M 458.504556 225.307831 
-Q 468.408827 197.700511 478.313099 170.09319 
+   <g id="patch_8">
+    <path d="M 327.956837 242.550675 
+Q 402.021497 205.339555 476.086158 168.128435 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_15">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="456.16686" y="234.681385" transform="rotate(-0 456.16686 234.681385)">H3K-0.1</text>
+    <g id="patch_9">
+     <path d="M 276.387779 250.15134 
+L 327.065123 250.15134 
+L 327.065123 236.95134 
+L 276.387779 236.95134 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="246.408762" transform="rotate(-0 325.965123 246.408762)">H3K-0.1</text>
    </g>
-   <g id="patch_8">
-    <path d="M 459.163239 142.247309 
-Q 464.934904 141.480334 470.70657 140.713359 
+   <g id="patch_10">
+    <path d="M 328.045358 106.440462 
+Q 399.409197 122.865038 470.773035 139.289614 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_16">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="456.16686" y="145.502908" transform="rotate(-0 456.16686 145.502908)">H3-0.1</text>
+    <g id="patch_11">
+     <path d="M 283.955435 112.56169 
+L 327.065123 112.56169 
+L 327.065123 99.36169 
+L 283.955435 99.36169 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="108.819112" transform="rotate(-0 325.965123 108.819112)">H3-0.1</text>
    </g>
-   <g id="patch_9">
-    <path d="M 458.487868 207.139971 
-Q 465.567764 186.250243 472.64766 165.360516 
+   <g id="patch_12">
+    <path d="M 327.990214 219.811566 
+Q 399.1019 191.432582 470.213587 163.053599 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_17">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="456.16686" y="216.84569" transform="rotate(-0 456.16686 216.84569)">H3L-0.1</text>
+    <g id="patch_13">
+     <path d="M 276.946373 227.219732 
+L 327.065123 227.219732 
+L 327.065123 214.019732 
+L 276.946373 214.019732 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="223.477153" transform="rotate(-0 325.965123 223.477153)">H3L-0.1</text>
    </g>
-   <g id="patch_10">
-    <path d="M 458.599602 173.228116 
-Q 465.232885 159.352743 471.866169 145.477371 
+   <g id="patch_14">
+    <path d="M 328.066051 129.077937 
+Q 398.83718 135.297599 469.60831 141.517261 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_18">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="456.16686" y="181.174299" transform="rotate(-0 456.16686 181.174299)">H3R-0.1</text>
+    <g id="patch_15">
+     <path d="M 275.485435 135.493299 
+L 327.065123 135.493299 
+L 327.065123 122.293299 
+L 275.485435 122.293299 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="131.75072" transform="rotate(-0 325.965123 131.75072)">H3R-0.1</text>
    </g>
-   <g id="patch_11">
-    <path d="M 392.603406 189.547474 
-Q 385.723735 170.068819 378.844063 150.590164 
+   <g id="patch_16">
+    <path d="M 327.774391 195.902517 
+Q 351.220548 172.762995 374.666705 149.623473 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_19">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #1baf7a" x="394.936263" y="199.009994" transform="rotate(-0 394.936263 199.009994)">H3L-0.25</text>
+    <g id="patch_17">
+     <path d="M 269.292779 204.288123 
+L 327.065123 204.288123 
+L 327.065123 191.088123 
+L 269.292779 191.088123 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="200.545545" transform="rotate(-0 325.965123 200.545545)">H3L-0.25</text>
    </g>
-   <g id="patch_12">
-    <path d="M 392.089278 126.593099 
-Q 385.468085 130.740512 378.846893 134.887925 
+   <g id="patch_18">
+    <path d="M 328.027527 151.207613 
+Q 349.826895 144.68289 371.626262 138.158168 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_20">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #1baf7a" x="394.936263" y="127.667213" transform="rotate(-0 394.936263 127.667213)">H3R-0.25</text>
+    <g id="patch_19">
+     <path d="M 267.831841 158.424907 
+L 327.065123 158.424907 
+L 327.065123 145.224907 
+L 267.831841 145.224907 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="154.682329" transform="rotate(-0 325.965123 154.682329)">H3R-0.25</text>
    </g>
-   <g id="patch_13">
-    <path d="M 392.125285 158.436065 
-Q 383.89535 152.448407 375.665415 146.460748 
+   <g id="patch_20">
+    <path d="M 327.896208 173.482832 
+Q 348.493785 159.897318 369.091362 146.311804 
 " style="fill: none; stroke: #aaaaaa; stroke-width: 0.6; stroke-linecap: round"/>
    </g>
    <g id="text_21">
-    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #1baf7a" x="394.936263" y="163.338604" transform="rotate(-0 394.936263 163.338604)">H3-0.25</text>
+    <g id="patch_21">
+     <path d="M 276.301841 181.356515 
+L 327.065123 181.356515 
+L 327.065123 168.156515 
+L 276.301841 168.156515 
+z
+" style="fill: #ffffff; opacity: 0.8"/>
+    </g>
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #1baf7a" x="325.965123" y="177.613937" transform="rotate(-0 325.965123 177.613937)">H3-0.25</text>
    </g>
    <g id="text_22">
     <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #1baf7a" x="54.202813" y="68.112234" transform="rotate(-0 54.202813 68.112234)">H3</text>
@@ -482,15 +546,15 @@ z
 " style="stroke: #0b0b0b"/>
     </defs>
     <g>
-     <use xlink:href="#md4cddb9764" x="181.344531" y="300.896875" style="fill: #0b0b0b; stroke: #0b0b0b"/>
+     <use xlink:href="#md4cddb9764" x="156.626562" y="300.896875" style="fill: #0b0b0b; stroke: #0b0b0b"/>
     </g>
    </g>
    <g id="text_24">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="199.344531" y="304.396875" transform="rotate(-0 199.344531 304.396875)">no pierde</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="174.626562" y="304.396875" transform="rotate(-0 174.626562 304.396875)">no pierde (círculo lleno)</text>
    </g>
    <g id="line2d_33">
     <defs>
-     <path id="mfa3c352f89" d="M 0 3 
+     <path id="m0360d71a9d" d="M 0 3 
 C 0.795609 3 1.55874 2.683901 2.12132 2.12132 
 C 2.683901 1.55874 3 0.795609 3 0 
 C 3 -0.795609 2.683901 -1.55874 2.12132 -2.12132 
@@ -500,14 +564,14 @@ C -2.683901 -1.55874 -3 -0.795609 -3 0
 C -3 0.795609 -2.683901 1.55874 -2.12132 2.12132 
 C -1.55874 2.683901 -0.795609 3 0 3 
 z
-" style="stroke: #0b0b0b"/>
+" style="stroke: #0b0b0b; stroke-width: 1.6"/>
     </defs>
     <g>
-     <use xlink:href="#mfa3c352f89" x="181.344531" y="316.297656" style="fill: #ffffff; stroke: #0b0b0b"/>
+     <use xlink:href="#m0360d71a9d" x="156.626562" y="316.297656" style="fill: #ffffff; stroke: #0b0b0b; stroke-width: 1.6"/>
     </g>
    </g>
    <g id="text_25">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="199.344531" y="319.797656" transform="rotate(-0 199.344531 319.797656)">pierde (vacío)</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="174.626562" y="319.797656" transform="rotate(-0 174.626562 319.797656)">pierde (círculo vacío)</text>
    </g>
    <g id="line2d_34">
     <defs>
@@ -524,29 +588,29 @@ z
 " style="stroke: #555555"/>
     </defs>
     <g>
-     <use xlink:href="#m25f2348f57" x="298.485156" y="300.896875" style="fill: #555555; stroke: #555555"/>
+     <use xlink:href="#m25f2348f57" x="323.203125" y="300.896875" style="fill: #555555; stroke: #555555"/>
     </g>
    </g>
    <g id="text_26">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="316.485156" y="304.396875" transform="rotate(-0 316.485156 304.396875)">control (1×, 0)</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="341.203125" y="304.396875" transform="rotate(-0 341.203125 304.396875)">control (1×, 0)</text>
    </g>
    <g id="line2d_35">
-    <path d="M 288.485156 315.897656 
-L 298.485156 315.897656 
-L 308.485156 315.897656 
+    <path d="M 313.203125 315.897656 
+L 323.203125 315.897656 
+L 333.203125 315.897656 
 " style="fill: none; stroke-dasharray: 1,1.65; stroke-dashoffset: 0; stroke: #555555"/>
    </g>
    <g id="text_27">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="316.485156" y="319.397656" transform="rotate(-0 316.485156 319.397656)">−δ (debajo, pierde)</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="341.203125" y="319.397656" transform="rotate(-0 341.203125 319.397656)">−δ (debajo, pierde)</text>
    </g>
    <g id="line2d_36">
-    <path d="M 433.913281 300.896875 
-L 443.913281 300.896875 
-L 453.913281 300.896875 
+    <path d="M 458.63125 300.896875 
+L 468.63125 300.896875 
+L 478.63125 300.896875 
 " style="fill: none; stroke-dasharray: 5.12,1.28,0.8,1.28; stroke-dashoffset: 0; stroke: #555555; stroke-width: 0.8"/>
    </g>
    <g id="text_28">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="461.913281" y="304.396875" transform="rotate(-0 461.913281 304.396875)">2×</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="486.63125" y="304.396875" transform="rotate(-0 486.63125 304.396875)">2×</text>
    </g>
   </g>
  </g>

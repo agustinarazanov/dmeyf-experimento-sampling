@@ -173,7 +173,7 @@ Cada tarea:
 - [ ] 3.0 Zoom en las figuras y tablas ordenables y filtrables (D17). **La hace el orquestador; una sesión headless no
   la toca ni la marca.** Verificar en el navegador: ordenar por Δ en las dos direcciones, filtrar «H3», abrir una figura,
   a 1440 y 390 px y en claro y oscuro, y que `mkdocs build` pase con `requirements-sitio.txt`.
-- [ ] 3.0b `tradeoff.svg`, panel de H3 (D10, D16): las nueve etiquetas no se pisan (por ejemplo, con las etiquetas en
+- [x] 3.0b `tradeoff.svg`, panel de H3 (D10, D16): las nueve etiquetas no se pisan (por ejemplo, con las etiquetas en
   una columna al costado y una línea fina a cada punto, o con la región de 4× a 6× ampliada en un recuadro), y la
   leyenda distingue *indeterminado* de *pierde* a simple vista. Verificar con la figura a 1440 px en `site/` y
   regenerando dos veces sin cambios.
