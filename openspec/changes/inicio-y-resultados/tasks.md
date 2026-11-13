@@ -83,7 +83,9 @@
 
   Verificar con el escenario «Resultados entra en la pantalla» (alto medido en `site/`), con `pytest
   tests/test_reporte.py`, regenerando dos veces sin cambios y con los dos verificadores.
-- [ ] 1.11 Revisión en sesión limpia de 1.8, 1.9 y 1.12 con `docs/revision.md` § 3 y `python -m scripts.medir_sitio` (tope de 800 px de D16), cierre en la bitácora de `sampling_1`.
+- [x] 1.11 Revisión en sesión limpia de 1.8, 1.9 y 1.12 con `docs/revision.md` § 3 y `python -m scripts.medir_sitio` (tope de 800 px de D16), cierre en la bitácora de `sampling_1`.
+  Quedan dos ✗ abiertos que necesitan una decisión humana, en `sampling_1/ledger/sesiones/bloqueo.txt`: la pestaña
+  «Valen la pena» mide 1031 px (más que el tope de 800) y regenerar no siempre da lo mismo en «tiempo igual, réplicas».
 
 ## 2. Redacción (sesión: Opus; un commit por página)
 

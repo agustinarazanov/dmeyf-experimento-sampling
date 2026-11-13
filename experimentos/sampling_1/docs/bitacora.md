@@ -2079,3 +2079,53 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: 25 turnos · contexto ~54.000 por turno · ≈ US$ 1.
 - Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (tarea 1.11)
+
+- Sesión: `8aa38176-83be-42a7-8f48-8a05da32fc4a` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, más las verificaciones de 1.8, 1.9 y
+  1.12 y `python -m scripts.medir_sitio`. Commits revisados: `16af289` (1.8, 1.9 y parte de 1.12), `1bf8daf` y
+  `7de226c` (1.12).
+- Comandos:
+  - `python -m pytest tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py
+    tests/test_figuras_nuevas.py tests/test_tablas_d9.py`: 99 passed (8 min 28 s) antes de las correcciones;
+    99 passed (8 min 3 s) después. Ojo: el `pytest` del PATH es el de miniconda y no encuentra `comun`; hay que usar
+    `python -m pytest`.
+  - `python -m comun.variantes --verificar`: 0 `PROBLEMA`. `verificar_readme`: ✓ (65 números, 31 enlaces).
+    `verificar_informe_h3`: 623 números, 0 sin fuente. Las dos cosas antes y después de las correcciones.
+  - `scripts/sitio.sh` construye y no encuentra nombres.
+  - `python -m scripts.medir_sitio`: al empezar, 2 problemas en Resultados. Después de las correcciones queda 1 (ver ✗).
+- Verificaciones de las tareas:
+  - ✓ 1.8, escenario «Tabla de una hipótesis sin redundancias» (`h3/README.md`): sin columnas «hipótesis» ni
+    «semillas», la nota «Todas las variantes con 20 semillas» debajo de la tabla, las semillas ganadas con barrita y
+    número, y los tres encabezados nuevos. ✗→✓: la fila del control escribía la aceleración «1,00» con coma, y las
+    demás filas usan punto («4.37»). Corregido.
+  - ✓ 1.9: en los ejes, los títulos y los textos generados ya no dice «envíos». En el sitio sí aparece tres veces,
+    todas en texto escrito a mano (`control/README.md:71`, `h4/README.md:307`, `sampling_1/README.md:241`). El
+    escenario «Clientes contactados» se cumple recién cuando el grupo 2 (2.1 y 2.7b) cambie esas palabras.
+  - ✓ 1.12: los colores por hipótesis salen de una sola constante (`COLOR_HIPOTESIS`), el bloque A tiene las pestañas
+    «Valen la pena» y H1 a H4, y el Anexo tiene la tabla entera. Observación: `desglose_tiempo` usa `PALETA[0..2]`
+    para las etapas, que son los mismos tonos de H1 a H3. D16 lo permite (la figura no cambia de forma), pero se
+    puede leer como si fueran hipótesis.
+  - ✗→✓ D16, tope de 800 px: la tabla de tiempo igual de Resultados medía 1349 px. Ahora, en el agregador, va en
+    pestañas por hipótesis, igual que el bloque A (en cada `hN/README.md` sigue siendo una sola tabla).
+  - ✗ abierto, D16, tope de 800 px: la pestaña «Valen la pena» mide 1031 px (12 variantes con celdas de dos
+    líneas). Para arreglarla hay que tomar una decisión de diseño, así que queda en
+    `ledger/sesiones/bloqueo.txt` con opciones.
+  - ✗ abierto, regenerar dos veces sin cambios: de tres corridas de `comun.reporte --todos` con los mismos datos,
+    dos bajaron R en «tiempo igual, réplicas» (H3-0.25 a R=7 en una, H3L-0.25 a R=6 en otra, y el bootstrap de
+    H3L-0.1 quedó en «pendiente»). La tercera coincidió con HEAD, y dentro de un mismo proceso el cálculo da siempre
+    R=8. Sospecho que las predicciones de `experimentos/*/ledger/predicciones/` dejan de verse por un rato
+    (`Path.exists`). Queda en `bloqueo.txt`. Los archivos que se commitean salen de una corrida que coincide con HEAD
+    en todo lo que no tocaron las correcciones.
+- Lista § 3: el grupo no toca el corredor, `consolidar.py` ni `vm.sh`. Por eso son n/a el smoke test, el determinismo
+  del entrenamiento, que 201910 no se lea, las columnas del ledger, `codigo_sucio`, las filas de train, el apareo de
+  semillas y el borrado de la VM. El determinismo del generador queda ✗ (ver arriba). ✓ No hay datos del dataset en el
+  repo: no hay `.parquet` versionados, y `predicciones/` está excluido en `.git/info/exclude`.
+- Correcciones (cambio en `comun/reporte.py`): «1.00» en la fila del control y pestañas por hipótesis en la tabla de
+  tiempo igual de Resultados. Se regeneraron los README de H1 a H4 y Resultados.
+- Quedan dos ✗ que necesitan a un humano (`bloqueo.txt`). La tarea 1.11 se marca hecha porque la revisión está hecha;
+  el tope de 1.12 sigue abierto.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~80 turnos · contexto ~77.000 por turno · ≈ US$ 2,6 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —

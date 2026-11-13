@@ -252,7 +252,7 @@ def tabla_variantes(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
     difiere (si no, una línea debajo lo dice); las semillas ganadas, con una barrita de proporción."""
     filas, veredictos, deltas, aes, semillas = [], [], [], [], []
     if not ap.empty:
-        filas.append(["C", _m(ap["g_control"].iloc[0]), "—", "—", "—", f"{ap['tiempo_total_control_s'].iloc[0]:,.0f}", "1,00",
+        filas.append(["C", _m(ap["g_control"].iloc[0]), "—", "—", "—", f"{ap['tiempo_total_control_s'].iloc[0]:,.0f}", "1.00",
                       "—", "—"])
         semillas.append(estado("C", fin)[0])
         veredictos, deltas, aes = [""], [None], [None]
@@ -435,10 +435,15 @@ def tiempo_igual(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
         else:
             filas.append([b, f"{t_opt:,.0f}", f"{t_fin:,.1f}", k_txt, _m(g), _m(g - g_c1),
                           _m(g - g_c10) if g_c10 is not None else "pendiente"])
-    return (intro + f"<p>{html.escape(ref)}.</p>"
-            + html_tabla(("variante", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)",
-                          "G − Ḡ_C (M$)", f"G − ensamble {N_SEMILLAS} de C (M$)"), filas)
-            )
+    cab = ("variante", "T_opt (s)", "T_final (s)", "K", f"G del ensamble en {MES} (M$)", "G − Ḡ_C (M$)",
+           f"G − ensamble {N_SEMILLAS} de C (M$)")
+    if not ctx.agregador:
+        return intro + f"<p>{html.escape(ref)}.</p>" + html_tabla(cab, filas)
+    # en Resultados, una pestaña por hipótesis para que la tabla entre en 800 px de alto (D16)
+    sangrar = lambda t: "\n".join("    " + linea if linea else "" for linea in t.splitlines())  # noqa: E731
+    pestanas = "\n\n".join(f'=== "{h}"\n\n' + sangrar(html_tabla(cab, [f for f in filas if ctx.hip_de[f[0]] == h]))
+                           for h in ctx.hipotesis)
+    return intro + f"<p>{html.escape(ref)}.</p>\n\n" + pestanas
 
 
 # --- comparación limpia: tiempo igual con intervalo, bloque A y bloque B (`h3-semillas-optuna` D6, D7) ---
