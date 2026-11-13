@@ -176,9 +176,9 @@ def sanity(r: dict[str, pd.DataFrame], meses_final: str = bl.VENTANA_FINAL) -> l
     chk(f"5.1 fase 1: {3 * n} finales, una máquina y un commit",
         len(f1) == 3 * n and f1["maquina"].nunique() == 1 and f1["commit"].nunique() == 1,
         f"{len(f1)} filas, {f1['maquina'].nunique()} máquinas, {f1['commit'].nunique()} commits")
-    variantes = ["U0.5", "U0.25", "U0.1", "U0.05", "B0.5", "B0.25", "B0.1", "GOSS"]
+    h1_h2 = ["U0.5", "U0.25", "U0.1", "U0.05", "B0.5", "B0.25", "B0.1", "GOSS"]
     chk(f"5.2-5.3 las 8 variantes de H1/H2 tienen {n} finales",
-        all(len(fin[fin["variante"] == b]) == n for b in variantes), "")
+        all(len(fin[fin["variante"] == b]) == n for b in h1_h2), "")
     full = fin["filas_train"].max()
     malas = [b for b, g in fin[fin["variante"].str.startswith("U")].groupby("variante")
              if not g["filas_train"].between(float(g["tasa"].iloc[0]) * full * 0.999,
@@ -204,6 +204,41 @@ def sanity(r: dict[str, pd.DataFrame], meses_final: str = bl.VENTANA_FINAL) -> l
         ee_a = c[col_auc].std(ddof=1) * (2 / len(c)) ** 0.5
         chk("5.4 el control se reproduce (C-rep, ≤ 2 errores estándar)", dg <= 2 * ee_g and dauc <= 2 * ee_a,
             f"|ΔAUC|={dauc:.5f} (2 EE = {2 * ee_a:.5f}) |Δganancia|={dg:,.0f} (2 EE = {2 * ee_g:,.0f})")
+    if meses_final == bl.VENTANA_FINAL:
+        out += chequeos_fase8(r["resultados"])
+    return out
+
+
+def nombres_de_corridas() -> dict[str, list[str]]:
+    """Archivos de `ledger/corridas/` de cada dueño de variantes, del árbol de trabajo."""
+    return {e: sorted(p.name for p in (rutas.ledger(e) / "corridas").glob("*.csv")) for e in variantes.duenos()
+            if (rutas.ledger(e) / "corridas").is_dir()}
+
+
+def chequeos_fase8(resultados: pd.DataFrame, registro: dict[str, variantes.Variante] | None = None,
+                   corridas: dict[str, list[str]] | None = None,
+                   replicas: int = 8, semillas: int | None = None) -> list[tuple[str, bool, str]]:
+    """Chequeos de la fase 8 (`tiempos-confiables-y-consistencia` D9, D10), leídos del registro de variantes:
+    cada variante del bloque A tiene `replicas` réplicas con las 20 semillas finales de la ronda (`C-rep`, una), y ningún
+    estudio de otro dueño (`U{r}@k` de `h1`) quedó en `corridas/` de un experimento que no es su dueño."""
+    registro = variantes.VARIANTES if registro is None else registro
+    semillas = len(bl.SEMILLAS_FINALES) if semillas is None else semillas
+    fin = lg.con_replica(resultados[(resultados["etapa"] == "final") & (resultados["meses_final"] == bl.VENTANA_FINAL)])
+    cuenta = fin.groupby(["variante", "replica_opt"]).size()
+    faltan = []
+    for b in registro.values():
+        for k in (range(replicas) if b.replicas else [0]):
+            n = int(cuenta.get((b.nombre, k), 0))
+            if n != semillas:
+                faltan.append(f"{b.nombre}@{k}: {n}")
+    out = [(f"5.5 fase 8: {replicas} réplicas por {semillas} semillas en cada variante del bloque A "
+            f"({sum(replicas if b.replicas else 1 for b in registro.values())} celdas)", not faltan,
+            f"faltan {len(faltan)}: {', '.join(faltan[:6])}" + (" …" if len(faltan) > 6 else "") if faltan else "")]
+    corridas = nombres_de_corridas() if corridas is None else corridas
+    ajenos = [f"{e}/{n}" for e, nombres in corridas.items() for n in nombres
+              if variantes.dueno_variante(n.split("_", 1)[0].split("@")[0]) != e]
+    out.append(("5.5 fase 8: ningún archivo de corridas/ en un ledger que no es de su dueño (U{r}@k en h3)", not ajenos,
+                f"{len(ajenos)}: {', '.join(ajenos[:3])}" if ajenos else ""))
     return out
 
 
