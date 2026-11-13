@@ -2286,3 +2286,13 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   corrida (`flowchart TB`: `lanzar_fase.sh`, VM, bucket, `gsutil rsync`, ledger, `comun/reporte.py`, páginas).
 - ✓ Ninguna línea de código pasa de 80 caracteres ni ninguna celda de 60 (`tmp_etapas/anchos.py`). `scripts/sitio.sh`
   sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.6 · Cómo trabajamos
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- No se borra texto. Se suman tres diagramas (D5): las etapas con la revisión en sesión limpia en cada compuerta y el
+  modelo de cada una (antes del detalle de § Etapas), una etapa sin supervisión (`etapas.sh`, `etapa.sh`, aplicar,
+  revisar, `bloqueo.txt` o `en_curso.txt`) y los pasos de § Agregar una hipótesis, antes de la lista. § Bibliografía vino
+  de Resultados en 2.1. El bloque de carpetas pasa a dos columnas angostas y suma `anexo.md`.
+- ✓ Escenario «Cómo trabajamos»: el diagrama de etapas va antes del detalle y sale en el HTML (tres diagramas). Ninguna
+  línea de código pasa de 80 caracteres. `scripts/sitio.sh` sin avisos.

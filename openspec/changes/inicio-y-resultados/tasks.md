@@ -143,7 +143,7 @@ Cada tarea:
   - se borra § Devoluciones del curso.
 
   Verificar con que ninguna línea de código supera los 80 caracteres y ninguna celda de tabla tiene más de ~60.
-- [ ] 2.6 `docs/metodo.md` (Cómo trabajamos):
+- [x] 2.6 `docs/metodo.md` (Cómo trabajamos):
   - diagrama de etapas con compuertas, diagrama de una etapa sin supervisión y diagrama de § Agregar una hipótesis
     (D5);
   - § Bibliografía (viene de Resultados);

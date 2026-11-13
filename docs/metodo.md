@@ -6,6 +6,16 @@ commit lo dice y cada experimento activo anota en su bitácora si lo afecta.
 
 ## Etapas
 
+```mermaid
+flowchart TB
+    H["hipótesis · Opus"] -- revisión en sesión limpia --> D["diseño · Opus"]
+    D -- revisión en sesión limpia --> C["código · Sonnet"]
+    C -- revisión en sesión limpia --> K["corridas · VM"]
+    K -- revisión en sesión limpia --> A["análisis · Sonnet"]
+    A -- revisión en sesión limpia --> I["informe · Opus"]
+    I -- revisión en sesión limpia --> F["cierre en la bitácora"]
+```
+
 Hipótesis, diseño, código, corridas, análisis, informe. Cada etapa:
 
 1. Arranca en una sesión nueva de Claude Code, a partir de los artefactos de `openspec/` y de la bitácora del
@@ -33,7 +43,21 @@ propuesta, diseño, specs y tareas, y se archivan al cerrar.
 - Lo repetido va a scripts. Las corridas las hace la VM, no una conversación.
 - `/clear` al cerrar cada etapa.
 - Las etapas que no necesitan a una persona se corren headless: `scripts/etapas.sh <exp> <cambio>` recorre todos los
-  grupos pendientes de `tasks.md`; `scripts/etapa.sh <grupo> …` corre uno solo.
+  grupos pendientes de `tasks.md`; `scripts/etapa.sh <grupo> …` corre uno solo. Cada grupo se aplica en una sesión y se
+  revisa en otra; si hace falta una decisión, la sesión escribe `bloqueo.txt` y el recorrido se detiene, y si lanzó
+  corridas, escribe `en_curso.txt` y el recorrido espera a que terminen las VMs:
+
+  ```mermaid
+  flowchart TB
+      E["scripts/etapas.sh"] --> G["scripts/etapa.sh, un grupo"]
+      G --> AP["aplicar (sesión nueva)"]
+      AP --> RV["revisar (sesión limpia)"]
+      RV --> S{"¿quedan grupos?"}
+      S -- sí --> G
+      AP -. decisión .-> B["bloqueo.txt: se detiene"]
+      AP -. corridas .-> EC["en_curso.txt: espera las VMs"]
+      EC --> G
+  ```
 - `comun/tokens.py` escribe el `ledger/tokens.csv` de cada experimento. Clasifica cada sesión según la etapa que declara
   la bitácora de algún experimento (o su `ledger/sesiones/costos.csv`); la que nadie declara va a `sampling_1` y si dos
   la declaran falla.
@@ -74,13 +98,18 @@ Guía para quien suma una hipótesis (`h5`, …) sin tocar las de otros. Todo se
 ### 1. Qué va en cada carpeta
 
 ```
-comun/                    código y registro compartidos: variantes.py, correr.py, consolidar.py, reporte.py,
-                          metodos.py, muestreo.py, rutas.py, tokens.py, datos/baseline/ganancia/ledger
+comun/          código y registro compartidos: variantes.py, correr.py,
+                consolidar.py, reporte.py, metodos.py, muestreo.py,
+                rutas.py, tokens.py, datos/baseline/ganancia/ledger
 experimentos/
-  control/                el control C (y C-rep) y las reglas comunes: README.md, docs/bitacora.md, ledger/
-  h1/ … h4/               una hipótesis cada una: README.md, figuras/, docs/bitacora.md, ledger/
-  sampling_1/             Resultados (README.md), corridas.md, exploratorios/, docs/ (bitácora, guion, rutas)
-plantilla/                la estructura vacía de un experimento (README.md, docs/bitacora.md, ledger/, scripts/, src/)
+  control/      el control C (y C-rep) y las reglas comunes:
+                README.md, docs/bitacora.md, ledger/
+  h1/ … h4/     una hipótesis cada una: README.md, figuras/,
+                docs/bitacora.md, ledger/
+  sampling_1/   Resultados (README.md), anexo.md, corridas.md,
+                exploratorios/, docs/ (bitácora, guion, rutas)
+plantilla/      la estructura vacía de un experimento: README.md,
+                docs/bitacora.md, ledger/, scripts/, src/
 ```
 
 - El `README.md` de cada experimento es su página en el sitio: idea, predicción, diseño, dependencias, resultado,
@@ -93,6 +122,17 @@ plantilla/                la estructura vacía de un experimento (README.md, doc
 - Lo único compartido que se edita es `comun/`, y el cambio se anuncia en el mensaje del commit.
 
 ### 2. Pasos, en orden
+
+```mermaid
+flowchart TB
+    P1["1–2. carpeta, idea y predicción"] --> P3["3. diseño y dependencias"]
+    P3 --> P4["4. registro en comun/variantes.py"]
+    P4 --> P5["5. variantes --verificar"]
+    P5 --> P6["6. correr"]
+    P6 --> P7["7. consolidar y reporte"]
+    P7 --> P8["8. veredicto y limitaciones"]
+    P8 --> P9["9. página en el sitio"]
+```
 
 1. Tomar el siguiente `hN` libre (`ls experimentos/`). El nombre tiene que ser un identificador válido: letras
    minúsculas, dígitos y `_`, sin guiones ni espacios (`h5`, no `h-5`).
