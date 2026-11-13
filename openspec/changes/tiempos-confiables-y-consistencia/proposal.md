@@ -26,7 +26,7 @@ solo se puede contestar en dos puntos. Lo que hay hoy:
 
 Sobre los tiempos, la máquina no parece la fuente principal del ruido. Todas las corridas usaron la misma CPU, con un
 trabajo por VM, y el tiempo del mismo modelo entre semillas varía poco dentro de una VM (el número exacto sale del
-ledger en la tarea 1.1; la revisión midió entre el 2 y el 6 %). El ruido grande viene de los hiperparámetros que recorre
+ledger en la tarea 1.1; la revisión midió entre el 1,8 y el 6,1 %). El ruido grande viene de los hiperparámetros que recorre
 y elige Optuna. Entre VMs la única evidencia es `C-rep` (una repetición, 4 %), así que este cambio lo mide.
 
 ## What Changes
@@ -34,15 +34,17 @@ y elige Optuna. Entre VMs la única evidencia es `C-rep` (una repetición, 4 %),
 **Tiempos**
 
 - **A con una sola referencia**: en todas las filas del bloque A, A = mediana de T_C entre réplicas / T de la variante.
-  Junto a A va su rango. Cambian los A de `U*`, `B*` y `GOSS` en `tabla_resultados.md`, los informes y el README. Este
+  Junto a A va su intervalo, que no depende de cómo se emparejen las réplicas. Cambian los A de `U*`, `B*` y `GOSS` en `tabla_resultados.md`, los informes y el README. Este
   cambio es deliberado: modifica la regla "tabla de resultados intacta" del spec vigente.
 - **Medición a hiperparámetros fijos** (nueva, exploratoria y pre-registrada): con los hiperparámetros de las 8 réplicas
   del control, entrenar sobre r = 1; 0,5; 0,25; 0,1; 0,05 del train 201903–201906, con la muestra al azar de H1 y con
   la receta de H4 (bajas + f de CONTINUA con peso), prediciendo 201908 como un trial, con repeticiones. Separa la
   aceleración que da el tamaño de los datos de la que da la elección de Optuna.
 - **Calibración por máquina** (nueva): cada VM de la fase corre el mismo entrenamiento fijo al empezar y al terminar su
-  lista, y guarda el nombre de la instancia. Mide el ruido entre VMs y la deriva dentro de una VM.
-- **Búsqueda y final por separado**: el reporte muestra, por variante, cuánto de T es búsqueda y cuánto es final.
+  lista, y guarda el nombre de la instancia. Mide el ruido entre VMs y la deriva dentro de una VM, y se ancla a las fases
+  anteriores con tiempos que ya están guardados (el mejor trial de cada estudio del control y un final de `C`).
+- **Búsqueda, final y preparación por separado**: el reporte muestra, por variante, cuánto de T es búsqueda y cuánto es
+  final, y cuánto lleva la preparación de datos, que no entra en T.
 
 **Grilla común** (variantes y corridas nuevas, todas con predicción escrita antes de correr)
 
@@ -60,9 +62,12 @@ y elige Optuna. Entre VMs la única evidencia es `C-rep` (una repetición, 4 %),
   ciclo de dependencias entre `h1` y `h3`. Se mueven sin cambiar su contenido.
 - **Tabla de cobertura** en el reporte y el informe conjunto: qué celda de la grilla se corrió, con cuántas réplicas, y
   qué no se corrió y por qué. Sale del registro de variantes.
-- **Comparaciones directas**: los pares de variantes que difieren en una sola decisión (cómo, dónde, peso) quedan
-  declarados en el registro antes de correr y salen en la tabla de diferencias. Los contrastes principales de este
-  cambio son `H4O-r − U r` en las cuatro tasas.
+- **Comparaciones directas**: los pares de variantes que se comparan (cómo, dónde, peso) quedan declarados en el
+  registro antes de correr y salen en la tabla de diferencias, con las filas de entrenamiento de cada lado. Los pares
+  entre hipótesis distintas se calculan en `sampling_1`: hoy el código solo compara variantes de una misma hipótesis.
+  Los contrastes principales de este cambio son `H4O-r − U r` en las cuatro tasas. Comparan a igual tasa de CONTINUA,
+  no a igual cantidad de filas: la receta con bajas tiene entre un 1 % y un 20 % más de filas y lleva peso, y se
+  declara.
 - **Regla para variantes nuevas** en `docs/metodo.md` y `docs/revision.md`: toda variante nueva dice qué celda de la
   grilla ocupa, usa las cuatro tasas y 8 réplicas, o declara el hueco en la tabla de cobertura antes de correr.
 
@@ -70,8 +75,8 @@ y elige Optuna. Entre VMs la única evidencia es `C-rep` (una repetición, 4 %),
 
 - Una **primera respuesta**, que sale de los documentos apenas cierra la etapa de hipótesis: contesta las dos lecturas
   de "mismos cortes" (las tasas de muestreo y el corte N* = 3.300), da las dos comparaciones que ya existen
-  (`H4O-0.5` contra `U0.5`: no se distinguen; `H4U-0.1` contra `H3-0.1`: conservar las bajas sin peso sale peor) y dice
-  qué se va a correr.
+  (`U0.5` y `H4O-0.5` tienen Δ contra el control casi iguales; `H4U-0.1` pierde y `H3-0.1` no), aclara que todavía no
+  hay un contraste directo entre H1 y H4 y dice qué se va a correr.
 - Una **segunda respuesta** con la grilla completa y los tiempos, al cerrar el informe.
 - El informe conjunto deja de decir que no se toca la proporción de clases sin matiz (H4 la toca) y justifica el corte
   fijo N* = 3.300 en las variantes cuyo final entrena con otra proporción reponderada.
@@ -100,27 +105,33 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
 ### New Capabilities
 
 - `medicion-tiempos`: cómo se mide y reporta el tiempo de una variante. Incluye la referencia única del control, el
-  rango de A, la medición a hiperparámetros fijos, la calibración por máquina y la separación entre búsqueda y final.
+  intervalo de A, la medición a hiperparámetros fijos, la calibración por máquina y la separación entre búsqueda,
+  final y preparación.
 - `grilla-comun`: qué tasas y cuántas réplicas tiene cada forma de muestrear, la tabla de cobertura, las comparaciones
   directas declaradas y la regla para variantes nuevas.
 
 ### Modified Capabilities
 
 - `reporte-visual`: "Comparación limpia en dos bloques" cambia la fuente de T y A, que antes salían de la réplica 0 en
-  las filas sin réplicas, agrega el rango de A y admite que el bloque A cambie en este cambio, en lugar de quedar
+  las filas sin réplicas, agrega el intervalo de A y admite que el bloque A cambie en este cambio, en lugar de quedar
   idéntico.
 - `corrida-reproducible`: la receta de bajas con peso vale para cualquier fracción f y puede usarse solo en la búsqueda
   (`H4P`); los estudios `U{r}@k` son de `h1`.
+- `ledger-resultados`: las diferencias entre variantes de experimentos distintos se calculan en `sampling_1`, y un par
+  declarado nunca se saltea en silencio.
 
 ## Impact
 
 - **Código**:
-  - `comun/reporte.py`: A y su rango, tabla de cobertura, comparaciones directas, sección de tiempos.
+  - `comun/reporte.py`: A y su intervalo, tabla de cobertura, comparaciones directas, sección de tiempos, y la lectura
+    de los estudios desde el ledger de su dueño.
   - `comun/variantes.py`, `comun/metodos.py` y `comun/correr.py`: variantes y pares nuevos, método de `H4P`, fracción
     variable en `fast-retrain-opt`, dueño de `U{r}@k`.
+  - `comun/ledger.py` y `comun/consolidar.py`: pares entre experimentos en `sampling_1` y el chequeo de la fase 8.
   - `scripts/comparar_rondas.py`.
-  - Un script que mueve los estudios `U{r}@k` de `h3` a `h1`.
-  - `experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (medición y calibración) y las listas de la fase 8.
+  - Un script que mueve los estudios `U{r}@k` de `h3` a `h1`, en el repo y en el bucket.
+  - `experimentos/sampling_1/scripts/tiempos_hp_fijos.py` (medición, calibración y su consolidado) y las listas de la
+    fase 8.
   - `scripts/vm.sh`, para correr la calibración antes y después de la lista.
   - Los cambios en `comun/` se anuncian en el commit.
 - **Ledger**:
@@ -128,14 +139,18 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
   - `h2/ledger`: estudios y finales de las réplicas de `B*` y `GOSS`, y `B0.05`.
   - `h3/ledger`: finales de `H3-0.5`; pierde los estudios `U{r}@k`.
   - `h4/ledger`: estudios `F0.25`, `F0.1`, `F0.05` (y `@k`), finales de `H4O-*` y `H4P-*`.
-  - `sampling_1/ledger`: `tiempos_hp_fijos.csv` y `calibracion.csv`.
+  - `sampling_1/ledger`: `pares.csv`, la carpeta `tiempos/` (un archivo por medición y por lista) y sus consolidados
+    `tiempos_hp_fijos.csv` y `calibracion.csv`.
+  - El bucket: los 21 estudios `U{r}@k` cambian de carpeta.
 - **Documentos**:
   - Predicciones pre-registradas en `control`, `h1`, `h2`, `h3` y `h4` (`docs/hipotesis.md` y `docs/diseno.md`).
   - Los informes de `sampling_1` y de `h1`–`h4`, más `decisiones.md`, `guion.md`, el README de `sampling_1` y el de la
     raíz, `tabla_resultados.md`, `comparacion_rondas.md` y las figuras.
   - `docs/metodo.md` y `docs/revision.md`.
   - Dos borradores de respuesta en `experimentos/sampling_1/docs/zulip/`.
-- **Cómputo**: 67 estudios y 2.560 finales nuevos, más la medición. Unas 36 h de VM `n2-highmem-8` a pedido, repartidas
-  en 17 VMs en paralelo (dos por réplica y una para la medición), unas 2,5 h de reloj. Agustina las lanza.
+- **Cómputo**: 67 estudios y 2.560 finales nuevos, más la medición. Unas 36 h de VM `n2-highmem-8` a pedido, en 17
+  listas (dos por réplica y una para la medición). La cuota es de 32 vCPU por proyecto, o sea 4 VMs a la vez, y en el
+  período de prueba no se puede pedir más. Se lanzan en tandas: de 8 si el segundo proyecto de la cuenta suma su cuota
+  (se prueba antes de lanzar), de 4 si no. De reloj, entre 4 y 12 h. Agustina las lanza.
 - **Specs de base**: `final-con-julio-agosto` quedó archivado el 13-nov. Los deltas de este cambio que modifican
   "Comparación limpia en dos bloques" y "Réplicas de la optimización" parten de la versión que dejó.

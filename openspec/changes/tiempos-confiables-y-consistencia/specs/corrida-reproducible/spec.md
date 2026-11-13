@@ -8,10 +8,8 @@ exactamente la optimización que ya existe: mismo estudio, mismos hiperparámetr
 k ≥ 1 SHALL llamarse `<estudio>@k` y SHALL tener el mismo dueño que el estudio de la réplica 0 según el registro de
 variantes. La fila SHALL registrar k en la columna `replica_opt`.
 
-Los estudios `U{r}@k` que ya existían en el ledger de `h3` SHALL pasar al de `h1` sin cambiar sus ids, sus
-hiperparámetros ni sus tiempos.
-
-Este requisito parte de la versión que dejó `final-con-julio-agosto` (20 semillas finales).
+Los estudios `U{r}@k` que ya existían en el ledger de `h3` SHALL pasar al de `h1`, en el repo y en el bucket, sin
+cambiar sus ids, sus hiperparámetros ni sus tiempos.
 
 #### Scenario: Réplica 0 igual a lo ya corrido
 - **WHEN** se corre la optimización de `C` con `--replica 0` y `--filas 20000`, en la Mac, antes y después del cambio
@@ -34,8 +32,12 @@ Este requisito parte de la versión que dejó `final-con-julio-agosto` (20 semil
 
 #### Scenario: Estudios que cambian de dueño
 - **WHEN** se mueven `U0.25@k`, `U0.1@k` y `U0.05@k` del ledger de `h3` al de `h1`
-- **THEN** las tablas consolidadas de `h3` y de `h4` son las mismas que antes de mover, y
+- **THEN** las tablas consolidadas y los reportes de `h3`, `h4` y `sampling_1` son los mismos que antes de mover, y
   `python -m comun.variantes --verificar` no encuentra ciclos
+
+#### Scenario: Los estudios movidos no vuelven
+- **WHEN** una VM sincroniza los ledgers con el bucket después de mover los estudios
+- **THEN** ningún `U{r}@k` reaparece en el ledger de `h3`
 
 #### Scenario: Réplica inválida
 - **WHEN** k es negativo, o se pide una réplica k ≥ 1 de una variante que el registro no habilita para réplicas
@@ -44,16 +46,23 @@ Este requisito parte de la versión que dejó `final-con-julio-agosto` (20 semil
 ## ADDED Requirements
 
 ### Requirement: Receta con bajas y peso en cualquier fracción
-El corredor SHALL poder optimizar y entrenar el final con la misma receta para una fracción f ∈ {0,5; 0,25; 0,1; 0,05}:
-todas las filas positivas y una fracción f de las negativas, con peso 1/f en las negativas. En `optimizar` la receta se
-aplica a 201903–201906 con la semilla de la réplica y el AUC se mide en 201908 completo y sin pesos; en el final, a los
-meses del final con la semilla final. La variante SHALL llamarse `H4O-{f}` y su estudio `F{f}` (`F{f}@k`), con dueño
-`h4`. `H4O-0.5` SHALL seguir siendo exactamente la que ya existe.
+El corredor SHALL poder optimizar y entrenar el final con la misma receta para una fracción f de 0,5; 0,25; 0,1 o
+0,05: todas las filas positivas y una fracción f de las negativas, con peso 1/f en las negativas. La variante SHALL
+llamarse `H4O-{f}` y su estudio `F{f}` (`F{f}@k`), con dueño `h4`. `H4O-0.5` y `H4F-*` SHALL seguir siendo exactamente
+las que ya existen.
 
 #### Scenario: Optimización de H4O-0.1
 - **WHEN** se corre la optimización de `H4O-0.1` con `--replica 2`
-- **THEN** el estudio `F0.1@2` entrena cada trial con todas las bajas y el 10 % de las CONTINUA sorteadas con semilla 2,
-  con peso 10
+- **THEN** el estudio `F0.1@2` entrena cada trial con todas las bajas y el 10 % de las CONTINUA de 201903–201906,
+  sorteadas con semilla 2 y con peso 10, y mide el AUC en 201908 completo y sin pesos
+
+#### Scenario: Final de H4O-0.1
+- **WHEN** se corre un final de `H4O-0.1` en la réplica 2
+- **THEN** aplica la misma receta a los meses del final con la semilla final y lee los hiperparámetros de `F0.1@2`
+
+#### Scenario: H4F no cambia de fracción
+- **WHEN** se corre un final de `H4F-0.05`
+- **THEN** entrena con todas las bajas y el 50 % de las CONTINUA con peso 2, igual que antes
 
 #### Scenario: Lo ya corrido no cambia
 - **WHEN** se corre la optimización de `H4O-0.5` con `--replica 0` y `--filas 20000`, antes y después del cambio
@@ -76,3 +85,11 @@ réplica. El tiempo de optimización de `H4P-{f}` SHALL ser el de ese estudio.
 #### Scenario: Final de H4P-0.1
 - **WHEN** se corre un final de `H4P-0.1`
 - **THEN** entrena con todas las filas de los meses del final, sin pesos, y registra esa cantidad de filas
+
+#### Scenario: Optimizar H4P no usa el estudio al azar
+- **WHEN** se pide la optimización de `H4P-0.1`
+- **THEN** corre el estudio `F0.1` con la receta de bajas y peso, y no el estudio `U0.1`
+
+#### Scenario: Misma muestra que la búsqueda sin peso
+- **WHEN** se arman las muestras de búsqueda de `H4P-0.1` y de `H4U-0.1` en la misma réplica
+- **THEN** tienen las mismas filas, y solo cambia el peso

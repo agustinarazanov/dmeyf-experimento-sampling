@@ -2,15 +2,18 @@
 
 ### Requirement: Las mismas tasas en cada forma de muestrear
 Cada forma de muestrear del experimento SHALL tener una variante en cada una de las tasas 0,5; 0,25; 0,1 y 0,05. Las
-formas son:
-- al azar, en la búsqueda y en el final (`U{r}`, de `h1`);
-- al azar, solo en la búsqueda (`H3-{r}`, de `h3`);
-- todas las bajas y una fracción de las CONTINUA con peso, en la búsqueda y en el final (`H4O-{f}`, de `h4`);
-- todas las bajas y una fracción de las CONTINUA con peso, solo en la búsqueda (`H4P-{f}`, de `h4`);
-- dentro de LightGBM, por árbol (`B{f}`, de `h2`).
+variantes que cruzan o extienden una forma no necesitan estar en las cuatro tasas.
 
-Las variantes que cruzan o extienden estas formas (`H4F-*`, `H4H-0.1`, `H4U-0.1`, `H3R-*`, `H3L-*`, `H3K-0.1`, `GOSS`)
-no necesitan estar en las cuatro tasas.
+#### Scenario: Las cinco formas
+- **WHEN** se lee la grilla
+- **THEN** sus filas son: al azar en búsqueda y final (`U{r}`, de `h1`); al azar solo en la búsqueda (`H3-{r}`, de
+  `h3`); bajas y una fracción de CONTINUA con peso en búsqueda y final (`H4O-{f}`, de `h4`); lo mismo solo en la
+  búsqueda (`H4P-{f}`, de `h4`); y dentro de LightGBM, por árbol (`B{f}`, de `h2`)
+
+#### Scenario: Fuera de la grilla
+- **WHEN** se registra una variante que cruza o extiende una forma, como `H4F-*`, `H4H-0.1`, `H4U-0.1`, `H3R-*`, `H3L-*`,
+  `H3K-0.1` o `GOSS`
+- **THEN** no se le exigen las cuatro tasas y la tabla de cobertura la lista aparte
 
 #### Scenario: Grilla completa
 - **WHEN** se lista el registro de variantes
@@ -35,29 +38,37 @@ su veredicto SHALL salir de Δ con réplicas. La única excepción es `C-rep`, q
 ### Requirement: Tabla de cobertura
 El reporte de `sampling_1`, `tabla_resultados.md` y el informe conjunto SHALL mostrar una tabla de cobertura armada del
 registro de variantes: una fila por forma de muestrear, una columna por tasa y, en cada celda, la variante y su cantidad
-de réplicas. Una celda sin variante SHALL decir que no se corrió y el motivo, que sale de una lista declarada junto al
-registro. Debajo de la tabla SHALL ir la lista de las variantes fuera de la grilla, con una línea que dice qué cruza o
-extiende cada una. Ninguna celda SHALL estar escrita a mano en el generador.
+de réplicas. Ninguna celda SHALL estar escrita a mano en el generador.
 
 #### Scenario: Celda sin correr
 - **WHEN** el registro no tiene variante para una forma y una tasa
-- **THEN** la celda dice "no se corrió" con su motivo, y si el motivo no está declarado el generador falla nombrando la
-  celda
+- **THEN** la celda dice "no se corrió" con su motivo, que sale de una lista declarada junto al registro; si el motivo
+  no está declarado, el generador falla nombrando la celda
 
 #### Scenario: Variante fuera de la grilla
 - **WHEN** se lee la tabla de cobertura
-- **THEN** `H4F-0.05` aparece debajo, como búsqueda al azar con final de bajas y la mitad de las CONTINUA
+- **THEN** `H4F-0.05` aparece en una lista debajo de la tabla, como búsqueda al azar con final de bajas y la mitad de
+  las CONTINUA
 
 ### Requirement: Comparaciones directas declaradas
-Los pares de variantes que difieren en una sola decisión SHALL declararse en el registro antes de correr, cada uno con
-la decisión que aísla y con si es un contraste principal. La tabla de diferencias entre variantes SHALL mostrar, para
-cada par, la diferencia con su IC, el tipo de IC (apareado cuando las dos variantes comparten estudio, de Welch cuando
-no) y la decisión que aísla, y SHALL marcar los principales. Los pares de este cambio son:
-- conservar las bajas, en búsqueda y final: `H4O-{r}` − `U{r}` en las cuatro tasas, que son los principales;
-- conservar las bajas, solo en la búsqueda: `H4P-{r}` − `H3-{r}` en las cuatro tasas;
-- muestrear también el final, al azar: `U{r}` − `H3-{r}` en las cuatro tasas;
-- muestrear también el final, con bajas: `H4O-{r}` − `H4P-{r}` en las cuatro tasas;
-- el peso en la búsqueda: `H4P-0.1` − `H4U-0.1`.
+Los pares de variantes que se comparan entre sí SHALL declararse en el registro antes de correr, cada uno con la
+decisión que aísla y con si es un contraste principal. La tabla de diferencias entre variantes SHALL mostrar, para cada
+par, la diferencia con su IC, el tipo de IC, la decisión que aísla y las filas de entrenamiento de cada lado, y SHALL
+marcar los principales. El veredicto de un par SHALL ser *mejora*, *empeora* o *no cambia*.
+
+#### Scenario: Pares de este cambio
+- **WHEN** se lee la tabla de diferencias con la grilla completa
+- **THEN** están `H4O-{r}` − `U{r}` (principales), `H4P-{r}` − `H3-{r}`, `U{r}` − `H3-{r}` y `H4O-{r}` − `H4P-{r}` en las
+  cuatro tasas, y `H4P-0.1` − `H4U-0.1`
+
+#### Scenario: Tipo de intervalo
+- **WHEN** las dos variantes de un par comparten estudio en cada réplica
+- **THEN** el IC es apareado por réplica y semilla; si no lo comparten, es de Welch entre réplicas
+
+#### Scenario: Par que no aísla una sola cosa
+- **WHEN** se lee `H4O-0.05 − U0.05`
+- **THEN** la tabla muestra que la variante con bajas entrena con más filas, y el informe dice que el par junta qué
+  filas quedan, cuántas son y el peso
 
 #### Scenario: Contraste principal
 - **WHEN** `H4O-0.1` y `U0.1` tienen 8 réplicas cada una

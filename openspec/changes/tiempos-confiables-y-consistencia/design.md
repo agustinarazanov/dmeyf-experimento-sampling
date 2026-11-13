@@ -2,42 +2,66 @@
 
 ## Context
 
-Lo que muestra el ledger de la ronda 201903–201908, revisado el 13-nov:
+Lo que muestra el ledger de la ronda 201903–201908, revisado el 13-nov y verificado por la revisión en sesión limpia del
+mismo día:
 
 - **Dentro de una VM la máquina mide bien.** Las 3.619 filas de `resultados.csv` corrieron en la misma CPU (Intel Xeon @
-  2.60GHz, `n2-highmem-8`), con `load_avg` de 8,7 o menos con 8 hilos, o sea un trabajo por VM. El mismo final, con los
-  mismos hiperparámetros y otra semilla, tarda lo mismo con un coeficiente de variación del 2 al 6 % (variantes de una
-  sola réplica, 20 semillas cada una). La tarea 1.1 recalcula ese rango del ledger antes de citarlo.
+  2.60GHz, `n2-highmem-8`), con `load_avg` de 8,72 o menos con 8 hilos, o sea un trabajo por VM. El mismo final, con los
+  mismos hiperparámetros y otra semilla, tarda lo mismo con un coeficiente de variación del 1,8 al 6,1 % en las
+  variantes sin réplicas (mediana de 2,4 % en las 121 celdas de variante y réplica).
 - **Entre VMs hay una sola medición.** `C-rep` repite los 20 finales de la réplica 0 del control en otra VM: 47,0 s
-  contra 48,9 s de media (4 %). El ledger guarda el tipo de máquina, no la instancia.
+  contra 48,9 s de media (4 %). El ledger guarda el tipo de máquina, no la instancia. Cada réplica corrió en su propia VM.
 - **Optuna es la fuente del ruido grande.** T(C) por réplica: 682, 773, 797 (réplica 0), 915, 1.089, 1.097, 1.116 y
-  1.264 s; mediana 1.002 s. El final del control va de 38 a 69 s según el `num_leaves` elegido (90 a 875), y
-  `tiempo_optimizacion_s` va de 644 a 1.194 s según los trials que recorre TPE.
+  1.264 s; mediana 1.002 s. El final del control va de 37 a 70 s según el `num_leaves` elegido (90 a 875), y
+  `tiempo_optimizacion_s` va de 644 a 1.194 s según los trials que recorre TPE. Los trials usan 100 iteraciones fijas,
+  sin early stopping.
 - **A se calcula con dos referencias.** `comun/ledger.py:209-210` calcula `aceleracion` contra el T_C de la réplica 0,
   y `comun/reporte.py`, en `fila_bloque_a`, la reemplaza por `T_c` mediana solo cuando hay réplicas. Por eso A(U0.5) da
   2,25 con la réplica 0, 2,83 con la mediana y entre 1,93 y 3,57 según la réplica del control.
-- **Las hipótesis no comparten grilla** (tabla de la propuesta). Hoy solo hay dos cruces entre H1 y H4:
-  - tasa 0,5 en búsqueda y final: `U0.5` (Δ réplica 0 −1,38 M$ [−3,99; 1,24], T 354 s, una réplica) contra `H4O-0.5`
-    (Δ con réplicas −1,33 M$ [−4,27; 1,60], T 434 s). Las bajas son 5.312 de 506.871 filas (1,05 %), así que las dos
-    muestras tienen casi las mismas filas: 253.436 contra 256.092.
-  - tasa 0,1 solo en la búsqueda: `H3-0.1` (+1,71 M$ [−1,07; 4,49]) contra `H4U-0.1` (−8,02 M$ [−11,52; −4,53]), que
-    conserva las bajas sin peso y busca sobre una muestra con 9,6 % de bajas.
-- **El texto de los informes** tiene las inconsistencias que lista la propuesta. Se confirmaron con `sed -n` sobre cada
-  línea citada.
-- **Dueño de las réplicas `U{r}@k`.** Hoy son de `h3` (`comun/variantes.py`, `dueno_estudio` y `dueno_variante`), y
-  `h3` depende de `h1` por los estudios de la réplica 0.
+- **T no incluye la preparación de datos** (`tiempo_preparacion_s`): 240 s en `C` réplica 0, que arma el panel, y unos
+  7,5 s en las demás.
+- **Las hipótesis no comparten grilla** (tabla de la propuesta). Hoy solo hay dos cruces entre H1 y H4, y ninguno es un
+  contraste directo: son dos Δ contra el control.
+  - tasa 0,5 en búsqueda y final: `U0.5` (Δ réplica 0 −1,38 M$ [−3,99; 1,24], T 354 s, una réplica) y `H4O-0.5`
+    (Δ con réplicas −1,33 M$ [−4,27; 1,60], T 434 s).
+  - tasa 0,1 solo en la búsqueda: `H3-0.1` (+1,71 M$ [−1,07; 4,49]) y `H4U-0.1` (−8,02 M$ [−11,52; −4,53]), que
+    conserva las bajas sin peso. Los IC no se tocan.
+- **La receta con bajas tiene más filas que la muestra al azar de la misma tasa**, además de llevar peso. Con 506.871
+  filas y 5.312 bajas (1,05 %):
+
+  | tasa | filas al azar | filas con bajas | cociente |
+  |---|---|---|---|
+  | 0,5 | 253.436 | 256.092 | 1,010 |
+  | 0,25 | 126.718 | 130.702 | 1,031 |
+  | 0,1 | 50.687 | 55.468 | 1,094 |
+  | 0,05 | 25.344 | 30.390 | 1,199 |
+
+- **Los pares entre variantes se calculan dentro de un solo experimento.** `comun/ledger.py:replicas` arma los pares con
+  los finales que `consolidar` carga para un experimento, y saltea sin avisar el par al que le falta un lado
+  (`ledger.py:316-318` y `334-336`).
+- **Dueño de las réplicas `U{r}@k`.** Hoy son de `h3` (`comun/variantes.py`: `dueno_estudio`, `dueno_variante` e
+  `implicitas`), y `h3` depende de `h1` por los estudios de la réplica 0.
+- **`scripts/vm.sh` no trae los CSV de la raíz de cada ledger** (los excluye en las tres sincronizaciones) y sincroniza
+  con el bucket sin borrar: lo que está en el bucket vuelve al repo.
+- **Cuota.** Los dos proyectos de la cuenta (`proj-uba-261012163242176` y `project-5729bc4b-d8ee-48de-b28`) tienen
+  `CPUS_ALL_REGIONS` = 32, o sea 4 VMs a la vez cada uno, y `N2_CPUS` = 100 en la región (consulta con `gcloud` del
+  13-nov). Las fases 6 y 7 se lanzaron de a 4. Las cuotas son por proyecto y en el período de prueba no se puede pedir
+  aumento ([cuotas de Compute Engine](https://docs.cloud.google.com/compute/resource-usage),
+  [período de prueba](https://docs.cloud.google.com/free/docs/free-cloud-features)). Los dos proyectos facturan a la
+  misma cuenta.
+- **El texto de los informes** tiene las inconsistencias que lista la propuesta.
 
 Restricciones:
 - 201910 se usa solo para comparar.
 - Las reglas pre-registradas no se reescriben: se agregan secciones nuevas con fecha.
 - Un cambio en `comun/` se anuncia en el commit.
-- Las corridas las hace la VM, lanzada a pedido. El crédito no es una restricción (Agustina, 13-nov).
+- Las corridas las hace la VM, lanzada a pedido. El crédito no es una restricción (Agustina, 13-nov); la cuota sí.
 - La ventana del final es 201903–201908 (confirmada el 13-nov) y la ronda tiene 20 semillas finales.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Una sola definición de A en todo el bloque A, con su rango.
+- Una sola definición de A en todo el bloque A, con su intervalo.
 - Una medición que separe la aceleración que da el tamaño de los datos de la que da la elección de Optuna, y otra que
   mida el ruido entre VMs, para responder "medir tiempos de forma confiable".
 - Una grilla común: las mismas cuatro tasas y 8 réplicas en cada forma de muestrear, para que cualquier par de celdas se
@@ -50,8 +74,11 @@ Restricciones:
 - Volver a correr lo que ya está corrido ni cambiar la definición de T.
 - Llevar a la grilla las variantes que son cruces o extensiones: `H4F-*`, `H4H-0.1`, `H4U-0.1`, `H3R-*`, `H3L-*`,
   `H3K-0.1`. Quedan como están y la tabla de cobertura las lista aparte.
+- Una comparación a igual cantidad de filas entre la muestra al azar y la receta con bajas. Se comparan a igual tasa de
+  CONTINUA y se informa la cantidad de filas de cada lado (D12).
 - Otro mes de test. Sigue siendo 201910, ya mirado.
 - Corregir por comparaciones múltiples. Se declaran los contrastes principales, como hasta ahora.
+- Pedir más cuota o crear proyectos nuevos.
 - `Experimentos guion.md` en la raíz.
 - Tocar `ledger/apareado.csv`. Su columna `aceleracion` queda como está, con la réplica 0, porque es el par por semilla
   de la réplica 0. El reporte calcula A desde los estudios.
@@ -60,36 +87,42 @@ Restricciones:
 
 ### Tiempos
 
-**D1. A = mediana(T_C) / T_v en el reporte, no en el ledger.** `reporte.py` calcula T_C mediana una vez, con la función
-que ya usa `tiempo_igual_replicas`, y la usa en todas las filas. La alternativa era cambiar `ledger.py`, pero eso
-reescribe `apareado.csv` de todas las hipótesis y mezcla la regla de tiempo con el apareamiento por semilla. Se descartó.
-Como A × T_v debe dar la misma T_C en todas las filas, un test de `pytest` lo verifica.
+**D1. A = mediana(T_C) / T_v en el reporte, no en el ledger.** `reporte.py` calcula la mediana de T_C una sola vez, sobre
+todas las réplicas del control, y la usa en todas las filas. Hoy `tiempo_igual_replicas` la calcula por variante, sobre
+las réplicas que tiene en común con el control (`reporte.py:518`): con réplicas incompletas la referencia cambiaría de
+una fila a otra, y eso se corrige. La alternativa era cambiar `ledger.py`, pero eso reescribe `apareado.csv` de todas las
+hipótesis y mezcla la regla de tiempo con el apareamiento por semilla. Se descartó. Como A × T_v debe dar la misma T_C
+en todas las filas, un test de `pytest` lo verifica.
 
-**D2. Rango de A.**
-- Con réplicas en la variante: [min_k, max_k] de T_C(k) / T_v(k), apareado por k. Las réplicas comparten la semilla de
-  TPE y del sorteo, igual que el IC de tiempo igual.
-- Sin réplicas: [min_k T_C(k) / T_v, max_k T_C(k) / T_v]. Este rango solo mueve el control: la búsqueda de la variante
-  es una sola, así que es un piso de su incertidumbre y el reporte lo dice. Después de D9 ninguna variante de la grilla
-  queda en este caso; la regla se conserva para `C-rep` y para variantes futuras.
-
-Se eligió el rango, y no un IC, porque con 8 réplicas un IC t de un cociente es frágil, y el rango se explica en una
-línea. Va en una columna nueva al final de la tabla de `tabla_resultados.md`, para no correr las columnas que leen
-los verificadores.
+**D2. Intervalo de A.** Bootstrap por percentiles (2,5 y 97,5) del cociente de medianas: se remuestrean con reposición
+las réplicas del control y, por separado, las de la variante, 10.000 veces y con semilla fija.
+- **Por qué no el mínimo y el máximo de T_C(k) / T_v(k):** aparear por k es arbitrario. Que la semilla k de TPE sea la
+  misma no relaciona las trayectorias de dos estudios con datos distintos, y con otro emparejamiento el rango cambia.
+- **Qué mide:** la variación entre réplicas, que junta la de Optuna y la de la VM, porque cada réplica corrió en su
+  propia VM. El reporte lo dice así; la calibración (D6) dice cuánto es de la VM.
+- **Sin réplicas en la variante** solo se remuestrea el control: es un piso de la incertidumbre de A y el reporte lo
+  dice. Después de D9 ninguna variante de la grilla queda en este caso; la regla se conserva para `C-rep` y para
+  variantes futuras.
+- Va en una columna nueva al final de la tabla del bloque A de `tabla_resultados.md`, para no correr las columnas que
+  leen los verificadores.
 
 **D3. El tiempo igual de las filas sin réplicas no cambia.** El bootstrap de clientes y el K de tiempo igual de la
 réplica 0 siguen usando T_C de la réplica 0, porque se aparean con el Δ de la réplica 0. La nota del bloque lo dice. La
 alternativa, la mediana, mezclaría la referencia de tiempo de 8 réplicas con la ganancia de una.
 
 **D4. Medición a hiperparámetros fijos.**
-- **Script:** `experimentos/sampling_1/scripts/tiempos_hp_fijos.py`, que importa solo de `comun/`.
+- **Script:** `experimentos/sampling_1/scripts/tiempos_hp_fijos.py`, que importa solo de `comun/`. En la VM se lanza con
+  una línea `@ experimentos.sampling_1.scripts.tiempos_hp_fijos` en su lista: `vm.sh` ya acepta líneas `@ módulo`.
 - **Celdas:** los 8 juegos de hiperparámetros del control (`C`, `C@1…7`), por 3 repeticiones, por:
   - muestra al azar, r ∈ {1; 0,5; 0,25; 0,1; 0,05} (la de H1): 120 mediciones;
   - receta de H4 (bajas + f de CONTINUA con peso 1/f), f ∈ {0,5; 0,25; 0,1; 0,05}: 96 mediciones.
 - **Cada medición** reproduce un trial: muestra con `comun/muestreo`, semilla 1000 + repetición, `Dataset` con los
   parámetros de dataset del control, `lgb.train` con `PARAMS_FIJOS` + hiperparámetros y predicción de 201908.
-- **Salida:** `experimentos/sampling_1/ledger/tiempos_hp_fijos.csv`, con el nombre de la instancia en cada fila.
-- **Duración estimada:** según `estudios.csv`, un trial del control dura de 16 a 30 s, así que las 216 mediciones
-  llevan menos de 2 h. Va en una VM propia.
+- **Salida:** un archivo por celda en `experimentos/sampling_1/ledger/tiempos/hp_fijos/`, con la cantidad de filas y el
+  nombre de la instancia. Una subcarpeta viaja con `vm.sh` como `corridas/`; un CSV en la raíz del ledger no vuelve de la
+  VM. Un consolidador local arma `experimentos/sampling_1/ledger/tiempos_hp_fijos.csv`.
+- **Duración estimada:** un trial del control dura de 16 a 30 s, así que las 216 mediciones llevan menos de 2 h. Va en
+  una VM propia.
 - **El orden se aleatoriza** con una semilla fija, para que una deriva de la VM no se confunda con r.
 - **Por qué hiperparámetros del control y no los de cada variante:** así el tamaño y la receta son lo único que cambia.
   Los A del bloque A ya miden el otro efecto, el de la elección de Optuna.
@@ -99,28 +132,43 @@ Agustina confirma o ajusta:
 - **Aceleración a hiperparámetros fijos A_fijo(r):** mediana de T(1)/T(r) entre juegos de hiperparámetros. Predicción:
   A_fijo(0,5) ∈ [1,6; 2,4] y A_fijo(0,05) < 10, porque el `Dataset` de validación y la predicción de 201908 no se
   achican con r.
-- **Receta de H4 contra muestra al azar a la misma tasa:** el cociente de tiempos queda en [0,9; 1,2] en las cuatro
-  tasas, porque la receta agrega a lo sumo un 1 % de filas.
+- **Receta de H4 contra muestra al azar a la misma tasa:** el cociente de tiempos queda entre 0,9 y 1,1 veces el
+  cociente de filas de la tabla del Context (o sea, hasta 1,32 en 0,05): el tiempo sigue a las filas y el peso no lo
+  cambia.
 - **Ruido dentro de la máquina:** CV entre repeticiones de la misma celda, con mediana ≤ 5 %.
 - **Se confirma** cada parte si se cumple. Es exploratoria: no cambia veredictos, solo dice cuánto del A del bloque A es
   tamaño de datos y cuánto es Optuna.
 
 **D6. Calibración por máquina.**
-- **Qué:** el mismo entrenamiento fijo (hiperparámetros de `C` réplica 0, r = 1, 2 repeticiones, como un trial) al
-  empezar y al terminar la lista de cada VM de la fase 8. Lo corre `tiempos_hp_fijos.py --calibracion`, llamado por
-  `scripts/vm.sh` antes y después de la lista.
-- **Salida:** `experimentos/sampling_1/ledger/calibracion.csv`: lista, instancia, momento (inicio o fin), repetición,
-  tiempos, CPU, carga y commit. Una lista corre en una sola VM, así que la lista identifica la máquina de cada fila del
-  ledger de la fase sin agregar columnas al ledger.
-- **Qué se informa:** CV entre VMs (entre las medias de cada VM) y cociente fin/inicio por VM.
-- **Predicción, en `control/docs/hipotesis.md`:** CV entre VMs ≤ 5 % y cociente fin/inicio en [0,9; 1,1] en todas. Si
-  alguna VM queda fuera, el informe lo dice y marca sus filas; no se descartan corridas después de ver la ganancia.
+- **Qué:** al empezar y al terminar la lista de cada VM de la fase 8, `tiempos_hp_fijos.py --calibracion` corre:
+  - el trial de calibración: hiperparámetros de `C` réplica 0, r = 1, 2 repeticiones;
+  - un final viejo: `C` réplica 0 con la primera semilla final, sin escribir en el ledger de `control`.
+
+  Lo llama `scripts/vm.sh` antes y después de la lista.
+- **Salida:** un archivo por lista y momento, `experimentos/sampling_1/ledger/tiempos/calibracion_<lista>_<momento>.csv`,
+  con instancia, repetición, tiempos, CPU, carga y commit. Así 17 VMs no se pisan al subir. El consolidador arma
+  `experimentos/sampling_1/ledger/calibracion.csv`.
+- **La lista identifica la máquina** de cada fila del ledger de la fase, sin agregar columnas al ledger, porque una lista
+  corre en una sola VM. Si una lista se relanza en otra VM, la calibración del relanzamiento lleva otro nombre de
+  instancia y las filas se separan por fecha; la bitácora anota el relanzamiento.
+- **Ancla con las fases anteriores, sin corridas extra:**
+  - el trial de calibración es el mejor trial del estudio `C`, cuya duración quedó guardada en `C.db` cuando se corrió
+    en la fase 1; lo mismo los mejores trials de `C@1…7`, que la medición de D4 repite;
+  - el final viejo se compara con el tiempo de esa misma corrida en el ledger de la fase 7 y con `C-rep`.
+- **Qué se informa:** CV entre VMs (entre las medias de cada VM), cociente fin/inicio por VM y cociente de cada VM
+  contra las dos anclas.
+- **Las VMs se lanzan en tandas** (D15), en horarios distintos, así que el CV entre VMs junta la VM y la hora. El informe
+  lo dice.
+- **Predicción, en `control/docs/hipotesis.md`:** CV entre VMs ≤ 5 %, cociente fin/inicio en [0,9; 1,1] y cociente contra
+  las anclas en [0,9; 1,1], en todas. Si alguna VM queda fuera, el informe lo dice y marca sus filas; no se descartan
+  corridas después de ver la ganancia.
 - **Alternativa descartada:** una columna `instancia` en `resultados.csv`. Cambia el esquema del ledger de todas las
   hipótesis para un dato que la lista ya da.
 
-**D7. Búsqueda y final por separado.** La sección de tiempos del reporte muestra por variante la mediana de
-`tiempo_optimizacion_s`, la mediana del tiempo del final y la fracción de T que es búsqueda. No cambia T ni la tabla
-del bloque A.
+**D7. Búsqueda, final y preparación por separado.** La sección de tiempos del reporte muestra por variante la mediana de
+`tiempo_optimizacion_s`, la mediana del tiempo del final y la fracción de T que es búsqueda. Muestra también la mediana
+de `tiempo_preparacion_s`, con la nota de que no entra en T porque es igual para todas las variantes. No cambia T ni la
+tabla del bloque A.
 
 ### Grilla común
 
@@ -139,9 +187,18 @@ N* = 3.300 y δ de la ronda (5,65 M$).
   tasa de la variante. `H4F-*` sigue con 0,5. Los hiperparámetros no se reescalan, como en `H4O-0.5`.
 - **`H4P-{f}`** es un método nuevo (`clase-peso`): optimiza con el método de `H4O-{f}` y comparte su estudio `F{f}`,
   como H3 comparte `U{r}` con H1; el final es el de `opt-muestra`. El tiempo del estudio entra en T de las dos.
+- **Lo que hay que tocar en `comun/metodos.py` y `comun/correr.py`:**
+  - `metodo_optimizacion` manda a `uniforme` todo método de H3 o H4 sin estudio propio: `clase-peso` tiene que ir a
+    `fast-retrain-opt`, con un test;
+  - `pesos(metodo, datos)` no recibe la tasa: cambia su firma y sus dos llamadas (`correr.py:217` y `293`);
+  - `fast-retrain` y `fast-retrain-opt` comparten la función `fast_retrain`, con la fracción fija: se separan, para que
+    `H4F-*` siga en 0,5 aunque su tasa sea 0,05 o 0,25;
+  - `validar` rechaza `fast-retrain-opt` con tasa distinta de 0,5: pasa a aceptar las cuatro.
+- **Lo que no cambia** (verificado en la revisión): los nombres nuevos no chocan con el registro, y `F0.5` conserva su
+  `hash_muestra`.
 - **Por qué `H4P` y no extender `H4U` a las cuatro tasas:** `H4U` no lleva peso, así que cambia dos cosas a la vez (qué
-  filas y qué proporción ve Optuna). Con peso, la única diferencia con H3 es qué filas se conservan. `H4P-0.1` contra
-  `H4U-0.1` aísla el peso y pone a prueba la explicación que el informe de H4 dejó sin probar.
+  filas y qué proporción ve Optuna). La muestra de búsqueda de `H4P-0.1` es la misma que la de `H4U-0.1` (misma función
+  y misma semilla), así que ese par aísla el peso y pone a prueba la explicación que el informe de H4 dejó sin probar.
 - **`GOSS`** no tiene tasa y no entra en la grilla. Sigue siendo descriptivo, pero recibe réplicas (D9).
 
 **D9. 8 réplicas en todo el bloque A.** Pasan a `replicas=True`: `U0.5`, `U0.25`, `U0.1`, `U0.05`, `B0.5`, `B0.25`,
@@ -152,12 +209,22 @@ una réplica: es la repetición del control, no una variante.
 - **Por qué:** con réplicas, los finales de `U{r}` en la réplica k leen `U{r}@k`. Si esos estudios siguen en `h3`, `h1`
   depende de `h3` y `h3` de `h1`: un ciclo, que `python -m comun.variantes --verificar` rechaza. La otra salida, dejar
   los finales de las réplicas de `U*` en el ledger de `h3` (lo que hace hoy `dueno_variante`), parte cada variante de H1
-  en dos ledgers y `replicas.csv` de `h1` no las vería.
-- **Qué cambia:** `dueno_estudio` y `dueno_variante` dejan de mandar a `h3` las réplicas de `h1`. Un script mueve de
-  `h3/ledger` a `h1/ledger` los 21 estudios `U0.25@k`, `U0.1@k` y `U0.05@k` (hp, filas de corridas y de `estudios.csv`)
-  sin cambiar ids ni contenido. `h3/docs/diseno.md` § Dependencias pasa a decir que todos los `U{r}` son de `h1`.
-- **Invariante:** antes y después de mover, `python -m comun.consolidar` de `h3` y `h4` da las mismas tablas, salvo
-  que los estudios cambian de archivo. Es el mismo criterio de "Separación sin pérdida del ledger existente".
+  en dos ledgers y `replicas.csv` de `h1` no las vería. La revisión confirmó el ciclo y no encontró una salida más simple.
+- **Qué cambia en el código:**
+  - `comun/variantes.py`: `dueno_estudio`, `dueno_variante` e `implicitas` dejan de mandar a `h3` las réplicas de `h1`;
+  - `comun/reporte.py`: `cargar_replicas` lee los estudios del dueño de cada estudio, no solo de `control` y del
+    experimento del reporte. Sin eso, el reporte de `h3` pierde los tiempos de las réplicas y vuelve a la réplica 0;
+  - tests que afirman el dueño viejo: `tests/test_variantes.py:108` y `tests/test_replicas.py:14-15`.
+- **Qué cambia en los documentos:** `## Dependencias` de `h3/docs/diseno.md` (todos los `U{r}` son de `h1`) y de
+  `h4/docs/diseno.md` (deja de depender de `h3`; si no, `--verificar` falla por declarar de más).
+- **Qué se mueve:** los 21 estudios `U0.25@k`, `U0.1@k` y `U0.05@k`, de `h3/ledger` a `h1/ledger`: sus hp, sus filas
+  de `corridas/` y las de `estudios.csv`, sin cambiar ids ni contenido. **También en el bucket**, con `gsutil mv`: `vm.sh`
+  sincroniza sin borrar, así que si quedan en el bucket vuelven a `h3` con la primera VM y los estudios quedan
+  duplicados. Los archivos de `h3/ledger/exploracion/` no se mueven: son pruebas en la Mac y no entran en ninguna tabla.
+- **Invariante:** antes y después de mover, dan las mismas tablas `python -m comun.consolidar` de `h3` y `h4` y
+  `python -m comun.reporte` de `h3`, `h4` y `sampling_1`, salvo que los estudios cambian de archivo. Si el reporte de
+  `h4` ya hoy no encuentra `U0.05@k` y `U0.25@k` para `H4F-*` (sospecha de la revisión, sin verificar), el cambio en
+  `cargar_replicas` lo corrige y la diferencia se anota.
 - **Riesgo:** es el único paso que toca filas ya corridas. Va en un commit propio y antes de cualquier corrida nueva.
 
 **D11. Tabla de cobertura.** `reporte.py` la arma del registro: una fila por (cómo, dónde), una columna por tasa, y en
@@ -167,41 +234,54 @@ variante del registro declara su fila de la grilla (o que está fuera). Va en el
 `tabla_resultados.md` y, copiada, en el informe conjunto.
 
 **D12. Comparaciones directas.** Se agregan al registro (`PARES_APAREADOS` y `PARES_WELCH`) antes de correr, y cada par
-declara qué decisión aísla. La tabla "Diferencias entre variantes" muestra esa columna y marca los principales.
+declara qué decisión aísla. La tabla "Diferencias entre variantes" muestra esa columna, las filas de entrenamiento de
+cada lado y marca los principales.
 
-| qué aísla | par (a − b) | tasas | IC |
-|---|---|---|---|
-| conservar las bajas, búsqueda y final (**principal**) | `H4O-{r}` − `U{r}` | 4 | Welch, sin aparear |
-| conservar las bajas, solo búsqueda | `H4P-{r}` − `H3-{r}` | 4 | Welch, sin aparear |
-| muestrear también el final, al azar | `U{r}` − `H3-{r}` | 4 | t, apareado (comparten estudio) |
-| muestrear también el final, con bajas | `H4O-{r}` − `H4P-{r}` | 4 | t, apareado (comparten estudio) |
-| el peso en la búsqueda | `H4P-0.1` − `H4U-0.1` | 1 | Welch, sin aparear |
+| qué aísla | par (a − b) | tasas | IC | experimentos |
+|---|---|---|---|---|
+| conservar las bajas, búsqueda y final (**principal**) | `H4O-{r}` − `U{r}` | 4 | Welch, sin aparear | h4 y h1 |
+| conservar las bajas, solo búsqueda | `H4P-{r}` − `H3-{r}` | 4 | Welch, sin aparear | h4 y h3 |
+| muestrear también el final, al azar | `U{r}` − `H3-{r}` | 4 | t, apareado (comparten estudio) | h1 y h3 |
+| muestrear también el final, con bajas | `H4O-{r}` − `H4P-{r}` | 4 | t, apareado (comparten estudio) | h4 |
+| el peso en la búsqueda | `H4P-0.1` − `H4U-0.1` | 1 | Welch, sin aparear | h4 |
 
-H2 no entra en los pares: `bagging_fraction` sale del espacio de Optuna en `B*`, y la comparación con `U*` es
-descriptiva (`h2/docs/hipotesis.md`). La tabla de cobertura la muestra al lado.
+- **Los pares entre experimentos se calculan en `sampling_1`.** `replicas.csv` es de cada experimento y solo con sus
+  variantes; calcular `U − H3` en `h1` volvería a crear el ciclo de D10. El agregador arma
+  `experimentos/sampling_1/ledger/pares.csv` desde los `resultados.csv` de todos los dueños, con la misma cuenta que usa
+  `ledger.replicas`. Los pares de un solo experimento siguen en su `replicas.csv`. Un par declarado al que le falta un
+  lado sale como pendiente: nunca se saltea en silencio, y un test falla si un par declarado no aparece.
+- **Los pares "conservar las bajas" no aíslan una sola cosa.** La receta con bajas cambia qué filas quedan, suma entre
+  un 1 % y un 20 % de filas (tabla del Context) y lleva peso. Se comparan a igual tasa de CONTINUA, que es lo que
+  pregunta el tutor, y la tabla muestra las filas de cada lado. El informe lo declara.
+- **El par del peso sí aísla una cosa:** `H4P-0.1` y `H4U-0.1` buscan sobre la misma muestra.
+- **Etiquetas:** las de `ledger._veredicto_par`: *mejora* si la cota inferior del IC es > 0, *empeora* si la superior es
+  < 0, *no cambia* en otro caso.
+- H2 no entra en los pares: `bagging_fraction` sale del espacio de Optuna en `B*`, y la comparación con `U*` es
+  descriptiva (`h2/docs/hipotesis.md`). La tabla de cobertura la muestra al lado y el informe dice por qué.
 
 **D13. Predicciones de la grilla, a pre-registrar antes de correr.** Propuesta, que Agustina confirma o ajusta. Las
-reglas de veredicto son las comunes (`control/docs/hipotesis.md`), con Δ con réplicas, δ de la ronda y N* = 3.300. Las de
-diferencias son las de `h4/docs/hipotesis.md` regla 2: *ayuda* si la cota inferior del IC es > 0, *empeora* si la
-superior es < 0, *no cambia* en otro caso.
+reglas de veredicto son las comunes (`control/docs/hipotesis.md`), con Δ con réplicas, δ de la ronda y N* = 3.300; A es
+la de D1. Las de diferencias usan las etiquetas de D12.
 
-- **`h1/docs/hipotesis.md` § Réplicas de H1.** Con réplicas, `U0.5` *no pierde* y A ≥ 2 con la mediana; `U0.25`, `U0.1`
-  y `U0.05` *pierden*. Si `U0.5` sale *indeterminado* o con A < 2, deja la lista de "vale la pena" y se informa así.
-- **`h2/docs/hipotesis.md` § Réplicas de H2 y `B0.05`.** Con réplicas, `B0.5` y `B0.25` *no pierden*, `B0.1` y `B0.05`
-  *pierden*, y ninguna llega a A ≥ 2. `GOSS` se informa sin regla, como hasta ahora.
-- **`h3/docs/hipotesis.md` § `H3-0.5`.** *No pierde*, con A < A(`H3-0.25`).
+- **`h1/docs/hipotesis.md` § Réplicas de H1.** Con réplicas, `U0.5` *no pierde* y A ≥ 2; `U0.25`, `U0.1` y `U0.05`
+  *pierden*. Si `U0.5` sale *indeterminado* o con A < 2, deja la lista de "vale la pena" y se informa así.
+- **`h2/docs/hipotesis.md` § Réplicas de H2 y `B0.05`.** Con réplicas, `B0.5` y `B0.25` *no pierden* con A < 2; `B0.1` y
+  `B0.05` *pierden*. O sea, ninguna `B` "vale la pena". Con la regla de D1, `B0.1` ya tiene A = 2,31 en la réplica 0 y
+  `B0.25`, 1,54. `GOSS` se informa sin regla, como hasta ahora.
+- **`h3/docs/hipotesis.md` § `H3-0.5`.** *No pierde* y A ≥ 2.
 - **`h4/docs/hipotesis.md` § Grilla común.**
-  - `H4O-{r}` − `U{r}` (principal): *no cambia* en 0,5 y *ayuda* en 0,1 y 0,05, donde la muestra al azar se queda con
+  - `H4O-{r}` − `U{r}` (principal): *no cambia* en 0,5 y *mejora* en 0,1 y 0,05, donde la muestra al azar se queda con
     unas 531 y 266 de las 5.312 bajas. En 0,25 no hay predicción firme y se informa.
   - `H4O-{r}` contra `C`: *no pierde* en 0,5 (ya medido) y en 0,25; *pierde* en 0,05. En 0,1 se informa.
   - `H4P-{r}` contra `C`: *no pierde* en las cuatro tasas, y `H4P-{r}` − `H3-{r}`: *no cambia* en las cuatro.
-  - `H4P-0.1` − `H4U-0.1`: *ayuda*. Si *no cambia*, la explicación del informe de H4 (la proporción distorsionada en la
+  - `H4P-0.1` − `H4U-0.1`: *mejora*. Si *no cambia*, la explicación del informe de H4 (la proporción distorsionada en la
     búsqueda) queda sin sostén y se dice.
 - **Origen de estas variantes.** Se agregan después de ver 201910 en todas las celdas vecinas. Cada `docs/hipotesis.md`
   lo declara y los informes lo listan entre las limitaciones ("Ideas que vienen de mirar el test"). Entran todas juntas
   y ninguna se elige ni se descarta por su resultado.
-- **Comparaciones múltiples.** D12 suma 17 contrastes sin corrección. Los principales de este cambio son los cuatro
-  `H4O-{r}` − `U{r}`; el resto es secundario.
+- **Comparaciones múltiples.** Este cambio suma, sin corrección, los 17 contrastes de D12, 9 veredictos nuevos contra
+  `C` (las variantes nuevas) y 9 veredictos que se vuelven a decidir con réplicas (`U*`, `B*` menos `B0.05`, y `GOSS`).
+  Los principales son los cuatro `H4O-{r}` − `U{r}`; el resto es secundario.
 
 **D14. Regla para variantes nuevas.** `docs/metodo.md` § Agregar una hipótesis suma un paso: la variante declara su fila
 de la grilla, corre las cuatro tasas con 8 réplicas y declara sus pares directos, o declara el hueco con su motivo en la
@@ -209,78 +289,92 @@ lista de D11 antes de correr. `docs/revision.md` § 2 suma el ítem que lo verif
 
 ### Corridas
 
-**D15. Fase 8, en paralelo.** Una corrida a la vez por VM, como siempre: el paralelismo es entre VMs y no cambia la
+**D15. Fase 8, en tandas.** Una corrida a la vez por VM, como siempre: el paralelismo es entre VMs y no cambia la
 medición de tiempos.
 
-- **Dos listas por réplica**, cada una en su VM: `fase8_rk_a` (h1, h3 y h4) y `fase8_rk_b` (h2), para k = 0…7. Dentro
-  de cada lista, cada estudio va antes que sus finales. Más `fase8_medicion` (D4) en otra VM: 17 VMs, 136 vCPU
-  (decisión de Agustina, 13-nov).
-- **Qué llevan entre las dos listas de la réplica k ≥ 1** (`_a`: lo de `U`, `H3`, `F`, `H4O` y `H4P`; `_b`: lo de `B` y
-  `GOSS`):
+- **17 listas, cada una en su VM:** `fase8_rk_a` (h1, h3 y h4) y `fase8_rk_b` (h2), para k = 0…7, más
+  `fase8_medicion` (D4). Dentro de cada lista, cada estudio va antes que sus finales. Ninguna lista `_a` lee nada de una
+  `_b`: `U0.5@k` y `F*@k` van en `_a`, y `B*@k` y `GOSS@k` en `_b`.
+- **Qué llevan entre las dos listas de la réplica k ≥ 1:**
   - estudios: `U0.5@k`, `F0.25@k`, `F0.1@k`, `F0.05@k`, `B0.5@k`, `B0.25@k`, `B0.1@k`, `B0.05@k`, `GOSS@k`;
   - finales (20 semillas): `U0.5`, `U0.25`, `U0.1`, `U0.05`, `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`, `H4P-0.5`,
     `H4P-0.25`, `H4P-0.1`, `H4P-0.05`, `B0.5`, `B0.25`, `B0.1`, `B0.05`, `GOSS`.
 - **Réplica 0:** estudios `F0.25`, `F0.1`, `F0.05` y `B0.05`; finales de `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`,
   las cuatro `H4P` y `B0.05`. El resto de la réplica 0 ya existe.
 - **Totales:** 67 estudios y 2.560 finales.
-- **Estimación**, con los tiempos de `estudios.csv` y `resultados.csv` de la ronda: una lista `_a` lleva unos 12 min
-  de estudios y 1,4 h de finales; una `_b`, unos 57 min de estudios y 1 h de finales. Con media hora de arranque, cada VM
-  termina en unas 2 a 2,5 h; las de la réplica 0 y la de la medición, antes. En total unas 36 h de VM y unas 2,5 h de
-  reloj. A US$ 0,52/h más un 15 % de disco (`sampling_1/docs/diseno.md` § Estimación de horas y costo), unos US$ 22.
-- **Si la cuota de vCPU no alcanza para 17 VMs**, `lanzar_fase.sh` no lanza ninguna: se lanzan en dos tandas (primero
-  las `_a` y la medición, después las `_b`) o se pide más cuota. El resultado no cambia, solo el reloj.
-- **Los estudios ya corridos** (`U0.25@k`, `U0.1@k`, `U0.05@k`, `F0.5@k`) no se repiten: la VM los lee del repo.
+- **Tandas del tamaño que dé la cuota.** Con la cuota de hoy entran 4 VMs a la vez en el proyecto del curso. Antes de
+  lanzar se prueba si el segundo proyecto de la cuenta suma otras 4 (tarea 5.1): la documentación dice que las cuotas
+  son por proyecto, pero el período de prueba puede tener un tope por cuenta de facturación. Si la quinta VM arranca, las
+  tandas son de 8; si no, de 4. No se crean proyectos nuevos ni se pide aumento.
+- **Orden de las tandas:** primero `fase8_medicion` y las `_a`, que son las que responden al tutor; después las `_b`.
+- **El segundo proyecto** usa la imagen y el bucket del primero, con permiso de lectura y escritura sobre el bucket para
+  su cuenta de servicio. `vm.sh` y `lanzar_fase.sh` ya toman `PROYECTO` del entorno; `lanzar_fase.sh` verifica la cuota
+  del proyecto que recibe.
+- **Estimación**, con los tiempos de `estudios.csv` y `resultados.csv` de la ronda: una lista `_a` lleva unos 12 min de
+  estudios y 1,4 h de finales; una `_b`, unos 57 min de estudios y 1 h de finales. Con media hora de arranque, cada VM
+  termina en unas 2 a 2,5 h. En total unas 36 h de VM. De reloj, entre 8 y 12 h con tandas de 4, y unas 4 a 5 h con
+  tandas de 8. A US$ 0,52/h más un 15 % de disco (`sampling_1/docs/diseno.md` § Estimación de horas y costo), unos
+  US$ 22.
+- **Los estudios ya corridos** (`U0.25@k`, `U0.1@k`, `U0.05@k`, `F0.5@k`) no se repiten: la VM los lee del bucket, ya
+  movidos a `h1` (D10).
 
 ### Texto y respuesta
 
 **D16. Correcciones de texto.**
 - **Se editan a mano solo frases.** Los números salen de `tabla_resultados.md` regenerada.
+- **Las frases se buscan por su texto.** Los números de línea de las tareas son orientativos: algunos están corridos.
 - **`decisiones.md`:** se agrega al principio un aviso de que es de las fases 1–4 (Ḡ_C = 276,10 M$, δ = 5,52 M$, 10
-  semillas) y de que lo vigente está en el informe conjunto. `informe.md:206` deja de enlazarlo para los números.
+  semillas) y de que lo vigente está en el informe conjunto. El informe conjunto deja de enlazarlo para los números.
   Reescribirlo duplicaría el informe.
 - **Tabla de rondas:** se corrige en `scripts/comparar_rondas.py`, sacando la fila `C | pendiente` (el control no es
   una variante contra sí mismo). `H4O-0.5` sigue afuera, como decidió `final-con-julio-agosto` (tarea 4.1), y la tabla
   agrega una nota que dice que solo existe en la ronda nueva. Las variantes de este cambio tampoco entran: no existen en
   la ronda anterior.
-- **Las correcciones que no dependen de números nuevos** se hacen en paralelo con el código (tarea 3.1); las que citan
+- **Las correcciones que no dependen de números nuevos** se hacen en paralelo con el código (tarea 4.1); las que citan
   A o veredictos, después de regenerar.
 
 **D17. Respuesta al tutor, en dos tiempos.** Las dos salen de los documentos y las postea Agustina.
 - **Primera**, `experimentos/sampling_1/docs/zulip/02_dialogo_h1_h4.md`, apenas cierra la revisión de hipótesis (1.5):
   - "Mismos cortes" se contesta en sus dos lecturas. Como tasas de muestreo: H4 no repite la grilla de H1, y hoy se
-    cruzan en dos puntos (los del Context), con sus números. Como corte de envíos: N* = 3.300 es el mismo para todas las
-    variantes.
-  - "¿Se verá alguna diferencia?": en 0,5 no se distinguen; en 0,1 solo en la búsqueda, conservar las bajas sin peso
-    sale peor. Lo demás no está corrido, y se dice qué se va a correr (D8) y con qué predicción (D13).
+    cruzan en dos puntos (los del Context). Como corte de envíos: N* = 3.300 es el mismo para todas las variantes.
+  - "¿Se verá alguna diferencia?": todavía no hay un contraste directo entre H1 y H4. En 0,5, los Δ contra el control
+    de `U0.5` y `H4O-0.5` son casi iguales, con IC que se superponen y una sola réplica de `U0.5`. En 0,1 solo en la
+    búsqueda, `H4U-0.1` pierde y `H3-0.1` no, con IC que no se tocan; ahí `H4U-0.1` tiene además un 9 % más de filas y
+    no lleva peso. El contraste directo es parte de lo que se corre (D8, D12), con su predicción (D13).
   - Tiempos: cómo se midieron, qué se sabe del ruido y qué se va a medir (D4, D6).
-- **Segunda**, `03_grilla_y_tiempos.md`, al cerrar el informe: la tabla de cobertura, los cuatro contrastes principales y
-  la sección de tiempos.
+- **Segunda**, `03_grilla_y_tiempos.md`, al cerrar el informe: la tabla de cobertura, los cuatro contrastes principales
+  con las filas de cada lado y la sección de tiempos.
 - **En el informe conjunto:**
   - el undersampling es H4, que conserva todas las bajas y recorta CONTINUA; H1 no toca la proporción;
   - el corte N* vale tal cual para las variantes que entrenan el final con la proporción original (`U*`, `B*`, H3,
     `H4H`, `H4U`, `H4P`); en `H4F` y `H4O` el peso 1/f de CONTINUA restituye la proporción ponderada del train, así que
-    el orden de los primeros 3.300 es comparable.
+    el orden de los primeros 3.300 es comparable;
+  - por qué H2 no entra en los pares directos.
 
 ## Risks / Trade-offs
 
 - **Cambiar A después de ver los resultados** se puede leer como elegir la regla. Mitigación: la regla vieja era
-  inconsistente entre filas, y no al revés. Se anota en la bitácora con el motivo, la tabla muestra A con el rango, y
-  ningún veredicto de "vale la pena" cambia por D1 (U0.5 pasa de 2,25 a 2,83).
+  inconsistente entre filas, y no al revés. Se anota en la bitácora con el motivo, la tabla muestra A con su intervalo,
+  y ningún veredicto de "vale la pena" cambia por D1 (`U0.5` pasa de 2,25 a 2,83; `B0.25` queda en 1,54 y `B0.5` en
+  0,99).
 - **Las réplicas pueden cambiar veredictos de H1 y H2.** Es lo que se quiere saber. Las reglas quedan escritas antes.
 - **Variantes nuevas con el test ya mirado.** No hay otro mes. Mitigación: entran todas las celdas de la grilla, con
   predicción y regla antes de correr, y cuatro contrastes principales fijados (D13).
-- **Más contrastes sin corrección.** Con 17 más, alguno puede salir significativo por azar. Se declara y las
-  conclusiones se apoyan en los principales.
-- **Mover estudios de `h3` a `h1`** toca filas ya corridas. Mitigación: commit propio, invariante de consolidado
-  idéntico (D10) y revisión de código antes de correr.
+- **Más contrastes sin corrección** (D13). Alguno puede salir significativo por azar. Se declara y las conclusiones se
+  apoyan en los principales.
+- **Los pares principales mezclan filas, cantidad y peso** (D12). Es la comparación que pide el tutor, a igual tasa. Se
+  declara, y la medición a hiperparámetros fijos da el efecto en tiempo de las filas de más.
+- **Mover estudios de `h3` a `h1`** toca filas ya corridas, en el repo y en el bucket. Mitigación: commit propio,
+  invariante de consolidado y de reportes idénticos (D10), chequeo de que no vuelven a `h3` después de la fase (5.3) y
+  revisión de código antes de correr.
 - **El alcance creció**: el cambio pasó de una VM de 2–3 h a 17 VMs y 9 variantes nuevas. Mitigación: la primera
   respuesta al tutor no espera a las corridas (D17), y las correcciones de texto van en paralelo (D16).
+- **Cuota.** 17 VMs no entran a la vez: van en tandas, y el reloj es de 4 a 12 h según funcione el segundo proyecto.
+- **Tandas en horarios distintos y, quizá, en dos proyectos.** Es el mismo tipo de máquina, la misma región y la misma
+  imagen; la calibración mide si las VMs difieren, con la hora mezclada (D6).
 - **Peso 1/f grande en `H4O-0.05` y `H4P-0.05`** (20 en CONTINUA), con `min_data_in_leaf` sin reescalar. Es parte de la
   receta y se declara como limitación, igual que en `H4O-0.5`.
-- **Las medianas de tiempo de las celdas viejas** se midieron en otras VMs y fechas que las réplicas nuevas. Es la misma
-  CPU, y la calibración (D6) mide el ruido entre las VMs de esta fase; para las fases anteriores sigue habiendo solo
-  `C-rep`, y el informe lo dice.
+- **Las medianas de tiempo de las celdas viejas** se midieron en otras VMs y fechas que las réplicas nuevas, y la A de
+  `U*`, `B*` y `GOSS` va a mezclar las dos épocas. Las anclas de D6 lo miden.
 - **Las predicciones de D5, D6 y D13** las propone una sesión que ya vio los resultados de la ronda. Las de tiempos son
   exploratorias y no deciden nada; las de la grilla se declaran como "ideas que vienen de mirar el test".
-- **Cuota de vCPU.** 17 VMs piden 136 vCPU N2 en la región y en el proyecto; las fases anteriores usaron 64. Se
-  verifica antes de lanzar (tarea 5.1).
