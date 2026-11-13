@@ -53,45 +53,120 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
 Las cifras del bloque B no se comparan una a una con las del bloque A: otro protocolo, otra muestra o otro entorno.
 
-### experimentos/h3/sensibilidad_muestra
+### sensibilidad_muestra
 
-- **Pregunta:** ¿Cuánto depende de la muestra la configuración que elige H3?
-- **Protocolo:** 20 configuraciones al azar, 10 muestras del 25 %, una semilla final, float64, 4 hilos
-- **Cifras principales:**
-  - 08_ganancia_por_semilla.csv, delta: mediana 0 [-9,900,000; 8,800,000], n = 10
-  - 08_ganancia_por_semilla.csv, delta_pct: mediana 0 [-3.622; 3.219], n = 10
-  - 07_resumen_por_semilla.csv, delta: mediana 0 [-8.051e-05; 0.002227], n = 10
-  - 07_resumen_por_semilla.csv, spearman_seleccion: mediana 0.7752 [0.6647; 0.8165], n = 10
-  - 07_resumen_por_semilla.csv, tiempo_busqueda_s: mediana 487 [378; 1,064], n = 10
-- **Advertencia:** 10 muestras pero 4 modelos distintos; un solo 201910; no comparable 1:1 con H3-0.25
+!!! question "Pregunta"
+    ¿Cuánto depende de la muestra la configuración que elige H3?
 
-### experimentos/sampling_1/exploratorios/validacion_20_semillas
+**Protocolo.** 20 configuraciones al azar, 10 muestras del 25 %, una semilla final, float64, 4 hilos
 
-- **Pregunta:** ¿Cambian los veredictos de H1 a H4 si el control y cada variante se evalúan con 20 semillas finales en lugar de 10?
-- **Protocolo:** 20 semillas finales por variante (lista no publicada), una búsqueda por estudio, reportes por hipótesis hechos con una versión anterior de comun/reporte.py y editados a mano; sin código ni ledger
-- **Cifras principales:**
-  - reportado_20_semillas.csv, delta_media: mediana -0.6 [-30.75; 6.38], n = 13
-  - reportado_20_semillas.csv, tiempo_s: mediana 175 [70; 786], n = 13
-  - comparacion_10_semillas.csv, diferencia_delta: mediana 0.88 [-4.12; 9.68], n = 13
-- **Advertencia:** solo los HTML (commits d8f04b2 y ffe5cae): no se puede reproducir; H4_HardNeg usa los hiperparámetros fijos del script de validacion_50_semillas (no es H4H-0.1); los tiempos de h2 no coinciden con los medidos; no cambia ningún veredicto
+![Δ de ganancia de H3 contra el control en cada una de las 10 muestras del 25 % (puntos) y su mediana, a partir de resultados/08_ganancia_por_semilla.csv](figuras/sensibilidad_muestra.svg)
 
-### experimentos/sampling_1/exploratorios/validacion_50_semillas
+<details markdown="1">
+<summary>Cifras principales</summary>
 
-- **Pregunta:** ¿Con 50 semillas finales, qué estrategias de las hipótesis 3 y 4 ganan al control y cuántas semillas entran en un presupuesto de 900 s?
-- **Protocolo:** 9 estrategias con hiperparámetros fijos, 50 semillas finales (10 oficiales + 110017 + i·19937), presupuesto de 900 s; ranking y curva según K en 201908, 201910 solo informado
-- **Cifras principales:**
-  - resumen_50_semillas_original.csv, g_201908: mediana 201,850,000 [186,450,000; 216,150,000], n = 493
-  - resumen_50_semillas_original.csv, gmax_201908: mediana 207,350,000 [196,625,000; 218,075,000], n = 493
-  - resumen_50_semillas_original.csv, auc_201908: mediana 0.9274 [0.9236; 0.9311], n = 493
-  - resumen_50_semillas_original.csv, g_201910: mediana 278,850,000 [266,750,000; 296,450,000], n = 493
-  - resumen_50_semillas_original.csv, auc_201910: mediana 0.9328 [0.9304; 0.9357], n = 493
-  - resumen_50_semillas_original.csv, tiempo_s: mediana 19.02 [11.33; 35.72], n = 493
-  - ranking_201908_original.csv, puesto_201908: mediana 5 [1; 9], n = 9
-  - ranking_201908_original.csv, g_201908: mediana 201,762,698 [196,690,000; 207,856,000], n = 9
-  - ranking_201908_original.csv, g_201908_sd: mediana 4,037,318 [3,275,288; 4,559,427], n = 9
-  - presupuesto_original.csv, k_presupuesto: mediana 40 [4; 70], n = 9
-  - presupuesto_original.csv, ens_k_201908: mediana 205,150,000 [198,550,000; 210,650,000], n = 9
-  - presupuesto_original.csv, ens_k_201910: mediana 281,050,000 [278,850,000; 284,350,000], n = 9
-- **Advertencia:** origen: commit 9e1889e, script de Colab con su propio panel; el resumen original elige con 201910 (ya mirado) y hay piezas reconstruidas (presupuesto, resumen CSV, H4_Hard); no es una variante ni cambia el veredicto de ninguna hipótesis
+| cifra | unidad | mediana | mínimo | máximo | n |
+|---|---|---|---|---|---|
+| Δ de ganancia contra el control | M$ | 0 | -9.9 | 8.8 | 10 |
+| Δ de ganancia contra el control | % | 0 | -3.622 | 3.219 | 10 |
+| Δ de AUC final contra el control |  | 0 | -8.051e-05 | 0.002227 | 10 |
+| Correlación de Spearman de la selección |  | 0.7752 | 0.6647 | 0.8165 | 10 |
+| Tiempo de búsqueda | s | 486.65 | 378.20 | 1,064.40 | 10 |
+
+</details>
+
+!!! warning "Advertencia"
+    10 muestras pero 4 modelos distintos; un solo 201910; no comparable 1:1 con H3-0.25
+
+### validacion_20_semillas
+
+!!! question "Pregunta"
+    ¿Cambian los veredictos de H1 a H4 si el control y cada variante se evalúan con 20 semillas finales en lugar de 10?
+
+**Protocolo.** 20 semillas finales por variante (lista no publicada), una búsqueda por estudio, reportes por hipótesis hechos con una versión anterior de comun/reporte.py y editados a mano; sin código ni ledger
+
+![Reporte original de H1 (20 semillas finales): bandas de la curva de ganancia](validacion_20_semillas/figuras/bandas_h1.png)
+
+<p class='nota'>Reporte original de H1 (20 semillas finales): bandas de la curva de ganancia</p>
+
+![Reporte original de H2 (20 semillas finales): bandas de la curva de ganancia](validacion_20_semillas/figuras/bandas_h2.png)
+
+<p class='nota'>Reporte original de H2 (20 semillas finales): bandas de la curva de ganancia</p>
+
+![Reporte original de H3 (20 semillas finales): bandas de la curva de ganancia](validacion_20_semillas/figuras/bandas_h3.png)
+
+<p class='nota'>Reporte original de H3 (20 semillas finales): bandas de la curva de ganancia</p>
+
+![Reporte original de H4 (20 semillas finales): bandas de la curva de ganancia](validacion_20_semillas/figuras/bandas_h4.png)
+
+<p class='nota'>Reporte original de H4 (20 semillas finales): bandas de la curva de ganancia</p>
+
+<details markdown="1">
+<summary>Cifras principales</summary>
+
+| cifra | unidad | mediana | mínimo | máximo | n |
+|---|---|---|---|---|---|
+| Δ de ganancia, media de 20 semillas | M$ | -0.6 | -30.75 | 6.38 | 13 |
+| Tiempo reportado | s | 175.00 | 70.00 | 786.00 | 13 |
+| Δ con 20 semillas menos Δ con 10 | M$ | 0.88 | -4.12 | 9.68 | 13 |
+
+</details>
+
+!!! warning "Advertencia"
+    solo los HTML (commits d8f04b2 y ffe5cae): no se puede reproducir; H4_HardNeg usa los hiperparámetros fijos del script de validacion_50_semillas (no es H4H-0.1); los tiempos de h2 no coinciden con los medidos; no cambia ningún veredicto
+
+### validacion_50_semillas
+
+!!! question "Pregunta"
+    ¿Con 50 semillas finales, qué estrategias de las hipótesis 3 y 4 ganan al control y cuántas semillas entran en un presupuesto de 900 s?
+
+**Protocolo.** 9 estrategias con hiperparámetros fijos, 50 semillas finales (10 oficiales + 110017 + i·19937), presupuesto de 900 s; ranking y curva según K en 201908, 201910 solo informado
+
+![Reporte original (50 semillas, hiperparámetros fijos): contracción del IC 95 % de Δ](validacion_50_semillas/figuras/contraccion_ic_95.png)
+
+<p class='nota'>Reporte original (50 semillas, hiperparámetros fijos): contracción del IC 95 % de Δ</p>
+
+![Reporte original (50 semillas, hiperparámetros fijos): ganancia según K y pipeline de 15 minutos](validacion_50_semillas/figuras/curva_k_semillas_y_pipeline_15_min.png)
+
+<p class='nota'>Reporte original (50 semillas, hiperparámetros fijos): ganancia según K y pipeline de 15 minutos</p>
+
+![Reporte original (50 semillas, hiperparámetros fijos): ganancia por estrategia con las 50 semillas](validacion_50_semillas/figuras/boxplot_50_semillas.png)
+
+<p class='nota'>Reporte original (50 semillas, hiperparámetros fijos): ganancia por estrategia con las 50 semillas</p>
+
+![Reporte original (50 semillas, hiperparámetros fijos): bandas de las curvas de ganancia](validacion_50_semillas/figuras/bandas_de_curvas_completas.png)
+
+<p class='nota'>Reporte original (50 semillas, hiperparámetros fijos): bandas de las curvas de ganancia</p>
+
+![Resumen original de 50 semillas: ganancia en 201908 por estrategia](validacion_50_semillas/figuras/g_en_201908_por_estrategia.png)
+
+<p class='nota'>Resumen original de 50 semillas: ganancia en 201908 por estrategia</p>
+
+![Resumen original de 50 semillas: ganancia en 201908 según K](validacion_50_semillas/figuras/g_segun_k.png)
+
+<p class='nota'>Resumen original de 50 semillas: ganancia en 201908 según K</p>
+
+<details markdown="1">
+<summary>Cifras principales</summary>
+
+| cifra | unidad | mediana | mínimo | máximo | n |
+|---|---|---|---|---|---|
+| G en 201908 | M$ | 201.85 | 186.45 | 216.15 | 493 |
+| G máxima en 201908 | M$ | 207.35 | 196.62 | 218.07 | 493 |
+| AUC en 201908 |  | 0.9274 | 0.9236 | 0.9311 | 493 |
+| G en 201910 | M$ | 278.85 | 266.75 | 296.45 | 493 |
+| AUC en 201910 |  | 0.9328 | 0.9304 | 0.9357 | 493 |
+| Tiempo | s | 19.02 | 11.33 | 35.72 | 493 |
+| Puesto en 201908 |  | 5 | 1 | 9 | 9 |
+| G en 201908 | M$ | 201.76 | 196.69 | 207.86 | 9 |
+| Desvío de G en 201908 | M$ | 4.037 | 3.275 | 4.559 | 9 |
+| K que entran en el presupuesto |  | 40 | 4 | 70 | 9 |
+| G del ensamble en 201908 | M$ | 205.15 | 198.55 | 210.65 | 9 |
+| G del ensamble en 201910 | M$ | 281.05 | 278.85 | 284.35 | 9 |
+
+</details>
+
+!!! warning "Advertencia"
+    origen: commit 9e1889e, script de Colab con su propio panel; el resumen original elige con 201910 (ya mirado) y hay piezas reconstruidas (presupuesto, resumen CSV, H4_Hard); no es una variante ni cambia el veredicto de ninguna hipótesis
 
 <!-- /generado:bloque-b -->

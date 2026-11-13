@@ -33,7 +33,11 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 <!-- generado:hallazgo-ensamble -->
 Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
-![](experimentos/sampling_1/figuras/tiempo_igual.svg)
+![Con el tiempo del control (797 s), H4F-0.05 ensambla hasta 294.2 M$; el control con sus 20 semillas llega a 286.6 M$](experimentos/sampling_1/figuras/ensamble.svg)
+
+
+
+![G del ensamble según K: el control con sus 20 semillas llega a 286.6 M$](experimentos/sampling_1/figuras/ensamble_k.svg)
 
 <!-- /generado:hallazgo-ensamble -->
 

@@ -17,6 +17,12 @@ def generar(exp: str, figuras=None) -> tuple[dict[str, str], dict]:
     return plan[0][1], archivos
 
 
+def anexo_de(exp: str) -> dict[str, str]:
+    """Los bloques del Anexo de `exp` (`anexo.md`)."""
+    plan, _, _ = reporte.planificar([exp])
+    return next(b for ruta, b in plan if ruta.name == "anexo.md")
+
+
 def texto(exp: str, figuras=None) -> str:
     return "\n\n".join(generar(exp, figuras)[0].values())
 
@@ -64,7 +70,7 @@ def test_exploratorio_sin_csv_sale_pendiente_con_el_nombre_del_archivo(tmp_path)
     (fila,) = reporte.bloque_b(tmp_path)
     assert fila["cifras"] == ["pendiente: falta resultados/falta.csv"]
     assert fila["advertencia"] == "w"
-    assert "  - pendiente: falta resultados/falta.csv" in reporte.lista_b([fila])
+    assert "- pendiente: falta resultados/falta.csv" in reporte.lista_b([fila])
 
 
 def test_variante_de_una_replica_lleva_la_nota_sin_replicas():
@@ -190,7 +196,9 @@ def test_sin_replicas_los_tres_graficos_salen_pendientes(ronda_anterior, monkeyp
                         lambda exps, n: (*cargar(exps, n)[:2], pd.DataFrame(columns=["variante"]).set_index("variante")))
     bloques = generar(reg.AGREGADOR)[0]
     assert "](figuras/tradeoff.svg)" in bloques["mapa"]
-    assert "class='pend'" in bloques["varianza"] and "class='pend'" in bloques["diferencias"]
+    assert "class='pend'" in bloques["semillas"]
+    anexo = anexo_de(reg.AGREGADOR)
+    assert "class='pend'" in anexo["varianza"] and "class='pend'" in anexo["diferencias"]
 
 
 def _tabla(pagina: str, primera: str) -> str:
@@ -215,12 +223,15 @@ def test_resumen_corto(pagina_s1):
 
 
 def test_resaltado(pagina_s1):
-    resumen = re.search(r"<table><tr><th>variante</th><th>hipótesis</th><th>R</th>.*?</table>", pagina_s1, re.S).group(0)
-    filas = _filas(resumen)
+    tablas = re.findall(r"<table><tr><th>variante</th><th>hipótesis</th><th>R</th>.*?</table>", pagina_s1, re.S)
+    assert len(tablas) == 5  # «Valen la pena» y una pestaña por hipótesis
+    por_tabla = [_filas(t) for t in tablas]
+    filas = {v: c for t in por_tabla[1:] for v, c in t.items()}
     assert "class='sig-neg'" in filas["U0.05"][3]
     assert "<span class='pill pierde'>pierde</span>" in filas["U0.05"][5]
-    for j in (3, 4):
-        assert sum("mejor" in c[j] for c in filas.values()) == 1
+    for t in por_tabla:
+        for j in (3, 4):
+            assert sum("mejor" in c[j] for c in t.values()) <= 1  # uno por tabla: el mejor de esa pestaña
     assert "mejor" in filas["H4F-0.05"][4]
 
 
@@ -338,3 +349,55 @@ def test_tarjetas_leen_el_veredicto_de_las_filas(ronda_anterior):
         filas = [f for f in a["filas"] if f["hipotesis"] == nombre]
         ok = sum(reporte.clase_veredicto(f["veredicto"]) == "ok" for f in filas)
         assert f"{len(filas)} variantes: " in texto and (f"{ok} no pierde" in texto or ok == 0)  # singular o plural
+
+
+def test_anexo_e_inicio_tienen_los_bloques_que_salen_de_resultados(ronda_anterior):
+    plan, _, _ = reporte.planificar([reg.AGREGADOR])
+    por_pagina = {ruta.name if ruta.name != "README.md" else ruta.parent.name: b for ruta, b in plan}
+    assert set(reporte.BLOQUES_ANEXO) <= set(por_pagina["anexo.md"])
+    assert set(reporte.BLOQUES_INICIO) <= set(por_pagina["index.md"])
+    sampling = por_pagina["sampling_1"]
+    assert {"grilla", "desglose", "fraccion", "semillas"} <= set(sampling)
+    assert not {"figuras", "varianza", "diferencias", "bloque-a-completo", "rondas"} & set(sampling)
+    # las figuras de Inicio se enlazan desde la raíz del repo
+    assert "](experimentos/sampling_1/figuras/tradeoff.svg)" in por_pagina["index.md"]["hallazgo-tradeoff"]
+
+
+def _estudio(tmp_path, **datos):
+    import json
+    carpeta = tmp_path / "experimentos" / "sampling_1" / "exploratorios" / "est"
+    (carpeta / "resultados").mkdir(parents=True)
+    (carpeta / "figuras").mkdir()
+    (carpeta / "resultados" / "r.csv").write_text("g,t\n300000000,10\n310000000,20\n")
+    base = dict(autor="Fulano", fecha="2026-11-04", pregunta="¿Cambia?", protocolo="q", advertencia="w")
+    base.update(datos)
+    (carpeta / "exploratorio.json").write_text(json.dumps(base))
+    return carpeta
+
+
+def test_bloque_b_pregunta_figuras_cifras_y_advertencia_en_su_forma(tmp_path):
+    _estudio(tmp_path, figuras=[dict(archivo="figuras/a.png", leyenda="Reporte original: bandas")],
+             tablas=[dict(csv="resultados/r.csv", columnas=[dict(columna="g", etiqueta="G en 201908", escala=1e-6, unidad="M$"),
+                                                            "t"])])
+    texto_b = reporte.lista_b(reporte.bloque_b(tmp_path))
+    assert '!!! question "Pregunta"\n    ¿Cambia?' in texto_b and '!!! warning "Advertencia"\n    w' in texto_b
+    assert "![Reporte original: bandas](est/figuras/a.png)" in texto_b and "Reporte original: bandas</p>" in texto_b
+    assert "<summary>Cifras principales</summary>" in texto_b
+    assert "| G en 201908 | M$ | 305.00 | 300.00 | 310.00 | 2 |" in texto_b   # columna con escala y unidad
+    assert "| r.csv, t |  | 15 | 10 | 20 | 2 |" in texto_b                       # columna declarada como texto: sigue valiendo
+    assert "Fulano" not in texto_b
+
+
+def test_bloque_b_figura_generada_desde_un_csv_sale_como_archivo_y_pendiente_sin_csv(tmp_path):
+    _estudio(tmp_path, figuras=[dict(csv="resultados/r.csv", columna="g", escala=1e-6, unidad="M$", leyenda="Δ por muestra"),
+                                dict(csv="resultados/falta.csv", columna="g", leyenda="x")], tablas=[])
+    reporte.DESTINO = reporte.Destino(tmp_path / "experimentos" / "sampling_1" / "figuras")
+    try:
+        (fila,) = reporte.bloque_b(tmp_path)
+        archivos = dict(reporte.DESTINO.archivos)
+    finally:
+        reporte.DESTINO = None
+    (generada, _), (sin_csv, _) = fila["figuras"]
+    assert "![Δ por muestra](figuras/est.svg)" in generada and "class='pend'" in sin_csv
+    destino = tmp_path / "experimentos" / "sampling_1" / "exploratorios" / "figuras" / "est.svg"
+    assert b"<svg" in archivos[destino]

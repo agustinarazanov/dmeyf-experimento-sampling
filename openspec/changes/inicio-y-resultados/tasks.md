@@ -30,7 +30,7 @@
   estaban los viejos. Verificar con `pytest tests/test_reporte.py tests/test_verificadores.py`, con
   `python -m comun.reporte --todos` dos veces (la segunda sin cambios), con `python -m scripts.verificar_readme` y con
   que las tablas completas del Anexo coinciden con las de `git show HEAD~:experimentos/sampling_1/README.md`.
-- [ ] 1.4 Cargar la skill `dataviz`. Figuras nuevas de D3:
+- [x] 1.4 Cargar la skill `dataviz`. Figuras nuevas de D3:
   - ensamble según K y según el tiempo;
   - cajas por semilla, dentro de `semillas_replicas`;
   - IC por ronda;
@@ -44,7 +44,7 @@
   `etiqueta`, `escala` y `unidad` (D4). `sensibilidad_muestra` declara una figura generada desde su CSV. Verificar con
   correr el script dos veces sin cambios en `git status`, y con `python -m comun.variantes --verificar`, que falla si se
   borra una figura declarada (test en `tests/test_variantes.py`).
-- [ ] 1.6 Bloque B (`comun/reporte.py`), una sección por estudio:
+- [x] 1.6 Bloque B (`comun/reporte.py`), una sección por estudio:
   - la pregunta en `!!! question`;
   - el protocolo;
   - las figuras con su leyenda;
@@ -55,7 +55,7 @@
   CSV, bloque B sin autor, columna con escala) y con `mkdocs build`: las imágenes de los estudios resuelven en `site/`.
 - [ ] 1.7 Revisión en sesión limpia del grupo 1 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1` y
   `comun/tokens.py`.
-- [ ] 1.8 Tablas de resultado (D9), en `comun/reporte.py` y los verificadores:
+- [x] 1.8 Tablas de resultado (D9), en `comun/reporte.py` y los verificadores:
   - el bloque `resultado` de cada `hN/README.md` va sin columna «hipótesis»;
   - sin columna «semillas» cuando todas las filas tienen las mismas, con la línea debajo de la tabla;
   - semillas ganadas como barrita de proporción con su número;
@@ -64,7 +64,7 @@
 
   Verificar con el escenario «Tabla de una hipótesis sin redundancias», con `pytest` (incluye un test con semillas
   distintas: la columna vuelve) y con los dos verificadores.
-- [ ] 1.9 Figuras (D10, D14):
+- [x] 1.9 Figuras (D10, D14):
   - `tradeoff.svg` en dos paneles con una fila por variante;
   - `ANCHO` menor;
   - las curvas contra clientes contactados siempre en dos columnas de paneles;

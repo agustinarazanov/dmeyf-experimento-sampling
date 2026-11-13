@@ -175,3 +175,21 @@
 .md-typeset td.sig-neg .icbar::before { background: var(--c-neg); }
 
 .md-typeset p.nota { font-size: 0.85em; color: var(--c-muted); margin-top: 0.25rem; }
+
+/* Barrita de proporción (semillas ganadas sobre el total): --p es el ancho lleno. */
+.md-typeset .prop {
+  display: block;
+  position: relative;
+  min-width: 4rem;
+  height: 6px;
+  margin-top: 3px;
+  background: var(--c-icbar-bg);
+}
+
+.md-typeset .prop::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--p);
+  background: var(--c-pos);
+}
