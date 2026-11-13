@@ -62,7 +62,8 @@ if [ -n "$EN_SECO" ]; then
     for l in $c; do
       r=$(ruta_lista "$l")
       est=$(grep -vc '^[[:space:]]*\(#\|$\)' "$r" || true)
-      opt=$(grep -c ' optimizar ' "$r" || true); fin=$(grep -c ' final ' "$r" || true); mod=$(grep -c '^@ ' "$r" || true)
+      opt=$(grep -v '^#' "$r" | grep -c ' optimizar ' || true); fin=$(grep -v '^#' "$r" | grep -c ' final ' || true)
+      mod=$(grep -c '^@ ' "$r" || true)
       echo "   $l -> VM $(nombre_vm "$l"), log $EXP/ledger/sesiones/vm_$(nombre_corto "$l").log: $est líneas ($opt estudios, $fin finales, $mod módulos)"
     done
   done
