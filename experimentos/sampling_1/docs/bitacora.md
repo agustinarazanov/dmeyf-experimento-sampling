@@ -1860,3 +1860,44 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   `_config.yml`, `_sass/` y `Gemfile*` siguen en la raíz hasta 4.1 (los `reporte.html` y las carpetas `informe/` ya se
   borraron con cada README), y los
   comentarios de `comun/` que nombran `docs/hipotesis.md` o `docs/diseno.md` los revisa el `git grep` de 4.1.
+
+### 13-nov-2026 · sitio-legible grupo 3 · revisión en sesión limpia (tarea 3.11)
+
+- Sesión: `ffaa4e11` (headless, sin contexto de la sesión que aplicó) · modelo: Opus · etapa: **revision**. Revisor:
+  Claude (Opus). Lista: `docs/revision.md` § 5 sobre los README nuevos (`control`, `h1`–`h4`, `sampling_1`, corridas,
+  exploratorios, `index.md`, `sitio/*.md`, `docs/metodo.md`) y `sampling_1/docs/guion.md`, más las verificaciones de
+  3.1–3.10. `tasks.md` no tenía tarea de revisión para el grupo 3: se agregó como 3.11.
+- Comandos: `python -m comun.variantes --verificar` sin `PROBLEMA`; `python -m scripts.verificar_readme` ✓;
+  `python -m scripts.verificar_informe_h3` (623 números, 0 sin fuente) y con `--informe` sobre cada `hN/README.md` (60,
+  56, 296 y 211 números, 0 sin fuente); `scripts/sitio.sh` construye sin advertencias y sin nombres;
+  `python -m pytest`: 258 passed (6 min 38 s).
+- Lista § 5:
+  - ✓ Decisión con la regla escrita: las reglas de H1 en § Predicción son idénticas a las de
+    `git show 6fcc1e6~:experimentos/h1/docs/hipotesis.md`, y los veredictos del texto coinciden con el bloque A (12 de
+    21 valen la pena: ocho H3, tres de fast-retrain y `U0.5`). Los commits citados en cada callout de Predicción
+    (`2f05cae`, `7c34254`, `ca60a45`, `d9d9303`, `c390beb`, `159ee0d`, `9e1889e`) existen, con la fecha y el contenido
+    que se les atribuye.
+  - ✗ → ✓ Afirmaciones con fuente: los verificadores no encuentran números sin fuente. Las 21 `CONSTANTES` que sumó
+    3.7 a `verificar_informe_h3.py` se buscaron en los `docs/` viejos (`git grep` en `ad4884a`): salen de las
+    predicciones y los diseños de h3 y h4, no tapan cifras de resultado. **Corregido**: § Comparación entre hipótesis
+    › AUC y ganancia decía que «las variantes de H3» tienen ΔAUC negativo (venía del `informe.md` viejo), pero
+    `H3L-0.25` (+0,0004) y `H3R-0.25` (+0,0000) no; ahora dice «negativo o cercano a 0» y las nombra.
+  - ✓ Refutaciones y empates con el mismo peso: H2 refutada, búsqueda informada de H4 refutada, H1 ninguna de las dos,
+    GOSS indeterminado, en Resultados, en cada Veredicto y en el guion.
+  - ✓ Limitaciones: réplicas solo en parte de las variantes y semillas, un solo mes de test (§ Limitaciones comunes) y la
+    adaptación de H2 (`h2/README.md` § Limitaciones y § Predicción, como adaptación declarada).
+  - ✓ Guion (`docs/guion.md`): estructura de hipótesis, diseño, limitaciones, resultados y conclusiones en 10 minutos;
+    nombra el baseline sin explicarlo. Las figuras que nombra existen como SVG en `figuras/` con el mismo nombre que
+    escribe `--figuras`. Tiene nombres de integrantes, pero no se publica.
+  - ✓ Bibliografía en `sampling_1/README.md` § Bibliografía.
+- Otros: ningún nombre de docente ni integrante en las páginas publicadas (`nombres_sitio.py` y `grep`). 3.6 declara
+  en un callout de Predicción que las variantes de H4 salen de mirar 201910.
+- Observación sin corregir (para 4.2): el escenario «Abrir Hipótesis» pide, en cada tarjeta, la idea en una línea y el
+  veredicto. Las tarjetas generadas tienen el título (que funciona como idea) y el conteo de veredictos de las variantes,
+  pero no «confirmada/refutada». Eso es texto escrito a mano en cada README, y el generador es del grupo 2. No lo cuento
+  como ✗ de esta lista; lo decide el recorrido de 4.2.
+- Sin ✗ abiertos: la etapa cierra.
+- `comun/tokens.py --experimento sampling_1` corrido. Siguen sin etapa las sesiones de otros días ya listadas en la
+  revisión del grupo 2 (y `4d587e21`, 118 turnos, ~212.000, que supera el objetivo y no es de esta revisión).
+- Tokens: ~35 turnos · contexto ~85.000 por turno · ≈ US$ 1,6.
+- Tutor: —

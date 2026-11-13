@@ -106,9 +106,9 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 envíos;
 - **Vale la pena** (no pierde y A ≥ 2): las ocho variantes de H3, las de fast-retrain (`H4F-0.05`, `H4F-0.25` y
   `H4O-0.5`) y, en esta ronda, `U0.5` (A = 2,25). Ninguna de H2 (las que no pierden, `B0.25` y `B0.5`, tienen A < 2) ni de
   la búsqueda informada de H4, que pierde. La predicción acertó con H3 y falló con `U0.25`.
-- **AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). Las variantes de H3 y `H4F-0.05` tienen ΔAUC
-  negativo con Δ de ganancia positivo: en `H3-0.1` la caída de AUC es distinguible de 0 y la ganancia no. En GOSS va al
-  revés. El AUC mide el orden de todos los clientes; G, solo los 3.300 de arriba. En H1, `B0.1` y la búsqueda informada
+- **AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). En H3 y `H4F-0.05` el ΔAUC es negativo o cercano a
+  0 (`H3L-0.25` y `H3R-0.25`) mientras la ganancia no pierde: en `H3-0.1` la caída de AUC es distinguible de 0 y el Δ de
+  ganancia no. En GOSS va al revés. El AUC mide el orden de todos los clientes; G, solo los 3.300 de arriba. En H1, `B0.1` y la búsqueda informada
   de H4 las dos bajan juntas.
 
 ### Varianza entre réplicas y entre semillas

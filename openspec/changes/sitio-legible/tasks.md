@@ -82,6 +82,8 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
   Verificar con el escenario «Llegar a una bitácora».
 - [x] 3.10 README raíz recortado (qué es, enlace al sitio, cómo correr, estructura) e impersonal; `CLAUDE.md` con el mapa de
   archivos nuevo. Verificar con `python -m scripts.verificar_readme` y con la búsqueda de nombres de D8.
+- [x] 3.11 Revisión en sesión limpia del grupo 3 con `docs/revision.md` § 5 (y las verificaciones de 3.1–3.10), cierre
+  en la bitácora de `sampling_1` y `comun/tokens.py`.
 
 ## 4. Limpieza e integración (sesión: Sonnet)
 
