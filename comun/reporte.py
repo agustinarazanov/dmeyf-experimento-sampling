@@ -57,6 +57,13 @@ COLOR_VEREDICTO = {"pierde": "#c0392b", "ok": "#2e8b57", "ind": "#b8860b", "pend
 NOMBRE_VEREDICTO = {"ok": "no pierde", "pierde": "pierde", "ind": "indeterminado", "pend": "pendiente"}
 
 
+def _idea_hipotesis(e: str) -> str:
+    """La línea «qué se prueba» del README de `e` (el primer párrafo después del título), o "" si no migró."""
+    readme = rutas.experimento(e) / "README.md"
+    m = re.search(r"\A# H\d+[^\n]*\n\n(.+?)(?:\n\n|\Z)", readme.read_text(), re.S) if readme.exists() else None
+    return " ".join(m.group(1).split()) if m else ""
+
+
 def _titulo_hipotesis(e: str) -> tuple[str, str]:
     """(`H1`, título) del experimento `e`: del `# H1 · título` de su README y, mientras no migró, del `## H1 — título`
     de `docs/hipotesis.md`."""
@@ -226,7 +233,8 @@ def g_control(fin: pd.DataFrame, ap: pd.DataFrame) -> float | None:
 
 # --- figuras ---
 
-plt.rcParams.update({"svg.hashsalt": "sampling_1", "svg.fonttype": "none", "font.family": "sans-serif"})
+# Las figuras miden ANCHO = 12 pulgadas y se muestran a ~750 px: el texto va en 11 a 14 pt para leerse a ~10 px.
+plt.rcParams.update({"svg.hashsalt": "sampling_1", "svg.fonttype": "none", "font.family": "sans-serif", "font.size": 12})
 
 
 class Destino:
@@ -827,7 +835,7 @@ def _ejes(*axs) -> None:
 
 def _filas_por_variante(ax, filas: list[dict], etiquetas: list[str], *otros) -> None:
     """Una fila por variante, de arriba hacia abajo, con una línea fina entre hipótesis."""
-    ax.set_yticks(range(len(filas)), etiquetas, fontsize=8)
+    ax.set_yticks(range(len(filas)), etiquetas, fontsize=11)
     ax.invert_yaxis()
     for i in range(1, len(filas)):
         if filas[i]["hipotesis"] != filas[i - 1]["hipotesis"]:
@@ -864,16 +872,21 @@ def _etiquetas_sin_pisar(ax, puntos: list[tuple[float, float]], textos: list[str
     pos: list = [None] * len(pts)
     for g in grupos:
         if len(g) == 1:
-            pos[g[0]] = (pts[g[0]][0] + 0.012, pts[g[0]][1])
+            px, py = pts[g[0]]
+            pos[g[0]] = (px - 0.03, py) if px > 0.85 else (px + 0.012, py)
             continue
         x = max(pts[j][0] for j in g) + 0.03
         centro = sum(pts[j][1] for j in g) / len(g)
+        # Si otro punto ocupa el lugar de la columna a la derecha, la columna va a la izquierda del grupo.
+        if any(j not in g and -0.01 < pts[j][0] - x < 0.12 and abs(pts[j][1] - centro) < (len(g) / 2 + 1) * alto
+               for j in range(len(pts))):
+            x = min(pts[j][0] for j in g) - 0.03
         for k, j in enumerate(sorted(g, key=lambda j: -pts[j][1])):
             pos[j] = (x, centro + (len(g) / 2 - k - 0.5) * alto)
     for i, (lx, ly) in enumerate(desplazar_dentro(pos, alto, ancho)):
         (px, py), t = pts[i], textos[i]
-        der = lx > 0.9
-        ax.annotate(t, puntos[i], xytext=(lx - 0.012 if der else lx, ly), textcoords="axes fraction", fontsize=8,
+        der = lx < px or lx > 0.9
+        ax.annotate(t, puntos[i], xytext=(lx - 0.012 if lx > 0.9 and lx >= px else lx, ly), textcoords="axes fraction", fontsize=11,
                     color=TINTA, va="center", ha="right" if der else "left",
                     arrowprops=dict(arrowstyle="-", color="#aaaaaa", lw=0.6, shrinkA=1, shrinkB=4,
                                     relpos=(1.0 if der else 0.0, 0.5)) if (lx - px > 0.02 or abs(ly - py) > 1e-9) else None)
@@ -891,9 +904,9 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
     aes = [f["A"] for f in filas]
     lo, hi = min(min(i[1] for i in ics), -d_m), max(max(i[2] for i in ics), 0.0)
     pad = 0.08 * (hi - lo)
-    fig, ax = plt.subplots(figsize=(ANCHO, 5.8))
+    fig, ax = plt.subplots(figsize=(ANCHO, 7.0))
     ax.set_xscale("log")
-    ax.set_xlim(min(min(aes), 1) / 1.35, max(max(aes), A_VALE) * 1.35)
+    ax.set_xlim(min(min(aes), 1) / 1.35, max(max(aes), A_VALE) * 1.8)  # margen derecho para las etiquetas
     ax.set_ylim(lo - pad, hi + pad)
     ax.axhspan(-d_m, hi + pad, color=COLOR_VEREDICTO["ok"], alpha=0.07, lw=0)
     ax.axhline(0, color=COLOR_C, lw=0.8)
@@ -915,7 +928,7 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
                   f"la más rápida entre ellas es {mejor['variante']} ({mejor['A']:.1f}×)")
     else:
         titulo = f"Ninguna de las {len(filas)} variantes no pierde y acelera {A_VALE:g}× o más"
-    fig.suptitle(titulo, fontsize=11, x=0.01, ha="left")
+    fig.suptitle(titulo, fontsize=14, x=0.01, ha="left")
     ax.set_xlabel("aceleración A = T(C) / T (escala log; a la derecha, más rápida)")
     ax.set_ylabel("Δ contra el control (M$, IC 95%); arriba, mejor")
     ax.set_xticks([x for x in (0.5, 1, 2, 5, 10, 20, 50) if ax.get_xlim()[0] <= x <= ax.get_xlim()[1]],
@@ -927,8 +940,8 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
                + ([Line2D([], [], color=COLOR_C, lw=6, alpha=0.3)] if any(f["dR"] for f in filas) else []),
                nombres + ["−δ (debajo, pierde; sombreado: no pierde)", "A = 1 (como el control)"]
                + (["rango entre réplicas"] if any(f["dR"] for f in filas) else []),
-               frameon=False, fontsize=8, loc="lower center", ncol=6)
-    fig.tight_layout(rect=(0, 0.06, 1, 0.96))
+               frameon=False, fontsize=11, loc="lower center", ncol=3)
+    fig.tight_layout(rect=(0, 0.12, 1, 0.95))
     return figura(fig, nombre, figuras, ajustar=False)
 
 
@@ -959,10 +972,10 @@ def fig_fraccion(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     ax.minorticks_off()
     peor = min((x for p in familias.values() for x in p), key=lambda x: x[1])
     fig.suptitle(f"Δ contra la fracción de muestra: el punto más bajo es {peor[4]} ({peor[1] / 1e6:+.1f} M$), "
-                 f"{'por debajo de' if peor[1] / 1e6 < -d_m else 'dentro de'} −δ", fontsize=11, x=0.01, ha="left")
+                 f"{'por debajo de' if peor[1] / 1e6 < -d_m else 'dentro de'} −δ", fontsize=14, x=0.01, ha="left")
     ax.set_xlabel("fracción de la muestra (escala log); banda: IC 95% de Δ")
     ax.set_ylabel("Δ contra el control (M$)")
-    ax.legend(frameon=False, fontsize=8, ncol=min(len(familias) + 1, 4), loc="upper center",
+    ax.legend(frameon=False, fontsize=11, ncol=min(len(familias) + 1, 4), loc="upper center",
               bbox_to_anchor=(0.5, -0.14))
     _ejes(ax)
     return figura(fig, "fraccion", figuras)
@@ -982,14 +995,14 @@ def fig_desglose(ctx: Contexto, a: dict, figuras: Path | None) -> str:
         v = np.array([r[clave] for r in d])
         ax.bar(x, v, bottom=base, width=0.72, color=color, edgecolor="white", linewidth=1.2, label=etiqueta)
         base += v
-    ax.set_xticks(x, [r["variante"] for r in d], rotation=60, ha="right", fontsize=8)
+    ax.set_xticks(x, [r["variante"] for r in d], rotation=60, ha="right", fontsize=11)
     c, corta = d[0], min(d[1:], key=lambda r: r["optimizacion"])
     t_c = c["optimizacion"] + c["final"] + c["resto"]
     fig.suptitle(f"En el control la optimización es el {100 * c['optimizacion'] / t_c:.0f} % de T ({c['optimizacion']:.0f} s "
                  f"de {t_c:.0f} s); la variante con la optimización más corta, {corta['variante']}, la baja a "
-                 f"{corta['optimizacion']:.0f} s", fontsize=11, x=0.01, ha="left")
+                 f"{corta['optimizacion']:.0f} s", fontsize=14, x=0.01, ha="left")
     ax.set_ylabel("tiempo T de la réplica 0 (s)")
-    ax.legend(frameon=False, fontsize=8, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.22))
+    ax.legend(frameon=False, fontsize=11, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.22))
     _ejes(ax)
     return figura(fig, "desglose_tiempo", figuras)
 
@@ -1015,7 +1028,7 @@ def fig_semillas(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     _filas_por_variante(ax, filas, [_etiqueta(f) for f in filas])
     amplio = max(filas, key=lambda f: np.ptp(s[f["variante"]]["semillas"]))
     fig.suptitle(f"Cada punto es una semilla: la dispersión entre semillas llega a "
-                 f"{np.ptp(s[amplio['variante']]['semillas']) / 1e6:.1f} M$ ({amplio['variante']})", fontsize=11, x=0.01,
+                 f"{np.ptp(s[amplio['variante']]['semillas']) / 1e6:.1f} M$ ({amplio['variante']})", fontsize=14, x=0.01,
                  ha="left")
     ax.set_xlabel("Δ contra la misma semilla del control (M$); punteada: −δ")
     marcas = [Line2D([], [], color=COLOR_C, marker="o", ms=4, ls="")]
@@ -1023,7 +1036,7 @@ def fig_semillas(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     if hay_rep:
         marcas.append(Line2D([], [], color=COLOR_C, marker="D", mfc="white", ls=""))
         nombres.append("réplica de Optuna (media de sus semillas)")
-    fig.legend(marcas, nombres, frameon=False, fontsize=8, ncol=2, loc="lower center")
+    fig.legend(marcas, nombres, frameon=False, fontsize=11, ncol=2, loc="lower center")
     fig.tight_layout(rect=(0, 0.04, 1, 0.96))
     _ejes(ax)
     return figura(fig, "semillas_replicas", figuras, ajustar=False)
@@ -1048,12 +1061,12 @@ def fig_grilla(ctx: Contexto, a: dict, figuras: Path | None) -> str:
         c = clase_veredicto(fs[0]["veredicto"]) or "pend"
         ax.add_patch(Rectangle((j - 0.46, i - 0.46), 0.92, 0.92, facecolor=COLOR_VEREDICTO[c], alpha=0.25, lw=0))
         ax.text(j, i, "\n".join(f"{f['variante']}\n{NOMBRE_VEREDICTO[clase_veredicto(f['veredicto']) or 'pend']}"
-                                for f in fs), ha="center", va="center", fontsize=8, color=TINTA)
+                                for f in fs), ha="center", va="center", fontsize=11, color=TINTA)
     ax.set_xlim(-0.5, len(tasas) - 0.5)
     ax.set_ylim(len(metodos) - 0.5, -0.5)
     ax.set_xticks(range(len(tasas)), [f"{t:g}" for t in tasas])
     ax.set_yticks(range(len(metodos)), [f"{m} ({celdas[next(k for k in celdas if k[0] == m)][0]['hipotesis']})"
-                                        for m in metodos], fontsize=8)
+                                        for m in metodos], fontsize=11)
     ax.set_xlabel("fracción de la muestra")
     ax.tick_params(length=0)
     ax.spines[:].set_visible(False)
@@ -1061,7 +1074,7 @@ def fig_grilla(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     total = sum(len(fs) for fs in celdas.values())
     pend = total - sum(cuenta.values())
     fig.suptitle(f"De {total} variantes: no pierden {cuenta['ok']}, pierden {cuenta['pierde']}, indeterminadas "
-                 f"{cuenta['ind']}, pendientes {pend}", fontsize=11, x=0.01, ha="left")
+                 f"{cuenta['ind']}, pendientes {pend}", fontsize=14, x=0.01, ha="left")
     return figura(fig, "grilla_veredictos", figuras)
 
 
@@ -1102,7 +1115,7 @@ def fig_rondas(ctx: Contexto, a: dict, figuras: Path | None, anterior: pd.DataFr
         titulo = f"La mayor diferencia entre rondas es la de {v}: Δ cambia {dd:+.1f} M$"
     else:
         titulo = "Ninguna variante tiene ronda anterior para comparar"
-    fig.suptitle(titulo, fontsize=11, x=0.01, ha="left")
+    fig.suptitle(titulo, fontsize=14, x=0.01, ha="left")
     ax.set_xlabel("Δ apareado de la réplica 0 contra el control (M$); hueco: ronda anterior, lleno: vigente")
     _ejes(ax)
     return figura(fig, "rondas", figuras)
@@ -1160,7 +1173,7 @@ def fig_curva_diferencia(ctx: Contexto, h: str, fin: pd.DataFrame, ap: pd.DataFr
     resumen = ", ".join(debajo[:3]) + ("…" if len(debajo) > 3 else "")
     fig.suptitle(f"{h}: en N* = {n_est:,} envíos, {len(debajo)} de {len(difs)} variantes quedan por debajo del control"
                  + (f" ({resumen})" if debajo else "") + "; línea: mediana, banda: mín–máx entre semillas",
-                 fontsize=11, x=0.01, ha="left")
+                 fontsize=14, x=0.01, ha="left")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
     return figura(fig, f"curva_diferencia_{h}", figuras, ajustar=False)
 
@@ -1209,7 +1222,7 @@ def fig_tiempo_igual_ic(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     ax.legend([Line2D([], [], color=PALETA[0], marker="o", ls=""),
                Line2D([], [], color=PALETA[1], marker="s", mfc="white", ls="")],
               ["réplicas (IC t; cada réplica contra Ḡ_C de su réplica)", "bootstrap de clientes (réplica 0)"],
-              frameon=False, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.32 * len(filas) + 1.8)),
+              frameon=False, fontsize=11, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.32 * len(filas) + 1.8)),
               ncol=2)
     ax.set_xlabel(f"G del ensamble de K semillas en {MES} − Ḡ_C (M$)")
     intervalos = [t for _, r, b in filas for t in (r or b,)]
@@ -1236,10 +1249,10 @@ def fig_diferencias(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     margen = "delta_g_margen" in r and r["delta_g_margen"].notna().any()
     if margen:
         ax.axvline(-r["delta_g_margen"].dropna().iloc[0] / 1e6, color=COLOR_C, ls=":", lw=1)
-    ax.set_yticks(range(len(r)), list(r.index), fontsize=8)
+    ax.set_yticks(range(len(r)), list(r.index), fontsize=11)
     ax.invert_yaxis()
     ax.legend([Line2D([], [], color=COLOR_VEREDICTO[c], marker="o", ls="") for c in textos], list(textos.values()),
-              frameon=False, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.4 * len(r) + 1.6)),
+              frameon=False, fontsize=11, loc="upper center", bbox_to_anchor=(0.5, -0.06 - 1.2 / (0.4 * len(r) + 1.6)),
               ncol=len(textos))
     ax.set_xlabel("Δ entre variantes (M$), IC entre réplicas" + ("; punteada: −δ" if margen else ""))
     ax.set_title(f"{sum(not (lo <= 0 <= hi) for lo, hi in zip(r['delta_g_ic_inf'], r['delta_g_ic_sup']))} de {len(r)} "
@@ -1566,7 +1579,9 @@ def tarjetas(a: dict, ctx: Contexto, prefijo: str) -> str:
             if rapidas:
                 mejor = max(rapidas, key=lambda f: f["A"])
                 resumen += f" La más rápida que no pierde: {mejor['variante']} ({mejor['A']:.1f}×)."
-        out.append(f"-   **[{nombre} · {titulo}]({prefijo}experimentos/{e}/README.md)**\n\n    ---\n\n    {resumen}\n")
+        idea = _idea_hipotesis(e)
+        out.append(f"-   **[{nombre} · {titulo}]({prefijo}experimentos/{e}/README.md)**\n\n    ---\n\n"
+                   + (f"    {idea}\n\n" if idea else "") + f"    {resumen}\n")
     out.append("</div>")
     return "\n".join(out)
 
