@@ -90,7 +90,7 @@ borrar los archivos fundidos y correr `python -m comun.variantes --verificar`, `
 - [ ] 4.1 Borrar `_config.yml`, `_sass/`, `Gemfile`, `Gemfile.lock`, `_site/`, los `reporte.html` y las carpetas
   `informe/` que queden. Verificar que `git grep -nE "informe/(informe|reporte|tabla_resultados)|docs/(hipotesis|diseno)\.md"`
   no tiene resultados fuera de `openspec/changes/archive/`, la bitácora y los scripts de una sola vez de D9.
-- [ ] 4.2 Integración: `pytest`, `python -m comun.variantes --verificar`, `python -m scripts.verificar_readme`,
+- [x] 4.2 Integración: `pytest`, `python -m comun.variantes --verificar`, `python -m scripts.verificar_readme`,
   `verificar_informe_h3.py` sobre los cuatro README de hipótesis y `scripts/sitio.sh`, todo en verde. Recorrer el sitio en
   `mkdocs serve` contra los escenarios de `sitio-informes`: ~12 páginas en la barra, índice a la derecha, cada
   resultado en una sola página, sin nombres y sin doble recuadro.

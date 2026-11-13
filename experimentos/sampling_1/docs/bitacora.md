@@ -1901,3 +1901,34 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   revisión del grupo 2 (y `4d587e21`, 118 turnos, ~212.000, que supera el objetivo y no es de esta revisión).
 - Tokens: ~35 turnos · contexto ~85.000 por turno · ≈ US$ 1,6.
 - Tutor: —
+
+### 13-nov-2026 · sitio-legible grupo 4 · aplicar (tareas 4.1 y 4.2)
+
+- Etapa: **codigo** (Sonnet, headless). 4.1: se borraron `_config.yml`, `_sass/`, `Gemfile`, `Gemfile.lock`, `_site/` y
+  `.jekyll-cache/` (no había `reporte.html` ni carpetas `informe/` versionados). Se corrigieron los comentarios de
+  `comun/{baseline,ganancia,ledger,metodos,variantes}.py` y las rutas de `h3/sensibilidad_muestra`; el cambio en `comun/`
+  es solo de comentarios. **4.1 queda sin marcar**: el `git grep` de la tarea todavía da resultados que no son bitácora,
+  `archive` ni scripts de una sola vez, y arreglarlos pide una decisión que no es de este grupo:
+  - `comun/reporte.py` (7) conserva la salida vieja (página Jekyll `informe/reporte.html` y `tabla_resultados.md`) para
+    los README sin marcadores; `main()` y `tests/test_reporte.py` la usan. Borrarla es quitar código con tests.
+  - `comun/variantes.py` (3) y `tests/test_variantes.py` (1) nombran `docs/diseno.md` a propósito (el escenario de
+    `dependencias-entre-experimentos` pide fallar si existe uno con § Dependencias).
+  - `openspec/specs/*` (28) se actualiza al archivar `sitio-legible` (consolidación de specs).
+  - Procedencia histórica (commits donde se fijó cada predicción): READMEs de control, h1, h2, h3 y sampling_1;
+    `sampling_1/docs/rutas.md` (mapa de rutas viejas a nuevas); `exploratorios/validacion_20_semillas/README.md`
+    (compara con el informe original). `docs/revision.md` y `docs/metodo.md` nombran `docs/hipotesis.md` y
+    `docs/diseno.md` como las etapas de la plantilla vieja: los revisa la sesión de revisión.
+- 4.2, verificaciones (todo en verde): `python -m pytest` 258 passed (6 min 33 s; con `pytest` a secas no encuentra
+  `comun`); `python -m comun.variantes --verificar`; `python -m scripts.verificar_readme` (13 enlaces);
+  `verificar_informe_h3 --informe` sobre h1, h2, h3 y h4 (0 sin fuente); `scripts/sitio.sh` sale con 0 y
+  `scripts/nombres_sitio.py` sin hallazgos.
+- 4.2, recorrido estructural en `site/` (sin navegador): 12 páginas (Inicio, Resultados, Hipótesis, H1–H4, Cómo medimos,
+  Control y reglas, Corridas, Exploratorios, Cómo trabajamos) en el nav de cinco secciones; las 12 tienen
+  `md-sidebar--secondary`; la tabla del bloque A (columna `R`) está en una sola página, Resultados (`U0.25` sale en
+  Resultados y en la tabla de resultado de H1, que tiene otras columnas); ninguna página tiene `table-wrapper` propio ni
+  una `<table>` dentro de otra; sin nombres. Tarjetas de `sitio/hipotesis.md`: título, idea en una línea y conteo de
+  veredictos (la «más rápida que no pierde»), lo que cierra la observación del grupo 3.
+- Limitación para 4.2: `sitio/hipotesis.md` y `sitio/como-medimos.md` tienen un solo encabezado, así que su índice
+  lateral está vacío (el panel existe). Lo visual no se miró: Teléfono, doble recuadro a 1280 px de las tablas fuera de
+  Resultados, H2–H4 y Cómo medimos (el orquestador vio Inicio, H1 y las figuras de Resultados).
+- Tokens: no se corrió `comun/tokens.py` en esta sesión.
