@@ -39,7 +39,7 @@
   Cada una lleva su título generado, sale pendiente sin datos y tiene un test. Verificar con
   `pytest tests/test_reporte.py`, con regenerar dos veces sin cambios en los SVG, y con un test que comprueba que el
   ensamble de K = 20 del control coincide con «ensamble de 20 semillas del control» del bloque `tiempo-igual`.
-- [ ] 1.5 `scripts/extraer_figuras_exploratorios.py` (de una sola vez, determinista) guarda los nueve PNG de los reportes
+- [x] 1.5 `scripts/extraer_figuras_exploratorios.py` (de una sola vez, determinista) guarda los nueve PNG de los reportes
   HTML en `<estudio>/figuras/`. Los tres `exploratorio.json` suman `figuras` con su leyenda (sin autor) y columnas con
   `etiqueta`, `escala` y `unidad` (D4). `sensibilidad_muestra` declara una figura generada desde su CSV. Verificar con
   correr el script dos veces sin cambios en `git status`, y con `python -m comun.variantes --verificar`, que falla si se

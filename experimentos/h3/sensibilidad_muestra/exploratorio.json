@@ -5,7 +5,54 @@
   "protocolo": "20 configuraciones al azar, 10 muestras del 25 %, una semilla final, float64, 4 hilos",
   "advertencia": "10 muestras pero 4 modelos distintos; un solo 201910; no comparable 1:1 con H3-0.25",
   "tablas": [
-    {"csv": "resultados/08_ganancia_por_semilla.csv", "columnas": ["delta", "delta_pct"]},
-    {"csv": "resultados/07_resumen_por_semilla.csv", "columnas": ["delta", "spearman_seleccion", "tiempo_busqueda_s"]}
+    {
+      "csv": "resultados/08_ganancia_por_semilla.csv",
+      "columnas": [
+        {
+          "columna": "delta",
+          "etiqueta": "Δ de ganancia contra el control",
+          "escala": 1e-06,
+          "unidad": "M$"
+        },
+        {
+          "columna": "delta_pct",
+          "etiqueta": "Δ de ganancia contra el control",
+          "escala": 1,
+          "unidad": "%"
+        }
+      ]
+    },
+    {
+      "csv": "resultados/07_resumen_por_semilla.csv",
+      "columnas": [
+        {
+          "columna": "delta",
+          "etiqueta": "Δ de AUC final contra el control",
+          "escala": 1,
+          "unidad": ""
+        },
+        {
+          "columna": "spearman_seleccion",
+          "etiqueta": "Correlación de Spearman de la selección",
+          "escala": 1,
+          "unidad": ""
+        },
+        {
+          "columna": "tiempo_busqueda_s",
+          "etiqueta": "Tiempo de búsqueda",
+          "escala": 1,
+          "unidad": "s"
+        }
+      ]
+    }
+  ],
+  "figuras": [
+    {
+      "csv": "resultados/08_ganancia_por_semilla.csv",
+      "columna": "delta",
+      "escala": 1e-06,
+      "unidad": "M$",
+      "leyenda": "Δ de ganancia de H3 contra el control en cada una de las 10 muestras del 25 % (puntos) y su mediana, a partir de resultados/08_ganancia_por_semilla.csv"
+    }
   ]
 }

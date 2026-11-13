@@ -267,6 +267,11 @@ def problemas_exploratorios(raiz: Path = rutas.RAIZ) -> list[str]:
         for t in datos.get("tablas") or []:
             if not isinstance(t, dict) or not t.get("csv") or not t.get("columnas"):
                 out.append(f"{carpeta}: cada tabla de exploratorio.json necesita `csv` y `columnas`")
+        for f in datos.get("figuras") or []:
+            if not isinstance(f, dict) or not f.get("leyenda") or not (f.get("archivo") or (f.get("csv") and f.get("columna"))):
+                out.append(f"{carpeta}: cada figura de exploratorio.json necesita `leyenda` y `archivo` (o `csv` y `columna`)")
+            elif f.get("archivo") and not (m.parent / f["archivo"]).is_file():
+                out.append(f"{carpeta}: falta la figura declarada {f['archivo']}")
         if not (m.parent / "README.md").is_file():
             out.append(f"{carpeta}: falta README.md junto al exploratorio.json")
     return out
