@@ -92,17 +92,16 @@ separe el ruido de 201910 del efecto de las variantes y que no se haya mirado al
 
 ## Ver el sitio localmente
 
-Los informes, reportes, hipótesis, método y bitácoras se leen como sitio en
-<https://agustinarazanov.github.io/dmeyf-experimento-sampling/>. Para verlo antes de pushear (hace falta Ruby y
-Bundler):
+El sitio está en <https://agustinarazanov.github.io/dmeyf-experimento-sampling/> (MkDocs Material). Para verlo antes
+de pushear, con el entorno de Python del repo:
 
 ```bash
-bundle install
-scripts/sitio.sh serve    # construye, verifica los enlaces internos y sirve en http://localhost:4000
+pip install -r requirements-sitio.txt
+scripts/sitio.sh serve    # busca nombres de personas, construye, verifica los enlaces y sirve en http://127.0.0.1:8000
 ```
 
-Sin `serve`, `scripts/sitio.sh` solo construye y verifica. Los `reporte.html` son páginas del sitio: abiertos como
-archivo suelto se ven sin estilo.
+Sin `serve`, `scripts/sitio.sh` solo verifica y construye en `site/`, igual que en CI. Las páginas publicadas son las
+del `nav` de `mkdocs.yml`; un enlace relativo a un archivo que no se publica hace fallar el build y va como URL de GitHub.
 
 ## Estructura
 

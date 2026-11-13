@@ -1651,3 +1651,21 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   este experimento.
 - La propuesta del cambio pasó por una revisión en sesión limpia (subagente `general-purpose`, Opus): 4 hallazgos altos,
   9 medios y 10 bajos, incorporados en `001c09e`.
+
+### 13-nov-2026 · sitio-legible, grupo 1 (sitio en MkDocs Material)
+
+- Sesión con Opus aunque `tasks.md` pedía Sonnet para este grupo.
+- `mkdocs-same-dir` funciona con `docs_dir: .`; no hizo falta el `docs_dir` temporal de D7/Riesgos. Versiones fijadas en
+  `requirements-sitio.txt` (mkdocs 1.6.1, mkdocs-material 9.8.1, mkdocs-same-dir 0.1.5, pymdown-extensions 13.1).
+- `exclude_docs` funciona como lista blanca (`*` y después `!/ruta`). Los archivos del tema también pasan por esa lista,
+  así que `!/assets/**` tiene que estar (con `!/assets/` solo, el sitio sale sin CSS).
+- MkDocs informa como INFO, no como WARNING, un enlace relativo a un archivo excluido, y `--strict` no falla.
+  `sitio/hooks.py` lo sube a WARNING para cumplir sitio-informes § Enlaces internos verificados.
+- La búsqueda de nombres (D8) quedó en `scripts/nombres_sitio.py`, con `EXCEPCIONES` por archivo y línea con motivo, y
+  la llama `scripts/sitio.sh`.
+- Verificado en una copia mínima en el scratchpad: build limpio, nada excluido publicado, índice a la derecha, enlace roto
+  y enlace a la bitácora abortan el build, «tutor» falla nombrando archivo y línea; callout, Mermaid, tarjetas, pestañas y
+  tabla con pills se ven bien a 1280 y 390 px. En el repo, `scripts/sitio.sh` falla hoy (nombres en `index.md` y
+  README, y 13 enlaces a páginas no publicadas) hasta que el grupo 3 reescriba esas páginas. 1.3 (workflow en una rama)
+  y 1.4 (correr el comando del README tal como está escrito) quedan abiertas por eso: pushear una rama lo decide Agustina
+  y el build va a fallar hasta el grupo 3.

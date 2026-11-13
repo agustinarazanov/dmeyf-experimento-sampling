@@ -1,0 +1,5 @@
+# Entorno del sitio (MkDocs Material), aparte de requirements.txt para no mezclarlo con el de corridas.
+mkdocs==1.6.1
+mkdocs-material==9.8.1
+mkdocs-same-dir==0.1.5
+pymdown-extensions==13.1

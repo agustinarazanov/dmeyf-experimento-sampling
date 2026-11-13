@@ -19,19 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/setup-python@v5
         with:
-          ruby-version: '3.4'
-          bundler-cache: true
-      - id: pages
-        uses: actions/configure-pages@v5
-      - name: Construir y verificar enlaces
-        run: scripts/sitio.sh --baseurl "${{ steps.pages.outputs.base_path }}"
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: requirements-sitio.txt
+      - run: pip install -r requirements-sitio.txt
+      - name: Construir y verificar enlaces y nombres
+        run: scripts/sitio.sh
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: site
 
   deploy:
+    # Desde una rama (workflow_dispatch) solo se construye y verifica; se publica desde main.
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:

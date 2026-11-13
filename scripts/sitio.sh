@@ -1,35 +1,27 @@
 #!/bin/bash
-# Construye el sitio (Jekyll + Just the Docs) y verifica los enlaces internos con html-proofer.
+# Construye el sitio (MkDocs Material) y verifica enlaces internos y redacción impersonal.
 # El mismo script corre local y en CI (.github/workflows/pages.yml).
 #
-# uso:  scripts/sitio.sh [serve] [--baseurl <ruta>]
-# ej.:  scripts/sitio.sh                                   # build + verificación
-#       scripts/sitio.sh --baseurl /dmeyf-experimento-sampling
-#       scripts/sitio.sh serve                           # build + verificación + servidor local
+# uso:  scripts/sitio.sh [serve]
+# ej.:  scripts/sitio.sh          # búsqueda de nombres + build --strict (falla con un enlace roto o a un archivo no publicado)
+#       scripts/sitio.sh serve    # lo mismo y después el servidor local en http://127.0.0.1:8000
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 SERVE=0
-BASEURL=""
 while [ $# -gt 0 ]; do
   case "$1" in
     serve) SERVE=1; shift ;;
-    --baseurl) BASEURL=${2:?falta el valor de --baseurl}; shift 2 ;;
     *) echo "argumento desconocido: $1" >&2; exit 2 ;;
   esac
 done
 
-BUILD=(bundle exec jekyll build)
-PROOF=(bundle exec htmlproofer _site --disable-external --allow-missing-href
-       --ignore-files "/originales/,/reporte_original/")
-if [ -n "$BASEURL" ]; then
-  BUILD+=(--baseurl "$BASEURL")
-  PROOF+=(--swap-urls "^${BASEURL}:")
-fi
+# Avisos de MkDocs 2 / Material que no cambian el build.
+export DISABLE_MKDOCS_2_WARNING=true NO_MKDOCS_2_WARNING=1
 
-"${BUILD[@]}"
-"${PROOF[@]}"
+python scripts/nombres_sitio.py
+mkdocs build --strict
 
 if [ "$SERVE" = 1 ]; then
-  exec bundle exec jekyll serve ${BASEURL:+--baseurl "$BASEURL"}
+  exec mkdocs serve --strict
 fi

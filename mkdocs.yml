@@ -1,0 +1,66 @@
+site_name: Sampling_1
+site_description: Experimento Sampling_1 de DMEyF 2026. ¿Vale la pena el tradeoff entre velocidad y pérdida de performance?
+repo_url: https://github.com/agustinarazanov/dmeyf-experimento-sampling
+edit_uri: ""
+
+# La raíz del repo es el docs_dir (mkdocs-same-dir): cada página está en la ruta de su archivo.
+docs_dir: .
+site_dir: site
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.highlight
+    - content.tabs.link
+
+extra_css:
+  - sitio/estilos.css
+
+plugins:
+  - same-dir
+  - search:
+      lang: es
+
+hooks:
+  - sitio/hooks.py
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+# Se publica solo lo que está en esta lista (estilo gitignore: se excluye todo y se vuelve a incluir; assets/ son
+# los archivos del tema, que MkDocs filtra con la misma lista).
+# Bitácoras, specs, Zulip, código, ledgers y plantilla quedan fuera; se enlazan en GitHub desde «Cómo trabajamos».
+exclude_docs: |
+  *
+  !/assets/**
+  !/index.md
+  !/sitio/estilos.css
+  !/experimentos/h1/informe/informe.md
+
+nav:
+  - Inicio: index.md
+  - H1: experimentos/h1/informe/informe.md
+
+validation:
+  links:
+    not_found: warn
+    absolute_links: info
+    unrecognized_links: warn
+    anchors: warn

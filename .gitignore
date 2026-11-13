@@ -28,6 +28,9 @@ __pycache__/
 experimentos/*/ledger/exploracion/
 .env
 
+# Sitio MkDocs
+/site/
+
 # Sitio Jekyll
 _site/
 .jekyll-cache/

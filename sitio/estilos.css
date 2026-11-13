@@ -1,0 +1,83 @@
+/* Estilos propios del sitio (MkDocs Material). Portados de _sass/custom/custom.scss: lo que el tema ya resuelve
+   (ancho de página, tarjetas, recuadro de tablas) no se repite acá. */
+
+/* Página a lo ancho; el texto corrido queda en ~75 caracteres por línea, tablas y figuras sin tope. */
+.md-grid { max-width: 90rem; }
+
+.md-typeset > p,
+.md-typeset > ul,
+.md-typeset > ol,
+.md-typeset > blockquote,
+.md-typeset > dl,
+.md-typeset details > summary,
+.md-typeset .admonition > p:not(.admonition-title) { max-width: 75ch; }
+
+.md-typeset img { max-width: 100%; }
+
+/* Reporte generado por comun/reporte.py: celdas y textos por veredicto. */
+.md-typeset td.pierde { background: #f8d7d0; }
+.md-typeset td.ok { background: #d6ecd9; }
+.md-typeset td.ind { background: #fbefc8; }
+.md-typeset .pend { color: #888888; font-style: italic; }
+
+/* Resultados resaltados: las reglas salen del generador; acá solo los colores, los mismos de veredicto que td.*. */
+.md-typeset .pill {
+  display: inline-block;
+  padding: 0.05em 0.6em;
+  border-radius: 1em;
+  background: #eeeeee;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.md-typeset .pill.pierde { background: #f8d7d0; color: #8a2a1e; }
+.md-typeset .pill.ok { background: #d6ecd9; color: #1f5e3a; }
+.md-typeset .pill.ind { background: #fbefc8; color: #7a5a00; }
+.md-typeset .pill.pend { background: #eeeeee; color: #666666; font-style: italic; }
+
+.md-typeset td .v { white-space: nowrap; }
+.md-typeset td.sig-pos .v { font-weight: 700; color: #2e8b57; }
+.md-typeset td.sig-neg .v { font-weight: 700; color: #c0392b; }
+.md-typeset td.mejor .v { font-weight: 700; }
+
+.md-typeset .ic {
+  display: block;
+  font-size: 0.75em;
+  color: #777777;
+  white-space: nowrap;
+}
+
+/* Barra del IC: --l y --r son los extremos y --z el 0, en % de una escala común a la columna. */
+.md-typeset .icbar {
+  position: relative;
+  display: block;
+  min-width: 5rem;
+  height: 6px;
+  margin-top: 3px;
+  background: #f1f1f1;
+}
+
+.md-typeset .icbar::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: var(--l);
+  width: calc(var(--r) - var(--l));
+  background: #9a9a9a;
+}
+
+.md-typeset .icbar::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: var(--z);
+  width: 1px;
+  background: #333333;
+}
+
+.md-typeset td.sig-pos .icbar::before { background: #2e8b57; }
+.md-typeset td.sig-neg .icbar::before { background: #c0392b; }
+
+.md-typeset p.nota { font-size: 0.85em; color: #666666; margin-top: 0.25rem; }

@@ -2,12 +2,12 @@
 
 ## 1. Sitio en MkDocs Material (sesión: Sonnet)
 
-- [ ] 1.1 Prototipo (D7): `mkdocs.yml` en la raíz con `mkdocs-same-dir`, `exclude_docs`, `nav` de dos páginas
+- [x] 1.1 Prototipo (D7): `mkdocs.yml` en la raíz con `mkdocs-same-dir`, `exclude_docs`, `nav` de dos páginas
   (`index.md` y `experimentos/h1/`, todavía con su contenido actual) y `requirements-sitio.txt` con versiones fijadas.
   Verificar con `mkdocs build --strict`: no publica nada de lo excluido (`find site -name '*.py' -o -name 'bitacora*'`
   vacío), el índice de la derecha aparece y un enlace relativo roto hace fallar el build. Si `mkdocs-same-dir` no
   funciona, usar el `docs_dir` temporal de D7/Riesgos y anotarlo en la bitácora.
-- [ ] 1.2 Tema y extensiones de D7 (`navigation.indexes`, `toc.follow`, admonition, superfences con Mermaid, tabbed,
+- [x] 1.2 Tema y extensiones de D7 (`navigation.indexes`, `toc.follow`, admonition, superfences con Mermaid, tabbed,
   `md_in_html`, `attr_list`), `site_name: Sampling_1`, y `sitio/estilos.css` portado de `_sass/custom/custom.scss`
   (pill, icbar, td.sig-\*, ic, nota, largo de línea). Verificar en `mkdocs serve`: un callout, un diagrama Mermaid, una
   grilla de tarjetas y una tabla con pills se ven bien. «Sampling_1» entra en una línea a 1280 px y a 390 px.
