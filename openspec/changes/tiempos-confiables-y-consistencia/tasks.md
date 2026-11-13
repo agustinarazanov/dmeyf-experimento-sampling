@@ -68,7 +68,7 @@ Qué puede ir en paralelo:
   - correrlo en el bucket con los cinco pasos de D10, primero con `--en-seco`. El listado de lo movido va a la
     bitácora;
   - `python -m comun.variantes --verificar` y `pytest`.
-- [ ] 2.2 Variantes y métodos (D8, D9, D12):
+- [x] 2.2 Variantes y métodos (D8, D9, D12):
   - `comun/metodos.py` y `comun/correr.py`: `fast-retrain-opt` con la fracción igual a la tasa de la variante y peso
     1/f, separado de `fast-retrain`, que sigue en 0,5; `pesos` recibe la tasa; `validar` acepta las cuatro tasas; el
     método nuevo `clase-peso` de `H4P`, que optimiza como `fast-retrain-opt` (y no como `uniforme`) y entrena el final

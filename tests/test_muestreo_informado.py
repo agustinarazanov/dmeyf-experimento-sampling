@@ -64,8 +64,10 @@ def test_peso_inverso_restituye_la_proporcion_de_clases():
 
 def test_pesos_solo_para_fast_retrain():
     df = pd.DataFrame({dt.Y: [1, 0, 0]})
-    assert metodos.pesos("opt-muestra", df) is None
-    assert metodos.pesos("fast-retrain", df).tolist() == [1.0, 2.0, 2.0]
+    assert metodos.pesos("opt-muestra", df, 0.1) is None
+    assert metodos.pesos("fast-retrain", df, 0.05).tolist() == [1.0, 2.0, 2.0]  # H4F: f = 0,5 sea cual sea la tasa
+    assert metodos.pesos("fast-retrain-opt", df, 0.25).tolist() == [1.0, 4.0, 4.0]  # H4O: f = la tasa
+    assert metodos.pesos("clase-peso", df, 0.25) is None  # el final de H4P no lleva peso
 
 
 @pytest.mark.parametrize("metodo,tasa,mdl,esperado", [

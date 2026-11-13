@@ -42,8 +42,11 @@ def test_cada_lista_es_de_una_sola_replica(corridas):
 def test_121_celdas_sin_repetir_con_todas_las_semillas(corridas):
     finales = [(cx.variante, cx.replica) for n in NOMBRES for cx in corridas[n] if cx.a.etapa == "final"]
     assert len(finales) == 121 and not [c for c, n in Counter(finales).items() if n > 1]
-    esperadas = {(b.nombre, k) for b in variantes.VARIANTES.values() for k in (range(8) if b.replicas else [0])
-                 if b.nombre != "C-rep"} | {("C-rep", 0)}
+    # el registro de entonces: sin las variantes de `tiempos-confiables-y-consistencia` (D8) y con réplicas solo donde ya las había (D9)
+    nuevas = {"H3-0.5", "B0.05", *[f"H4{x}-{f}" for x in "OP" for f in ("0.25", "0.1", "0.05")], "H4P-0.5"}
+    sin_replicas = {"U0.5", "U0.25", "U0.1", "U0.05", "B0.5", "B0.25", "B0.1", "GOSS", "C-rep"}
+    esperadas = {(b.nombre, k) for b in variantes.VARIANTES.values() if b.nombre not in nuevas
+                 for k in (range(8) if b.replicas and b.nombre not in sin_replicas else [0])}
     assert set(finales) == esperadas
     assert all(cx.a.semilla == "todas" for n in NOMBRES for cx in corridas[n] if cx.a.etapa == "final")
     assert len(bl.SEMILLAS_FINALES) == 20 and len(set(bl.SEMILLAS_FINALES)) == 20

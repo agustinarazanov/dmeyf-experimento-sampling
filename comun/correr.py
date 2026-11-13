@@ -214,7 +214,7 @@ def optimizar(cx: Contexto) -> None:
         sampler=optuna.samplers.TPESampler(seed=cx.semilla_opt),
     )
     t0 = time.perf_counter()
-    dtrain = lgb.Dataset(x_tr, label=y_tr, weight=metodos.pesos(cx.metodo, datos), params=_dataset_params(),
+    dtrain = lgb.Dataset(x_tr, label=y_tr, weight=metodos.pesos(cx.metodo, datos, a.tasa), params=_dataset_params(),
                          free_raw_data=False)  # solo `fast-retrain-opt` lleva pesos; la validación nunca
     dtrain.construct()
     t_dataset = time.perf_counter() - t0
@@ -290,7 +290,7 @@ def final(cx: Contexto) -> None:
         params = {**bl.PARAMS_FIJOS, **params_variante, **hp, "seed": semilla}
 
         t0 = time.perf_counter()
-        dtrain = lgb.Dataset(x_tr, label=y_tr, weight=metodos.pesos(cx.metodo, datos), params=_dataset_params(),
+        dtrain = lgb.Dataset(x_tr, label=y_tr, weight=metodos.pesos(cx.metodo, datos, a.tasa), params=_dataset_params(),
                              free_raw_data=False)
         dtrain.construct()
         t1 = time.perf_counter()
@@ -360,7 +360,7 @@ def main(argv: list[str] | None = None) -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s", stream=sys.stderr)
     cx = Contexto(a)
     if a.etapa == "optimizar" and cx.metodo != a.metodo:
-        log.info("%s comparte el estudio de uniforme r=%g: se corre ese estudio (%s)", a.metodo, a.tasa, cx.estudio)
+        log.info("%s no tiene búsqueda propia: se corre la de %s con r=%g (estudio %s)", a.metodo, cx.metodo, a.tasa, cx.estudio)
     (optimizar if a.etapa == "optimizar" else final)(cx)
 
 

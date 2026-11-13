@@ -16,15 +16,19 @@ from comun import datos as dt
 from comun import muestreo, variantes
 
 METODOS = ("uniforme", "bagging", "goss", "opt-muestra", "opt-muestra-reescalado", "opt-muestra-lineal", "opt-muestra-cliente",
-           "clase-dificil", "clase-uniforme", "fast-retrain", "fast-retrain-opt")
+           "clase-dificil", "clase-uniforme", "fast-retrain", "fast-retrain-opt", "clase-peso")
 #: Los métodos de H3 optimizan sobre una muestra y entrenan con todo; los de H4 (`incorporar-aportes` D3) también, salvo
 #: `fast-retrain`, que usa el estudio `U{r}` y entrena con las bajas y una fracción de las CONTINUA con peso.
 METODOS_H3 = ("opt-muestra", "opt-muestra-reescalado", "opt-muestra-lineal", "opt-muestra-cliente")
-METODOS_H4 = ("clase-dificil", "clase-uniforme", "fast-retrain", "fast-retrain-opt")
+METODOS_H4 = ("clase-dificil", "clase-uniforme", "fast-retrain", "fast-retrain-opt", "clase-peso")
 #: Métodos de H4 con estudio propio (no reusan `U{r}`): `fast-retrain-opt` optimiza sobre la receta de `fast-retrain` (D11).
+#: `clase-peso` (H4P) no corre su propio método en la búsqueda: usa el de `fast-retrain-opt` (`metodo_optimizacion`).
 METODOS_ESTUDIO_PROPIO = ("opt-muestra-cliente", "clase-dificil", "clase-uniforme", "fast-retrain-opt")
-#: Fracción de CONTINUA del final de `fast-retrain`; su peso es 1/f.
+#: Fracción de CONTINUA del final de `fast-retrain` (H4F), fija aunque la tasa de la variante sea otra; su peso es 1/f.
+#: `fast-retrain-opt` y `clase-peso` usan la tasa de la variante como fracción (`tiempos-confiables-y-consistencia` D8).
 FRACCION_FAST_RETRAIN = 0.5
+#: Métodos cuya tasa es la fracción f de CONTINUA y tiene que ser una de las cuatro de la grilla común.
+METODOS_FRACCION = ("fast-retrain-opt", "clase-peso")
 #: Sonda de H4H: 40 árboles, 31 hojas, `learning_rate` 0,08 sobre el 10 % uniforme del train.
 TASA_SONDA = 0.1
 PARAMS_SONDA = {"num_iterations": 40, "num_leaves": 31, "learning_rate": 0.08}
@@ -99,31 +103,44 @@ def clase_uniforme(train: pd.DataFrame, tasa: float, semilla: int) -> tuple[pd.D
 
 def fast_retrain(train: pd.DataFrame, tasa: float, semilla: int) -> tuple[pd.DataFrame, dict, np.ndarray]:
     """H4F, final: todas las bajas y la mitad de las CONTINUA (sorteo con la semilla final); el peso lo da `pesos`.
-    H4O (`fast-retrain-opt`): la misma receta como muestra de búsqueda (semilla de la réplica) y como final (semilla final)."""
+    La fracción es fija (`FRACCION_FAST_RETRAIN`): la tasa de `H4F-0.05` es la del estudio `U0.05`, no la de esta receta."""
     idx = muestreo.indices_por_clase(train[dt.Y].to_numpy(), FRACCION_FAST_RETRAIN, semilla)
     return train.iloc[idx], {"bagging_freq": 1}, idx
 
 
-def pesos(metodo: str, datos: pd.DataFrame) -> np.ndarray | None:
-    """Peso por fila: 1/f en las CONTINUA de `fast-retrain` y `fast-retrain-opt` (en el final y en cada trial de
-    `fast-retrain-opt`), nada en los demás métodos. La validación nunca lleva pesos."""
-    if metodo not in ("fast-retrain", "fast-retrain-opt"):
-        return None
-    return muestreo.peso_inverso(datos[dt.Y].to_numpy(), FRACCION_FAST_RETRAIN)
+def fast_retrain_opt(train: pd.DataFrame, tasa: float, semilla: int) -> tuple[pd.DataFrame, dict, np.ndarray]:
+    """H4O (y la búsqueda de H4P): todas las bajas y la fracción `tasa` de las CONTINUA, como muestra de búsqueda (semilla de
+    la réplica) y como final (semilla final)."""
+    idx = muestreo.indices_por_clase(train[dt.Y].to_numpy(), tasa, semilla)
+    return train.iloc[idx], {"bagging_freq": 1}, idx
+
+
+def pesos(metodo: str, datos: pd.DataFrame, tasa: float) -> np.ndarray | None:
+    """Peso por fila: 1/f en las CONTINUA de `fast-retrain` (f = 0,5) y de `fast-retrain-opt` (f = la tasa de la variante),
+    en el final y en cada trial; nada en los demás métodos. `clase-peso` optimiza como `fast-retrain-opt` y su final no
+    lleva peso. La validación nunca lleva pesos."""
+    if metodo == "fast-retrain":
+        return muestreo.peso_inverso(datos[dt.Y].to_numpy(), FRACCION_FAST_RETRAIN)
+    if metodo == "fast-retrain-opt":
+        return muestreo.peso_inverso(datos[dt.Y].to_numpy(), tasa)
+    return None
 
 
 #: Función del final de cada método (y de la muestra de optimización de los que no son de H3 ni de H4).
 FUNCIONES = {"uniforme": uniforme, "bagging": bagging, "goss": goss, "opt-muestra": opt_muestra,
              "opt-muestra-reescalado": opt_muestra_reescalado, "opt-muestra-lineal": opt_muestra_lineal,
              "opt-muestra-cliente": opt_muestra, "clase-dificil": opt_muestra, "clase-uniforme": opt_muestra,
-             "fast-retrain": fast_retrain, "fast-retrain-opt": fast_retrain}
+             "fast-retrain": fast_retrain, "fast-retrain-opt": fast_retrain_opt, "clase-peso": opt_muestra}
 #: Muestra de optimización de los métodos cuyo estudio no es `U{r}`.
 FUNCIONES_OPT = {**FUNCIONES, "opt-muestra-cliente": cliente, "clase-dificil": clase_dificil, "clase-uniforme": clase_uniforme}
 
 
 def metodo_optimizacion(metodo: str) -> str:
     """Método con el que se corre la etapa `optimizar`: H3 y `fast-retrain` reusan el estudio `U{r}` (`uniforme`); H3K y los
-    de clase tienen estudio propio y se quedan con su nombre."""
+    de clase tienen estudio propio y se quedan con su nombre; `clase-peso` busca como `fast-retrain-opt` y comparte su
+    estudio `F{f}` (no el `U{r}` que le tocaría a un método de H4 sin estudio propio)."""
+    if metodo == "clase-peso":
+        return "fast-retrain-opt"
     if metodo in METODOS_H3 + METODOS_H4 and metodo not in METODOS_ESTUDIO_PROPIO:
         return "uniforme"
     return metodo
@@ -148,8 +165,9 @@ def validar(metodo: str, tasa: float) -> None:
         raise ValueError(f"--tasa inválida: {tasa} (tiene que estar en (0, 1])")
     if metodo in METODOS_H3 + METODOS_H4 and tasa >= 1:
         raise ValueError(f"--tasa inválida para {metodo}: la muestra de optimización tiene que ser r < 1")
-    if metodo == "fast-retrain-opt" and tasa != FRACCION_FAST_RETRAIN:
-        raise ValueError(f"--tasa inválida para {metodo}: es la fracción f de CONTINUA y vale {FRACCION_FAST_RETRAIN}")
+    if metodo in METODOS_FRACCION and tasa not in variantes.TASAS_GRILLA:
+        raise ValueError(f"--tasa inválida para {metodo}: es la fracción f de CONTINUA y tiene que ser una de las de la "
+                         f"grilla ({', '.join(f'{t:g}' for t in variantes.TASAS_GRILLA)})")
 
 
 def sin_bagging_fraction(metodo: str) -> bool:

@@ -18,10 +18,11 @@ def test_regla_de_duenos_de_los_estudios_con_replica():
 
 
 def test_estudios_sin_replicas_o_con_replica_mal_escrita_fallan_nombrandolos():
-    with pytest.raises(ValueError, match="B0.5@1"):
-        variantes.dueno_estudio("B0.5@1")
-    with pytest.raises(ValueError, match="U0.5@1"):
-        variantes.dueno_estudio("U0.5@1")  # U0.5 no tiene variante H3 en el registro
+    # D9: todas las variantes del bloque A admiten réplicas; el estudio de una variante sin ellas (C-rep comparte `C`) sí
+    for e in ("B0.5@1", "U0.5@1", "GOSS@7", "F0.05@2", "B0.05@3"):
+        assert variantes.dueno_estudio(e)
+    with pytest.raises(ValueError, match="Z9@1"):
+        variantes.dueno_estudio("Z9@1")
     with pytest.raises(ValueError, match="U0.1@0"):
         variantes.dueno_estudio("U0.1@0")
     with pytest.raises(ValueError, match="U0.1@x"):
@@ -37,13 +38,12 @@ def test_nombre_de_estudio_con_replica():
 
 def test_variantes_que_admiten_replicas():
     admiten = {b.nombre for b in variantes.VARIANTES.values() if b.replicas}
-    assert admiten == {"C", "H3-0.25", "H3-0.1", "H3-0.05", "H3R-0.1", "H3R-0.25", "H3L-0.25", "H3L-0.1", "H3K-0.1",
-                       "H4H-0.1", "H4U-0.1", "H4F-0.05", "H4F-0.25", "H4O-0.5"}
+    assert admiten == set(variantes.VARIANTES) - {"C-rep"}  # D9: 8 réplicas en todo el bloque A; C-rep es la repetición del control
     assert variantes.variante("H3R-0.1").estudio == "U0.1" and variantes.variante("H3R-0.1").dueno == "h3"
     assert variantes.variante("H3-0.05").estudio == "U0.05"
 
 
-@pytest.mark.parametrize("nombre", ["U0.1", "B0.5", "GOSS", "C-rep"])
+@pytest.mark.parametrize("nombre", ["C-rep"])
 def test_replica_no_habilitada_falla_nombrando_variante_y_replica(nombre):
     with pytest.raises(ValueError, match=rf"{nombre}.*réplica 2"):
         variantes.validar_replica(nombre, 2)
@@ -125,8 +125,7 @@ def test_replica_del_control_va_al_ledger_del_control():
 
 
 @pytest.mark.parametrize("argv,nombre", [
-    (["--metodo", "uniforme", "--tasa", "0.25", "--etapa", "optimizar", "--replica", "1"], "U0.25"),
-    (["--metodo", "bagging", "--tasa", "0.5", "--etapa", "final", "--replica", "1"], "B0.5"),
+    (["--metodo", "uniforme", "--tasa", "1", "--etapa", "final", "--variante", "C-rep", "--replica", "1"], "C-rep"),
     (["--metodo", "opt-muestra", "--tasa", "0.1", "--etapa", "final", "--replica", "-1"], "H3-0.1"),
 ])
 def test_el_corredor_rechaza_replicas_invalidas_antes_de_cargar_datos(argv, nombre, capsys):
