@@ -10,13 +10,24 @@ from comun import reporte, rutas
 EXPERIMENTOS = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR]
 
 
-def sin_fecha(html: str) -> str:
-    return re.sub(r"Generado \d{4}-\d\d-\d\d \d\d:\d\d", "Generado", html)
+def generar(exp: str, figuras=None) -> tuple[dict[str, str], dict]:
+    """Los bloques del README de `exp` (nombre -> texto) y los archivos de figuras que `planificar` escribiría."""
+    plan, archivos, _ = reporte.planificar([exp], figuras)
+    assert plan, f"el README de {exp} no tiene marcadores"
+    return plan[0][1], archivos
+
+
+def texto(exp: str, figuras=None) -> str:
+    return "\n\n".join(generar(exp, figuras)[0].values())
+
+
+def svg(exp: str, nombre: str) -> str:
+    return generar(exp)[1][rutas.experimento(exp) / "figuras" / f"{nombre}.svg"].decode()
 
 
 @pytest.mark.parametrize("exp", EXPERIMENTOS)
 def test_dos_veces_da_lo_mismo(exp):
-    assert sin_fecha(reporte.generar(exp)) == sin_fecha(reporte.generar(exp))
+    assert generar(exp) == generar(exp)
 
 
 def test_agregador_lista_todos_los_variantes_de_las_hipotesis():
@@ -31,14 +42,15 @@ def test_hipotesis_nueva_aparece_sin_tocar_el_generador(monkeypatch):
     monkeypatch.setattr(reporte, "N_SEMILLAS", 10)
     monkeypatch.setattr(reporte, "VENTANA", "201903-201906")  # hasta que haya finales de la ronda nueva
     assert "X1" in reporte.Contexto(reg.AGREGADOR).variantes
-    assert "X1" in reporte.generar(reg.AGREGADOR)
+    assert "X1" in texto(reg.AGREGADOR)
 
 
 def test_ledger_vacio_deja_pendientes(monkeypatch, tmp_path):
     monkeypatch.setattr(rutas, "EXPERIMENTOS", tmp_path)
     for e in EXPERIMENTOS:
         (tmp_path / e / "ledger").mkdir(parents=True)
-    html = reporte.generar("h1")
+    (tmp_path / "h1" / "README.md").write_text("# H1 · prueba\n\n<!-- generado:resultado -->\n<!-- /generado:resultado -->\n")
+    html = texto("h1")
     assert "pendiente" in html and "<table>" in html
 
 
@@ -53,7 +65,6 @@ def test_exploratorio_sin_csv_sale_pendiente_con_el_nombre_del_archivo(tmp_path)
     assert fila["cifras"] == ["pendiente: falta resultados/falta.csv"]
     assert fila["advertencia"] == "w"
     assert "  - pendiente: falta resultados/falta.csv" in reporte.lista_b([fila])
-    assert "<li class='pend'>pendiente: falta resultados/falta.csv</li>" in reporte.tarjetas_b([fila])
 
 
 def test_variante_de_una_replica_lleva_la_nota_sin_replicas():
@@ -106,13 +117,6 @@ def test_bootstrap_de_clientes_identico_en_dos_corridas(tmp_path):
     assert a == b and a["U0.5"][1] <= a["U0.5"][0] <= a["U0.5"][2]
 
 
-@pytest.mark.parametrize("exp", EXPERIMENTOS)
-def test_es_una_pagina_jekyll(exp):
-    pagina = reporte.generar(exp)
-    assert pagina.startswith("---")
-    assert "<html" not in pagina and "<style" not in pagina
-
-
 @pytest.fixture
 def ronda_anterior(monkeypatch):
     """La ronda 201903-201906 de 10 semillas, completa en el ledger: con ella hay figuras y tablas con números."""
@@ -125,26 +129,21 @@ def pagina_s1():
     with pytest.MonkeyPatch.context() as mp:
         mp.setattr(reporte, "VENTANA", "201903-201906")
         mp.setattr(reporte, "N_SEMILLAS", 10)
-        return reporte.generar(reg.AGREGADOR)
+        return generar(reg.AGREGADOR)[0]["bloque-a"]
 
 
 @pytest.mark.parametrize("exp", ["h3", reg.AGREGADOR])
 def test_con_figuras_dos_veces_da_lo_mismo_en_svg(ronda_anterior, exp):
-    pagina = reporte.generar(exp)
-    assert "<svg" in pagina and "data:image/png" not in pagina
-    assert "<html" not in pagina and "<style" not in pagina
-    assert sin_fecha(pagina) == sin_fecha(reporte.generar(exp))
+    bloques, archivos = generar(exp)
+    assert archivos and {k.suffix for k in archivos} == {".svg"}
+    assert all(b"<svg" in v for v in archivos.values())
+    assert "<svg" not in "".join(bloques.values()) and "](figuras/" in "".join(bloques.values())
+    assert (bloques, archivos) == generar(exp)
 
 
 def test_figuras_guarda_png(ronda_anterior, tmp_path):
-    reporte.generar("h1", tmp_path)
-    assert {p.suffix for p in tmp_path.iterdir()} == {".png"}
-
-
-def _figura(pagina: str, nombre: str) -> str:
-    m = re.search(rf'<figure class="fig" id="fig-{nombre}".*?</figure>', pagina, re.S)
-    assert m, f"falta la figura {nombre}"
-    return m.group(0)
+    _, archivos = generar("h1", tmp_path)
+    assert {k.suffix for k in archivos if tmp_path in k.parents} == {".png"}
 
 
 def _textos(svg: str) -> list[str]:
@@ -153,15 +152,14 @@ def _textos(svg: str) -> list[str]:
 
 @pytest.mark.parametrize("exp, nombre", [(reg.AGREGADOR, "tradeoff"), ("h1", "tradeoff_h1")])
 def test_tradeoff_una_variante_por_fila_y_el_titulo(ronda_anterior, exp, nombre):
-    pagina = reporte.generar(exp)
-    textos = _textos(_figura(pagina, nombre))
+    pagina = texto(exp)
+    assert f"](figuras/{nombre}.svg)" in pagina
+    textos = _textos(svg(exp, nombre))
     assert any("variantes no pierden" in t or t.startswith("Ninguna de las") for t in textos)
     ctx = reporte.Contexto(exp)
     ap = reporte.cargar([reg.CONTROL, *ctx.exps])[1]
     for b in ctx.variantes:  # las que tienen Δ, una etiqueta cada una; las pendientes no se dibujan
         assert textos.count(b) == (1 if b in ap.index else 0)
-    # va antes de las tablas de resultados (las generadas; las de los docs vienen antes, en la introducción)
-    assert pagina.index(f'id="fig-{nombre}"') < pagina.index("<th>Δ [IC 95%] (M$)</th>")
 
 
 def test_fraccion_sin_familias_de_dos_tasas_sale_pendiente(monkeypatch):
@@ -190,8 +188,9 @@ def test_sin_replicas_los_tres_graficos_salen_pendientes(ronda_anterior, monkeyp
     cargar = reporte.cargar_replicas
     monkeypatch.setattr(reporte, "cargar_replicas",
                         lambda exps, n: (*cargar(exps, n)[:2], pd.DataFrame(columns=["variante"]).set_index("variante")))
-    pagina = reporte.generar(reg.AGREGADOR)
-    assert 'id="fig-semillas_replicas"' in pagina and 'id="fig-tradeoff"' in pagina
+    bloques = generar(reg.AGREGADOR)[0]
+    assert "](figuras/tradeoff.svg)" in bloques["mapa"]
+    assert "class='pend'" in bloques["varianza"] and "class='pend'" in bloques["diferencias"]
 
 
 def _tabla(pagina: str, primera: str) -> str:
@@ -211,7 +210,7 @@ def test_resumen_corto(pagina_s1):
     assert len(re.findall(r"<th>", resumen.split("</tr>")[0])) <= 6
     for celdas in _filas(resumen).values():
         assert all(c.count("class='ic'") <= 1 for c in celdas)
-    assert "<details><summary>Detalle del bloque A</summary>" in pagina_s1
+    assert "<summary>Detalle del bloque A</summary>" in pagina_s1
     assert "(R=" not in resumen and "no aplica" not in resumen and "sin réplicas" not in resumen
 
 
@@ -227,16 +226,7 @@ def test_resaltado(pagina_s1):
 
 def test_regenerar_resalta_igual(pagina_s1, ronda_anterior):
     clases = lambda p: re.findall(r"class='([^']*)'", p)
-    assert clases(pagina_s1) == clases(reporte.generar(reg.AGREGADOR))
-
-
-def test_tabla_de_resultados_conserva_el_bloque_a(ronda_anterior):
-    """El bloque A de `tabla_resultados.md` sigue saliendo de `celdas_bloque_a`, con su (R=n) y sus notas en texto."""
-    md = reporte.generar_con_tabla(reg.AGREGADOR)[1]
-    bloque_a = md.split("## Bloque B")[0]
-    assert "| " + " | ".join(reporte.CAB_A) + " |" in bloque_a
-    assert "(R=8)" in bloque_a and "sin réplicas" in bloque_a
-    assert "### experimentos/" in md.split("## Bloque B")[1]
+    assert clases(pagina_s1) == clases(generar(reg.AGREGADOR)[0]["bloque-a"])
 
 
 # --- sitio-legible grupo 2: marcadores, figuras como archivo, figuras nuevas ---
@@ -330,7 +320,7 @@ def test_bloque_b_sin_autor(tmp_path):
     (carpeta / "exploratorio.json").write_text(json.dumps(dict(
         autor="Fulano", fecha="2026-11-04", pregunta="p", protocolo="q", advertencia="w", tablas=[])))
     b = reporte.bloque_b(tmp_path)
-    assert "Fulano" not in reporte.lista_b(b) + reporte.tarjetas_b(b)
+    assert "Fulano" not in reporte.lista_b(b)
     assert reporte.lista_b(b).lower().count("autor") == 0
 
 

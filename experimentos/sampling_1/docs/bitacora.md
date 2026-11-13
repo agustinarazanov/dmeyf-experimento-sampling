@@ -1971,3 +1971,27 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: ~40 turnos · contexto ~73.000 por turno · ≈ US$ 1,5.
 - Tutor: —
+
+## 2026-11-13 — sitio-legible 4.1 cerrada (cambio en `comun/`)
+
+- Siguiendo D4 (el generador escribe en los README), borré de `comun/reporte.py` la salida vieja: `generar_con_tabla`,
+  `generar`, `html_resultados`, `seccion_hipotesis`, `enlaces`, `commit`, `_leer`, `markdown_resultados`, `tarjetas_b`, el
+  bucle de `main` que escribía `reporte.html` y `tabla_resultados.md`, el argumento `--salida` y el respaldo de
+  `_titulo_hipotesis` a `docs/hipotesis.md`. Quedaron sin uso y también se borraron `markdown`, `_inline`, `secciones`,
+  `seccion` y `ENCABEZADO`. `main` ahora avisa los archivos sin marcadores.
+- Tests: salen `test_es_una_pagina_jekyll` y `test_tabla_de_resultados_conserva_el_bloque_a`; los demás comparan lo que
+  devuelve `planificar()` (bloques y archivos SVG). En el bloque B queda `lista_b`. El orden figura-antes-de-tabla ya no
+  lo fija el generador sino cada README. Sin réplicas, `varianza` y `diferencias` salen pendientes.
+- `validacion_20_semillas/README.md`: el enlace a `control/docs/hipotesis.md` pasa a `control/README.md`.
+- Resultados que quedan del `git grep -nE "informe/(informe|reporte|tabla_resultados)|docs/(hipotesis|diseno)\.md"`, todos
+  esperados:
+  - Registros históricos: `ledger/sesiones/`, `ledger/martin/.../referencia_grupo/`, `validacion_20_semillas/originales/`,
+    la procedencia de las predicciones en los README de `control`, `h1`–`h3` y `sampling_1`, y las bitácoras.
+  - `sampling_1/docs/rutas.md` (rutas viejas, a propósito) y la descripción de lo que se comparó en
+    `validacion_20_semillas/README.md`.
+  - El chequeo de D9 en `comun/variantes.py` y `tests/test_variantes.py`, que detecta un `docs/diseno.md` viejo.
+  - `docs/metodo.md` (mismo chequeo) y `docs/revision.md` (sin cambios por D2).
+  - Scripts de una vez: `scripts/concordar_d3.py`.
+  - Artefactos de openspec (`changes/` y `specs/`), que se actualizan al archivar.
+- Verificado: `pytest tests/test_reporte.py` (35), `python -m comun.reporte --todos` dos veces sin cambios en `git status`,
+  `scripts/sitio.sh` y `pytest` entero (251) en verde.

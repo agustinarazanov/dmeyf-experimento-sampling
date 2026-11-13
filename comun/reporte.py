@@ -10,9 +10,8 @@ nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`;
 `sampling_1/exploratorios/README.md` → `bloque-b`; `index.md` y `sitio/hipotesis.md` → `tarjetas`. Las figuras salen como
 SVG en `experimentos/<exp>/figuras/` (con `--figuras` también PNG a 200 dpi para el video).
 
-Un archivo sin ningún marcador todavía no migró (grupo 3): su experimento sigue con la salida vieja, una página Jekyll
-`informe/reporte.html` (y `tabla_resultados.md` en `sampling_1`) con las figuras en línea. Las variantes sin datos salen
-como pendientes; ningún número se escribe a mano.
+Un archivo sin ningún marcador se omite y `main` lo avisa. Las variantes sin datos salen como pendientes; ningún número
+se escribe a mano.
 """
 
 from __future__ import annotations
@@ -23,7 +22,6 @@ import io
 import json
 import math
 import re
-import subprocess
 from datetime import datetime
 from pathlib import Path
 
@@ -65,16 +63,11 @@ def _idea_hipotesis(e: str) -> str:
 
 
 def _titulo_hipotesis(e: str) -> tuple[str, str]:
-    """(`H1`, título) del experimento `e`: del `# H1 · título` de su README y, mientras no migró, del `## H1 — título`
-    de `docs/hipotesis.md`."""
+    """(`H1`, título) del experimento `e`, del `# H1 · título` de su README."""
     readme = rutas.experimento(e) / "README.md"
     if readme.exists() and (m := re.search(r"^# (H\d+)\s*[·—-]\s*(.*)$", readme.read_text(), re.M)):
         return m.group(1), m.group(2).strip()
-    md = rutas.docs(e) / "hipotesis.md"
-    sec = secciones(md.read_text()) if md.exists() else {}
-    clave = next((k for k in sec if re.match(r"^H\d+\b", k)), e.upper())
-    nombre, titulo = re.match(r"^(\S+)\s*(?:—\s*)?(.*)$", clave).groups()
-    return nombre, titulo or nombre
+    return e.upper(), e.upper()
 
 
 class Contexto:
@@ -93,68 +86,6 @@ class Contexto:
         self.variantes = [b for _, bs in self.hipotesis.values() for b in bs]
         self.hip_de = {b: h for h, (_, bs) in self.hipotesis.items() for b in bs}
         self.color = {h: PALETA[i % len(PALETA)] for i, h in enumerate(self.hipotesis)}
-
-
-# --- markdown mínimo (títulos, listas, tablas, párrafos, negrita, cursiva, código) ---
-
-def _inline(t: str) -> str:
-    t = html.escape(t, quote=False)
-    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
-    t = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", t)
-    return re.sub(r"(?<![\w*])\*([^*]+)\*(?![\w*])", r"<i>\1</i>", t)
-
-
-def markdown(md: str, nivel: int = 0) -> str:
-    out, lista, parrafo, tabla = [], [], [], []
-
-    def cerrar() -> None:
-        if parrafo:
-            out.append(f"<p>{_inline(' '.join(parrafo))}</p>")
-            parrafo.clear()
-        if lista:
-            out.append("<ul>" + "".join(f"<li>{_inline(i)}</li>" for i in lista) + "</ul>")
-            lista.clear()
-        if tabla:
-            filas = [[c.strip() for c in f.strip("|").split("|")] for f in tabla if not re.match(r"^\|[-| :]+\|$", f)]
-            cab = "".join(f"<th>{_inline(c)}</th>" for c in filas[0])
-            cuerpo = "".join("<tr>" + "".join(f"<td>{_inline(c)}</td>" for c in f) + "</tr>" for f in filas[1:])
-            out.append(f"<table><tr>{cab}</tr>{cuerpo}</table>")
-            tabla.clear()
-
-    for linea in md.splitlines():
-        s = linea.strip()
-        if not s:
-            cerrar()
-        elif m := re.match(r"^(#+)\s+(.*)", s):
-            cerrar()
-            n = min(len(m.group(1)) + nivel, 6)
-            out.append(f"<h{n}>{_inline(m.group(2))}</h{n}>")
-        elif s.startswith("|"):
-            if parrafo or lista:
-                cerrar()
-            tabla.append(s)
-        elif re.match(r"^[-*]\s", s):
-            if parrafo or tabla:
-                cerrar()
-            lista.append(s[2:])
-        elif lista and linea.startswith(" "):
-            lista[-1] += " " + s
-        else:
-            if lista or tabla:
-                cerrar()
-            parrafo.append(s)
-    cerrar()
-    return "\n".join(out)
-
-
-def secciones(md: str) -> dict[str, str]:
-    """Secciones `## ...` de un markdown, por título."""
-    partes = re.split(r"^## +(.*)$", md, flags=re.M)
-    return {partes[i].strip(): partes[i + 1] for i in range(1, len(partes), 2)}
-
-
-def seccion(sec: dict[str, str], prefijo: str) -> str:
-    return next((v for k, v in sec.items() if k.startswith(prefijo)), "")
 
 
 # --- datos ---
@@ -797,28 +728,6 @@ def lista_b(b: list[dict]) -> str:
     return "\n".join(out)
 
 
-def markdown_resultados(ctx: Contexto, a: dict, b: list[dict]) -> str:
-    """`informe/tabla_resultados.md`: las tablas que copia el informe, sin fecha ni cifras escritas a mano."""
-    if not a["filas"]:
-        return "# Resultados\n\npendiente: el control no tiene sus 10 semillas.\n"
-    partes = ["# Resultados de sampling_1\n",
-              "Generado por `python -m comun.reporte --experimento sampling_1`; no editar a mano.\n",
-              referencia_control(a) + "\n",
-              "## Bloque A: mismo protocolo\n", AVISO_A + "\n", tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
-    notas = [f"- `{f['variante']}`: {f['nota']}" for f in a["filas"] if f["nota"]]
-    if notas:
-        partes += ["Notas:\n", "\n".join(notas) + "\n"]
-    if len(a["rep"]):
-        partes += ["### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
-        pares = pares_replicas(a["rep"])
-        if pares:
-            partes += ["### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares)]
-    partes += ["## Bloque B: exploratorios\n", AVISO_B + "\n", lista_b(b)]
-    return "\n".join(partes)
-
-
-# --- figuras del reporte conjunto (`reporte-graficos-y-ancho` D2–D4): todas leen `a` de `calcular_bloque_a` ---
-
 def delta(f: dict) -> tuple[float, float, float] | None:
     """Δ con su IC que decide el veredicto de la fila: el de réplicas si existe, si no el de la réplica 0."""
     return f["dR"][:3] if f["dR"] else f["d0"]
@@ -1310,128 +1219,6 @@ def tabla_pares(rep: pd.DataFrame) -> str:
     return html_tabla(CAB_PARES, filas)
 
 
-def tarjetas_b(b: list[dict]) -> str:
-    """Bloque B del HTML: una tarjeta por exploratorio."""
-    if not b:
-        return "<p>No hay exploratorios declarados.</p>"
-    e = html.escape
-    tarjetas = []
-    for f in b:
-        cifras = "".join(f"<li class='pend'>{e(c)}</li>" if c.startswith("pendiente") else f"<li>{e(c)}</li>"
-                         for c in f["cifras"])
-        tarjetas.append(f"<article><h4>{e(f['carpeta'])}</h4>"
-                        f"<dl><dt>Pregunta</dt><dd>{e(f['pregunta'])}</dd><dt>Protocolo</dt><dd>{e(f['protocolo'])}</dd>"
-                        f"<dt>Cifras principales</dt><dd><ul>{cifras}</ul></dd>"
-                        f"<dt>Advertencia</dt><dd class='advertencia'>{e(f['advertencia'])}</dd></dl></article>")
-    return f"<div class='tarjetas'>{''.join(tarjetas)}</div>"
-
-
-def html_resultados(ctx: Contexto, a: dict, b: list[dict], figuras: Path | None) -> str:
-    """Gráficos de tradeoff, fracción, tiempo contra ganancia y tiempo igual arriba; el resumen del bloque A, su detalle
-    plegado y debajo de cada tabla el gráfico que la explica."""
-    if not a["filas"]:
-        return "<p class='pend'>pendiente: el control no tiene sus 10 semillas</p>"
-    out = ["<h3>Bloque A: mismo protocolo</h3>", f"<p>{html.escape(referencia_control(a))}</p>",
-           fig_tradeoff(ctx, a, figuras), fig_desglose(ctx, a, figuras), fig_tiempo_igual_ic(ctx, a, figuras),
-           fig_fraccion(ctx, a, figuras), fig_grilla(ctx, a, figuras), f"<p>{html.escape(AVISO_A_HTML)}</p>", tabla_resumen(a["filas"]),
-           "<details><summary>Detalle del bloque A</summary>"
-           + html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS) + "</details>",
-           fig_semillas(ctx, a, figuras)]
-    if len(a["rep"]):
-        out += ["<h3>Varianza entre réplicas y entre semillas</h3>", html_tabla(CAB_VAR, varianza(a["rep"], ctx))]
-        if pares_replicas(a["rep"]):
-            out += ["<h3>Diferencias entre variantes</h3>", tabla_pares(a["rep"]), fig_diferencias(ctx, a, figuras)]
-    out += ["<h3>Bloque B: exploratorios</h3>", f"<p>{html.escape(AVISO_B)}</p>", tarjetas_b(b)]
-    return "".join(out)
-
-
-def seccion_hipotesis(ctx: Contexto, h: str, md_h: str, fin: pd.DataFrame, ap: pd.DataFrame,
-                      figuras: Path | None) -> str:
-    titulo, variantes = ctx.hipotesis[h]
-    filas, veredictos, deltas, aes = [], [], [], []
-    for b in variantes:
-        r, v = fila(ap, b), veredicto(ap, fin, b)
-        d0 = None if r is None else (r["delta_g_media"], r["delta_g_ic_inf"], r["delta_g_ic_sup"])
-        filas.append([b, celda_veredicto(v), celda_ic(d0), celda_ic(_auc(r), _a) if r is not None else "pendiente",
-                      celda(f"{r['aceleracion']:.2f}") if r is not None else "pendiente"])
-        veredictos.append(v)
-        deltas.append(None if r is None else d0[0])
-        aes.append(None if r is None else r["aceleracion"])
-    marcar_mejores(filas, veredictos, {2: deltas, 4: aes})
-    return (f"<section><h2>{h} — {html.escape(titulo)}</h2>"
-            f"<details open><summary>Predicción y regla (de <code>docs/hipotesis.md</code>)</summary>"
-            f"{markdown(md_h, 1)}</details>"
-            + html_tabla(("variante", "veredicto", "Δ [IC 95%] (M$)", "ΔAUC [IC 95%]", "A"), filas)
-            + fig_curva_diferencia(ctx, h, fin, ap, figuras) + "</section>")
-
-
-def commit() -> str:
-    try:
-        return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
-                              cwd=rutas.RAIZ, check=True).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return "desconocido"
-
-
-# Encabezado YAML mínimo: el título y la navegación los pone `_config.yml` (defaults); las reglas de veredicto
-# (td.pierde, td.ok, td.ind), .pend, .pill, .ic, .icbar, .sig-*, .mejor, .tarjetas y .fig están en `_sass/custom/custom.scss`.
-ENCABEZADO = "---\nrender_with_liquid: false\n---\n"
-
-
-def _leer(exp: str, nombre: str) -> dict[str, str]:
-    f = rutas.docs(exp) / f"{nombre}.md"
-    return secciones(f.read_text()) if f.exists() else {}
-
-
-def enlaces(exp: str, exps: list[str]) -> str:
-    """Enlaces relativos a los reportes de los demás experimentos del registro."""
-    otros = [e for e in dict.fromkeys([reg.AGREGADOR, reg.CONTROL, *exps]) if e != exp]
-    items = "".join(f"<li><a href='../../{e}/informe/reporte.html'>{e}</a></li>" for e in otros)
-    return f"<section><h2>Otros reportes</h2><ul>{items}</ul></section>"
-
-
-def generar_con_tabla(exp: str, figuras: Path | None = None) -> tuple[str, str | None]:
-    """(página Jekyll del reporte: encabezado YAML + cuerpo HTML, sin <html>, <head> ni <style>; `tabla_resultados.md` del agregador o None para los demás experimentos)."""
-    ctx = Contexto(exp)
-    fin, ap = cargar([reg.CONTROL, *ctx.exps])
-    hip, dis = _leer(exp, "hipotesis"), _leer(exp, "diseno")
-    if exp == reg.CONTROL:
-        intro = (markdown("## Control\n" + seccion(hip, "Control"))
-                 + markdown("## Métricas y reglas comunes\n" + seccion(hip, "Métricas")))
-    elif ctx.agregador:
-        intro = markdown("## Pregunta\n" + seccion(hip, "Pregunta"))
-    else:
-        intro = (markdown("## Variantes\n" + seccion(dis, "Variantes"))
-                 + "<p>Las reglas, G, Δ, δ, T, A y N* están en <code>control/docs/hipotesis.md</code> "
-                   "(<a href='../../control/informe/reporte.html'>reporte del control</a>).</p>")
-    n_est = linea_ronda(ap)
-    completos = sum(estado(b, fin)[1] for b in ["C", *ctx.variantes])
-    titulo = {reg.CONTROL: "Control", reg.AGREGADOR: "Sampling_1 — velocidad contra ganancia"}.get(exp, exp)
-    md = None
-    cuerpo = f"<h1>{html.escape(titulo)}</h1><section>{intro}</section>"
-    if ctx.agregador:
-        a, b = calcular_bloque_a(ctx, fin, ap), bloque_b()
-        md = markdown_resultados(ctx, a, b)
-        cuerpo += (f"<section><h2>Todas las variantes contra el control</h2><p>{html.escape(n_est)}. "
-                   f"Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{html_resultados(ctx, a, b, figuras)}</section>")
-        cuerpo += f"<section><h2>Comparación a tiempo igual</h2>{tiempo_igual(ctx, fin, ap)}</section>"
-    else:
-        trade = ""
-        if ctx.variantes:  # el bloque A del agregador (réplicas y tiempos de todos los ledgers), filtrado a las variantes de exp
-            ctx_s = Contexto(reg.AGREGADOR)
-            trade = fig_tradeoff(ctx, calcular_bloque_a(ctx_s, cargar([reg.CONTROL, *ctx_s.exps])[0], ap), figuras,
-                                 f"tradeoff_{exp}")
-        cuerpo += (f"<section><h2>Variantes contra el control</h2><p>{html.escape(n_est)}. "
-                   f"Vale la pena: no pierde y A ≥ {A_VALE:g}.</p>{trade}{tabla_variantes(ctx, fin, ap)}</section>")
-        for h in ctx.hipotesis:
-            cuerpo += seccion_hipotesis(ctx, h, seccion(hip, h + " "), fin, ap, figuras)
-    cuerpo += markdown("## Limitaciones previstas\n" + seccion(hip, "Limitaciones"))
-    cuerpo += enlaces(exp, [e for e in reg.duenos() if e != reg.CONTROL])
-    cuerpo += (f"<footer>Generado {datetime.now():%Y-%m-%d %H:%M} · commit {commit()} · ledger: {len(fin)} corridas "
-               f"finales (réplica 0), {completos}/{len(ctx.variantes) + 1} variantes con {N_SEMILLAS} semillas</footer>")
-    return f"{ENCABEZADO}{cuerpo}\n", md
-
-
 # --- bloques entre marcadores (sitio-legible D4) ---
 
 class MarcadorFaltante(Exception):
@@ -1622,16 +1409,11 @@ def planificar(exps: list[str], figuras: Path | None = None) -> tuple[list[tuple
     return plan, archivos, omitidos
 
 
-def generar(exp: str, figuras: Path | None = None) -> str:
-    return generar_con_tabla(exp, figuras)[0]
-
-
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     g = p.add_mutually_exclusive_group(required=True)
     g.add_argument("--exp", "--experimento", dest="exp", help="carpeta de experimentos/ (control, h1, ..., sampling_1)")
     g.add_argument("--todos", action="store_true", help="todos los experimentos del registro")
-    p.add_argument("--salida", type=Path, help="página de salida de la salida vieja (solo con --exp)")
     p.add_argument("--figuras", type=Path, help="además guarda las figuras como PNG en este directorio")
     a = p.parse_args()
     exps = [reg.CONTROL, *[e for e in reg.duenos() if e != reg.CONTROL], reg.AGREGADOR] if a.todos else [a.exp]
@@ -1642,17 +1424,8 @@ def main() -> None:
         raise SystemExit(f"error: {e}; no se escribió nada")
     for ruta in escritos:
         print(ruta)
-    for exp in exps:  # los experimentos cuyo README todavía no tiene marcadores siguen con la salida vieja
-        if tiene_marcadores(destinos(exp)[0][0]):
-            continue
-        salida = a.salida or rutas.informe(exp) / "reporte.html"
-        salida.parent.mkdir(parents=True, exist_ok=True)
-        pagina, md = generar_con_tabla(exp, a.figuras)
-        salida.write_text(pagina)
-        print(salida)
-        if md is not None and not a.salida:
-            (salida.parent / "tabla_resultados.md").write_text(md)
-            print(salida.parent / "tabla_resultados.md")
+    for ruta in omitidos:
+        print(f"omitido (sin marcadores): {ruta}")
 
 
 if __name__ == "__main__":
