@@ -99,7 +99,7 @@
 
   No mueve archivos (eso es 1.15). Verificar con `pytest` (un test por cada lado de la resolución: en `DATOS_DIR` y en
   la ruta vieja) y con `python -m comun.reporte --todos` sin cambios en `git status`.
-- [ ] 1.15 Mover `experimentos/*/ledger/predicciones/` a `DATOS_DIR` (D18). **La hace el orquestador; una sesión
+- [x] 1.15 Mover `experimentos/*/ledger/predicciones/` a `DATOS_DIR` (D18). **La hace el orquestador; una sesión
   headless no la toca ni la marca.** Verificar con `python -m comun.reporte --todos` tres veces sin cambios en
   `git status` y con `experimentos/*/ledger/predicciones/` vacío.
 - [x] 1.16 Revisión en sesión limpia de 1.13 y 1.14 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.

@@ -2197,3 +2197,17 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: ~15 turnos · contexto ~45.000 por turno · ≈ US$ 0,6 (presupuesto de la sesión).
 - Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados 1.15 · predicciones a DATOS_DIR (orquestador)
+
+- Sesión: interactiva, orquestador · modelo: Opus · etapa: **codigo**.
+- Se movieron las cinco carpetas `experimentos/<exp>/ledger/predicciones/` a `DATOS_DIR/ledger/<exp>/predicciones/`
+  con un renombre en el mismo disco: 4950 archivos, 8,5 GB, con la misma cantidad de archivos y de bytes antes y
+  después en cada experimento (control 330, h1 360, h2 120, h3 2360, h4 1780). En el repo no queda ninguna carpeta
+  `predicciones/`. La rama de `tiempos-confiables-y-consistencia` (otro worktree) no se tocó.
+- ✓ `python -m comun.reporte --todos` tres veces seguidas: las tres dejan `git status` igual que al empezar (solo
+  cambian los logs de las sesiones) y ninguna escribe «pendiente» ni baja R. La intermitencia de la revisión 1.11
+  (R = 7 o 6 en «tiempo igual, réplicas») no volvió a aparecer.
+- Causa (D18): el repo está en `~/Documents`, que iCloud sincroniza («Escritorio y Documentos»). Con ~10 GB de parquet
+  en sincronización, un archivo podía no verse por un rato, y el generador lo tomaba como faltante sin avisar.
+- `bloqueo.txt` de la revisión 1.11 resuelto con las decisiones de `9e44863` y borrado.
