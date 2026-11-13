@@ -83,7 +83,7 @@
 
   Verificar con el escenario «Resultados entra en la pantalla» (alto medido en `site/`), con `pytest
   tests/test_reporte.py`, regenerando dos veces sin cambios y con los dos verificadores.
-- [ ] 1.11 Revisión en sesión limpia de 1.8, 1.9 y 1.12 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.
+- [ ] 1.11 Revisión en sesión limpia de 1.8, 1.9 y 1.12 con `docs/revision.md` § 3 y `python -m scripts.medir_sitio` (tope de 800 px de D16), cierre en la bitácora de `sampling_1`.
 
 ## 2. Redacción (sesión: Opus; un commit por página)
 
@@ -142,7 +142,9 @@ Cada tarea:
   - «envíos» pasa a «clientes contactados» en todo el texto escrito a mano (D14).
 
   Antes, listar en la bitácora cada recuadro con su destino. Verificar con el escenario «Veredicto y limitaciones
-  legibles», con `grep -rn envío` vacío en las páginas publicadas y con los dos verificadores.
+  legibles», con `grep -rn envío` vacío en las páginas publicadas, con los dos verificadores y con
+  `python -m scripts.medir_sitio --pagina experimentos/control/ experimentos/h1/ experimentos/h2/ experimentos/h3/
+  experimentos/h4/` (los diagramas entran en la columna).
 - [ ] 2.8 Revisión en sesión limpia del grupo 2 con `docs/revision.md` § 5 (comparando contra
   `git show <commit previo>:experimentos/sampling_1/README.md` que no se perdió texto), cierre en la bitácora de
   `sampling_1` y `comun/tokens.py`.
@@ -153,8 +155,10 @@ Cada tarea:
   la toca ni la marca.** Verificar en el navegador: ordenar por Δ en las dos direcciones, filtrar «H3», abrir una figura,
   a 1440 y 390 px y en claro y oscuro, y que `mkdocs build` pase con `requirements-sitio.txt`.
 - [ ] 3.1 `pytest` entero, `python -m comun.variantes --verificar`, los dos verificadores y `scripts/sitio.sh`, todo en
-  verde. Ancho único medido en `site/` (texto, figura, código, recuadro y plegable con el mismo ancho a 1440 px). Las
-  ~13 páginas no desbordan a 390 px. Las capturas en claro y en oscuro las hace el orquestador.
+  verde. `mkdocs build` y `python -m scripts.medir_sitio` sin problemas: ancho único a 1440 px (texto, figura, código,
+  recuadro, plegable y diagrama con el ancho de la columna; las tablas más anchas, solo como aviso), ninguna de las
+  ~13 páginas desborda a 390 px y Resultados respeta el tope de alto de D16. Las capturas en claro y en oscuro las
+  hace el orquestador.
 - [ ] 3.2 Revisión en sesión limpia (Opus) del cambio completo contra los escenarios de `sitio-informes` y
   `reporte-visual`, cierre en la bitácora y `comun/tokens.py`.
 

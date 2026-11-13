@@ -42,7 +42,8 @@ Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/
 Bash(scripts/sitio.sh:*),Bash(bash scripts/sitio.sh:*),Bash(mkdocs build:*),Bash(git show:*),Bash(cp:*),Bash(mktemp:*),Bash(diff:*),\
 Bash(sed:*),Bash(git check-ignore:*),Bash(git restore --staged:*),Bash(pip list:*),Bash(pip show:*),Bash(sort:*),Bash(uniq:*),\
 Bash(echo:*),Bash(cut:*),Bash(awk:*),Bash(bash -n:*),Bash(git ls-files:*),Bash(git ls-tree:*),\
-Bash(scripts/lanzar_carriles.sh --en-seco:*),Bash(bash scripts/lanzar_carriles.sh --en-seco:*)"
+Bash(scripts/lanzar_carriles.sh --en-seco:*),Bash(bash scripts/lanzar_carriles.sh --en-seco:*),\
+Bash(node /private/tmp/claude-501/bundled-skills:*)"
 
 # Reglas de shell para las dos sesiones: lo que las sesiones headless intentaban y se les negaba (cada negación las deja
 # ~2 min paradas). Sale de las denegaciones de 88 sesiones de main y 4 de tiempos-confiables-y-consistencia.
@@ -53,7 +54,8 @@ Nunca antepongas variables de entorno ni export: 'PYENV_VERSION=facultad python 
 Un comando por llamada, sin variables de shell (f=...; ... \$f), sin bucles for/while, sin \$(...) y sin heredocs (python - <<EOF, cat >> archivo <<EOF). \
 Para crear o modificar archivos del repo usá Edit o Write, no la shell. \
 Los scripts auxiliares y las salidas temporales van en $TMP_ETAPAS/ (ignorada por git; mkdir -p $TMP_ETAPAS): escribilos con Write y corrélos con python -m $TMP_ETAPAS.<nombre> o python $TMP_ETAPAS/<archivo>.py. \
-Nunca escribas ni leas en /tmp ni fuera del repo (salvo los datos en $DATOS)."
+Nunca escribas ni leas en /tmp ni fuera del repo (salvo los datos en $DATOS y los archivos de una skill cargada: su validador se corre con node <ruta de la skill>/...). \
+Para medir el sitio en un navegador (anchos, desborde a 390 px, alto de figuras y tablas) no abras Chrome: corré mkdocs build y python -m scripts.medir_sitio."
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
     claude -p "$4" --model "$1" --permission-mode acceptEdits --max-budget-usd "$2" \
