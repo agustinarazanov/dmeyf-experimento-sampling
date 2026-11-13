@@ -1,0 +1,12 @@
+# Fase 8, réplica 0, lista a (h1, h3 y h4): estudios F0.25, F0.1 y F0.05; finales de H3-0.5, H4O-0.25, H4O-0.1, H4O-0.05 y las cuatro H4P. 20 semillas por final. Cambio tiempos-confiables-y-consistencia, D15.
+fast-retrain-opt 0.25 0 optimizar - 0
+fast-retrain-opt 0.1 0 optimizar - 0
+fast-retrain-opt 0.05 0 optimizar - 0
+opt-muestra 0.5 todas final - 0
+fast-retrain-opt 0.25 todas final - 0
+fast-retrain-opt 0.1 todas final - 0
+fast-retrain-opt 0.05 todas final - 0
+clase-peso 0.5 todas final - 0
+clase-peso 0.25 todas final - 0
+clase-peso 0.1 todas final - 0
+clase-peso 0.05 todas final - 0

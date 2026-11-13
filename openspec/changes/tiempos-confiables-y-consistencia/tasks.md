@@ -116,7 +116,7 @@ Qué puede ir en paralelo:
 
   Verificar con `--en-seco` que la carpeta `tiempos/` sube al bucket y vuelve a la Mac, y que dos listas no escriben el
   mismo archivo.
-- [ ] 2.6 Listas de la fase 8 en `experimentos/sampling_1/scripts/` (D15): `fase8_r0_a` … `fase8_r7_a` (h1, h3 y h4),
+- [x] 2.6 Listas de la fase 8 en `experimentos/sampling_1/scripts/` (D15): `fase8_r0_a` … `fase8_r7_a` (h1, h3 y h4),
   `fase8_r0_b` … `fase8_r7_b` (h2) y `fase8_medicion`, con las líneas `@ experimentos.sampling_1.scripts.tiempos_hp_fijos`
   de la medición y de las anclas.
   En cada lista, los estudios van antes que sus finales, y ninguna `_a` lee un estudio de una `_b`.

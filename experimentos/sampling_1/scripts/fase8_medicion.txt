@@ -1,0 +1,3 @@
+# Fase 8, medición a hiperparámetros fijos (D4) y anclas con los .db de C y C@1…7 (D6). Una VM propia; la calibración de inicio y de fin la agrega vm.sh. Cambio tiempos-confiables-y-consistencia, D15.
+@ experimentos.sampling_1.scripts.tiempos_hp_fijos
+@ experimentos.sampling_1.scripts.tiempos_hp_fijos --anclas

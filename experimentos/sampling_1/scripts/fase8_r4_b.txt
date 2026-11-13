@@ -1,0 +1,11 @@
+# Fase 8, réplica 4, lista b (h2): estudios B0.5@k, B0.25@k, B0.1@k, B0.05@k y GOSS@k; finales de B0.5, B0.25, B0.1, B0.05 y GOSS (20 semillas). Cambio tiempos-confiables-y-consistencia, D15.
+bagging 0.5 0 optimizar - 4
+bagging 0.25 0 optimizar - 4
+bagging 0.1 0 optimizar - 4
+bagging 0.05 0 optimizar - 4
+goss 1 0 optimizar - 4
+bagging 0.5 todas final - 4
+bagging 0.25 todas final - 4
+bagging 0.1 todas final - 4
+bagging 0.05 todas final - 4
+goss 1 todas final - 4

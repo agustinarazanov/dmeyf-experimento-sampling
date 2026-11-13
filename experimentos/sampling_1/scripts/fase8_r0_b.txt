@@ -1,0 +1,3 @@
+# Fase 8, réplica 0, lista b (h2): estudio B0.05 y final de B0.05 (20 semillas). Cambio tiempos-confiables-y-consistencia, D15.
+bagging 0.05 0 optimizar - 0
+bagging 0.05 todas final - 0
