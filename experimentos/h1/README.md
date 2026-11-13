@@ -15,7 +15,7 @@ Optuna se corre de nuevo para cada tasa, sobre una muestra sorteada con la semil
 tasa, sobre una muestra que se vuelve a sortear con cada semilla final.
 
 ```mermaid
-flowchart LR
+flowchart TB
   D[train 201903–201906] --> M1["muestra r al azar<br/>(semilla 0)"]
   M1 --> O["Optuna: 40 trials<br/>AUC en 201908"]
   O --> HP[hiperparámetros]
@@ -116,9 +116,7 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
 
 ## Limitaciones
 
-!!! warning "Limitación"
-    Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
+- **Una sola búsqueda por variante.** Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
 
-!!! warning "Limitación"
-    Los estudios de `U0.25` y `U0.1` los usa también H3: Δ(`U0.25`) y Δ(`H3-0.25`) no son evidencia independiente entre
+- **Estudios compartidos con H3.** Los estudios de `U0.25` y `U0.1` los usa también H3: Δ(`U0.25`) y Δ(`H3-0.25`) no son evidencia independiente entre
     sí.

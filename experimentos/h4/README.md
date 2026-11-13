@@ -18,7 +18,7 @@ solo CONTINUA, de dos maneras:
 dataset (Zulip 211718).
 
 ```mermaid
-flowchart LR
+flowchart TB
   D[train 201903–201906] --> S{"búsqueda"}
   S -- "H4H / H4U" --> MB["todas las bajas<br/>+ 10 % de CONTINUA"]
   S -- "H4F" --> MU["muestra uniforme<br/>(estudios de H3)"]
@@ -138,7 +138,11 @@ Lo que no se dice acá (máquina, parámetros fijos de LightGBM, espacio de Optu
 
 ### Variantes
 
-| variante | estudio (réplica 0 / réplica k ≥ 1) | dueño del estudio | final |
+Un *estudio* es una búsqueda de Optuna: `NH0.1` busca sobre todas las bajas y el 10 % de CONTINUA, y `NH0.1@k` es la
+misma búsqueda repetida con semilla k. Esas repeticiones son las *réplicas*, que miden cuánto depende el resultado de la
+suerte de la búsqueda; la réplica 0 es la búsqueda original.
+
+| variante | búsqueda de hiperparámetros | dueño del estudio | final |
 |---|---|---|---|
 | `H4H-0.1` | `NH0.1` / `NH0.1@k` | `h4` | completo (r = 1) |
 | `H4U-0.1` | `NU0.1` / `NU0.1@k` | `h4` | completo (r = 1) |
@@ -225,29 +229,36 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
 
 ## Veredicto
 
+!!! success "Conclusión"
+    Conservar todas las bajas en la búsqueda no sirve: `H4H-0.1` y `H4U-0.1` pierden contra el control con réplicas, y
+    elegir los negativos difíciles no cambia nada contra elegirlos al azar. Conservarlas en el final sí: `H4F-0.05`
+    (búsqueda sobre el 5 % uniforme, final con todas las bajas y la mitad de CONTINUA con peso 2) no pierde, acelera
+    12,50 veces y gana a tiempo igual; con el final de seis meses `H4F-0.25` también cumple las tres condiciones.
+    Reoptimizar sobre la receta del final (`H4O-0.5`) no pierde contra el control, pero no mejora a `H4F-0.05` y es más
+    de 5 veces más lento. Lo que el exploratorio reportaba como ganador (la búsqueda difícil) es lo que pierde; su
+    arquitectura de producción (fast-retrain) es la que se sostiene.
+
 Las reglas se aplican tal como quedaron escritas, con el δ de la ronda (5,65 M$; las reglas 1 a 3 se escribieron con el
 de la ronda anterior, y la regla de δ dice que su valor sale del control de cada ronda).
 
-!!! failure "1. Búsqueda informada: refutada"
-    Las dos variantes *pierden* con réplicas: la media de Δ con réplicas queda debajo de −5,65 M$ en `H4H-0.1`
+- **1. Búsqueda informada: refutada.** Las dos variantes *pierden* con réplicas: la media de Δ con réplicas queda debajo de −5,65 M$ en `H4H-0.1`
     (−11,41 M$, IC [−15,80; −7,03]) y en `H4U-0.1` (−8,02 M$, IC [−11,52; −4,53]). En esta ronda los dos IC enteros
     quedan debajo de −δ. Optimizar sobre una muestra con todas las bajas y el 10 % de CONTINUA rinde peor que optimizar
     sobre una muestra uniforme del 10 % (`H3-0.1`, Δ con réplicas 1,71 M$). Una explicación posible, que no se probó, es
     que la proporción de clases distorsionada en la búsqueda lleva a hiperparámetros que no sirven para el train
     completo.
 
-!!! note "2. Difícil contra uniforme: no cambia"
-    D_HU = −3,39 M$, IC de Welch [−8,06; 1,28]. La predicción (*ayuda*) no se cumple; si algo, la media va en contra.
+- **2. Difícil contra uniforme: no cambia.** D_HU = −3,39 M$, IC de Welch [−8,06; 1,28]. La predicción (*ayuda*) no se cumple; si algo, la media va en contra.
     Elegir negativos difíciles no rescata a la búsqueda informada.
 
-!!! success "3. Fast-retrain: confirmada en las dos tasas"
+- **3. Fast-retrain: confirmada en las dos tasas.**
+
     - **`H4F-0.05`**: (a) *no pierde*, cota inferior del IC de Welch −1,58 ≥ −5,65 M$; (b) A = 12,50 > 10,56 de
       `H3-0.05` (T mediana 80 s contra 95 s); (c) a tiempo igual *gana*, IC t entre réplicas [0,77; 8,50] M$.
     - **`H4F-0.25`**: (a) cota inferior −1,42 ≥ −5,65 M$; (b) A = 4,77 > 4,38 de `H3-0.25`; (c) IC t a tiempo igual
       [2,09; 7,73] M$. En la ronda anterior (c) no se cumplía y quedaba *indeterminado*.
 
-!!! success "4 y 5. `H4O-0.5`: no pierde y no cambia contra `H4F-0.05`"
-    *No pierde* contra `C`: cota inferior del IC de Welch de Δ con réplicas −4,27 ≥ −5,65 M$ (Δ = −1,33 M$). D_OF =
+- **4 y 5. `H4O-0.5`: no pierde y no cambia contra `H4F-0.05`.** *No pierde* contra `C`: cota inferior del IC de Welch de Δ con réplicas −4,27 ≥ −5,65 M$ (Δ = −1,33 M$). D_OF =
     −2,74 M$, IC de Welch [−5,69; 0,21]: contiene a 0, como se predijo. Buscar sobre la receta del final, como pide el
     «siempre OP» (211718), no mejora a buscar sobre el 5 % uniforme, y cuesta: A(`H4O-0.5`) = 2,31 contra
     A(`H4F-0.05`) = 12,50 (T mediana 434 s contra 80 s). Es la respuesta a 211718 para `H4F`: con los hiperparámetros
@@ -272,41 +283,27 @@ IC contienen a 0. En `H4H-0.1` y `H4U-0.1` van juntas: las dos bajan (ΔAUC −0
 - La diferencia de `H4F-0.05` con `H3-0.05` es solo el final (comparten estudios): Δ con réplicas parecido (1,41 y
   2,08 M$) con un final más barato. La ganancia a tiempo igual sale de ahí: más semillas en el mismo tiempo.
 
-!!! success "Conclusión"
-    Conservar todas las bajas en la búsqueda no sirve: `H4H-0.1` y `H4U-0.1` pierden contra el control con réplicas, y
-    elegir los negativos difíciles no cambia nada contra elegirlos al azar. Conservarlas en el final sí: `H4F-0.05`
-    (búsqueda sobre el 5 % uniforme, final con todas las bajas y la mitad de CONTINUA con peso 2) no pierde, acelera
-    12,50 veces y gana a tiempo igual; con el final de seis meses `H4F-0.25` también cumple las tres condiciones.
-    Reoptimizar sobre la receta del final (`H4O-0.5`) no pierde contra el control, pero no mejora a `H4F-0.05` y es más
-    de 5 veces más lento. Lo que el exploratorio reportaba como ganador (la búsqueda difícil) es lo que pierde; su
-    arquitectura de producción (fast-retrain) es la que se sostiene.
-
 ## Limitaciones
 
-!!! warning "Test ya mirado"
-    Las cuatro primeras variantes salen de estrategias que el exploratorio eligió o descartó mirando su ganancia en
+- **Test ya mirado.** Las cuatro primeras variantes salen de estrategias que el exploratorio eligió o descartó mirando su ganancia en
     201910, y no hay otro mes de test. Entraron todas juntas, con reglas escritas antes de correr, y ninguna se eligió ni
     se descartó acá por 201910; aun así, el resultado de H4 no cuenta con un mes de test que no se haya mirado. En este
     caso el sesgo esperable (a favor de lo que eligió el exploratorio) no se vio: su elegida, la búsqueda difícil,
     *pierde*.
 
-!!! warning "Comparaciones múltiples"
-    Entre `h4` y las extensiones de `h3` hay más de diez contrastes sin corrección. Las conclusiones se apoyan en los
+- **Comparaciones múltiples.** Entre `h4` y las extensiones de `h3` hay más de diez contrastes sin corrección. Las conclusiones se apoyan en los
     contrastes principales; el resto es secundario. La ganancia a tiempo igual de `H4F-0.05` es un contraste principal,
     con cota inferior (0,77 M$) cerca de 0.
 
-!!! warning "Estudios compartidos con H3"
-    `H4F-0.05` y `H4F-0.25` comparten los estudios de `H3-0.05` y `H3-0.25`: no son evidencia independiente sobre la
+- **Estudios compartidos con H3.** `H4F-0.05` y `H4F-0.25` comparten los estudios de `H3-0.05` y `H3-0.25`: no son evidencia independiente sobre la
     búsqueda.
 
-!!! warning "Proporción de clases"
-    La búsqueda de `H4H-0.1`, `H4U-0.1` y `H4O-0.5` cambia la proporción de clases, que es el terreno de Sampling_2
+- **Proporción de clases.** La búsqueda de `H4H-0.1`, `H4U-0.1` y `H4O-0.5` cambia la proporción de clases, que es el terreno de Sampling_2
     (undersampling de la clase mayoritaria). Es la excepción declarada a la regla de Sampling_1 de no tocar la
     proporción: H4 sigue midiendo velocidad, con el final completo (`H4H-0.1`, `H4U-0.1`) o con la proporción ponderada
     restituida por el peso 2 (`H4F-*`, `H4O-0.5`), y no compara proporciones de clases entre sí. Optuna ve
-    probabilidades descalibradas; G se mide con un corte por cantidad de envíos (N\*), que depende solo del orden.
+    probabilidades descalibradas; G se mide con un corte por cantidad de clientes contactados (N\*), que depende solo del orden.
 
-!!! warning "Final con la mitad de CONTINUA"
-    En `H4F-*` y `H4O-0.5` el final usa la mitad de CONTINUA, además de los hiperparámetros elegidos con cuatro meses,
+- **Final con la mitad de CONTINUA.** En `H4F-*` y `H4O-0.5` el final usa la mitad de CONTINUA, además de los hiperparámetros elegidos con cuatro meses,
     así que el número de filas del final cambia en los dos sentidos. La sonda de `H4H-0.1` tiene la semilla de la
     réplica: su suerte entra en el IC y su tiempo cuenta en T.

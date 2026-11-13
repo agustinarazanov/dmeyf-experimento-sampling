@@ -15,7 +15,7 @@ experimental, así que sale del espacio y Optuna busca los otros cuatro con los 
 quedan completos.
 
 ```mermaid
-flowchart LR
+flowchart TB
   D[train 201903–201906 completo] --> O["Optuna: 40 trials<br/>4 hp, sin bagging_fraction"]
   O --> HP[hiperparámetros]
   F[final 201903–201908 completo] --> DS[Dataset completo]
@@ -125,15 +125,12 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
 
 ## Limitaciones
 
-!!! warning "Limitación"
-    `GOSS` es descriptiva: no tiene una regla que decida, y su fila se lee como referencia y no como veredicto de H2.
+- **GOSS es descriptiva.** `GOSS` es descriptiva: no tiene una regla que decida, y su fila se lee como referencia y no como veredicto de H2.
     Cambia la mezcla de clases por iteración. Si Optuna elige `learning_rate` cerca de 0,01, las 100 iteraciones caen
     antes de 1/`learning_rate` y GOSS nunca muestrea.
 
-!!! warning "Limitación"
-    En las variantes `B*`, `bagging_fraction` es la variable y sale del espacio de Optuna, mientras que el control y
+- **`bagging_fraction` fuera de Optuna.** En las variantes `B*`, `bagging_fraction` es la variable y sale del espacio de Optuna, mientras que el control y
     `uniforme` la siguen optimizando. Por eso `bagging` y `uniforme` no tienen la misma fracción efectiva por iteración y
     la comparación entre ellas es solo descriptiva.
 
-!!! warning "Limitación"
-    Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
+- **Una sola búsqueda por variante.** Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.

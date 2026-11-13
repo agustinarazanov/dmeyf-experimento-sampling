@@ -14,7 +14,7 @@ para el train completo. Por eso se suman variantes que lo reescalan (`H3R`, raí
 Optuna pesa en el resultado, cada variante se repite con 8 réplicas de la optimización.
 
 ```mermaid
-flowchart LR
+flowchart TB
   D[train 201903–201906] --> M["muestra r_opt al azar<br/>(semilla de la réplica)"]
   M --> O["Optuna: 40 trials<br/>AUC en 201908"]
   O --> HP["hiperparámetros<br/>(H3R / H3L: min_data_in_leaf reescalado)"]
@@ -138,7 +138,11 @@ Lo que no se dice acá (máquina, parámetros fijos de LightGBM, semillas finale
 
 ### Variantes
 
-| variante | estudio (réplica 0 / réplica k ≥ 1) | final |
+Un *estudio* es una búsqueda de Optuna: `U0.25` busca sobre una muestra uniforme del 25 % de train, y `U0.25@k` es la
+misma búsqueda repetida con semilla k. Esas repeticiones son las *réplicas*, que miden cuánto depende el resultado de la
+suerte de la búsqueda; la réplica 0 es la búsqueda original.
+
+| variante | búsqueda de hiperparámetros | final |
 |---|---|---|
 | `H3-0.25` | `U0.25` / `U0.25@k` | r = 1 |
 | `H3-0.1` | `U0.1` / `U0.1@k` | r = 1 |
@@ -231,11 +235,20 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
 
 ## Veredicto
 
-!!! success "H3 (réplica 0): confirmada"
-    Las dos tasas no pierden y aceleran 4,37 y 8,04 veces; `H3-0.25` además *gana*. Ese IC solo ve la semilla final:
+!!! success "Conclusión"
+    Optimizar sobre una muestra del 5 %, 10 % o 25 % y entrenar con todas las filas no pierde contra el control, también
+    cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,38 a 10,56 veces. La réplica 0 sola exagera o
+    achica la ventaja según la suerte del estudio; con réplicas Δ queda entre 1,42 y 2,08 M$ con IC que contiene a 0, y
+    el mecanismo (regulariza o suerte del control) queda sin resolver. El reescalado √(1/r) de `min_data_in_leaf` no
+    cambia contra no reescalar. De las extensiones, todas no pierden contra el control: la raíz no mejora a no reescalar,
+    le gana a la lineal solo en r = 0,1, y buscar sobre el 10 % de los clientes no cambia contra buscar sobre el 10 % de
+    las filas.
+
+- **H3 (réplica 0): confirmada.** Las dos tasas no pierden y aceleran 4,37 y 8,04 veces; `H3-0.25` además *gana*. Ese IC solo ve la semilla final:
     el estudio de Optuna es uno por variante, así que la suerte de la optimización queda adentro de Δ sin medir.
 
-!!! success "Reglas 1 a 4, con réplicas y el δ de la ronda (5,65 M$)"
+- **Reglas 1 a 4, con réplicas y el δ de la ronda (5,65 M$).**
+
     1. **H3 con réplicas: confirmada.** `H3-0.1` y `H3-0.25` *no pierden* con réplicas: las cotas inferiores del IC de
        Welch (−1,07 y −2,82 M$) quedan por encima de −5,65 M$. Con réplicas, Δ pasa de 4,73 a 1,42 M$ en `H3-0.25` (la
        réplica 0 había salido arriba de la media) y de 1,26 a 1,71 M$ en `H3-0.1` (había salido abajo): la suerte de
@@ -251,7 +264,8 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
        [−1,95; 1,71] (7 g.l.). La predicción (*mejora*) no se cumple: reescalar `min_data_in_leaf` × √10 no mueve la
        ganancia. Contra `C`, `H3R-0.1` *no pierde* (cota inferior −1,80 M$).
 
-!!! success "Reglas 5 a 8, extensiones"
+- **Reglas 5 a 8, extensiones.**
+
     5. **Raíz contra lineal: gana la raíz en r = 0,1; no cambia en r = 0,25.** `H3R-0.1` − `H3L-0.1` = 1,45 M$, IC t
        entre réplicas [0,65; 2,25]. `H3R-0.25` − `H3L-0.25` = 0,72 M$, IC [−0,90; 2,35]. La predicción se cumple solo en
        r = 0,1, igual que en la ronda anterior. La raíz no es mejor que no reescalar (reglas 4 y 6).
@@ -280,40 +294,25 @@ de Ḡ con 10 semillas y el 94 % a 98 % con 50. El desvío de Ḡ con un estudio
 pasar de 10 a 50 semillas. Pasar de 10 a 20 semillas en la ronda vigente angostó el IC por semilla pero no el de
 réplicas. Para medir Δ hace falta repetir la optimización, no solo el final.
 
-!!! success "Conclusión"
-    Optimizar sobre una muestra del 5 %, 10 % o 25 % y entrenar con todas las filas no pierde contra el control, también
-    cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,38 a 10,56 veces. La réplica 0 sola exagera o
-    achica la ventaja según la suerte del estudio; con réplicas Δ queda entre 1,42 y 2,08 M$ con IC que contiene a 0, y
-    el mecanismo (regulariza o suerte del control) queda sin resolver. El reescalado √(1/r) de `min_data_in_leaf` no
-    cambia contra no reescalar. De las extensiones, todas no pierden contra el control: la raíz no mejora a no reescalar,
-    le gana a la lineal solo en r = 0,1, y buscar sobre el 10 % de los clientes no cambia contra buscar sobre el 10 % de
-    las filas.
-
 ## Limitaciones
 
-!!! warning "Depende de `h1`"
-    La réplica 0 de H3 usa los estudios `U0.25`, `U0.1` y `U0.05` de `h1`; las réplicas `@k` son de `h3`. Δ(`H3-0.25`) y
+- **Depende de `h1`.** La réplica 0 de H3 usa los estudios `U0.25`, `U0.1` y `U0.05` de `h1`; las réplicas `@k` son de `h3`. Δ(`H3-0.25`) y
     Δ(`U0.25`) de la réplica 0 tienen la misma suerte de optimización y no son evidencia independiente entre sí. Sin
     `h1`, H3 no se puede correr ni consolidar.
 
-!!! warning "Variantes que comparten estudios"
-    `H3R-0.1` y `H3-0.1` comparten todos sus estudios: su diferencia aísla el reescalado y no es evidencia independiente
+- **Variantes que comparten estudios.** `H3R-0.1` y `H3-0.1` comparten todos sus estudios: su diferencia aísla el reescalado y no es evidencia independiente
     sobre H3. Lo mismo vale para `H3R-0.25`, `H3L-0.25` y `H3-0.25`, y para `H3L-0.1`.
 
-!!! warning "Reescalado y final de seis meses"
-    `H3R` y `H3L` muestran que reescalar `min_data_in_leaf` no mejora a no hacerlo en las muestras de búsqueda, pero eso
+- **Reescalado y final de seis meses.** `H3R` y `H3L` muestran que reescalar `min_data_in_leaf` no mejora a no hacerlo en las muestras de búsqueda, pero eso
     no se probó para el salto de cuatro a seis meses del final.
 
-!!! warning "Test ya mirado"
-    Las extensiones salen de un exploratorio que eligió el reescalado √(1/r) frente al lineal y descartó el muestreo por
+- **Test ya mirado.** Las extensiones salen de un exploratorio que eligió el reescalado √(1/r) frente al lineal y descartó el muestreo por
     cliente mirando su ganancia en 201910. Entraron todas, con reglas escritas antes de correr, y ninguna se eligió ni se
     descartó acá por 201910, pero estos contrastes no cuentan con un mes de test que no se haya mirado.
 
-!!! warning "Comparaciones múltiples"
-    Con `h4` son más de diez contrastes sin corrección: con un 5 % de error por contraste, alguno puede salir
+- **Comparaciones múltiples.** Con `h4` son más de diez contrastes sin corrección: con un 5 % de error por contraste, alguno puede salir
     significativo por azar. Las reglas 5 a 8 son secundarias.
 
-!!! warning "Ocho réplicas"
-    El IC de Welch quedó lo bastante angosto para decidir *no pierde*, pero no para separar de cero una ventaja del
+- **Ocho réplicas.** El IC de Welch quedó lo bastante angosto para decidir *no pierde*, pero no para separar de cero una ventaja del
     tamaño de la medida (1,42 a 2,08 M$). R = 8 quedó cerrado antes de correr y no se agregan réplicas. Los tiempos
     vienen de VMs `n2-highmem-8` distintas; T es la mediana entre réplicas y no se compara entre rondas.

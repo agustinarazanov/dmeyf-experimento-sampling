@@ -32,7 +32,7 @@ El baseline del curso (Zulip 208135), con train completo (r = 1):
 ### Meses
 
 ```mermaid
-flowchart LR
+flowchart TB
   H["201901–201902<br/>solo historia<br/>(lags y deltas)"] --> T["201903–201906<br/>train de Optuna"]
   T --> J["201907<br/>solo en el final"]
   J --> V["201908<br/>validación: AUC de Optuna y N*<br/>(también en el final)"]
@@ -68,7 +68,7 @@ pasadas a `control/docs/hipotesis.md` el 2026-11-03 (commit `dc6d9ce`). La ronda
 [bitácora del control](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/control/docs/bitacora.md)
 con su motivo, y las corridas previas quedan marcadas como de la versión anterior.
 
-- **N\***: la cantidad de envíos que maximiza la ganancia media del control en validación (201908). Ese mismo N\* se
+- **N\***: la cantidad de clientes contactados que maximiza la ganancia media del control en validación (201908). Ese mismo N\* se
   aplica en test (201910) a todas las variantes. En la ronda vigente es N\* = 3.300, fijo (§ Rondas).
 - **G** (métrica que decide): ganancia en 201910 al corte fijo N\*, calculada contra BAJA+2 con los valores de la
   cátedra. La ganancia máxima de la curva se reporta pero no decide.
@@ -240,10 +240,8 @@ Generado por `comun/reporte.py` el 2026-11-13; no editar.
 
 ## Limitaciones
 
-!!! warning "Limitación"
-    Los hiperparámetros que eligió Optuna con train 201903–201906 se usan sin cambios en un final de seis meses
+- **Hiperparámetros de cuatro meses en un final de seis.** Los hiperparámetros que eligió Optuna con train 201903–201906 se usan sin cambios en un final de seis meses
     (§ Apartamientos del baseline). Cambia el régimen del final para todas las variantes por igual.
 
-!!! warning "Limitación"
-    `C-rep` corre en otra VM de la misma cuenta: prueba el determinismo entre máquinas, no la reproducción entre
+- **`C-rep` en la misma cuenta.** `C-rep` corre en otra VM de la misma cuenta: prueba el determinismo entre máquinas, no la reproducción entre
     integrantes.

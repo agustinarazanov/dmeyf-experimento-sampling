@@ -153,7 +153,7 @@ Cada tarea:
 - [x] 2.7 `experimentos/sampling_1/docs/guion.md`: secciones y figuras citadas que se mudaron, y la figura de ensamble
   según el tiempo donde corresponda. `CLAUDE.md` y el README raíz suman `anexo.md` al mapa de archivos. Verificar con
   `python -m scripts.verificar_readme` y con que cada figura que cita el guion existe.
-- [ ] 2.7b `control/README.md` y `h1` a `h4/README.md`:
+- [x] 2.7b `control/README.md` y `h1` a `h4/README.md`:
   - Veredicto con un solo recuadro (la conclusión) y Limitaciones sin recuadros, en listas con el nombre en negrita
     (D11; lo mismo en Resultados § Limitaciones comunes);
   - diagramas en `flowchart TB` o en dos filas, con etiquetas cortas (D12);

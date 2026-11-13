@@ -2306,3 +2306,36 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `CLAUDE.md` y `README.md` suman `anexo.md` al mapa de archivos.
 - ✓ Las 11 figuras que cita el guion tienen su SVG (`tmp_etapas/figuras_guion.py`). `verificar_readme` (32 enlaces) y
   `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.7b · control y H1 a H4
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- Recuadros de § Veredicto y § Limitaciones y su destino (D11), antes de tocarlos. Un recuadro que pasa a ítem queda
+  como `- **título.** cuerpo`, con el cuerpo entero:
+  - `control` § Limitaciones: los dos «Limitación» pasan a ítems «Hiperparámetros de cuatro meses en un final de seis»
+    y «`C-rep` en la misma cuenta».
+  - `h1` § Veredicto: «Veredicto: ninguna de las dos» queda como único recuadro. § Limitaciones: los dos «Limitación»
+    pasan a «Una sola búsqueda por variante» y «Estudios compartidos con H3».
+  - `h2` § Veredicto: «Veredicto: refutada» queda como único recuadro. § Limitaciones: los tres «Limitación» pasan a
+    «GOSS es descriptiva», «`bagging_fraction` fuera de Optuna» y «Una sola búsqueda por variante».
+  - `h3` § Veredicto: «Conclusión» queda como único recuadro y pasa primero; «H3 (réplica 0): confirmada», «Reglas 1 a
+    4, con réplicas y el δ de la ronda (5,65 M$)» y «Reglas 5 a 8, extensiones» pasan a ítems. § Limitaciones: «Depende
+    de `h1`», «Variantes que comparten estudios», «Reescalado y final de seis meses», «Test ya mirado», «Comparaciones
+    múltiples» y «Ocho réplicas» pasan a ítems con el mismo nombre.
+  - `h4` § Veredicto: «Conclusión» queda como único recuadro y pasa primero; «1. Búsqueda informada: refutada», «2.
+    Difícil contra uniforme: no cambia», «3. Fast-retrain: confirmada en las dos tasas» y «4 y 5. `H4O-0.5`: no pierde
+    y no cambia contra `H4F-0.05`» pasan a ítems. § Limitaciones: «Test ya mirado», «Comparaciones múltiples»,
+    «Estudios compartidos con H3», «Proporción de clases» y «Final con la mitad de CONTINUA» pasan a ítems.
+  - Fuera de estas dos secciones no se toca ningún recuadro (las predicciones y el aviso de H4 § Predicción quedan).
+- La conversión la hace `tmp_etapas/recuadros.py`; tres ítems cuyo cuerpo empezaba con una lista (H3 reglas 1 a 4 y 5
+  a 8, H4 regla 3) se corrigieron a mano para que la lista quede anidada.
+- Diagramas: los cinco `flowchart LR` (control y H1 a H4) pasan a `flowchart TB` (D12); las etiquetas ya eran cortas.
+- § Variantes de H3 y H4: la columna «estudio (réplica 0 / réplica k ≥ 1)» pasa a «búsqueda de hiperparámetros», con
+  la línea que explica estudio y réplica (D15). H1, H2 y el control no tienen esa columna.
+- «envíos» → «clientes contactados» en `control` § Reglas (N\*) y en H4 § Limitaciones (D14).
+- ✓ Escenario «Veredicto y limitaciones legibles»: un recuadro en cada § Veredicto y ninguno en § Limitaciones (ni en
+  Resultados § Limitaciones comunes). `grep -rn envío` vacío en las páginas publicadas. `verificar_readme`,
+  `verificar_informe_h3` (623 números, 0 sin fuente), `comun.variantes --verificar` y `scripts/sitio.sh` en verde.
+  `medir_sitio --pagina` de control y H1 a H4: 0 problemas en 5 páginas, columna de 720 px (solo avisos de tablas más
+  anchas, que se desplazan en su recuadro).
+- Tokens: sesión de las tareas 2.1 a 2.7b, ≈ US$ 5,6 (presupuesto de la sesión).
