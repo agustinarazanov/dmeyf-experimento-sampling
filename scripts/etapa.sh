@@ -40,7 +40,8 @@ Bash(gcloud compute instances list:*),Bash(gcloud storage ls:*),Bash(gsutil ls:*
 Bash(git grep:*),Bash(shasum:*),Bash(sha256sum:*),Bash(gsutil rsync:*),Bash(gsutil cp:*),Bash(gsutil -m rsync:*),Bash(gsutil -m cp:*),Bash(gsutil -q -m rsync:*),Bash(gsutil -q cp:*),Bash(gcloud compute regions describe:*),\
 Bash(scripts/lanzar_fase.sh:*),Bash(bash scripts/lanzar_fase.sh:*),Bash(scripts/vm.sh:*),\
 Bash(scripts/sitio.sh:*),Bash(bash scripts/sitio.sh:*),Bash(mkdocs build:*),Bash(git show:*),Bash(cp:*),Bash(mktemp:*),Bash(diff:*),\
-Bash(sed:*),Bash(git check-ignore:*),Bash(git restore --staged:*),Bash(pip list:*),Bash(pip show:*),Bash(sort:*),Bash(uniq:*)"
+Bash(sed:*),Bash(git check-ignore:*),Bash(git restore --staged:*),Bash(pip list:*),Bash(pip show:*),Bash(sort:*),Bash(uniq:*),\
+Bash(echo:*),Bash(cut:*),Bash(awk:*),Bash(bash -n:*),Bash(git ls-files:*),Bash(git ls-tree:*)"
 
 correr_claude() {  # $1 modelo, $2 presupuesto, $3 archivo json, $4 prompt  -> código de salida de claude
     claude -p "$4" --model "$1" --permission-mode acceptEdits --max-budget-usd "$2" \
@@ -101,7 +102,8 @@ el loop espera a que las VMs terminen y vuelve a correr este grupo, y entonces c
 Si los resultados ya están (ledger/corridas con filas, sin vm.sh corriendo: pgrep -f vm.sh), consolidá y marcá. Commiteá al cerrar cada tarea (sin Co-Authored-By). No hagas push y no cambies el diseño. \
 No publiques en Zulip ni mandes mensajes fuera del repo. \
 Un comando fuera de la lista permitida no falla enseguida: la sesión queda parada unos 2 minutos y después se deniega. \
-No escribas en /tmp ni fuera del repo y de $DATOS (los archivos temporales, en una carpeta ignorada del repo o en $DATOS), y no leas archivos de fuera del repo. \
+No escribas en /tmp ni fuera del repo: los archivos temporales van en $DATOS/tmp_etapas (mkdir -p). No leas archivos de fuera del repo. \
+Se deniegan siempre, aunque cada comando suelto esté permitido: heredocs (python - <<EOF, cat > archivo <<EOF), bucles for/while, $(...) y git -C. Para un script de más de una línea, escribilo con Write en $DATOS/tmp_etapas y corré python <archivo>; para editar, usá Edit. \
 Si una tarea necesita algo que no podés hacer (una decisión de diseño), escribí BLOQUEADO y el motivo en $BLOQUEO y terminá. $INDICACIONES" || RC=$?
 registrar "$J_APLICAR" "$GRUPO" aplicar "$RC"
 if [ -f "$BLOQUEO" ]; then echo "== BLOQUEADO:"; cat "$BLOQUEO"; exit 2; fi
