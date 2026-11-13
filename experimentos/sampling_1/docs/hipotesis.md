@@ -23,6 +23,18 @@ Para el baseline de Bolaños (28-oct, Zulip 208135), ¿cuánto tiempo se ahorra 
 usan menos filas para entrenar u optimizar? En H1, H2 y H3 la proporción de BAJA+1 ∪ BAJA+2 queda igual, en
 esperanza, en todas las variantes; H4 la cambia a propósito: conserva todas las bajas y recorta solo CONTINUA.
 
+*Nota del 13-nov (cambio `tiempos-confiables-y-consistencia`, antes de la fase 8):* la pregunta de Zulip 212124
+(12-nov) pide que H1 y H4 dialoguen: ¿se usan los mismos cortes y se ve alguna diferencia? Hasta la ronda 201903–201908
+las hipótesis no comparten grilla, y entre H1 y H4 hay solo dos cruces, ninguno directo (dos Δ contra el control). Por
+eso se agrega una **grilla común**: las mismas cuatro tasas {0,5; 0,25; 0,1; 0,05} y 8 réplicas en cada forma de
+muestrear (al azar en búsqueda y final, al azar solo en la búsqueda, con bajas y peso en búsqueda y final, con bajas y
+peso solo en la búsqueda, y dentro de LightGBM), con **pares directos** declarados antes de correr. Los cuatro
+principales son `H4O-{r}` − `U{r}`: conservar las bajas contra la muestra al azar, a igual tasa de CONTINUA, con las
+filas de entrenamiento de cada lado a la vista porque la receta con bajas tiene entre un 1 y un 20 % más de filas y
+lleva peso. Grilla, pares y lo que aísla cada uno: [`docs/diseno.md`](diseno.md) § Grilla común y
+[`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md) § Grilla común. Las variantes nuevas se agregan después de ver
+201910 y se declaran así. El corte de envíos N\* = 3.300 es el mismo para todas.
+
 ## H4 — Propuesta original (reemplazada el 9-nov)
 
 *Nota del 9-nov (cambio `incorporar-aportes`):* esta propuesta quedó sin definir y nadie la tomó. H4 pasó a ser

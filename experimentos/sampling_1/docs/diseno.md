@@ -167,6 +167,60 @@ Definición de la ronda, semillas y predicción: [`control/docs/hipotesis.md`](.
   nuevo. Una VM que se cae se retoma como en § Corridas perdidas (`existe_fila` retoma por semilla).
 - **Al terminar**: ninguna VM encendida; horas y costo reales a la bitácora.
 
+**Fase 8: grilla común y medición de tiempos (agregada el 13-nov, cambio `tiempos-confiables-y-consistencia`, D15).**
+Completa la grilla común (§ Grilla común) con 8 réplicas en todo el bloque A, y mide los tiempos a hiperparámetros fijos
+y la calibración por máquina ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos). Por
+hipótesis: § Réplicas y grilla común de [`h1`](../../h1/docs/diseno.md), § Réplicas y `B0.05` de
+[`h2`](../../h2/docs/diseno.md), § `H3-0.5` de [`h3`](../../h3/docs/diseno.md) y § Grilla común de
+[`h4`](../../h4/docs/diseno.md). Ronda 201903–201908, 20 semillas, N\* = 3.300 y δ de la ronda (5,65 M$). Una corrida a
+la vez por VM, como siempre: el paralelismo es entre VMs y no cambia la medición de tiempos.
+
+- **Listas**: 17, cada una en su VM, todas con `--semilla todas`. Dentro de cada lista, cada estudio va antes que sus
+  finales. Ninguna `_a` lee nada de una `_b`.
+
+  | lista | estudios | finales (variantes × 20 semillas) |
+  |---|---|---|
+  | `fase8_r0_a` | `F0.25`, `F0.1`, `F0.05` | `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`, las cuatro `H4P`: 8 |
+  | `fase8_r0_b` | `B0.05` | `B0.05`: 1 |
+  | `fase8_rk_a`, k = 1…7 | `U0.5@k`, `F0.25@k`, `F0.1@k`, `F0.05@k` | `U0.5`, `U0.25`, `U0.1`, `U0.05`, `H3-0.5`, `H4O-0.25`, `H4O-0.1`, `H4O-0.05`, las cuatro `H4P`: 12 |
+  | `fase8_rk_b`, k = 1…7 | `B0.5@k`, `B0.25@k`, `B0.1@k`, `B0.05@k`, `GOSS@k` | `B0.5`, `B0.25`, `B0.1`, `B0.05`, `GOSS`: 5 |
+  | `fase8_medicion` | — | la medición a hiperparámetros fijos (216 mediciones, línea `@ experimentos.sampling_1.scripts.tiempos_hp_fijos`) |
+
+  Totales: **67 estudios** (4 + 7 × 9) y **2.560 finales** ((9 + 7 × 17) × 20). Los estudios ya corridos (`U0.25@k`,
+  `U0.1@k`, `U0.05@k`, `F0.5@k`) no se repiten: la VM los lee del bucket, ya movidos a `h1` los `U{r}@k`.
+- **Calibración**: `scripts/vm.sh` corre `tiempos_hp_fijos.py --calibracion` al empezar y al terminar cada lista, y sube
+  al bucket el archivo de la calibración final antes de dar la lista por terminada
+  (`ledger/tiempos/calibracion_<lista>_<momento>.csv`).
+- **Versiones**: `requirements.txt` fija las versiones exactas para toda la fase. Las de las fases 1 a 7 no se conocen.
+- **Carriles**: la cuota (`CPUS_ALL_REGIONS` 32) da para 4 VMs de 8 vCPU a la vez, así que las 17 listas van en cuatro
+  carriles en el proyecto del curso. Cada carril lanza sus listas una tras otra, cada una en su VM, sin intervención; lo
+  hace `scripts/lanzar_carriles.sh` (con `--en-seco`). En cada carril van primero `fase8_medicion` y las `_a`, y al
+  final las `_b`. El reparto que se propone, para que los carriles queden parejos:
+
+  | carril | listas, en orden |
+  |---|---|
+  | 1 | `fase8_medicion`, `fase8_r0_a`, `fase8_r1_a`, `fase8_r0_b`, `fase8_r1_b` |
+  | 2 | `fase8_r2_a`, `fase8_r3_a`, `fase8_r2_b`, `fase8_r3_b` |
+  | 3 | `fase8_r4_a`, `fase8_r5_a`, `fase8_r4_b`, `fase8_r5_b` |
+  | 4 | `fase8_r6_a`, `fase8_r7_a`, `fase8_r6_b`, `fase8_r7_b` |
+
+  No se usa el segundo proyecto de la cuenta. Cualquier otra VM encendida en el proyecto hace que `lanzar_fase.sh` no
+  lance: se verifica antes de empezar.
+- **Horas**, con los tiempos de `estudios.csv` y `resultados.csv` de la ronda: una lista `_a` lleva unos 12 min de
+  estudios y 1,4 h de finales; una `_b`, unos 57 min de estudios y 1 h de finales; `fase8_medicion`, menos de 2 h; más
+  media hora de arranque por VM. En total unas **36 h de VM**, unas **12 h de reloj** en cuatro carriles. Las VMs corren
+  en horarios distintos y la calibración lo registra.
+- **Costo**: a demanda, US$ 0,52/h más un 15 % de disco (§ Estimación de horas y costo): unos **US$ 22**, dentro del
+  crédito.
+- **Commit**: uno solo para toda la fase; el id de cada corrida lleva el commit. Un arreglo a mitad de la fase se anota
+  en la bitácora y las listas que faltan se relanzan con el commit nuevo, sin mezclar commits dentro de una variante.
+  Las VMs salen del worktree de la rama `tiempos-confiables` (`git archive HEAD`), sin esperar a unirla a `main`; desde
+  `main` no se lanza nada hasta la unión.
+- **Antes de lanzar**: la revisión de hipótesis y diseño (tarea 1.5) y la de código cerradas, y la mudanza de los
+  `U{r}@k` de `h3` a `h1` hecha en el repo y en el bucket. Una lista que se relanza en otra VM lleva otra calibración, y
+  la bitácora lo anota.
+- **Al terminar**: ninguna VM encendida; horas y costo reales a la bitácora; ningún `U*@k` de vuelta en `h3`.
+
 **Orden entre fases.**
 
 - Todo espera al cierre de la compuerta de código (`docs/revision.md` § 3) y al tag `corridas-v1`.
@@ -177,6 +231,29 @@ Definición de la ronda, semillas y predicción: [`control/docs/hipotesis.md`](.
 **Corridas perdidas.** Si una VM spot muere, se crea otra, baja el panel y el SQLite del bucket, retoma el estudio y
 relanza las finales con la lista de configuraciones. El corredor saltea las que ya tienen fila en `ledger/corridas/`. Si una variante termina con menos
 de 10 semillas, el apareo usa las que tiene y se anota en la bitácora.
+
+## Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Las mismas cuatro tasas {0,5; 0,25; 0,1; 0,05} y 8 réplicas en cada forma de muestrear, para que cualquier par de celdas
+se pueda comparar. 20 semillas finales, final 201903–201908, N\* = 3.300 y δ de la ronda (5,65 M$). Predicciones y
+reglas: el `hipotesis.md` de cada hipótesis (§ Réplicas de H1, § Réplicas de H2 y `B0.05`, § `H3-0.5`, § Grilla común
+de `h4`); pares directos: [`h4/docs/hipotesis.md`](../../h4/docs/hipotesis.md) § Grilla común.
+
+| fila | variantes | búsqueda | final | estudio | qué falta correr |
+|---|---|---|---|---|---|
+| al azar, búsqueda y final | `U{r}` (h1) | r al azar | r al azar | `U{r}` | réplicas 1…7 |
+| al azar, solo búsqueda | `H3-{r}` (h3) | r al azar | completo | `U{r}` | `H3-0.5` entera |
+| con bajas y peso, búsqueda y final | `H4O-{f}` (h4) | bajas + f de CONTINUA, peso 1/f | lo mismo | `F{f}` | f = 0,25; 0,1; 0,05 |
+| con bajas y peso, solo búsqueda | `H4P-{f}` (h4) | bajas + f de CONTINUA, peso 1/f | completo, sin peso | `F{f}` | las cuatro |
+| dentro de LightGBM | `B{f}` (h2) | `bagging_fraction = f` | lo mismo | `B{f}` | `B0.05` y réplicas 1…7 |
+
+- **Fuera de la grilla**, como están: `H4F-*`, `H4H-0.1`, `H4U-0.1`, `H3R-*`, `H3L-*` y `H3K-0.1` (cruces o
+  extensiones). `GOSS` no tiene tasa: no entra en la grilla, pero recibe réplicas. `C-rep` sigue con una réplica.
+- Cada variante del registro declara su fila de la grilla (o que está fuera), y una celda sin variante dice "no se
+  corrió" con su motivo; con eso el reporte arma la tabla de cobertura.
+- H2 no entra en los pares directos: `bagging_fraction` sale del espacio de Optuna en `B*`, así que la comparación con
+  `U*` es descriptiva.
+- Se corre en la fase 8 (§ Reparto y fases).
 
 ## Fuera de la grilla
 

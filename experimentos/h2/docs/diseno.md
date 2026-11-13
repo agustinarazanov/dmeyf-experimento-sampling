@@ -29,6 +29,28 @@ semillas de [`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Ro
 § Reparto y fases). La ronda anterior se conserva. Los apartamientos (208135, 211210) están justificados en el diseño
 del control.
 
+### Réplicas y `B0.05` (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Predicción y regla: [`docs/hipotesis.md`](hipotesis.md) § Réplicas de H2 y `B0.05`. H2 forma la fila "dentro de
+LightGBM" de la grilla común ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Grilla común), al lado de
+las otras y sin pares directos.
+
+| variante | método | tasa | estudio (k = 0 / k ≥ 1) | final: params fijos |
+|---|---|---|---|---|
+| `B0.05` | `bagging` | 0,05 | `B0.05` / `B0.05@k` | `bagging_fraction = 0,05`, `bagging_freq = 1` |
+
+- **Réplicas**: `B0.5`, `B0.25`, `B0.1`, `B0.05` y `GOSS` con 8 réplicas (k = 0…7). Réplica k: TPE con semilla k; no
+  hay muestra previa que sortear.
+- **Estudios nuevos**: `B0.05` en k = 0 y `B{f}@k` y `GOSS@k` en k = 1…7: 1 + 5 × 7 = **36 estudios**, todos sobre el
+  train completo con el espacio de 4 hp.
+- **Finales nuevos**, con las 20 semillas de la ronda 201903–201908: `B0.05` en k = 0 y las cinco variantes en
+  k = 1…7: 20 + 5 × 7 × 20 = **720 finales**.
+- **T y A**: T como mediana entre réplicas y A con una sola referencia
+  ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos).
+- Van en las listas `fase8_r0_b` … `fase8_r7_b` de la fase 8 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md)
+  § Reparto y fases). Ninguna lista `_a` lee nada de una `_b`.
+- § Fuera de la grilla: las réplicas de `B*` y `GOSS`, que `h3` dejaba fuera, entran ahora.
+
 ## Fuera de la grilla
 
 - **Respuesta del tutor sobre H2**: si pide mantener `bagging_fraction` optimizado, salen `B0.5`, `B0.25` y `B0.1`, y

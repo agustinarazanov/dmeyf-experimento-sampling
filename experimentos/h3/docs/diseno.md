@@ -123,6 +123,28 @@ control y dejaría la pregunta sin respuesta. Por eso no es un apartamiento a co
 justificado acá, y el informe no lo lista en § Limitaciones. El caso de `h4`, donde 211718 sí da lugar a una variante
 (`H4O-0.5`), está en [`h4/docs/diseno.md`](../../h4/docs/diseno.md) § `H4O-0.5`.
 
+### `H3-0.5` y dueño de las réplicas (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Predicción y regla: [`docs/hipotesis.md`](hipotesis.md) § `H3-0.5`. Completa la fila "al azar, solo búsqueda" de la
+grilla común ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Grilla común).
+
+| variante | método | tasa | estudio (k = 0 / k ≥ 1) | dueño del estudio | final |
+|---|---|---|---|---|---|
+| `H3-0.5` | `opt-muestra` | 0,5 | `U0.5` / `U0.5@k` | `h1` | r = 1, sin reescalar |
+
+- **Dueño de `U{r}@k`.** Desde el 13-nov todos los estudios `U{r}` y `U{r}@k` son de `h1`. Los 21 estudios `U0.25@k`,
+  `U0.1@k` y `U0.05@k` que corrió este experimento se mueven a `h1/ledger/` (repo y bucket) sin cambiar ids ni
+  contenido. Lo que dicen § Réplicas de optimización y § Extensiones sobre el dueño `h3` de las réplicas queda como
+  registro de entonces.
+- **Finales nuevos**: `H3-0.5` en k = 0…7 con las 20 semillas de la ronda 201903–201908: 8 × 20 = **160 finales**. Sin
+  estudios propios nuevos.
+- **T y A**: T suma el tiempo del estudio `U0.5@k` (compartido con `U0.5`) y la media del final; mediana entre réplicas
+  y A con una sola referencia ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos).
+- **"Siempre OP" (Zulip 211718)**: el mismo apartamiento que el resto de H3 (§ Ronda 201903–201908).
+- Van en las listas `fase8_r0_a` … `fase8_r7_a` de la fase 8 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md)
+  § Reparto y fases).
+- § Fuera de la grilla: las réplicas de `U*`, `B*` y `GOSS` entran ahora (`h1` y `h2`).
+
 ## Grilla de la réplica 0
 
 - **Optimización**: ninguna propia (los estudios `U0.25`, `U0.1` y `U0.05` de `h1`).
@@ -139,7 +161,9 @@ justificado acá, y el informe no lo lista en § Limitaciones. El caso de `h4`, 
 
 ## Dependencias
 
+Actualizado el 13-nov-2026 (cambio `tiempos-confiables-y-consistencia`), con el cambio de dueño de `U{r}@k`.
+
 - `control`: finales de `C` y de sus réplicas `C@1…7` (las corre `control`), N\* y δ.
-- `h1`: los estudios base de la réplica 0, `U0.25`, `U0.1` y `U0.05` (`ledger/hp/U0.25.json`, `ledger/hp/U0.1.json`,
-  `ledger/hp/U0.05.json`). Las réplicas `U{r}@k` con k ≥ 1 son de este experimento (§ Réplicas de optimización), así
-  que no agregan dependencias. Las extensiones (`H3R-0.25`, `H3L-*`, `H3K-0.1` con su estudio propio `K0.1`) tampoco.
+- `h1`: todos los estudios `U{r}` y sus réplicas `U{r}@k`, r ∈ {0,5; 0,25; 0,1; 0,05} (`ledger/hp/U{r}.json` y
+  `ledger/hp/U{r}@k.json`), que usan `H3-*`, `H3R-*` y `H3L-*`. El estudio propio `K0.1` y sus `K0.1@k` no agregan
+  dependencias.

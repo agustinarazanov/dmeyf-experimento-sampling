@@ -38,7 +38,7 @@ Qué puede ir en paralelo:
     los 17 contrastes, los 9 veredictos nuevos y los 9 que se vuelven a decidir.
 
   Las predicciones las confirma o ajusta Agustina.
-- [ ] 1.3 Diseño:
+- [x] 1.3 Diseño:
   - `h1`–`h4/docs/diseno.md`: variantes, estudios y grilla nuevos de cada una, y `## Dependencias` después del cambio de
     dueño de `U{r}@k` (D10): `h3` lee todos los `U{r}` de `h1`, y `h4` deja de declarar `h3`;
   - `sampling_1/docs/diseno.md`: la fase 8 (D15) con listas, carriles, horas y costo, y la tabla de la grilla común

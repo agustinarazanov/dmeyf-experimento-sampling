@@ -13,9 +13,12 @@ De qué experimentos lee este (un ledger por línea). `python -m comun.variantes
 variantes y estudios de `comun/variantes.py`.
 
 - `control`: finales de `C` y de sus réplicas `C@1…7`, N\* y δ.
-- `h1`: los estudios `U0.05` y `U0.25` de la réplica 0 (`ledger/hp/U0.05.json`, `ledger/hp/U0.25.json`), que usan
-  `H4F-0.05` y `H4F-0.25`.
-- `h3`: las réplicas `U0.05@k` y `U0.25@k` (k = 1…7), de `h3` por la regla de dueños de `h3-semillas-optuna`.
+- `h1`: los estudios `U0.05` y `U0.25` y sus réplicas `U0.05@k` y `U0.25@k` (k = 1…7) (`ledger/hp/U0.05.json`,
+  `ledger/hp/U0.25.json` y sus `@k`), que usan `H4F-0.05` y `H4F-0.25`.
+
+Actualizado el 13-nov-2026 (cambio `tiempos-confiables-y-consistencia`): las réplicas `U{r}@k` pasaron de h3 a h1, así
+que este experimento deja de depender de h3 (los nombres van sin comillas invertidas porque `--verificar` cuenta cada uno
+como dependencia declarada). Los estudios `F{f}` y `F{f}@k` de la grilla común son propios.
 
 ## Variantes
 
@@ -136,6 +139,41 @@ sobre los seis meses. La ronda anterior (4 variantes, 10 semillas) se conserva.
 
 Estudio `F0.5@k`: con algo más de la mitad de las filas del train, se estima entre la mitad y dos tercios del estudio
 `C` (748 s con el train completo), unos 7 a 10 min por réplica en `n2-highmem-8`; ≤ 1,3 h los ocho.
+
+## Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+
+Predicciones y reglas (6 a 11): [`docs/hipotesis.md`](hipotesis.md) § Grilla común. `h4` aporta dos filas de la grilla
+común ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md) § Grilla común): "con bajas y peso, búsqueda y
+final" (`H4O-{f}`) y "con bajas y peso, solo búsqueda" (`H4P-{f}`), con f ∈ {0,5; 0,25; 0,1; 0,05}.
+
+| variante | método | tasa | estudio (k = 0 / k ≥ 1) | dueño del estudio | final |
+|---|---|---|---|---|---|
+| `H4O-0.25`, `H4O-0.1`, `H4O-0.05` | `fast-retrain-opt` | f | `F{f}` / `F{f}@k` | `h4` | todas las bajas + f de CONTINUA, peso 1/f, sobre 201903–201908 |
+| `H4P-0.5`, `H4P-0.25`, `H4P-0.1`, `H4P-0.05` | `clase-peso` | f | `F{f}` / `F{f}@k` | `h4` | completo (r = 1), sin peso |
+
+- **Estudio `F{f}@k`**: como `F0.5@k` (§ `H4O-0.5`) con la fracción f: todas las bajas + f de CONTINUA de train
+  201903–201906, sorteado con la semilla k, peso 1/f en CONTINUA en cada trial; validación 201908 completa y sin pesos.
+  `F0.5` y `F0.5@k` ya existen y conservan su `hash_muestra`.
+- **`H4O-{f}`**: la fracción de CONTINUA del final pasa a ser la tasa de la variante (antes, fija en 0,5). `H4F-*` sigue
+  con la mitad de CONTINUA y peso 2 en el final. Hiperparámetros sin reescalar.
+- **`H4P-{f}`**: optimiza con el método de `H4O-{f}` y comparte su estudio; el final es el de `opt-muestra` (train
+  201903–201908 completo, sin peso). La muestra de búsqueda de `H4P-0.1` es la misma que la de `H4U-0.1` (misma función,
+  misma semilla); solo cambia el peso.
+- **Estudios nuevos**: `F0.25`, `F0.1` y `F0.05` en k = 0…7: **24 estudios**.
+- **Finales nuevos**, con las 20 semillas de la ronda 201903–201908: las 7 variantes nuevas en k = 0…7:
+  7 × 8 × 20 = **1.120 finales**.
+- **T y A**: T suma los 40 trials de `F{f}@k` y la media del final; el tiempo del estudio entra en T de `H4O-{f}` y de
+  `H4P-{f}`. Mediana entre réplicas y A con una sola referencia
+  ([`control/docs/hipotesis.md`](../../control/docs/hipotesis.md) § Medición de tiempos).
+- **Pares directos** (`PARES_APAREADOS` y `PARES_WELCH`, con lo que aísla cada uno): § Grilla común de
+  [`docs/hipotesis.md`](hipotesis.md). Los que cruzan experimentos se calculan en `sampling_1`.
+- **Lo que hay que tocar en `comun/`** (grupo 2 del cambio): `clase-peso` en `comun/metodos.py`, que
+  `metodo_optimizacion` manda a `fast-retrain-opt`; `pesos` recibe la tasa; `fast-retrain` y `fast-retrain-opt` dejan de
+  compartir la fracción fija; `validar` acepta las cuatro tasas en `fast-retrain-opt`.
+- Van en las listas `fase8_r0_a` … `fase8_r7_a` de la fase 8 ([`sampling_1/docs/diseno.md`](../../sampling_1/docs/diseno.md)
+  § Reparto y fases), cada estudio antes de sus finales.
+- **Fuera de la grilla común**: `H4F-*`, `H4H-0.1` y `H4U-0.1` quedan como están (la tabla de cobertura los lista
+  aparte); `H4U-0.1` entra solo en el par del peso.
 
 ## Fuera de la grilla
 
