@@ -25,3 +25,25 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Lo que sigue diciendo «brazo»: la historia de git (los commits anteriores) y el tag `corridas-v1`.
 - Un clon anterior al renombre no consolida: `comun/ledger.py` rechaza una cabecera `brazo` nombrando el archivo. Hay que
   actualizar el clon y volver a bajar el ledger del bucket renombrado.
+
+### 2026-11-13 — `docs/hipotesis.md`, `docs/diseno.md` e `informe/` fundidos en `README.md` (sitio-legible 3.3)
+
+- Sesión: aplicar del grupo 3 de `sitio-legible`, headless, Opus. Etapa: informe.
+- Destino de cada sección vieja:
+  - `hipotesis.md` encabezado (enlaces a sampling_1 y control, escrito antes de correr) → callout de § Predicción, con
+    fecha y commit (`2f05cae` 1-nov, en `sampling_1/docs/hipotesis.md`; `7c34254` 3-nov, `h1/docs/hipotesis.md`).
+  - `hipotesis.md` § H1 → título y línea de apertura (qué se prueba), § Idea (el mecanismo de la variable: Optuna de
+    nuevo por tasa, final con muestra resorteada) y § Predicción (variable, métrica, predicción, reglas), sin cambios de
+    texto en las reglas.
+  - `diseno.md` encabezado → una línea en § Diseño que remite al control; el resto (dónde estaba cada cosa) descartado.
+  - `diseno.md` § Variantes → § Diseño › Variantes. § Estudios de Optuna compartidos → § Diseño › Variantes (párrafo).
+    § Grilla y › Ronda 201903–201908 → § Diseño › Grilla (ronda vigente) y › Rondas (anterior). § Dependencias → igual.
+  - `informe.md` encabezado → descartado (decía dónde estaban otras páginas). § Hipótesis → línea de apertura. Párrafo
+    de la ronda → § Diseño › Rondas y el bloque generado (`linea_ronda`).
+  - `informe.md` § Resultados (tabla copiada) → bloque `resultado` generado (tabla, mapa del tradeoff y curva de
+    diferencia, que reemplaza a `bandas_H1.png`). Viñetas de veredicto y AUC → § Veredicto.
+  - `informe.md` § Limitaciones: una semilla de Optuna y estudios compartidos con H3 → § Limitaciones; hiperparámetros
+    de cuatro meses en un final de seis y un solo año/mes/máquina → Limitaciones comunes de Resultados (son de todas).
+  - `informe.md` § Conclusión → última frase del callout de § Veredicto; la remisión al informe conjunto se descarta.
+  - `informe/reporte.html` → bloque `resultado` y `figuras/`.
+- Nuevo: diagrama del pipeline que marca las dos muestras (Optuna y final).

@@ -52,12 +52,14 @@ exclude_docs: |
   !/assets/**
   !/index.md
   !/sitio/estilos.css
-  !/experimentos/h1/informe/informe.md
+  !/experimentos/h1/README.md
+  !/experimentos/h1/figuras/**
   !/experimentos/control/README.md
 
 nav:
   - Inicio: index.md
-  - H1: experimentos/h1/informe/informe.md
+  - Hipótesis:
+    - H1: experimentos/h1/README.md
   - Cómo medimos:
     - Control y reglas: experimentos/control/README.md
 
