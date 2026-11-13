@@ -2436,3 +2436,16 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: ~40 turnos · contexto ~70.000 por turno · ≈ US$ 1,5 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
 - Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados archivado
+
+- Specs sincronizadas en `openspec/specs/`: protocolo-experimental (1 requisito modificado), reporte-visual (4
+  modificados) y sitio-informes (7 modificados y «Modo oscuro recordado», nuevo). Se verificó que cada requisito
+  coincide con su delta y `openspec validate --specs` da 7 de 7.
+- El cambio pasa a `openspec/changes/archive/2026-11-13-inicio-y-resultados/`. 29 de 29 tareas, 12 sesiones headless,
+  US$ 22,58.
+- **Para quien una `main` en la rama de `tiempos-confiables-y-consistencia`:** `bloque-a-completo` y `rondas` ahora
+  viven en `experimentos/sampling_1/anexo.md`, no en `sampling_1/README.md`, y `comparar_rondas.py` y los dos
+  verificadores leen y escriben ahí. Las predicciones de `main` están en `DATOS_DIR/ledger/<exp>/predicciones/` (D18):
+  `comun/rutas.prediccion()` también acepta la ruta vieja del repo. Después de unir, hay que regenerar. Se le avisó a
+  la sesión «consistencia», que espera conflicto en `scripts/vm.sh`.
