@@ -4,7 +4,11 @@
 /* Una sola columna: el ancho fijo va en el contenido y todo lo de adentro (párrafos, figuras, código, recuadros,
    plegables) ocupa el 100 %. Las tablas más anchas se desplazan en su recuadro. */
 .md-grid { max-width: 90rem; }
-.md-content__inner { max-width: 36rem; margin-left: auto; margin-right: auto; }
+.md-content__inner { max-width: 36rem; }
+/* Centrada solo cuando sobra lugar: más angosto, quedan los márgenes de 0,8rem del tema. */
+@media screen and (min-width: 37.6rem) {
+  .md-content__inner { margin-left: auto; margin-right: auto; }
+}
 .md-typeset .admonition,
 .md-typeset details,
 .md-typeset pre,
@@ -12,17 +16,70 @@
 
 .md-typeset img { max-width: 100%; }
 
-/* En escritorio el nombre del sitio ya está en la barra superior: no se repite arriba de la barra lateral. En el
-   teléfono queda, porque es la cabecera del menú desplegable. */
+/* Barras laterales (navegación a la izquierda, índice de la página a la derecha), D13: las dos con su título, el mismo
+   espacio arriba y un recuadro; la página activa y la sección que se lee llevan una barrita del color de acento. Los
+   colores salen de las variables del tema, así que valen en claro y en oscuro. */
 @media screen and (min-width: 76.25em) {
-  .md-nav--primary > .md-nav__title { display: none; }
+  .md-sidebar { padding-top: 0.6rem; }
+  .md-sidebar .md-sidebar__inner > .md-nav {
+    background: var(--md-default-fg-color--lightest);
+    border-radius: 0.6rem;
+    padding: 0.5rem 0.4rem 0.6rem;
+  }
+  .md-sidebar .md-nav--primary > .md-nav__title,
+  .md-sidebar .md-nav--secondary > .md-nav__title {
+    display: block;
+    position: static;
+    height: auto;
+    padding: 0.2rem 0.6rem 0.5rem;
+    margin: 0 0 0.3rem;
+    background: none;
+    box-shadow: none;
+    border-bottom: 0.05rem solid var(--md-default-fg-color--lighter);
+    color: var(--md-default-fg-color--light);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .md-sidebar .md-nav--primary > .md-nav__title .md-nav__button { display: none; }
+  .md-sidebar .md-nav__link {
+    margin: 0.1rem 0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.35rem;
+    border-left: 0.15rem solid transparent;
+    transition: background-color 125ms, color 125ms;
+  }
+  .md-sidebar .md-nav__link:hover { background: var(--md-default-fg-color--lightest); }
+  /* Sección con página índice: el contenedor es el renglón; el enlace y la flecha de adentro no suman sangría. */
+  .md-sidebar .md-nav__container > .md-nav__link {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .md-sidebar .md-nav__link--active,
+  .md-sidebar .md-nav__item--active > .md-nav__link {
+    border-left-color: var(--md-accent-fg-color);
+    background: var(--md-accent-fg-color--transparent);
+    font-weight: 600;
+  }
+  /* Subniveles (secciones del índice, páginas hijas): sangría con una guía vertical tenue. */
+  .md-sidebar .md-nav .md-nav {
+    margin-left: 0.7rem;
+    border-left: 0.05rem solid var(--md-default-fg-color--lighter);
+  }
 }
 
 /* Figuras (una imagen sola en su párrafo): al 100 % de la columna; en pantallas angostas no bajan de 40rem, para que
    el texto se lea, y se desplazan dentro de su recuadro, como las tablas. Fondo blanco, borde redondeado y margen
    interno: se leen igual en claro y en oscuro (los SVG y PNG llevan texto oscuro). */
 .md-typeset p:has(> img:only-child) { overflow-x: auto; }
-.md-typeset p > img:only-child { width: 100%; min-width: 40rem; max-width: none; }
+.md-typeset p > img:only-child { width: 100%; max-width: 100%; }
+@media screen and (max-width: 44.9375em) {
+  .md-typeset p > img:only-child { min-width: 40rem; max-width: none; }
+}
 .md-typeset img { background: #ffffff; border-radius: 0.4rem; padding: 0.4rem; box-sizing: border-box; }
 
 /* Encabezado: en el teléfono «DMEyF 2026» baja a una segunda línea, en letra más chica (D7b). */

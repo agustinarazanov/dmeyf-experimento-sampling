@@ -72,7 +72,7 @@
 
   Verificar con los escenarios «Ver el tradeoff de un vistazo» y «Clientes contactados» (sobre el texto generado), con
   `pytest tests/test_reporte.py` y con regenerar dos veces sin cambios.
-- [ ] 1.10 Barras laterales (D13). **La hace el orquestador; una sesión headless no la toca ni la marca.** Verificar con
+- [x] 1.10 Barras laterales (D13). **La hace el orquestador; una sesión headless no la toca ni la marca.** Verificar con
   el escenario «Barras laterales parejas» en capturas a 1440 px en claro y en oscuro.
 - [ ] 1.11 Revisión en sesión limpia de 1.8 y 1.9 con `docs/revision.md` § 3, cierre en la bitácora de `sampling_1`.
 
