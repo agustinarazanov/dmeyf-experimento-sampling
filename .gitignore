@@ -24,6 +24,9 @@ __pycache__/
 .DS_Store
 .claude/settings.local.json
 
+# Scripts auxiliares y salidas temporales de las sesiones headless (scripts/etapa.sh)
+tmp_etapas/
+
 # Corridas exploratorias (smoke tests): no entran en los resultados
 experimentos/*/ledger/exploracion/
 .env
