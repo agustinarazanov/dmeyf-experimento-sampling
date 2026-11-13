@@ -37,8 +37,9 @@ commit.
 - **Revisión en sesión limpia**: la lista de cada compuerta está en `docs/revision.md`; revisa una sesión nueva sin
   contexto (o un subagente `general-purpose`, que arranca vacío) o un integrante distinto.
 - **Commitear sin pedir permiso**, en cualquier sesión (interactiva o headless), al cerrar una tarea o un grupo, con
-  mensaje descriptivo y sin `Co-Authored-By` ni pie de Claude. El push y los tags de corridas los decide Agustina salvo
-  que una tarea lo pida. Nada del dataset en el repo.
+  mensaje descriptivo y sin `Co-Authored-By` ni pie de Claude. **Pushear siempre** después de commitear, sin preguntar.
+  Las sesiones headless de `scripts/etapa.sh` no pushean: pushea quien las orquesta, al terminar cada grupo. Los tags de
+  corridas los decide Agustina, salvo que una tarea los pida. Nada del dataset en el repo.
 
 ## Hechos que no están en el código
 
