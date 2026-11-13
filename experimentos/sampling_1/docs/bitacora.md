@@ -2174,3 +2174,26 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `comun/tokens.py --experimento sampling_1` corrido.
 - Tokens: ~40 turnos · contexto ~73.500 por turno · ≈ US$ 1,5 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
 - Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (sin tarea nueva)
+
+- Sesión: headless, sin contexto de la que aplicó · modelo: Opus · etapa: **revision**. Revisor: Claude (Opus).
+  Lista: `docs/revision.md` § 3.
+- Alcance: desde `e87329e` (1.16) no hay commits nuevos en `comun/`, `scripts/`, las hipótesis ni `openspec/`. La
+  última sesión de aplicar (`g1_aplicar_20261113T194200.json`) no cambió nada. Todas las tareas de revisión del grupo 1
+  (1.7, 1.11 y 1.16) ya estaban marcadas, así que `tasks.md` no cambia. Lo único que faltaba revisar en limpio era la
+  corrección de `scripts/vm.sh` que hizo la propia revisión 1.16.
+- ✓ `scripts/vm.sh`, `subir()`: el `gsutil rsync` de las predicciones ahora tiene el origen y el destino separados. El
+  origen `\$DATOS_DIR/ledger/\$e/predicciones/` existe porque la línea 68 lo crea antes.
+- ✓ `scripts/vm.sh`, rescate con FALLO: en la VM, `cd ~/datos` coincide con el valor por defecto de `DATOS_DIR` en el
+  script remoto (`\$HOME/datos`). El tar trae `ledger/<exp>/predicciones/` sin la exploración, y el `rsync` local copia
+  a `$DATOS/ledger/` sin pisar nada, con la misma estructura que lee `rutas.prediccion()`. Si algún paso falla, la
+  cadena de `&&` sigue con `|| true` y el `rm -rf "$T"` del final limpia igual. `bash -n` da sin errores. No se probó
+  contra una VM.
+- Lo demás de la lista § 3 es n/a: no hubo cambios desde la revisión 1.16, que ya lo cubrió.
+- Correcciones: ninguna.
+- Pendiente: 1.15 es del orquestador. Después hay que medir la intermitencia de 1.11 regenerando tres veces. El borrado
+  de `ledger/sesiones/bloqueo.txt` en el árbol de trabajo no es de esta sesión, así que no lo commiteo.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~15 turnos · contexto ~45.000 por turno · ≈ US$ 0,6 (presupuesto de la sesión).
+- Tutor: —
