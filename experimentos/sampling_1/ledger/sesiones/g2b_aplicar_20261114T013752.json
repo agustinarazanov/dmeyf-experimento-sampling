@@ -1,0 +1,124 @@
+{
+ "duration_api_ms": 323198,
+ "stop_reason": "end_turn",
+ "session_id": "f37fcb56-ef7a-450e-8e7a-cf77c996a058",
+ "total_cost_usd": 2.6584892000000004,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 3197,
+  "cache_read_input_tokens": 643022,
+  "output_tokens": 1401,
+  "output_tokens_details": {
+   "thinking_tokens": 62
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 3197,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 485,
+    "cache_read_input_tokens": 129814,
+    "cache_creation_input_tokens": 196,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 196
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 110,
+   "outputTokens": 37377,
+   "cacheReadInputTokens": 4890546,
+   "cacheCreationInputTokens": 116550,
+   "webSearchRequests": 0,
+   "costUSD": 2.6584892000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3500,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 116550,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "origin": {
+  "kind": "task-notification",
+  "producer": "session-task",
+  "runId": "0mwfx6zb2-d8ad2ae0"
+ },
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 5,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "pytest terminó: con `python -m pytest` pasan 319 tests y fallan 2. Por eso 2b.2 sigue sin marcar.\n\n- **Las 2 fallas**: `tests/test_fase8.py::test_ningun_final_de_la_fase_8_esta_ya_corrido` y `::test_cada_estudio_va_antes_que_sus_finales_y_ninguna_a_lee_de_una_b`. Las dos comprueban que lo de las listas de la fase 8 todavía no esté corrido. Ahora lo está: por ejemplo, el primer chequeo frena en `h4/ledger/hp/F0.25.json`. No las rompió la unión; habrá que adaptarlas a una fase ya terminada.\n- **También impiden marcar 2b.2**:\n  - `verificar_readme` marca el 1,23 de `sampling_1/README.md`.\n  - `medir_sitio` marca una figura de Resultados de 833 px de alto, cuando el límite es 800.\n  - Falta unir la rama a main, que le toca al orquestador.\n- **`pytest` a secas** no recolecta los tests de `experimentos/h3/sensibilidad_muestra`; con `python -m pytest` sí.\n\nAnoté el resultado en la bitácora de `sampling_1` y lo commiteé, sin push. 2b.3 sigue sin hacer: hay que correrla en una sesión aparte.",
+ "ttft_ms": 2117,
+ "type": "result",
+ "duration_ms": 16903,
+ "uuid": "ff89a7fe-d134-4c4e-8e34-1811a422152d",
+ "ttft_stream_ms": 1189,
+ "time_to_request_ms": 112,
+ "first_content_frame_ms": 1190,
+ "queued_turn_count": 0,
+ "result_index": 1,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 1401,
+   "cacheReadInputTokens": 643022,
+   "cacheCreationInputTokens": 3197,
+   "webSearchRequests": 0,
+   "costUSD": 0.18224040000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 62,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 3197,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

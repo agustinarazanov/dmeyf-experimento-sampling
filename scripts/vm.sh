@@ -55,6 +55,7 @@ LISTA_NOMBRE=$(basename "$LISTA" .txt)   # nombre de la lista en los archivos de
 CALIBRAR=1; { [ -n "$EXTRA" ] || [ -n "${SIN_CALIBRACION:-}" ]; } && CALIBRAR=""
 G="gcloud compute --project=$PROYECTO"
 TMPV=$(mktemp -d /tmp/vm-XXXXXX)   # una carpeta por invocación: varios carriles lanzan a la vez con el mismo commit
+trap 'rm -rf "$TMPV"' EXIT          # borrar() la reemplaza más abajo y también la limpia
 EXPERIMENTOS=$(find experimentos -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -v ' ' | sort)   # carpetas de experimentos del repo (sin las de aportes, que tienen espacios y no tienen ledger)
 
 [ -z "$(git status --porcelain | grep -v '/ledger/' || true)" ] || echo "AVISO: árbol sucio; a la VM va HEAD ($COMMIT), sin los cambios sin commitear" >&2
@@ -149,7 +150,7 @@ tomar_candado() {
 }
 soltar_candado() { [ "$(cat "$CANDADO/pid" 2>/dev/null)" = "$$" ] && rm -rf "$CANDADO" || true; }
 borrar() {
-  soltar_candado
+  soltar_candado; rm -rf "$TMPV"
   echo "== borrando $NOMBRE"; $G instances delete "$NOMBRE" --zone="$ZONA" --delete-disks=all --quiet || true
 }
 trap borrar EXIT

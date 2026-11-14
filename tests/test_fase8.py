@@ -13,6 +13,8 @@ from comun import correr, rutas, variantes
 LISTAS = rutas.experimento("sampling_1") / "scripts"
 NOMBRES = [f"fase8_r{k}_{s}" for k in range(8) for s in "ab"] + ["fase8_medicion"]
 CON_CORRIDAS = [n for n in NOMBRES if n != "fase8_medicion"]
+# Los chequeos de antes de lanzar dejan de aplicar cuando la fase ya corrió (14-nov-2026): la calibración es su rastro.
+YA_CORRIDA = pytest.mark.skipif((rutas.ledger("sampling_1") / "calibracion.csv").exists(), reason="la fase 8 ya corrió")
 
 
 def leer(nombre):
@@ -64,6 +66,7 @@ def test_los_estudios_y_los_finales_son_los_de_d15(corridas):
         assert b[1] == sorted(["B0.5", "B0.25", "B0.1", "B0.05", "GOSS"])
 
 
+@YA_CORRIDA
 def test_cada_estudio_va_antes_que_sus_finales_y_ninguna_a_lee_de_una_b(corridas):
     propios_b = {cx.estudio for n in CON_CORRIDAS if n.endswith("_b") for cx in corridas[n] if cx.a.etapa == "optimizar"}
     for n, cs in corridas.items():
@@ -78,6 +81,7 @@ def test_cada_estudio_va_antes_que_sus_finales_y_ninguna_a_lee_de_una_b(corridas
                     assert cx.estudio not in propios_b, f"{n} lee {cx.estudio} de una lista b"
 
 
+@YA_CORRIDA
 def test_ningun_final_de_la_fase_8_esta_ya_corrido(corridas):
     ya = set()
     for e in variantes.duenos():
