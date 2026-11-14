@@ -1,0 +1,2 @@
+receta,tasa,juego,repeticion,semilla,filas,t_dataset_s,t_entrenamiento_s,t_prediccion_s,t_medicion_s,maquina,instancia,cpu,hilos,commit,version_lightgbm,version_numpy,version_optuna,load_avg,fecha
+azar,0.25,C@6,1,1001,126718,2.541947508000021,5.374476357000049,0.32127947399999357,5.695755831000042,n2-highmem-8,sampling-f8-medicion,Intel(R) Xeon(R) CPU @ 2.60GHz,8,b99aa71,4.7.0,2.5.4,5.0.0,6.71,2026-11-13T19:01:55

@@ -1,0 +1,4 @@
+tipo,repeticion,semilla,filas,t_dataset_s,t_entrenamiento_s,t_prediccion_s,t_medicion_s,t_s,maquina,instancia,cpu,hilos,commit,version_lightgbm,version_numpy,version_optuna,lista,momento,fecha,load_avg
+trial,0,0,506871,7.052002785000013,24.843363785000008,0.35218875299995034,25.19555253799996,25.19555253799996,n2-highmem-8,sampling-f8-r3-b,Intel(R) Xeon(R) CPU @ 2.60GHz,8,b99aa71,4.7.0,2.5.4,5.0.0,fase8_r3_b,inicio,2026-11-14T02:12:38,6.6
+trial,1,0,506871,6.973986144000037,25.70784680899999,0.3663477939999211,26.07419460299991,26.07419460299991,n2-highmem-8,sampling-f8-r3-b,Intel(R) Xeon(R) CPU @ 2.60GHz,8,b99aa71,4.7.0,2.5.4,5.0.0,fase8_r3_b,inicio,2026-11-14T02:13:11,7.22
+final,0,100003,768499,9.572003966000011,34.72175000300001,0.3480674390000331,35.069817442000044,44.641821408000055,n2-highmem-8,sampling-f8-r3-b,Intel(R) Xeon(R) CPU @ 2.60GHz,8,b99aa71,4.7.0,2.5.4,5.0.0,fase8_r3_b,inicio,2026-11-14T02:14:05,7.22

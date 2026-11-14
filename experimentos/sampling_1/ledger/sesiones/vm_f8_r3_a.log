@@ -1,0 +1,24 @@
+AVISO: árbol sucio; a la VM va HEAD (b99aa71), sin los cambios sin commitear
+== creando sampling-f8-r3-a (n2-highmem-8, Ice Lake, STANDARD) en northamerica-northeast2-b
+Created [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f8-r3-a].
+WARNING: Some requests generated warnings:
+ - Disk size: '256 GB' is larger than image size: '70 GB'. You might need to resize the root repartition manually if the operating system does not support automatic resizing. See https://cloud.google.com/compute/docs/disks/add-persistent-disk#resize_pd for details.
+
+NAME              ZONE                       MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP    EXTERNAL_IP     STATUS
+sampling-f8-r3-a  northamerica-northeast2-b  n2-highmem-8               10.188.15.196  34.124.121.118  RUNNING
+== copiando el repo @ b99aa71
+== corriendo; seguimiento: gcloud compute --project=proj-uba-261012163242176 ssh sampling-f8-r3-a --zone=northamerica-northeast2-b --command='tail -f ~/corrida.log'
+== estado: DONE
+== trayendo los ledgers
+Caught non-retryable exception while listing file://experimentos/control/ledger/: [Errno 2] No such file or directory: 'experimentos/control/ledger/predicciones'
+CommandException: Caught non-retryable exception - aborting rsync
+Caught non-retryable exception while listing file://experimentos/h1/ledger/: [Errno 2] No such file or directory: 'experimentos/h1/ledger/predicciones'
+CommandException: Caught non-retryable exception - aborting rsync
+Caught non-retryable exception while listing file://experimentos/h2/ledger/: [Errno 2] No such file or directory: 'experimentos/h2/ledger/predicciones'
+CommandException: Caught non-retryable exception - aborting rsync
+Caught non-retryable exception while listing file://experimentos/h3/ledger/: [Errno 2] No such file or directory: 'experimentos/h3/ledger/predicciones'
+CommandException: Caught non-retryable exception - aborting rsync
+Caught non-retryable exception while listing file://experimentos/h4/ledger/: [Errno 2] No such file or directory: 'experimentos/h4/ledger/predicciones'
+CommandException: Caught non-retryable exception - aborting rsync
+== borrando sampling-f8-r3-a
+Deleted [https://www.googleapis.com/compute/v1/projects/proj-uba-261012163242176/zones/northamerica-northeast2-b/instances/sampling-f8-r3-a].
