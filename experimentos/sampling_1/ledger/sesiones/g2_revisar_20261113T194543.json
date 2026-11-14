@@ -1,0 +1,119 @@
+{
+ "duration_api_ms": 152802,
+ "stop_reason": "end_turn",
+ "session_id": "b0dd584a-b3ed-4e13-8543-85bc11586343",
+ "total_cost_usd": 1.7676969999999999,
+ "usage": {
+  "input_tokens": 84,
+  "cache_creation_input_tokens": 98401,
+  "cache_read_input_tokens": 3354665,
+  "output_tokens": 15461,
+  "output_tokens_details": {
+   "thinking_tokens": 4026
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 98401,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1004,
+    "cache_read_input_tokens": 111031,
+    "cache_creation_input_tokens": 830,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 830
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 15461,
+   "cacheReadInputTokens": 3354665,
+   "cacheCreationInputTokens": 98401,
+   "webSearchRequests": 0,
+   "costUSD": 1.7676969999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 4026,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 98401,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 57,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Terminé la revisión en sesión limpia del grupo 2 (tarea 2.8) y la commiteé en `db99c20`. No quedó nada pendiente que necesite a alguien, así que no escribí `bloqueo.txt`.\n\n**No se perdió texto.** Comparé el README de Resultados anterior al grupo 2 (`bf64611`) con las páginas nuevas, frase por frase y sin contar los bloques generados. De 139 frases, 114 están tal cual. Revisé a mano las otras 25: están reformuladas, no perdidas:\n- «A» pasó a «aceleración» y «envíos» a «clientes contactados».\n- Los recuadros de limitaciones pasaron a listas.\n- Lo demás se mudó a control, corridas o exploratorios.\n\n**Lista § 5 de `docs/revision.md`: los siete ítems en ✓.**\n- Cada hipótesis se decide con la regla escrita en control, sin reglas nuevas.\n- Las refutaciones (H2, H1, la búsqueda informada de H4) van con el mismo peso que las confirmaciones.\n- Las limitaciones cubren semillas y réplicas, un solo mes de test y la adaptación de H2.\n- El guion dura 10 minutos, sigue la estructura pedida y no explica el baseline.\n- La bibliografía está lista en `docs/metodo.md`.\n\n**Verificaciones, todas sin errores:** `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar` y `scripts/sitio.sh`. `medir_sitio` da 0 problemas en las 13 páginas; solo avisa de tablas anchas que se desplazan en su recuadro. Además:\n- `grep envío` no encuentra nada en las páginas publicadas.\n- Los enlaces con ancla de Resultados e Inicio existen en `site/`.\n- Las tres líneas de más de 80 caracteres son diagramas mermaid, no código, y entran en la columna.\n\n**Una corrección:** en `experimentos/sampling_1/README.md` agregué, antes del bloque A, que la primera pestaña muestra la mejor variante de cada hipótesis aunque no valga la pena. Ahí `B0.25`, de H2, se ve igual que las otras tres pero no vale la pena: acelera 1,23 veces. Lo había señalado la revisión 1.16 y el texto solo lo decía más abajo.\n\n**Cierre:** entrada en `experimentos/sampling_1/docs/bitacora.md`, 2.8 marcada en `tasks.md`, `comun/tokens.py` corrido y `tokens.csv` actualizado.\n\nLa sesión que redactó 2.1 a 2.7b promedió unos 143.700 tokens de contexto por turno, por encima del objetivo de 100.000, porque hizo las siete tareas en una sola sesión. Lo anoté en la entrada de 2.7b.",
+ "ttft_ms": 1717,
+ "type": "result",
+ "duration_ms": 169278,
+ "uuid": "10a2ad48-e1d9-41d3-96b5-17d7e5ed0794",
+ "ttft_stream_ms": 759,
+ "time_to_request_ms": 183,
+ "first_content_frame_ms": 760,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 15461,
+   "cacheReadInputTokens": 3354665,
+   "cacheCreationInputTokens": 98401,
+   "webSearchRequests": 0,
+   "costUSD": 1.7676969999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 4026,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 98401,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

@@ -1,0 +1,119 @@
+{
+ "duration_api_ms": 174172,
+ "stop_reason": "end_turn",
+ "session_id": "6b3c391e-8127-4621-b95b-7de49841c666",
+ "total_cost_usd": 1.6401654,
+ "usage": {
+  "input_tokens": 84,
+  "cache_creation_input_tokens": 82585,
+  "cache_read_input_tokens": 3071247,
+  "output_tokens": 18245,
+  "output_tokens_details": {
+   "thinking_tokens": 3721
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 82585,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1185,
+    "cache_read_input_tokens": 95415,
+    "cache_creation_input_tokens": 630,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 630
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 18245,
+   "cacheReadInputTokens": 3071247,
+   "cacheCreationInputTokens": 82585,
+   "webSearchRequests": 0,
+   "costUSD": 1.6401654,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3721,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 82585,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 55,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Revisé el cambio completo `inicio-y-resultados` en una sesión limpia (tarea 3.2). Encontré un problema, lo corregí y lo commiteé. No hace falta `bloqueo.txt`.\n\n**Qué corrí:**\n- `pytest` entero: los 267 tests pasan (219 en `tests/` y 48 fuera de ahí).\n- `comun.variantes --verificar` y los dos verificadores (`verificar_readme` y `verificar_informe_h3`) pasan.\n- `comun.reporte --todos` tres veces, la última después de la corrección: `git status` no cambió en ninguna.\n- `scripts/sitio.sh` pasa. `medir_sitio` da 0 problemas en las 13 páginas; solo avisa de tablas anchas, que se desplazan dentro de su recuadro.\n\n**Escenarios de `sitio-informes` y `reporte-visual`:** los comprobé sobre el HTML de `site/` con `tmp_etapas/r32_escenarios.py`. Pasan:\n- **Qué se publica:** no aparecen bitácoras, código, specs, el guion ni la plantilla.\n- **Barra lateral y búsqueda:** los títulos coinciden con los de cada página y «GOSS» lleva a H2.\n- **Inicio:** tiene las tres figuras, el recuadro de limitaciones, el botón a Resultados y las tarjetas, sin tablas.\n- **Resultados:** las pestañas abren en «Lo mejor de cada hipótesis» y no hay tablas entre Limitaciones comunes y Conclusiones.\n- **H1 a H4:** el Veredicto tiene un solo recuadro y las Limitaciones van en lista, sin recuadros.\n- **Otras páginas:** Exploratorios, Corridas y Cómo trabajamos tienen sus diagramas, las imágenes cargan y ninguna línea de código pasa de 80 caracteres.\n- **«envíos»:** no aparece en ninguna página.\n\n**El problema:** el escenario «Gráfico sin datos» pide que, sin réplicas, el gráfico de semillas y réplicas muestre solo las semillas. `comun/reporte.py` lo dejaba como pendiente, aunque la función que lo dibuja ya sabía hacerlo sin réplicas. Ahora lo dibuja siempre, y ajusté y renombré el test en `tests/test_reporte.py`. Las páginas generadas no cambian, porque hoy hay réplicas. El commit avisa que es un cambio en `comun/`.\n\n**Sin verificar acá:** el encabezado en el teléfono, las barras laterales parejas y el modo oscuro. Esos se ven en capturas, que hace el orquestador.\n\n**Cierre:**\n- Anoté la revisión en la bitácora de `sampling_1` con el formato de cierre.\n- Clasifiqué como etapa `codigo` la sesión que aplicó 3.1, que no tenía entrada propia y `tokens.py` la contaba sin etapa. Por eso agregué una entrada corta para ella.\n- Marqué 3.2 en `tasks.md`, actualicé `tokens.csv` y commiteé sin `Co-Authored-By`.\n\nQuedan los pasos de seguimiento de `tasks.md` (push, verificar el sitio publicado y archivar el cambio), que te tocan a vos.",
+ "ttft_ms": 1389,
+ "type": "result",
+ "duration_ms": 1298557,
+ "uuid": "2278d179-0504-480b-aa21-f6e2d6be7265",
+ "ttft_stream_ms": 928,
+ "time_to_request_ms": 157,
+ "first_content_frame_ms": 928,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 18245,
+   "cacheReadInputTokens": 3071247,
+   "cacheCreationInputTokens": 82585,
+   "webSearchRequests": 0,
+   "costUSD": 1.6401654,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3721,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 82585,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
