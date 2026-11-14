@@ -2783,3 +2783,18 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
   `padding-bottom` queda también en un grupo cerrado. Ahora las reglas llevan `[dir]`, el grupo cerrado no ocupa lugar
   y la separación es un `gap` de 2 px en la lista y en el ítem con sublista: todos los renglones de las dos barras van de
   borde a borde del separador, con la misma separación dentro, al entrar y al salir de un grupo.
+
+## 14-nov-2026 · tiempos-confiables-y-consistencia · grupo 2b (unión con main, headless, Opus)
+
+- 2b.1 hecha: commit de la unión de `origin/main` (sitio-legible). `comun/reporte.py` toma `_absolutas(fin, exp)` de main
+  y los estudios por dueño de esta rama; `comun/variantes.py` conserva `grilla` y los pares de D12 (sin duplicar los de
+  main); `scripts/vm.sh` con las dos correcciones (TMPV por invocación, predicciones en `DATOS_DIR`). Las secciones del
+  13-nov de los `hipotesis.md` y `diseno.md` borrados pasaron, con su fecha, al README de cada experimento (control
+  § Medición de tiempos; h1 a h4 al final de Predicción y de Diseño, más Dependencias de h3 y h4); las de `sampling_1`
+  (nota de Zulip 212124, grilla común y fase 8) a `corridas.md` § Fases, impersonal. Bitácora con las dos historias.
+- 2b.2, verificaciones sobre la unión: `variantes --verificar` y `consolidar --sanity` en verde; `mkdocs build` sin
+  avisos de enlaces. Abiertas, por los datos de la fase 8 sobre el texto de main (las resuelven los grupos de informe):
+  `verificar_readme` marca el 1,23 de `sampling_1/README.md` (A de `B0.25` con la regla nueva) y `medir_sitio` marca
+  la figura de veredictos de Resultados (833 px > 800, ahora con 30 variantes). pytest: ver la entrada siguiente o el
+  cierre de la sesión. La unión a `main` la hace el orquestador.
+- 2b.3 no se hizo en esta sesión (presupuesto).

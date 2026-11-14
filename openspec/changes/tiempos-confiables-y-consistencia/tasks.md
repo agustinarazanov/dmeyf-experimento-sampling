@@ -127,7 +127,7 @@ Qué puede ir en paralelo:
 
 ## 2b. Unión con `main` (después del grupo 5 y de que `sitio-legible` esté archivado)
 
-- [ ] 2b.1 Unir `main` en la rama `tiempos-confiables` y resolver los conflictos esperados (design § Restricciones):
+- [x] 2b.1 Unir `main` en la rama `tiempos-confiables` y resolver los conflictos esperados (design § Restricciones):
   `comun/variantes.py`, `tests/test_variantes.py`, `cargar_replicas` y las secciones nuevas de hipótesis y diseño, que
   pasan al README de cada experimento con su fecha original.
 - [ ] 2b.2 `pytest`, `python -m comun.variantes --verificar`, `python -m comun.consolidar --sanity` y el verificador de
