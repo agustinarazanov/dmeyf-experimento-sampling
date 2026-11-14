@@ -273,7 +273,7 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
   - `h4/README.md`: `H4O-*`, `H4P-*`, los cuatro contrastes principales y `H4P-0.1` contra `H4U-0.1`.
 
   Verificar con `python -m scripts.verificar_informe_h3` (o `--informe <README>`): 0 números sin fuente.
-- [ ] 6.3 Resultados (`experimentos/sampling_1/README.md`), `sampling_1/docs/guion.md` y README raíz:
+- [x] 6.3 Resultados (`experimentos/sampling_1/README.md`), `sampling_1/docs/guion.md` y README raíz:
   - el 1,23 de `B0.25` que hoy marca `verificar_readme` (dos veces en § ¿Qué conviene achicar?, antes y después del bloque A): A
     con la regla nueva y su intervalo;
   - la tabla de cobertura y la de comparaciones directas: en Resultados, del bloque generado (3.5, 3.6); el detalle,
@@ -291,7 +291,7 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
   `python -m scripts.verificar_readme` (0 números fuera de `bloque-a-completo`), `scripts/sitio.sh` y
   `python -m scripts.medir_sitio` sin avisos.
 - [x] 6.4 `docs/metodo.md` § Agregar una hipótesis y `docs/revision.md` § 2: la regla de D14.
-- [ ] 6.5 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), actualizada con la tabla de cobertura, los cuatro
+- [x] 6.5 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), actualizada con la tabla de cobertura, los cuatro
   contrastes principales con las filas de cada lado y la sección de tiempos. No se escribe ningún borrador de mensaje.
 - [ ] 6.6 Revisión en sesión limpia de Resultados, el Anexo y los README de `h1`–`h4` con `docs/revision.md` § 5, cierre en las bitácoras y
   `comun/tokens.py`.

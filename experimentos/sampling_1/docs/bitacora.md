@@ -2987,3 +2987,26 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   1,23 de `B0.25`.
 - Correcciones: ninguna.
 - Tokens: ≈ 22 turnos · ≈ US$ 0,90 (presupuesto de la sesión US$ 2).
+
+### 2026-11-14 — grupo 6 de `tiempos-confiables-y-consistencia`, segunda pasada: tareas 6.3 y 6.5
+- Sesión: headless · modelo: Opus · etapa: **informe** (grupo 6), rama `tiempos-confiables`.
+- 6.3, Resultados: el 1,23 de `B0.25` era la cota inferior del intervalo; ahora A = 1,67 [1,23; 2,08] con réplicas
+  (las notas anteriores decían 1,54, que era la regla de una sola referencia antes de la fase 8). La frase de la primera
+  pestaña corregida: la mejor de H2 es `B0.5` (1,18), no `B0.25`. "Vale la pena" = 15 de 30 (las nueve de H3, `H4F-0.05`,
+  `H4F-0.25`, `H4O-0.5`, `H4O-0.25`, `H4O-0.1`, `H4P-0.25`), igual que el título del mapa; `U0.5` sale en Resultados
+  (dos lugares, más Conclusiones y la predicción), el guion y H1 ya lo decía. Sin frontera observada en H1 con réplicas.
+  "Extensiones de H3: las cuatro" → cinco. Frase de `U*`/`B*`/`GOSS` sin réplicas reemplazada (todas con 8); evidencia
+  no independiente con `U{r}`/`H3-{r}` en las cuatro tasas y `H4F` sobre los estudios de `U0.05`/`U0.25`. Varianza entre
+  réplicas 6 % (`U0.05`) – 58 % (`H3K-0.1`). A tiempo igual: `H4O-0.05` y `H4P-0.05` pierden a datos iguales y quedan
+  arriba a tiempo igual; se corrigió la frase "las que pierden no se rescatan" y el ítem de la predicción. Limitaciones:
+  párrafo de cómo se midió el tiempo, y otro del corte N\* en `H4F`/`H4O` y de por qué H2 no entra en los pares.
+  Proporción de clases en § Pregunta y README raíz: dónde y cómo la cambia H4.
+- 6.5, § Diálogo entre H1 y H4: cobertura (cuatro tasas, 8 réplicas), tabla de los cuatro pares `H4O-{r}` − `U{r}` con
+  filas de cada lado y veredicto del par (del bloque `diferencias`), Δ de cada lado contra el control, lo que no aíslan,
+  los pares `H4P-{r}` − `H3-{r}` y el del peso, y el tiempo (A de `H4O` menor que el de `U` por la elección de Optuna:
+  a hiperparámetros fijos la muestra con bajas tarda casi lo mismo). Sin borrador de mensaje.
+- `scripts/verificar_readme.py`: suma el bloque `diferencias` del Anexo como fuente (las filas de cada par), igual que
+  ya sumaba `rondas`.
+- Verificaciones: `verificar_readme` y `verificar_informe_h3` (0 sin fuente), `comun.variantes --verificar`,
+  `scripts/sitio.sh` y `medir_sitio` (0 problemas en 13 páginas; el aviso de 1005 px es el detalle del bloque A, de antes).
+- Queda 6.6 para la sesión de revisión.

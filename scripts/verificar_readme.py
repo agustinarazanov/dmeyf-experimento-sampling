@@ -78,7 +78,9 @@ def main() -> int:
     paginas += [(p, (RAIZ / p).read_text()) for p in PAGINAS if (RAIZ / p).is_file()]
     titulos = " ".join(t for _, texto in paginas for t in TITULO_FIGURA.findall(texto))
     rondas = leer_bloque(TABLA.read_text(), "rondas")  # δ de cada ronda
-    tabla = {float(x.replace(",", "")) for x in NUM_TABLA.findall(bloque + " " + titulos + " " + rondas)}
+    # filas de cada lado de los pares de § Diálogo entre H1 y H4 (`tiempos-confiables-y-consistencia` 6.5)
+    diferencias = leer_bloque(TABLA.read_text(), "diferencias")
+    tabla = {float(x.replace(",", "")) for x in NUM_TABLA.findall(" ".join((bloque, titulos, rondas, diferencias)))}
 
     numeros, enlaces = set(), []
     for nombre, texto in paginas:

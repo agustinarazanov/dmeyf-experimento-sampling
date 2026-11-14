@@ -3,7 +3,8 @@
 Experimento de DMEyF 2026 (comisión lunes): **¿vale la pena el tradeoff entre velocidad y pérdida de performance?**
 (Zulip 208986). Sobre el baseline del curso (2019, LightGBM con Optuna), mide cuánto tiempo se ahorra y cuánta ganancia
 se pierde en test (201910) cuando se usan menos filas para entrenar u optimizar, sin cambiar la proporción de clases
-(eso lo estudia Sampling_2).
+(eso lo estudia Sampling_2). La excepción declarada es H4: conserva todas las bajas y recorta solo CONTINUA, en la
+búsqueda o también en el final, donde CONTINUA lleva peso 1/f para restituir la proporción ponderada.
 
 **Respuesta corta:** vale la pena achicar la optimización, no el entrenamiento del modelo final. Optuna sobre una muestra
 al azar y el final con todas las filas no pierde contra el control y es varias veces más rápido; achicar el final

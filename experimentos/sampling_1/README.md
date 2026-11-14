@@ -9,7 +9,9 @@ Todas las variantes de las cuatro hipótesis contra el control, con la respuesta
 Sobre el baseline (Zulip 208135), ¿cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) si se usan menos
 filas para entrenar u optimizar? En H1, H2 y H3 la proporción de BAJA+1 ∪ BAJA+2 queda igual, en esperanza, en todas las
 variantes; el undersampling de la clase mayoritaria lo estudia Sampling_2. H4 es la excepción declarada: conserva todas
-las bajas y recorta solo CONTINUA.
+las bajas y recorta solo CONTINUA, así que cambia la proporción. Solo en la búsqueda (`H4H`, `H4U`, `H4P`) el final
+entrena con todas las filas; en `H4F` y `H4O` el final también usa la muestra, y CONTINUA lleva peso 1/f para restituir
+la proporción ponderada del train.
 
 | hipótesis | qué achica | página |
 |---|---|---|
@@ -76,9 +78,10 @@ Generado por `comun/reporte.py` el 2026-11-14; no editar.
 
 <!-- /generado:desglose -->
 
-Las variantes `U*`, `B*` y `GOSS` no tienen réplicas (pierden o no aceleran, y las réplicas no cambian eso). En `C`, H3
-y H4, el veredicto sale de Δ con 8 réplicas de la optimización. La primera pestaña muestra la mejor variante de cada
-hipótesis, valga la pena o no: la de H2, `B0.25`, no pierde pero acelera 1,23 veces, así que no vale la pena.
+Desde la grilla común las 30 variantes y `C` tienen 8 réplicas de la optimización: el veredicto sale de Δ con réplicas, y
+A, de la mediana de T contra la del control, con su intervalo. La primera pestaña muestra la mejor variante de cada
+hipótesis, valga la pena o no: la de H1, `U0.5`, queda *indeterminada*, y la de H2, `B0.5`, no pierde pero acelera 1,18
+veces. La más rápida de H2 que no pierde, `B0.25`, acelera 1,67 veces [1,23; 2,08]: tampoco llega a 2.
 
 <!-- generado:bloque-a -->
 Generado por `comun/reporte.py` el 2026-11-14; no editar.
@@ -117,16 +120,16 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
 <!-- /generado:bloque-a -->
 
 - **H1, ninguna de las dos** ([H1](../h1/README.md)). Predecía que r = 0,5 y 0,25 no pierden y que r = 0,05
-  pierde: `U0.5` *no pierde* y `U0.25` ya *pierde*; la frontera observada es
-  r = 0,5. La pérdida crece a medida que baja r.
-- **H2, refutada** ([H2](../h2/README.md)): con f = 0,1 pierde y con 0,5 y 0,25 casi no acelera (aceleración ≤ 1,23). GOSS es
-  descriptiva y queda *indeterminado*.
+  pierde: con réplicas `U0.5` queda *indeterminado* (−3,64 M$ [−6,58; −0,71]) y `U0.25` ya *pierde*, así que no queda
+  frontera observada (con la réplica 0 sola, `U0.5` no perdía). La pérdida crece a medida que baja r.
+- **H2, refutada** ([H2](../h2/README.md)): con f = 0,1 y 0,05 pierde, y con 0,5 y 0,25 no pierde pero acelera menos de 2
+  veces (1,18 y 1,67; el intervalo de `B0.25` llega a 2,08). GOSS es descriptiva y queda *indeterminado*.
 - **H3, confirmada también con réplicas** ([H3](../h3/README.md)): `H3-0.1` y `H3-0.25` no pierden con réplicas (cotas
   inferiores −1,07 y −2,82 M$, contra −δ = −5,65 M$) y aceleran 7,76 y 4,38 veces. La réplica 0 sola movía Δ en los dos
   sentidos: de 4,73 a 1,42 M$ con réplicas en `H3-0.25`, de 1,26 a 1,71 M$ en `H3-0.1`. El mecanismo (la muestra
-  regulariza o el control tuvo mala suerte) queda sin resolver. `H3-0.05` también se confirma (aceleración 10,56) y reescalar
-  `min_data_in_leaf` no cambia.
-- **Extensiones de H3** (secundarias): las cuatro no pierden contra el control. La raíz no mejora a no reescalar; le
+  regulariza o el control tuvo mala suerte) queda sin resolver. `H3-0.05` también se confirma (aceleración 10,56), y
+  `H3-0.5`, de la grilla común, no pierde y acelera 2,28 veces.
+- **Extensiones de H3** (secundarias): las cinco no pierden contra el control. La raíz no mejora a no reescalar; le
   gana a la lineal en r = 0,1 y no en r = 0,25; buscar sobre el 10 % de los clientes no cambia contra el 10 % de las
   filas.
 - **H4, búsqueda informada: refutada** ([H4](../h4/README.md)). `H4H-0.1` y `H4U-0.1` *pierden* con réplicas (−11,41 y
@@ -136,17 +139,22 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
 - **`H4O-0.5`, reoptimizar sobre el set del final** (respuesta a Zulip 211718): no pierde contra el control y no cambia
   contra `H4F-0.05`, con aceleración 2,31 contra 12,50. Seguir el «siempre OP» en fast-retrain cuesta más de 5 veces el tiempo y
   no suma ganancia medible.
-- `U0.25` y `H3-0.25` comparten el estudio de Optuna de la réplica 0, o sea los mismos hiperparámetros. `U0.25` pierde y
-  `H3-0.25` no, así que en H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una
-  muestra.
-- **Vale la pena** (no pierde y aceleración ≥ 2): las ocho variantes de H3, las de fast-retrain (`H4F-0.05`,
-  `H4F-0.25` y `H4O-0.5`) y, en esta ronda, `U0.5` (aceleración 2,25). Ninguna de H2 (las que no pierden, `B0.25` y
-  `B0.5`, aceleran menos de 2 veces) ni de la búsqueda informada de H4, que pierde.
+- **H4, grilla común** ([H4](../h4/README.md) § Grilla común). Conservar las bajas con peso en la búsqueda y el final
+  (`H4O-{r}`) no pierde en 0,5, 0,25 y 0,1 y pierde en 0,05 (−6,14 M$). Solo en la búsqueda (`H4P-{r}`), no pierde en
+  0,25, queda *indeterminado* en 0,5 y 0,1 y pierde en 0,05.
+- `U{r}` y `H3-{r}` comparten los estudios de Optuna en las cuatro tasas y las 8 réplicas, o sea los mismos
+  hiperparámetros. `U{r}` pierde contra `H3-{r}` en las cuatro (tabla de diferencias del [Anexo](anexo.md)), así que en
+  H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una muestra.
+- **Vale la pena** (no pierde y aceleración ≥ 2): 15 de las 30 variantes. Las nueve de H3, las de fast-retrain
+  (`H4F-0.05`, `H4F-0.25` y `H4O-0.5`) y, de la grilla común, `H4O-0.25`, `H4O-0.1` y `H4P-0.25` (A de 3,65; 5,29 y
+  3,35). `U0.5` sale de la lista: con réplicas queda *indeterminado*, aunque acelere 2,37 veces. Ninguna de H2 (las que
+  no pierden, `B0.25` y `B0.5`, aceleran menos de 2 veces) ni de la búsqueda informada de H4, que pierde.
 
 ## ¿Cuánto se puede achicar?
 
 Depende de qué se achique. Si es solo la búsqueda (H3), hasta el 5 % de las filas no pierde. Si es también el final al
-azar (H1), la pérdida crece a medida que baja la fracción y la frontera observada es r = 0,5.
+azar (H1), la pérdida crece a medida que baja la fracción y ninguna tasa queda en *no pierde* (r = 0,5 es
+*indeterminado*). Si el final conserva todas las bajas y recorta solo CONTINUA con peso (`H4O`), no pierde hasta el 10 %.
 
 <!-- generado:fraccion -->
 Generado por `comun/reporte.py` el 2026-11-14; no editar.
@@ -198,10 +206,13 @@ Generado por `comun/reporte.py` el 2026-11-14; no editar.
 
 <!-- /generado:tiempo-igual -->
 
-Con réplicas, todas las H3 salvo `H3K-0.1` y las tres de fast-retrain quedan arriba del control; `H4U-0.1` tiene IC que
-contiene a 0 aunque pierda con réplicas, porque el ensamble suma ganancia por sí solo, y `H4H-0.1` queda abajo. El
-bootstrap de clientes da IC de unos ±8 M$ o más. Con 20 semillas ensamblar el control sí suma, así que la ventaja a
-tiempo igual es en buena parte ensamble. Las variantes que pierden a datos iguales no se rescatan ensamblando.
+Con réplicas, todas las H3 salvo `H3K-0.1` y `H3-0.5`, las tres de fast-retrain y todas las de la grilla común de H4
+salvo `H4P-0.5` quedan arriba del control; también `U0.5` y `B0.5`. `H4U-0.1` tiene IC que contiene a 0 aunque pierda
+con réplicas, porque el ensamble suma ganancia por sí solo, y `H4H-0.1`, `U0.05` y `B0.05` quedan abajo. El bootstrap de
+clientes da IC de unos ±8 M$ o más. Con 20 semillas ensamblar el control sí suma, así que la ventaja a tiempo igual es
+en buena parte ensamble. Las que pierden a datos iguales en H1, H2 y la búsqueda informada no se rescatan ensamblando;
+en la grilla común de H4 sí: `H4O-0.05` y `H4P-0.05` pierden a datos iguales y quedan arriba a tiempo igual (5,60 y
+5,46 M$): lo que suma el ensamble supera lo que pierden.
 
 ## ¿Cuánto del tiempo es tamaño de datos?
 
@@ -247,9 +258,9 @@ Generado por `comun/reporte.py` el 2026-11-14; no editar.
 
 <!-- /generado:semillas -->
 
-**¿Alcanzan más semillas finales?** No, con un solo estudio de Optuna: en H3 y en las H4 que ya tenían réplicas (`H4H`,
-`H4U`, `H4F` y `H4O-0.5`), entre el 17 % (`H4F-0.25`) y el 58 % (`H3K-0.1`) de la varianza de G es suerte de la
-optimización (25 % en `C`), y esa parte no baja con más semillas finales. Pasar de 10 a
+**¿Alcanzan más semillas finales?** No, con un solo estudio de Optuna: con 8 réplicas en las 30 variantes, entre el 6 %
+(`U0.05`) y el 58 % (`H3K-0.1`) de la varianza de G es suerte de la optimización (25 % en `C`), y esa parte no baja con
+más semillas finales. Pasar de 10 a
 20 semillas angostó el IC por semilla pero no el de réplicas. Las cuentas están en [H3](../h3/README.md); las tablas de
 varianza y de diferencias entre variantes, en el [Anexo](anexo.md).
 
@@ -271,24 +282,36 @@ La pregunta de Zulip 212124 (12-nov) pide que H1 y H4 dialoguen: ¿se usan los m
 
 **¿Los mismos cortes?** Tiene dos lecturas.
 
-- *Como tasas de muestreo*: hasta la ronda 201903–201908, H4 no repite la grilla de H1. H1 corre r ∈ {0,5; 0,25; 0,1;
-  0,05} al azar en la búsqueda y en el final; H4 se cruza con esa muestra en solo dos puntos, r = 0,5 (`H4O-0.5`) y
-  r = 0,1 en la búsqueda (`H4U-0.1`, que se compara con `H3-0.1`).
+- *Como tasas de muestreo*: sí, desde la grilla común ([Corridas](corridas.md) § Grilla común, [H4](../h4/README.md)
+  § Grilla común). La tabla de cobertura de § ¿Qué conviene achicar? tiene H1 (`U`), H3, `H4O`, `H4P` y H2 (`B`) en las
+  mismas cuatro tasas, r ∈ {0,5; 0,25; 0,1; 0,05}, todas corridas y con 8 réplicas. Antes de la grilla común, H4 se
+  cruzaba con H1 en solo dos puntos, r = 0,5 (`H4O-0.5`) y r = 0,1 en la búsqueda (`H4U-0.1`).
 - *Como corte de envíos*: N\* = 3.300 es el mismo para todas las variantes, así que la ganancia se mide igual en H1 y
-  en H4.
+  en H4 (en `H4O` lo sostiene el peso de CONTINUA; ver § Limitaciones comunes).
 
-**¿Se ve alguna diferencia?** Todavía no hay un contraste directo entre H1 y H4: lo que hay son dos Δ contra el control.
+**¿Se ve alguna diferencia?** Sí, y crece a medida que baja la tasa. Los cuatro contrastes principales, `H4O-{r}` −
+`U{r}`, se declararon antes de correr: conservar todas las bajas con peso contra la muestra al azar, a igual tasa de
+CONTINUA, en la búsqueda y en el final. La tabla de diferencias del [Anexo](anexo.md) da cada par con las filas de cada
+lado:
 
-- En 0,5, `U0.5` (−1,38 M$ [−3,99; 1,24], una sola búsqueda) y `H4O-0.5` (−1,33 M$ con réplicas, IC que contiene a 0)
-  quedan casi iguales, con IC que se superponen.
-- En 0,1, solo en la búsqueda, `H4U-0.1` *pierde* (−8,02 M$ [−11,52; −4,53]) y `H3-0.1` no (1,71 M$ [−1,07; 4,49]), con
-  IC que no se tocan. Ahí la muestra de `H4U-0.1` tiene además un 9 % más de filas y no lleva peso.
+| r | filas de `H4O-{r}` / `U{r}` | `H4O-{r}` − `U{r}` | `H4O-{r}` contra el control | `U{r}` contra el control |
+|---|---|---|---|---|
+| 0,5 | 388.132 / 384.250 | *no cambia* | no pierde (−1,33) | indeterminado (−3,64) |
+| 0,25 | 197.949 / 192.125 | *mejora* | no pierde (−0,30) | pierde (−8,09) |
+| 0,1 | 83.839 / 76.850 | *mejora* | no pierde (−2,25) | pierde (−17,47) |
+| 0,05 | 45.803 / 38.425 | *mejora* | pierde (−6,14) | pierde (−27,74) |
 
-**Qué se corrió para contestarla.** La grilla común ([Corridas](corridas.md) § Grilla común, [H4](../h4/README.md)
-§ Grilla común) lleva H1, H3 y H4 a las mismas cuatro tasas con 8 réplicas, y declara antes de correr cuatro pares
-directos `H4O-{r}` − `U{r}`: conservar las bajas contra la muestra al azar, a igual tasa de CONTINUA, con las filas de
-cada lado a la vista. Las predicciones están en el README de cada hipótesis; la tabla de cobertura de § ¿Qué conviene
-achicar? dice qué celdas se corrieron, y la tabla de diferencias del [Anexo](anexo.md), cuánto da cada par.
+Δ con réplicas en M$; la magnitud y el IC de cada par están en el Anexo. Los pares no aíslan una sola cosa: `H4O-{r}`
+tiene más filas (las bajas que la muestra al azar no tendría), otra proporción de clases y peso en CONTINUA. A igual tasa
+de CONTINUA, que es lo que pregunta Zulip 212124, conservar las bajas con peso rinde más que muestrear al azar desde
+r = 0,25, y la diferencia crece al bajar r. Lo que separa a H4 de H1 es el final: solo en la búsqueda, `H4P-{r}` no le
+gana a `H3-{r}` (no cambia en 0,5 y 0,25, empeora en 0,1 y 0,05), y el peso en la búsqueda (`H4P-0.1` − `H4U-0.1`) no
+cambia.
+
+**¿Y el tiempo?** A igual r, `H4O-{r}` acelera menos que `U{r}` (3,65 contra 4,99 en 0,25; 5,29 contra 10,13 en 0,1).
+La medición a hiperparámetros fijos de § ¿Cuánto del tiempo es tamaño de datos? dice por qué: con los mismos
+hiperparámetros, la muestra con bajas tarda casi lo mismo que la muestra al azar de igual r. La diferencia de A viene de
+los hiperparámetros que elige Optuna sobre cada muestra, no del tamaño de datos.
 
 ## Limitaciones comunes
 
@@ -303,12 +326,23 @@ Las propias de cada hipótesis están en su página.
 - **Comparaciones múltiples.** Entre H4 y las extensiones de H3 hay más de diez contrastes sin corrección: con un 5 % de
   error por contraste, alguno puede salir significativo por azar. Las conclusiones se apoyan en los contrastes
   principales; el resto es secundario.
-- **Réplicas solo en parte de las variantes.** Solo `C`, H3 y H4 tienen réplicas de Optuna. Para `U*`, `B*` y GOSS, Δ
-  sigue incluyendo la suerte de una sola optimización; como pierden por mucho o no aceleran, no cambia la respuesta
-  (`U0.5`, que vale la pena por poco, es la excepción: su veredicto es de una sola búsqueda). Ocho réplicas alcanzan
-  para decidir *no pierde*, pero no para separar de 0 una ventaja de 1,42 a 2,08 M$.
-- **Evidencia no independiente.** `U0.25`/`H3-0.25` y `U0.1`/`H3-0.1` comparten el estudio de la réplica 0; `H3R`,
-  `H3L` y H3 de la misma tasa comparten todos, y `H4F-0.05`/`H4F-0.25` comparten los de `H3-0.05`/`H3-0.25`.
+- **Ocho réplicas.** Todas las variantes tienen 8 réplicas de Optuna desde la grilla común. Alcanzan para decidir *no
+  pierde*, pero no para separar de 0 una ventaja de 1,42 a 2,08 M$.
+- **Evidencia no independiente.** `U{r}` y `H3-{r}` comparten los estudios de Optuna en las cuatro tasas; `H3R`, `H3L`
+  y H3 de la misma tasa también, y `H4F-0.05`/`H4F-0.25` reusan los de `H3-0.05`/`H3-0.25`, que son los de
+  `U0.05`/`U0.25`. `H4O-{r}` y `H4P-{r}` comparten los suyos.
+- **Cómo se midió el tiempo.** Todas las corridas usaron la misma CPU (`n2-highmem-8`, un trabajo por VM). Dentro de
+  una VM el mismo final tarda casi lo mismo de una repetición a otra; entre VMs varía más, y como corrieron en horarios
+  distintos, ese CV mezcla la VM con la hora. Contra las fases anteriores, las anclas de calibración (una sola medición
+  vieja cada una) quedan corridas, así que T compara bien dentro de la grilla común y peor contra rondas viejas. El
+  intervalo de A junta la suerte de Optuna con la de la VM. La medición a hiperparámetros fijos separa el tamaño de datos
+  de la elección de Optuna y es exploratoria: no cambia veredictos. T no incluye la preparación de la muestra (a lo
+  sumo medio segundo). Las cifras están en § ¿Cuánto del tiempo es tamaño de datos?
+- **Corte N\* y pares.** N\* = 3.300 vale tal cual para las variantes que entrenan el final con la proporción original
+  (`U*`, `B*`, H3, `H4H`, `H4U`, `H4P`); en `H4F` y `H4O` lo sostiene el peso 1/f de CONTINUA, que deja comparable el
+  orden de los primeros 3.300, pero el corte no se reajusta. H2 no entra en los pares directos: en `B*`,
+  `bagging_fraction` sale del espacio de Optuna, así que la comparación con `U*` es descriptiva; la tabla de cobertura la
+  muestra al lado.
 - **Un mes, un año, una máquina.** Un solo año (2019) y un solo mes de test (201910): el bootstrap de clientes muestra
   que el ruido de ese mes es mayor que el de las réplicas. A N\* fijo la ganancia se mueve en pasos de 1,1 M$, así que
   diferencias de uno o dos BAJA+2 no se distinguen del ruido. El corte N\* sale de 201908: si la tasa de bajas de 201910
@@ -322,7 +356,9 @@ Las propias de cada hipótesis están en su página.
 El tradeoff vale la pena si lo que se achica es la **optimización**, no el entrenamiento del modelo final. Optimizar
 sobre el 5 %, 10 % o 25 % de las filas y entrenar con todas las de 201903–201908 no pierde contra el control, también
 cuando se mide la suerte de Optuna con 8 réplicas, y es de 4,38 a 10,56 veces más rápido. Entrenar el final con menos
-filas al azar pierde desde r = 0,25 (r = 0,5 no pierde y acelera 2,25 veces), y dentro de LightGBM pierde con f = 0,1.
+filas al azar pierde desde r = 0,25, y en r = 0,5 queda *indeterminado* con réplicas (acelera 2,37 veces, pero no
+alcanza para decir que no pierde); conservando todas las bajas con peso no pierde hasta r = 0,1. Dentro de LightGBM
+pierde con f = 0,1.
 Por qué: la optimización es lo que domina T, y los hiperparámetros que elige Optuna sobre la muestra sirven para el
 total.
 
@@ -347,9 +383,9 @@ Con el final de seis meses y 20 semillas la respuesta es la misma que con cuatro
 **La predicción** ([Predicción del experimento](../control/README.md#prediccion-del-experimento-1-nov)):
 
 - **Qué vale la pena: acertó con H3 y falló con H1.** H3 vale la pena con las dos tasas, pero `U0.25` pierde; en H1
-  solo vale la pena `U0.5`.
+  no vale la pena ninguna, porque `U0.5` queda *indeterminado* con réplicas.
 - **A tiempo igual: acertó para las variantes que valen la pena.** Las rápidas que no pierden quedan arriba del control
-  ensamblando; las que pierden a datos iguales no se rescatan.
+  ensamblando. Las que pierden a datos iguales no se rescatan, salvo `H4O-0.05` y `H4P-0.05` en la grilla común.
 - **Ronda 201903–201908: acertó en las tres reglas** (detalle en el [Anexo](anexo.md#rondas)).
 
 ## Qué sigue
