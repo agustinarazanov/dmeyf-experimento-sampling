@@ -100,6 +100,61 @@ def test_variante_con_replicas_marca_su_g_y_la_referencia_del_control():
     assert "Ḡ_C con réplicas = 100.00 M$ (R=8)" in reporte.referencia_control(a)
 
 
+def _tiempos_toy():
+    """Control con 4 réplicas; una variante con las 4 y otra con solo 2 (réplicas incompletas)."""
+    import pandas as pd
+    filas, est = [], []
+    for v, ks, base in (("C", range(4), 100.0), ("U0.5", range(4), 40.0), ("U0.1", range(2), 25.0)):
+        for k in ks:
+            e = f"{v}-{k}"
+            filas += [dict(variante=v, replica_opt=k, estudio=e, tiempo_entrenamiento_s=10.0)] * 2
+            est.append(dict(estudio=e, tiempo_optimizacion_s=base + 7 * k))
+    return pd.DataFrame(filas), pd.DataFrame(est)
+
+
+def test_a_por_t_es_igual_en_todas_las_filas_tambien_con_replicas_incompletas():
+    import pandas as pd
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    finr, est = _tiempos_toy()
+    ts_c = reporte.tiempos_por_replica(finr, est, "C")
+    assert ts_c == [110.0, 117.0, 124.0, 131.0]
+    ap = pd.DataFrame(dict(g_control=[1e8] * 3, delta_g_media=[1e6] * 3, delta_g_ic_inf=[0.0] * 3, delta_g_ic_sup=[2e6] * 3,
+                           tiempo_total_s=[50.0, 35.0, 20.0], aceleracion=[9.0] * 3, veredicto=["no pierde"] * 3),
+                      index=["U0.5", "U0.1", "U0.25"])
+    rep = pd.DataFrame(dict(delta_g_media=[1e6, 1e6], delta_g_ic_inf=[0.0, 0.0], delta_g_ic_sup=[2e6, 2e6], n_replicas=[4, 2],
+                            g_media_replicas=[1e8, 1e8], veredicto=["no pierde"] * 2), index=["U0.5", "U0.1"])
+    fin = pd.DataFrame(dict(variante=["U0.25"] * 10))
+    prods = []
+    for b in ("U0.5", "U0.1", "U0.25"):
+        f = reporte.fila_bloque_a(ctx, b, fin, ap, rep if b != "U0.25" else pd.DataFrame(), None, None, None, ts_c,
+                                  reporte.tiempos_por_replica(finr, est, b))
+        prods.append(f["A"] * f["T"])
+    assert prods == pytest.approx([120.5] * 3)  # mediana de ts_c
+
+
+def test_intervalo_de_a_con_y_sin_replicas_y_no_depende_del_orden():
+    ts_c = [110.0, 117.0, 124.0, 131.0, 140.0, 118.0, 150.0, 112.0]
+    ts_v = [40.0, 45.0, 52.0, 41.0, 60.0, 43.0, 47.0, 44.0]
+    con = reporte.intervalo_a(ts_c, ts_v)
+    assert con[0] < reporte.np.median(ts_c) / reporte.np.median(ts_v) < con[1]
+    assert reporte.intervalo_a(ts_c[::-1], ts_v[::-1]) == con
+    sin = reporte.intervalo_a(ts_c, [44.0])
+    assert sin[0] < reporte.np.median(ts_c) / 44.0 < sin[1]
+    assert reporte.intervalo_a([], ts_v) is None
+
+
+def test_celdas_del_intervalo_de_a_nota_de_piso_y_guion_del_control():
+    import pandas as pd
+    ctx = reporte.Contexto(reg.AGREGADOR)
+    ap = pd.DataFrame(dict(g_control=[1e8], delta_g_media=[1e6], delta_g_ic_inf=[0.0], delta_g_ic_sup=[2e6],
+                           tiempo_total_s=[50.0], aceleracion=[2.0], veredicto=["no pierde"]), index=["U0.1"])
+    fin = pd.DataFrame(dict(variante=["U0.1"] * 10))
+    f = reporte.fila_bloque_a(ctx, "U0.1", fin, ap, pd.DataFrame(), None, None, None, [100.0, 110.0, 120.0], None)
+    assert f["A_piso"] and f["A"] == pytest.approx(2.2)
+    assert reporte.celdas_bloque_a(f)[-1].endswith("(sin réplicas: solo mueve el control)")
+    assert reporte._ic_a_txt({"variante": reporte.lg.CONTROL, "A_ic": None, "A_piso": False}) == "—"
+
+
 def _predicciones(tmp_path, variante, semilla_azar, k):
     import numpy as np
     import pandas as pd

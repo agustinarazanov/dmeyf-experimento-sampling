@@ -7,8 +7,8 @@ README todavía no tiene marcadores (antes del grupo 3), o con `--salida`, escri
 `sampling_1/informe/comparacion_rondas.md` como antes.
 
 Lee, de cada `<exp>/ledger/`, `ronda_201903-201906/{apareado,replicas}.csv` (ronda anterior, copiados antes del cambio) y
-`{apareado,replicas}.csv` (ronda vigente). Una fila por variante de la ronda anterior; las que solo existen en la nueva
-(`H4O-0.5`) no entran. No mezcla rondas ni compara tiempos (T y A solo se comparan dentro de una ronda). Nada a mano.
+`{apareado,replicas}.csv` (ronda vigente). Una fila por variante de la ronda anterior, sin el control; las que solo existen en la nueva
+(`H4O-0.5`) no entran y se nombran en una nota. No mezcla rondas ni compara tiempos (T y A solo se comparan dentro de una ronda). Nada a mano.
 """
 import argparse
 import sys
@@ -18,6 +18,7 @@ import pandas as pd
 
 RONDA_VIEJA = "201903-201906"
 VENTANA_NUEVA = "201903-201908"
+CONTROL = {"C", "C-rep"}  # el control es la referencia de cada ronda: no tiene fila
 
 
 def _m(x) -> str:
@@ -65,7 +66,8 @@ def _celdas(v: str, ap: pd.DataFrame, rep: pd.DataFrame) -> list[str]:
 def tabla(experimentos: Path, titulo: bool = True) -> str:
     ap_v, rep_v, delta_v = ronda(experimentos, True)
     ap_n, rep_n, delta_n = ronda(experimentos, False)
-    variantes = sorted(set(ap_v.index) | set(rep_v.index))
+    variantes = sorted((set(ap_v.index) | set(rep_v.index)) - CONTROL)
+    solo_nuevas = sorted((set(ap_n.index) | set(rep_n.index)) - set(variantes) - CONTROL)
     cab = ["variante", f"Δ réplica 0 {RONDA_VIEJA}", "veredicto", "Δ con réplicas", "veredicto",
            f"Δ réplica 0 {VENTANA_NUEVA}", "veredicto", "Δ con réplicas", "veredicto", "¿cambia el veredicto?"]
     filas = []
@@ -84,6 +86,9 @@ def tabla(experimentos: Path, titulo: bool = True) -> str:
         "| " + " | ".join(cab) + " |", "|" + "---|" * len(cab),
         *["| " + " | ".join(esc(c) for c in f) + " |" for f in filas],
     ]
+    if solo_nuevas:
+        texto += ["", f"Las variantes que solo existen en la ronda {VENTANA_NUEVA} ({', '.join(f'`{v}`' for v in solo_nuevas)}) "
+                  "no tienen con qué compararse y no entran en la tabla; el control tampoco, porque es la referencia de cada ronda."]
     return "\n".join(texto) + "\n"
 
 

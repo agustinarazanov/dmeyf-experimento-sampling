@@ -469,6 +469,34 @@ def tiempo_replica(fin_k: pd.DataFrame, t_estudio: pd.Series) -> tuple[float, fl
     return float(t_estudio[fin_k["estudio"].iloc[0]]), float(fin_k["tiempo_entrenamiento_s"].mean())
 
 
+N_BOOT_A = 10000
+SEMILLA_BOOT_A = 20261114
+
+
+def tiempos_por_replica(finr: pd.DataFrame, estudios: pd.DataFrame, variante: str) -> list[float]:
+    """T (optimización + entrenamiento final medio) de cada réplica de la variante, en orden de réplica."""
+    t_est, v = _tiempos(estudios), finr[finr["variante"] == variante]
+    ts = [tiempo_replica(v[v["replica_opt"] == k], t_est) for k in sorted(v["replica_opt"].unique())]
+    return [t[0] + t[1] for t in ts if t is not None]
+
+
+def intervalo_a(ts_c: list[float], ts_v: list[float], n_boot: int = N_BOOT_A) -> tuple[float, float] | None:
+    """IC 95% por percentiles del cociente de medianas mediana(T_C) / mediana(T_v) (D2).
+
+    Se remuestrean con reposición las réplicas del control y, por separado, las de la variante, con semilla fija; una
+    variante con una sola réplica no se remuestrea (el intervalo solo mueve el control). Los tiempos se ordenan antes de
+    remuestrear: el resultado no depende del orden de las réplicas."""
+    if not len(ts_c) or not len(ts_v):
+        return None
+    c, v = np.sort(np.asarray(ts_c, dtype=float)), np.sort(np.asarray(ts_v, dtype=float))
+    rng = np.random.default_rng(SEMILLA_BOOT_A)
+    med_c = np.median(c[rng.integers(0, len(c), (n_boot, len(c)))], axis=1)
+    med_v = np.median(v[rng.integers(0, len(v), (n_boot, len(v)))], axis=1) if len(v) > 1 else np.median(v)
+    alfa = (1 - GRADOS) / 2 * 100
+    r = med_c / med_v
+    return float(np.percentile(r, alfa)), float(np.percentile(r, 100 - alfa))
+
+
 def tiempo_igual_replicas(variante: str, finr: pd.DataFrame, estudios: pd.DataFrame, n_est: int) -> dict | None:
     """Por réplica k, el ensamble de K_k semillas de la variante en el presupuesto del control de esa réplica contra Ḡ_C,k.
 
@@ -557,12 +585,16 @@ def bootstrap_tiempo_igual(fin: pd.DataFrame, datos: dict, n_est: int, n_boot: i
 
 
 def fila_bloque_a(ctx: Contexto, b: str, fin: pd.DataFrame, ap: pd.DataFrame, rep: pd.DataFrame,
-                  ti_rep: dict | None, ti_boot: tuple | None, k0: tuple | None) -> dict:
-    """Una fila del bloque A, con todo lo que muestra la tabla HTML del bloque generado."""
+                  ti_rep: dict | None, ti_boot: tuple | None, k0: tuple | None,
+                  ts_c: list[float] | None = None, ts_v: list[float] | None = None) -> dict:
+    """Una fila del bloque A, con todo lo que muestra la tabla HTML del bloque generado.
+
+    `ts_c` son los T de todas las réplicas del control y `ts_v` los de la variante (D1): con `ts_c`, A = mediana(ts_c) / T
+    en todas las filas, con T la mediana de `ts_v` o, sin réplicas, el T de la réplica 0."""
     r, rr = fila(ap, b), (rep.loc[b] if b in rep.index else None)
     con_rep = rr is not None and pd.notna(rr.get("delta_g_media"))
     out = {"variante": b, "hipotesis": ctx.hip_de[b], "d0": None, "dR": None, "G": None, "T": None, "A": None, "dauc": "pendiente",
-           "auc": None, "ti_rep": ti_rep, "ti_boot": ti_boot, "k0": k0, "nota": ""}
+           "auc": None, "ti_rep": ti_rep, "ti_boot": ti_boot, "k0": k0, "nota": "", "A_ic": None, "A_piso": False}
     if r is not None:
         out.update(G=float(r["g_control"] + r["delta_g_media"]), T=float(r["tiempo_total_s"]), A=float(r["aceleracion"]),
                    d0=(float(r["delta_g_media"]), float(r["delta_g_ic_inf"]), float(r["delta_g_ic_sup"])))
@@ -579,6 +611,13 @@ def fila_bloque_a(ctx: Contexto, b: str, fin: pd.DataFrame, ap: pd.DataFrame, re
     else:
         out["veredicto"], out["fuente"] = veredicto(ap, fin, b), "réplica 0"
         out["nota"] = "sin réplicas"
+    if ts_c and con_rep and ts_v:
+        out["T"] = float(np.median(ts_v))
+    if ts_c and out["T"]:
+        out["A"] = float(np.median(ts_c)) / out["T"]
+        if b != lg.CONTROL:
+            out["A_ic"] = intervalo_a(ts_c, ts_v if con_rep and ts_v else [out["T"]])
+            out["A_piso"] = not (con_rep and ts_v and len(ts_v) > 1)
     return out
 
 
@@ -633,13 +672,16 @@ def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot
     g_c10, datos = calcular_tiempo_igual(ctx, fin, ap)
     boot = bootstrap_tiempo_igual(fin, datos, n_est, n_boot)
     filas = []
+    # D1: T_C mediana de todas las réplicas del control, una sola vez para todas las filas
+    ts_c = tiempos_por_replica(finr, estudios, lg.CONTROL) if len(finr) else []
     for b in ctx.variantes:
         ti = tiempo_igual_replicas(b, finr, estudios, n_est) if len(finr) else None
-        filas.append(fila_bloque_a(ctx, b, fin, ap, rep, ti, boot.get(b), datos.get(b)))
+        ts_v = tiempos_por_replica(finr, estudios, b) if len(finr) else []
+        filas.append(fila_bloque_a(ctx, b, fin, ap, rep, ti, boot.get(b), datos.get(b), ts_c, ts_v))
     filas.sort(key=lambda f: (list(ctx.hipotesis).index(f["hipotesis"]), -(f["A"] if f["A"] is not None else -1.0)))
     # referencia de las filas con réplicas: Ḡ_C media entre réplicas y T_C mediana (la misma que usa su A)
     c_rep = rep.loc[lg.CONTROL] if lg.CONTROL in rep.index and pd.notna(rep.loc[lg.CONTROL].get("g_media_replicas")) else None
-    t_cr = next((f["ti_rep"]["T_c"] for f in filas if f["dR"] and f["ti_rep"]), None)
+    t_cr = float(np.median(ts_c)) if ts_c else next((f["ti_rep"]["T_c"] for f in filas if f["dR"] and f["ti_rep"]), None)
     # G media de cada réplica (la que promedia `replicas.csv`), para el gráfico de réplicas
     g_rep = {}
     if len(finr) and "g" in finr:
@@ -655,8 +697,15 @@ def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot
 
 
 AVISO_A = ("Ḡ, T y la aceleración salen de la réplica 0 en las variantes sin réplicas; en las marcadas (R=n), Ḡ es la media entre "
-           "réplicas, T la mediana entre réplicas y la aceleración = T_C / T con T_C también mediana entre réplicas, así que se comparan "
-           "con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0.")
+           "réplicas y T la mediana entre réplicas, así que se comparan con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0. "
+           "La aceleración es la misma referencia en todas las filas: A = T_C / T, con T_C la mediana de T de todas las réplicas "
+           "del control. El tiempo igual de las variantes sin réplicas sigue con T_C de la réplica 0, porque se aparea con su Δ. "
+           "El intervalo de A es un bootstrap por percentiles (95 %) del cociente de medianas: se remuestrean las réplicas del "
+           "control y, por separado, las de la variante. Mide la variación entre réplicas, que junta la de Optuna y la de la VM "
+           "(la calibración dice cuánto es de la VM); con 8 réplicas la mediana remuestreada toma pocos valores y una réplica "
+           "rara lo mueve. En las variantes sin réplicas solo se remuestrea el control, así que el intervalo es un piso de la "
+           "incertidumbre. El tiempo igual con réplicas sigue apareado por réplica k porque ahí el ensamble de la réplica k se "
+           "compara con la ganancia del control de esa misma réplica.")
 
 
 def referencia_control(a: dict) -> str:
@@ -684,11 +733,20 @@ def celdas_bloque_a(f: dict) -> list[str]:
     g = (_m(f["G"]) + (f" (R={f['dR'][3]})" if f["dR"] else "")) if f["G"] is not None else "pendiente"
     return [f["variante"], f["hipotesis"], g, _ic_txt(f["d0"]), dR, f["dauc"],
             f"{f['T']:,.0f}" if f["T"] is not None else "pendiente", f"{f['A']:.2f}" if f["A"] is not None else "pendiente",
-            ti_rep, ti_boot, f"{f['veredicto']} ({f['fuente']})"]
+            ti_rep, ti_boot, f"{f['veredicto']} ({f['fuente']})", _ic_a_txt(f)]
+
+
+def _ic_a_txt(f: dict) -> str:
+    if f["variante"] == lg.CONTROL:
+        return "—"
+    if f["A_ic"] is None:
+        return "pendiente"
+    return f"[{f['A_ic'][0]:.2f}; {f['A_ic'][1]:.2f}]" + (" (sin réplicas: solo mueve el control)" if f["A_piso"] else "")
 
 
 CAB_A = ("variante", "hipótesis", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "ΔAUC en 201910 [IC]", "T mediana (s)", "aceleración (×)",
-         "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)", "ganancia contra el control (fuente)")
+         "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)", "ganancia contra el control (fuente)",
+         "IC de la aceleración (×)")
 
 
 def pares_replicas(rep: pd.DataFrame) -> list[list[str]]:
@@ -956,7 +1014,7 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
         return pendiente("ninguna variante tiene Δ contra el control")
     d_m = a["delta"] / 1e6
     ics = {f["variante"]: tuple(x / 1e6 for x in delta(f)) for f in filas}
-    aes = [f["A"] for f in filas]
+    aes = [f["A"] for f in filas] + [x for f in filas if f["A_ic"] for x in f["A_ic"]]
     lo, hi = min(min(i[1] for i in ics.values()), -d_m), max(max(i[2] for i in ics.values()), 0.0)
     pad = 0.08 * (hi - lo)
     hips = [h for h in ctx.hipotesis if any(f["hipotesis"] == h for f in filas)]
@@ -980,6 +1038,8 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
         for f in propias:
             c = clase_veredicto(f["veredicto"])
             clases.append(c)
+            if f["A_ic"]:
+                ax.hlines(ics[f["variante"]][0], f["A_ic"][0], f["A_ic"][1], color=ctx.color[h], lw=1.2, alpha=0.55, zorder=2)
             _marcador_veredicto(ax, f["A"], ics[f["variante"]][0], ics[f["variante"]][1:], ctx.color[h], c)
             puntos.append((f["A"], ics[f["variante"]][0]))
             textos.append(f["variante"])
@@ -999,7 +1059,7 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
     for ax in axs.flat[len(hips):]:
         ax.set_visible(False)
     for ax in axs[-1]:
-        ax.set_xlabel("aceleración (×) = T(C) / T, escala log")
+        ax.set_xlabel("aceleración (×) = T(C) / T, escala log; barra horizontal: IC 95% de A")
     for ax in axs[:, 0]:
         ax.set_ylabel("Δ contra el control (M$, IC 95%)")
     sin_perder = [f for f in filas if clase_veredicto(f["veredicto"]) == "ok" and f["A"] >= A_VALE]
@@ -1156,6 +1216,9 @@ def fig_semillas(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     return figura(fig, "semillas_replicas", figuras, ajustar=False)
 
 
+ALTO_GRILLA = 8.5  # pulgadas
+
+
 def fig_grilla(ctx: Contexto, a: dict, figuras: Path | None) -> str:
     """Grilla de veredictos: familia (`Variante.metodo`) contra tasa; cada celda con el color y el texto del veredicto, y
     vacía si esa combinación no está en el registro."""
@@ -1169,13 +1232,16 @@ def fig_grilla(ctx: Contexto, a: dict, figuras: Path | None) -> str:
         return pendiente("no hay variantes registradas con datos")
     metodos = list(dict.fromkeys(m for m, _ in celdas))
     tasas = sorted({t for _, t in celdas})
-    fig, ax = plt.subplots(figsize=(ANCHO, 0.72 * len(metodos) + 1.8))
+    # el alto no crece con las familias: tope de 8,5 in (≈ 780 px en el sitio, `medir_sitio` pide ≤ 800); las filas se achican
+    fila = min(0.72, (ALTO_GRILLA - 1.8) / len(metodos))
+    fig, ax = plt.subplots(figsize=(ANCHO, fila * len(metodos) + 1.8))
+    letra = 11 if fila >= 0.6 else 10
     for (m, t), fs in celdas.items():
         i, j = metodos.index(m), tasas.index(t)
         c = clase_veredicto(fs[0]["veredicto"]) or "pend"
         ax.add_patch(Rectangle((j - 0.46, i - 0.46), 0.92, 0.92, facecolor=COLOR_VEREDICTO[c], alpha=0.25, lw=0))
         ax.text(j, i, "\n".join(f"{f['variante']}\n{NOMBRE_VEREDICTO[clase_veredicto(f['veredicto']) or 'pend']}"
-                                for f in fs), ha="center", va="center", fontsize=11, color=TINTA)
+                                for f in fs), ha="center", va="center", fontsize=letra, color=TINTA)
     ax.set_xlim(-0.5, len(tasas) - 0.5)
     ax.set_ylim(len(metodos) - 0.5, -0.5)
     ax.set_xticks(range(len(tasas)), [f"{t:g}" for t in tasas])
@@ -1529,9 +1595,10 @@ def fig_diferencias(ctx: Contexto, a: dict, figuras: Path | None) -> str:
 # --- tablas del HTML: resumen y detalle del bloque A, pares y tarjetas del bloque B (D5, D8) ---
 
 #: Notas al pie de las celdas `—` (ninguna celda repite una nota que vale para toda la columna).
-NOTAS = {"a": "sin réplicas de optimización: Δ, A y el veredicto salen de la réplica 0 (Δ apareado por semilla).",
+NOTAS = {"a": "sin réplicas de optimización: Δ, T y el veredicto salen de la réplica 0 (Δ apareado por semilla); A usa T_C de todas las réplicas del control.",
          "b": "no aplica: K < 2, en el tiempo del control no entra un segundo modelo final de la variante.",
-         "c": "con menos réplicas que Δ: en alguna réplica K < 2."}
+         "c": "con menos réplicas que Δ: en alguna réplica K < 2.",
+         "d": "sin réplicas de la variante: el intervalo de A solo mueve el control, es un piso."}
 CAB_RESUMEN = ("variante", "hipótesis", "R", "Δ [IC 95%] (M$)", "aceleración (×)", "ganancia contra el control")
 CAB_DETALLE = ("variante", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "ΔAUC en 201910 [IC]",
                "T mediana (s)", "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)")
@@ -1540,8 +1607,10 @@ AVISO_A_HTML = AVISO_A.replace("en las marcadas (R=n)", "en las que tienen répl
 
 def celdas_resumen(f: dict) -> list:
     """Fila del resumen del bloque A: variante, hipótesis, R, Δ con su IC, A y el veredicto como etiqueta."""
+    ic_a = f"[{f['A_ic'][0]:.2f}; {f['A_ic'][1]:.2f}]" if f["A_ic"] else None
     return [f["variante"], f["hipotesis"], celda(str(f["dR"][3])) if f["dR"] else celda("—", nota="a"),
-            celda_ic(delta(f)), celda(f"{f['A']:.2f}") if f["A"] is not None else "pendiente",
+            celda_ic(delta(f)),
+            celda(f"{f['A']:.2f}", ic=ic_a, nota="d" if f["A_piso"] and ic_a else None) if f["A"] is not None else "pendiente",
             celda_veredicto(f["veredicto"])]
 
 

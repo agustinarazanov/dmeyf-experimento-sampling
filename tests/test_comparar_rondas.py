@@ -38,6 +38,15 @@ def test_una_fila_por_variante_de_la_ronda_anterior_y_los_dos_delta(tmp_path):
     assert next(l for l in filas if l.startswith("| U0.1")).rstrip().endswith("| no |")
 
 
+def test_sin_fila_del_control_y_nota_de_las_variantes_solo_nuevas(tmp_path):
+    led = armar(tmp_path) / "control" / "ledger"
+    ap(led / "ronda_201903-201906" / "apareado.csv", [fila("C", 0.0, 5e6, "no pierde")])
+    ap(led / "apareado.csv", [fila("C", 0.0, 6e6, "no pierde")])
+    texto = cr.tabla(tmp_path)
+    assert not any(l.startswith("| C ") for l in texto.splitlines())
+    assert "solo existen en la ronda 201903-201908 (`H4O-0.5`)" in texto
+
+
 def test_sin_ronda_nueva_queda_pendiente(tmp_path):
     led = tmp_path / "h1" / "ledger"
     ap(led / "ronda_201903-201906" / "apareado.csv", [fila("U0.5", 2e6, 5e6, "no pierde")])
