@@ -393,7 +393,8 @@ de la ronda anterior, y la regla de δ dice que su valor sale del control de cad
     Optimizar sobre una muestra con todas las bajas y el 10 % de CONTINUA rinde peor que optimizar
     sobre una muestra uniforme del 10 % (`H3-0.1`, Δ con réplicas 1,71 M$). Una explicación posible, que no se probó, es
     que la proporción de clases distorsionada en la búsqueda lleva a hiperparámetros que no sirven para el train
-    completo.
+    completo. La regla 10 de la grilla común (abajo) deja esa explicación sin sostén: con la misma muestra, devolverle
+    el peso a CONTINUA en la búsqueda (`H4P-0.1` − `H4U-0.1`) *no cambia*.
 
 - **2. Difícil contra uniforme: no cambia.** D_HU = −3,39 M$, IC de Welch [−8,06; 1,28]. La predicción (*ayuda*) no se cumple; si algo, la media va en contra.
     Elegir negativos difíciles no rescata a la búsqueda informada.
@@ -430,7 +431,40 @@ IC contienen a 0. En `H4H-0.1` y `H4U-0.1` van juntas: las dos bajan (ΔAUC −0
 - La diferencia de `H4F-0.05` con `H3-0.05` es solo el final (comparten estudios): Δ con réplicas parecido (1,41 y
   2,08 M$) con un final más barato. La ganancia a tiempo igual sale de ahí: más semillas en el mismo tiempo.
 
+### Grilla común (fase 8)
+
+Reglas 6 a 11 de § Grilla común, aplicadas tal como quedaron escritas el 13-nov; los pares salen de la tabla
+«Diferencias entre variantes» del [Anexo](../sampling_1/anexo.md) y los Δ y A contra `C`, del bloque A de
+[Resultados](../sampling_1/README.md), con una sola referencia de T del control.
+
+- **6. Conservar las bajas, búsqueda y final (`H4O-{r}` − `U{r}`, los cuatro contrastes principales): confirmada.**
+    *No cambia* en 0,5 y *mejora* en 0,1 y 0,05, como se predijo; en 0,25, sin predicción, también *mejora*. Con pocas
+    filas, quedarse con todas las bajas rescata buena parte de lo que pierde la muestra al azar.
+- **7. `H4O-{r}` contra `C`: confirmada.** `H4O-0.25` *no pierde* (−0,30 M$, IC [−2,97; 2,38]; A = 3,65 [2,47; 4,40]) y
+    `H4O-0.05` *pierde* (−6,14 M$, IC [−10,53; −1,75]; A = 4,78 [3,16; 6,35]). En 0,1, sin predicción, *no pierde*
+    (−2,25 M$, IC [−4,91; 0,41]; A = 5,29 [2,28; 6,35]).
+- **8. `H4P-{r}` contra `C`: refutada.** `H4P-0.05` *pierde* (−6,47 M$; A = 3,93 [2,58; 4,98]). `H4P-0.25` *no pierde*
+    (A = 3,35 [2,28; 4,04]); `H4P-0.5` (A = 2,20 [1,58; 2,69]) y `H4P-0.1` (A = 4,51 [1,99; 5,32]) quedan
+    *indeterminado*.
+- **9. Conservar las bajas, solo búsqueda (`H4P-{r}` − `H3-{r}`): refutada.** *No cambia* en 0,5 y 0,25, pero
+    *empeora* en 0,1 y 0,05: con la búsqueda sobre todas las bajas, el final con todo el train rinde menos que buscando
+    al azar.
+- **10. El peso en la búsqueda (`H4P-0.1` − `H4U-0.1`): refutada.** *No cambia*; la explicación de la regla 1 queda
+    sin sostén.
+- **11. Muestrear también el final**, sin predicción: `U{r}` − `H3-{r}` *empeora* en las cuatro tasas; `H4O-{r}` −
+    `H4P-{r}` *no cambia* salvo en 0,1, donde *mejora*.
+
+Los 17 contrastes y los veredictos nuevos se suman sin corrección por comparaciones múltiples; las conclusiones sobre
+la grilla se apoyan en los cuatro principales. `H4O-0.25` y `H4O-0.1` no pierden y aceleran más de 2 veces.
+
 ## Limitaciones
+
+- **Pares con bajas.** Los pares "conservar las bajas" (`H4O-{r}` − `U{r}` y `H4P-{r}` − `H3-{r}`) mezclan qué filas
+  quedan, cuántas (la tabla del Anexo muestra las filas de cada lado) y el peso de CONTINUA, que llega a 20 en 0,05 con
+  `min_data_in_leaf` sin reescalar.
+
+- **Grilla común agregada después de mirar 201910.** `H4O-*` y `H4P-*` se decidieron después de ver el test en las
+  celdas vecinas, todas juntas y con reglas previas.
 
 - **Test ya mirado.** Las cuatro primeras variantes salen de estrategias que el exploratorio eligió o descartó mirando su ganancia en
     201910, y no hay otro mes de test. Entraron todas juntas, con reglas escritas antes de correr, y ninguna se eligió ni
