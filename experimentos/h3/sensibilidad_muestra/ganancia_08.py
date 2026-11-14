@@ -2,7 +2,7 @@
 
 Evaluación final autorizada por el grupo. No se reentrena nada: se usan los modelos completos que guardó 07
 (`<corrida 07>/control/modelo_XX.txt`) y se predice 201910 una sola vez por configuración distinta. El corte es fijo,
-N = 3.300 envíos (N* del control del grupo, fijado en 201908: `experimentos/h3/informe/informe.md`); octubre no se usa
+N = 3.300 envíos (N* del control del grupo, fijado en 201908: `experimentos/h3/README.md`); octubre no se usa
 para elegir nada.
 
 Entrada: `--corrida-07 <carpeta>`, la que imprime sensibilidad_07 al terminar. De ahí se leen `diseno.json`

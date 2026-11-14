@@ -1,15 +1,16 @@
-"""Comprueba que cada número de `experimentos/h3/informe/informe.md` sale de los ledgers o de la tabla del reporte
-(cambio `h3-semillas-optuna`, tarea 5.1). Sale con 1 si algo no coincide. Con `--informe` revisa otro informe con las
-mismas fuentes (`incorporar-aportes` 6.1: `experimentos/h4/informe/informe.md`).
+"""Comprueba que cada número del texto escrito a mano de los `experimentos/hN/README.md` sale de los ledgers o del
+bloque `bloque-a-completo` de `experimentos/sampling_1/README.md` (`sitio-legible` 2.7, D9; antes `informe.md` contra
+`tabla_resultados.md`). Lo que está entre `<!-- generado:… -->` y `<!-- /generado:… -->` no se revisa: lo escribe el
+generador. Sale con 1 si algo no coincide. Con `--informe` revisa solo esos README (repetible).
 
     python -m scripts.verificar_informe_h3
-    python -m scripts.verificar_informe_h3 --informe experimentos/h4/informe/informe.md
+    python -m scripts.verificar_informe_h3 --informe experimentos/h4/README.md
 
-- Filas de tabla copiadas del reporte (punto decimal): tienen que ser idénticas a una línea de
-  `sampling_1/informe/tabla_resultados.md`.
+- Filas de tabla copiadas del reporte (punto decimal): tienen que ser idénticas a una línea del bloque
+  `bloque-a-completo`.
 - Cualquier otro número del texto (coma decimal, punto de miles, `−` como signo) tiene que coincidir, a la cantidad de
   decimales con que está escrito, con un valor de las fuentes:
-  - los números de `tabla_resultados.md`;
+  - los números del bloque `bloque-a-completo`;
   - `replicas.csv` de `control`, `h3` y `h4` (en M$ y `frac_entre` en %), más la parte de Optuna en la
     varianza de Ḡ con un estudio y n = 10 o 50 semillas, var_entre / (var_entre + var_dentro / n), y el desvío de Ḡ,
     √(var_entre + var_dentro / n);
@@ -33,21 +34,43 @@ import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
 EXP = RAIZ / "experimentos"
-INFORME = EXP / "h3/informe/informe.md"
-TABLA = EXP / "sampling_1/informe/tabla_resultados.md"
+TABLA = EXP / "sampling_1/anexo.md"
+BLOQUE = "bloque-a-completo"
+GENERADO = re.compile(r"<!-- generado:([\w-]+) -->.*?<!-- /generado:\1 -->", re.S)
 
 # N*, R, k = 0…7, 10 y 50 semillas, 80 pares, 7 g.l., IC 95%, meses y año, tasas (en % y en fracción), √10, el mensaje
 # de Zulip de la consigna; desde `final-con-julio-agosto` 4.2, 20 semillas, los meses de las ventanas del final y los
 # mensajes de Zulip de los apartamientos (211210 ventana, 211718 reoptimizar)
 CONSTANTES = [3300, 8, 0, 7, 10, 50, 80, 95, 2019, 201908, 201910, 5, 25, 0.05, 0.1, 0.25, 208135,
               20, 201903, 201905, 201906, 211210, 211718]
+# desde `sitio-legible` 3.3–3.6 las predicciones y el diseño están en el mismo README: 40 trials, 100 iteraciones,
+# learning_rate 0,01 (GOSS) y 0,08 (sonda), 30 % de filas de GOSS y 30 % más de costo con 10 réplicas, δ = 0,02 · Ḡ_C,
+# δ y Ḡ_C de la ronda 201903–201906 fijados en la regla de réplicas (5,52 y 276,10), semiamplitud ±5,8 con 5 réplicas,
+# recorte 8000 de `min_data_in_leaf`, pozo del 35 %, presupuesto de 900 s, celdas y finales de la grilla (64, 1.280, 800),
+# el IC de `H4F-0.05` de la ronda anterior citado en la predicción de `H4O-0.5` y las cifras de 201910 del exploratorio
+# `validacion_50_semillas` que cita el origen de H4 (+7,19, −2,31, 283,25 y 276,65 M$)
+CONSTANTES += [40, 100, 0.01, 0.08, 30, 0.02, 5.52, 276.10, 5.8, 8000, 35, 900, 64, 1280, 800, -0.83, 4.54,
+               7.19, -2.31, 283.25, 276.65]
 
 NUM_TABLA = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 NUM_TEXTO = re.compile(r"(?<![\w.,@−-])[−-]?\d+(?:\.\d{3})*(?:,\d+)?(?![\w@])")
 
 
-def _fuentes() -> list[float]:
-    valores = [float(x.replace(",", "")) for x in NUM_TABLA.findall(TABLA.read_text())]
+def leer_bloque(texto: str, nombre: str) -> str:
+    """Lo que hay entre `<!-- generado:nombre -->` y `<!-- /generado:nombre -->`; vacío si falta el bloque."""
+    m = re.search(rf"<!-- generado:{re.escape(nombre)} -->(.*?)<!-- /generado:{re.escape(nombre)} -->", texto, re.S)
+    return m.group(1) if m else ""
+
+
+def escrito_a_mano(texto: str) -> list[tuple[int, str]]:
+    """(número de línea, línea) de todo lo que está fuera de los bloques generados; las líneas de los bloques se
+    reemplazan por vacías para conservar la numeración."""
+    sin = GENERADO.sub(lambda m: "\n" * m.group(0).count("\n"), texto)
+    return list(enumerate(sin.splitlines(), 1))
+
+
+def _fuentes(bloque: str) -> list[float]:
+    valores = [float(x.replace(",", "")) for x in NUM_TABLA.findall(bloque)]
     rep = pd.concat([pd.read_csv(EXP / e / "ledger/replicas.csv") for e in ("control", "h3", "h4")], ignore_index=True)
     for c in rep.columns:
         if c.startswith(("g_", "delta_g_", "sd_")):
@@ -83,24 +106,31 @@ def _valor(token: str) -> tuple[float, int]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--informe", type=Path, default=INFORME, help="informe a revisar (relativo a la raíz del repo)")
-    informe = ap.parse_args().informe
-    informe = informe if informe.is_absolute() else RAIZ / informe
-    tabla = set(TABLA.read_text().splitlines())
-    fuentes = _fuentes()
+    ap.add_argument("--informe", type=Path, action="append",
+                    help="README a revisar (relativo a la raíz del repo); sin esto, todos los experimentos/hN/README.md")
+    pedidos = ap.parse_args().informe
+    informes = [i if i.is_absolute() else RAIZ / i for i in pedidos] if pedidos else sorted(EXP.glob("h*/README.md"))
+    bloque = leer_bloque(TABLA.read_text(), BLOQUE) if TABLA.exists() else ""
+    if not informes or not bloque.strip():
+        print("✗ falta el bloque bloque-a-completo en sampling_1/anexo.md o no hay README de hipótesis que revisar")
+        return 1
+    tabla = set(bloque.splitlines())
+    fuentes = _fuentes(bloque)
     errores, revisados, filas = [], 0, 0
-    for i, linea in enumerate(informe.read_text().splitlines(), 1):
-        if (linea.startswith("|") and re.search(r"\d\.\d", _limpiar(linea)) and not re.search(r"\d,\d", linea)
-                and not set(linea) <= set("|- ")):
-            filas += 1
-            if linea not in tabla:
-                errores.append(f"línea {i}: fila que no está en tabla_resultados.md: {linea}")
-            continue
-        for token in NUM_TEXTO.findall(_limpiar(linea)):
-            x, d = _valor(token)
-            revisados += 1
-            if not any(abs(v - x) <= 0.5 * 10 ** -d + 1e-9 for v in fuentes):
-                errores.append(f"línea {i}: {token} no sale de ninguna fuente")
+    for informe in informes:
+        nombre = informe.relative_to(RAIZ) if informe.is_relative_to(RAIZ) else informe
+        for i, linea in escrito_a_mano(informe.read_text()):
+            if (linea.startswith("|") and re.search(r"\d\.\d", _limpiar(linea)) and not re.search(r"\d,\d", linea)
+                    and not set(linea) <= set("|- ")):
+                filas += 1
+                if linea not in tabla:
+                    errores.append(f"{nombre}:{i}: fila que no está en el bloque bloque-a-completo: {linea}")
+                continue
+            for token in NUM_TEXTO.findall(_limpiar(linea)):
+                x, d = _valor(token)
+                revisados += 1
+                if not any(abs(v - x) <= 0.5 * 10 ** -d + 1e-9 for v in fuentes):
+                    errores.append(f"{nombre}:{i}: {token} no sale de ninguna fuente")
     for e in errores:
         print("✗", e)
     print(f"{filas} filas copiadas, {revisados} números del texto, {len(errores)} sin fuente")

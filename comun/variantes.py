@@ -3,7 +3,7 @@
     python -m comun.variantes --verificar
 
 De acá salen el nombre de la variante y del estudio de cada `(método, tasa)`, el ledger al que va cada fila y las
-dependencias implícitas entre experimentos. `## Dependencias` de cada `docs/diseno.md` las escribe una persona y
+dependencias implícitas entre experimentos. `## Dependencias` de cada `README.md` las escribe una persona y
 `--verificar` las compara con lo que implica el registro (`openspec/specs/dependencias-entre-experimentos`).
 """
 
@@ -41,7 +41,7 @@ TASAS_GRILLA = (0.5, 0.25, 0.1, 0.05)
 #: Los pares de dos experimentos (`U − H3`) los arma `sampling_1` (`ledger/pares.csv`); acá se declaran igual.
 PARES_APAREADOS: list[tuple[str, str]] = [
     ("H3R-0.1", "H3-0.1"),
-    # `incorporar-aportes` D4: raíz contra lineal y raíz contra nada en r = 0,25 (`h3/docs/hipotesis.md` reglas 5 y 6)
+    # `incorporar-aportes` D4: raíz contra lineal y raíz contra nada en r = 0,25 (`h3/README.md` § Predicción)
     ("H3R-0.25", "H3L-0.25"), ("H3R-0.1", "H3L-0.1"), ("H3R-0.25", "H3-0.25"),
     # `tiempos-confiables-y-consistencia` D12: muestrear también el final (U − H3, comparten `U{r}`) y, con bajas, H4O − H4P
     *[(f"U{_t(r)}", f"H3-{_t(r)}") for r in TASAS_GRILLA],
@@ -49,7 +49,7 @@ PARES_APAREADOS: list[tuple[str, str]] = [
 ]
 
 #: Variantes que no comparten estudios y se comparan entre sí sin aparear, con IC de Welch entre réplicas: `a − b`
-#: (`incorporar-aportes` D4: `h4/docs/hipotesis.md` regla 2 y `h3/docs/hipotesis.md` regla 7).
+#: (`incorporar-aportes` D4: `h4/README.md` y `h3/README.md` § Predicción).
 #: `final-con-julio-agosto` D11: `H4O-0.5` (estudio propio sobre la receta de H4F) contra `H4F-0.05` (estudio `U0.05`).
 #: `tiempos-confiables-y-consistencia` D12: conservar las bajas (`H4O − U` principal, `H4P − H3`) y el peso (`H4P-0.1 − H4U-0.1`).
 PARES_WELCH: list[tuple[str, str]] = [
@@ -244,17 +244,25 @@ def implicitas(variantes: dict[str, Variante] | None = None, estudios: dict[str,
     return dep
 
 
+_SECCION_DEPENDENCIAS = re.compile(r"^## Dependencias[^\n]*\n(.*?)(?=^## |\Z)", re.S | re.M)
+
+
 def declaradas(raiz: Path, conocidos: Iterable[str]) -> dict[str, set[str] | None]:
-    """Lo que declara la sección `## Dependencias` de cada `experimentos/*/docs/diseno.md` (None si falta el archivo
-    o la sección). Cuenta cada nombre de experimento entre comillas invertidas."""
+    """Lo que declara la sección `## Dependencias` de cada `experimentos/*/README.md` (None si falta la sección). Cuenta
+    cada nombre de experimento entre comillas invertidas."""
     conocidos = set(conocidos)
     out: dict[str, set[str] | None] = {}
-    base = raiz / "experimentos"
-    for diseno in sorted(base.glob("*/docs/diseno.md")):
-        exp = diseno.parents[1].name
-        m = re.search(r"^## Dependencias[^\n]*\n(.*?)(?=^## |\Z)", diseno.read_text(), re.S | re.M)
-        out[exp] = None if m is None else {n for n in re.findall(r"`([^`\n]+)`", m.group(1)) if n in conocidos}
+    for readme in sorted((raiz / "experimentos").glob("*/README.md")):
+        m = _SECCION_DEPENDENCIAS.search(readme.read_text())
+        out[readme.parent.name] = None if m is None else {n for n in re.findall(r"`([^`\n]+)`", m.group(1))
+                                                           if n in conocidos}
     return out
+
+
+def diseno_viejo(raiz: Path) -> list[str]:
+    """Experimentos con un `docs/diseno.md` que todavía tiene `## Dependencias`: la sección se mudó al README."""
+    return [d.parents[1].name for d in sorted((raiz / "experimentos").glob("*/docs/diseno.md"))
+            if _SECCION_DEPENDENCIAS.search(d.read_text())]
 
 
 def ciclos(grafo: dict[str, set[str]]) -> list[list[str]]:
@@ -316,6 +324,11 @@ def problemas_exploratorios(raiz: Path = rutas.RAIZ) -> list[str]:
         for t in datos.get("tablas") or []:
             if not isinstance(t, dict) or not t.get("csv") or not t.get("columnas"):
                 out.append(f"{carpeta}: cada tabla de exploratorio.json necesita `csv` y `columnas`")
+        for f in datos.get("figuras") or []:
+            if not isinstance(f, dict) or not f.get("leyenda") or not (f.get("archivo") or (f.get("csv") and f.get("columna"))):
+                out.append(f"{carpeta}: cada figura de exploratorio.json necesita `leyenda` y `archivo` (o `csv` y `columna`)")
+            elif f.get("archivo") and not (m.parent / f["archivo"]).is_file():
+                out.append(f"{carpeta}: falta la figura declarada {f['archivo']}")
         if not (m.parent / "README.md").is_file():
             out.append(f"{carpeta}: falta README.md junto al exploratorio.json")
     return out
@@ -332,11 +345,14 @@ def verificar(raiz: Path = rutas.RAIZ, variantes: dict[str, Variante] | None = N
         if not (raiz / "experimentos" / exp).is_dir():
             problemas.append(f"falta la carpeta experimentos/{exp}/ (la usa el registro de variantes)")
         elif declarado.get(exp) is None:
-            problemas.append(f"{exp}: falta la sección `## Dependencias` en docs/diseno.md")
+            problemas.append(f"{exp}: falta la sección `## Dependencias` en experimentos/{exp}/README.md")
         elif declarado[exp] != implicito[exp]:
             falta, sobra = sorted(implicito[exp] - declarado[exp]), sorted(declarado[exp] - implicito[exp])
             problemas.append(f"{exp}: `## Dependencias` no coincide con el registro"
                              + (f"; falta declarar {falta}" if falta else "") + (f"; declara de más {sobra}" if sobra else ""))
+    for exp in diseno_viejo(raiz):
+        problemas.append(f"{exp}: experimentos/{exp}/docs/diseno.md todavía tiene `## Dependencias`; la sección va en "
+                         f"experimentos/{exp}/README.md y el archivo viejo se borra")
     grafo = {e: set(d or ()) for e, d in declarado.items()}
     for e, d in implicito.items():
         grafo.setdefault(e, set())

@@ -33,10 +33,3 @@ experimentos/*/ledger/exploracion/
 
 # Sitio MkDocs
 /site/
-
-# Sitio Jekyll
-_site/
-.jekyll-cache/
-.sass-cache/
-vendor/
-.bundle/

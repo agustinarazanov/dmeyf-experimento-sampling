@@ -1985,3 +1985,801 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
 - Hallazgos que no son ✗: (baja) las 3 calibraciones perdidas quedan como limitación de la medición de 5.3.
 - Tokens: ~20 turnos · contexto ~45.000 por turno · ≈ US$ 0,7.
 - Tutor: —
+
+## 13-nov-2026 · sitio-legible grupo 2 (Sonnet, sesión de aplicar)
+
+- 2.1–2.7 hechas; 2.8 (revisión en sesión limpia, tokens) queda para la sesión de revisión. Cambio en `comun/` anunciado en el
+  commit 283d23d.
+- `comun/reporte.py`: `--exp`/`--todos` escriben bloques entre `<!-- generado:… -->`; un archivo sin ningún marcador todavía
+  no migró y su experimento sigue con la salida vieja (`informe/reporte.html`, `tabla_resultados.md`) hasta el grupo 3. Las
+  figuras y los README se escriben recién después de validar todos los marcadores. Los títulos de las hipótesis se leen del
+  `# H1 · título` del README y, mientras no exista, de `docs/hipotesis.md` (el generador deja de leerlo cuando el grupo 3 lo borre).
+- Figuras: `fig_tradeoff` (A log contra Δ con IC, zona «no pierde», rango entre réplicas), `fig_fraccion` (banda de IC),
+  `fig_desglose` (optimización / `lgb.train` / resto del final; suma el T de `apareado.csv`), `fig_semillas`, `fig_grilla`,
+  `fig_rondas` (dumbbell, lo usa `scripts/comparar_rondas.py` para el bloque `rondas`) y `fig_curva_diferencia`. Se borraron
+  `fig_tradeoff` viejo, `fig_tiempo_ganancia_paneles`, `fig_bandas`, `fig_replicas` y `fig_varianza`. Paleta categórica de
+  `dataviz` (references/palette.md) en su orden; no pude correr `validate_palette.js` (node no está permitido en esta sesión),
+  así que se usó la paleta de referencia ya validada y los colores de veredicto de siempre.
+- `python -m comun.variantes --verificar` falla hoy a propósito (no hay README con `## Dependencias`, `docs/diseno.md` sí): se
+  corre en el grupo 3. Lo mismo `verificar_readme.py` y `verificar_informe_h3.py` (falta el bloque `bloque-a-completo`).
+- Verificado en MkDocs con una página temporal (README de h1 en el nav, ya sacada): una sola `<table>` sin envoltorio propio,
+  `<img>` que resuelven a archivos de `site/`. Regenerar dos veces da README y SVG idénticos.
+- VISUAL PENDIENTE: una tabla generada del bloque A a 390 px tiene un solo recuadro y una sola barra de desplazamiento (el
+  recuadro lo pone el JS de Material).
+- VISUAL PENDIENTE: los SVG de `experimentos/<exp>/figuras/` se ven en github.com (texto con fuente genérica) y en el sitio.
+- VISUAL PENDIENTE: el mapa del tradeoff con las 21 variantes, sin etiquetas pisadas (las revisé en PNG a 12 pulgadas; falta
+  verlo en el sitio a 1280 px).
+
+### 13-nov-2026 · sitio-legible grupo 2 · revisión en sesión limpia (tarea 2.8)
+
+- Sesión: revisión en sesión limpia, Opus, sin contexto de la sesión que aplicó. Revisor: Claude (Opus). Lista:
+  `docs/revision.md` § 3, más las verificaciones de las tareas 2.1–2.7.
+- Lista § 3 (los commits `283d23d` y `b6610ad` no tocan `src/`, el corredor, `consolidar.py` ni `vm.sh`):
+  - n/a smoke test con `--filas 20000`, determinismo, `optimizar` sin 201910, columnas del ledger, `codigo_sucio`, filas
+    de train, `consolidar.py` y `vm.sh`: el grupo no cambió ese código. Sus tests siguen en verde (`pytest`: 258 passed).
+  - ✓ No hay datos del dataset en el repo (`git ls-files` sin `.csv.gz`, `.parquet`, `.pkl` ni `competencia_02`).
+- Tareas del grupo:
+  - ✓ 2.1 marcadores: `test_marcador_faltante_falla_sin_escribir_nada` y `test_regenerar_no_toca_el_texto_de_afuera`
+    pasan. `--exp` y `--todos` corren.
+  - ✓ 2.2 `table-wrapper`: 0 en el código y en las seis salidas regeneradas. `grep -ci autor` sobre el bloque B
+    (`tabla_resultados.md` regenerada) da 0.
+  - ✓ 2.3 regenerar dos veces: los README/SVG nuevos son idénticos (tests). En la salida vieja `reporte.html` solo cambia
+    la hora del pie («Generado … · commit …»), que ya estaba antes y desaparece con esos archivos en el grupo 4.
+  - ✓ 2.4 figuras: miré `tradeoff.png` (generado con `--figuras` en una carpeta temporal, ya borrada). 21 variantes, título
+    que dice qué mirar, ninguna etiqueta encima de otra. Detalle menor sin corregir: el rótulo `H3K-0.1` cruza la línea de
+    −δ. Los tests de «sin datos» pendiente y de la curva de `U0.05` debajo de 0 en N\* pasan.
+  - ✓ 2.5 y 2.6: hay tests. `comun.variantes --verificar` falla hoy, a propósito, nombrando cada `docs/diseno.md` con
+    `## Dependencias`. Pasa a verde en el grupo 3.
+  - ✓ 2.7: `test_verificadores.py` altera 3,25 → 3,26 y exige que el verificador falle nombrando el número y el
+    `archivo:línea`. Ignora lo que está dentro de los bloques generados. Los dos verificadores fallan hoy con el mensaje
+    `bloque-a-completo` faltante, como estaba previsto.
+- Hallazgo: la sesión de aplicar no regeneró las salidas viejas commiteadas. `tabla_resultados.md` seguía con tres
+  «Autor:» en el bloque B, y los `reporte.html` tenían el `.table-wrapper` y las figuras viejas.
+- Corrección: regeneradas con `python -m comun.reporte --todos` y commiteadas con esta revisión.
+- Sin cerrar (necesitan un humano): la tabla a 390 px en `mkdocs serve`, los SVG en github.com y el mapa en el sitio a
+  1280 px. Quedan en `ledger/sesiones/bloqueo.txt` y se pueden ver en el recorrido de 4.2.
+- `comun/tokens.py` corrido: lista sesiones sin etapa de otros días que superan el objetivo (`53a0ed85`, `a1a6304c`,
+  `076c6949`, `961d71db`, `e5c1be96`). No son de esta revisión y no las clasifico.
+- Tokens: ~30 turnos · contexto ~45.000 por turno · ≈ US$ 0,9.
+- Tutor: —
+
+### 13-nov-2026 · sitio-legible grupo 3 · un README por experimento (aplicar, Opus, headless)
+
+- 3.1 `plantilla/README.md` (D3). Destino de cada sección vieja:
+  - `plantilla/docs/hipotesis.md`: título → `# <HN> · <título>`; párrafo «escrito antes de cualquier corrida» y cita de
+    las reglas → callout de § Predicción (fecha, commit y enlace a `control/README.md`); § Pregunta → línea de apertura
+    e § Idea; § H1 (variable, métrica, predicción, confirma/refuta/ninguna) → § Predicción; § Limitaciones previstas →
+    § Limitaciones.
+  - `plantilla/docs/diseno.md`: § Dependencias → § Dependencias (igual, con `control`); § Variantes y § Grilla → § Diseño
+    › Variantes y › Grilla; § Parámetros fijos y § Métricas que se calculan → § Diseño › Grilla («lo que no cambia del
+    baseline no se repite»; las métricas son las de `control/README.md`); § Máquina, § Estimación de horas y costo, §
+    Reparto y fases → descartadas de la plantilla: el reparto por máquina y por fase vive en
+    `sampling_1/corridas.md` (D2); § Fuera de la grilla → descartada (lo que no se corre se dice en Limitaciones).
+  - `plantilla/informe/` (solo `.gitkeep`) → borrada; el resultado va en el bloque `resultado` del README.
+  - Verificado: copia de `plantilla/` como `experimentos/h9/` en una raíz temporal; `variantes.declaradas` lee
+    `{'control'}` de su `## Dependencias` y `variantes.verificar` con una variante `X0.5` de `h9` no da problemas de `h9`
+    (solo avisa que falta `sampling_1/`, que la copia mínima no trae).
+- 3.3–3.6 (README de h1–h4): destino de cada sección en la bitácora de cada hipótesis. Verificado juntas al tener el
+  bloque `bloque-a-completo` (3.7): `python -m scripts.verificar_informe_h3 --informe experimentos/hN/README.md` para
+  los cuatro da «623 números del texto, 0 sin fuente». Antes daba 41 sin fuente: eran constantes del diseño y de las
+  predicciones que ahora viven en el mismo README (40 trials, δ = 5,52 y Ḡ_C = 276,10 de la ronda anterior, recorte 8000,
+  cifras del exploratorio citadas en el origen de H4, …). Se sumaron a `CONSTANTES` de `scripts/verificar_informe_h3.py`,
+  cada grupo con su motivo; `tests/test_verificadores.py` pasa.
+- 3.7 `experimentos/sampling_1/README.md` (Resultados). Destino de cada sección vieja:
+  - `README.md` (correspondencia de rutas) → `docs/rutas.md`, con una tabla nueva para las rutas de `sitio-legible`.
+  - `docs/hipotesis.md` encabezado (lista de dónde está cada hipótesis) → descartado (D8: no abrir con dónde están otras
+    páginas); lo reemplaza la tabla de § Pregunta. § Pregunta → § Pregunta («pregunta del tutor», «baseline de Bolaños»
+    → «pregunta del experimento» con el id, «el baseline»). § H4 — propuesta original → descartada del sitio (no decide
+    nada; la nota de H4 › Diseño › Grilla › Fuera de la grilla la menciona y el texto queda en `2f05cae`). § Respuesta a
+    la pregunta del tutor (vale la pena, tiempo igual, contrastes principales) → § Predicción. § Limitaciones previstas
+    → § Limitaciones comunes (las que siguen vigentes; «con 10 semillas no se separan diferencias menores que δ» y
+    «aparear por semilla ayuda poco» se descartan: la ronda vigente tiene 20 semillas y réplicas, y el IC lo dice).
+  - `informe/informe.md` encabezado → descartado. § Hipótesis → § Pregunta (tabla de hipótesis) y § Predicción. § Diseño
+    → § Diseño (corto; fases y costo en `corridas.md`, apartamientos en `control/README.md`). § Resultados y bloque A →
+    bloques `mapa`, `bloque-a`, `varianza`, `diferencias`, `figuras` y `bloque-a-completo`. § Lectura del bloque A →
+    viñetas de § Comparación entre hipótesis, más cortas (el detalle de cada regla está en cada hipótesis) y «¿alcanzan
+    más semillas?» bajo la varianza. «A tiempo igual» → § A tiempo igual (bloque `tiempo-igual` y lectura).
+  - `informe/informe.md` § Bloque B y § Lectura del bloque B → `exploratorios/README.md` (tarea 3.8); acá queda
+    § Exploratorios con un párrafo y el enlace. § Tabla de rondas → bloque `rondas` (escrito por
+    `python -m scripts.comparar_rondas`) y las viñetas de lectura. § Limitaciones → § Limitaciones comunes (las propias de
+    cada hipótesis ya están en su README). § Conclusiones y § Qué sigue → iguales, sin nombres. § Bibliografía → igual,
+    sin «para postear en Zulip» y con «Baseline oficial del experimento colaborativo» en vez del nombre.
+  - `informe/tabla_resultados.md` → bloque `bloque-a-completo` (21 filas del bloque A idénticas a
+    `git show HEAD:…/tabla_resultados.md`, y todas sus filas de tabla están en el bloque nuevo). Su bloque B →
+    `exploratorios/README.md`.
+  - `informe/decisiones.md` (veredictos de la ronda 201903–201906 por línea de `apareado_previo.csv` y el tiempo igual
+    sin réplicas de entonces) → descartado del sitio: la ronda anterior está en el bloque `rondas` y el tiempo igual
+    vigente en su bloque. El archivo queda en el historial (`git show 4b17350:experimentos/sampling_1/informe/decisiones.md`).
+  - `informe/comparacion_rondas.md` → bloque `rondas`. `informe/reporte.html` → los bloques. `informe/figuras/*.png`
+    (nombres viejos: `bandas_*`, `tiempo_vs_ganancia`, `varianza`, `replicas`) → borrados; las figuras son los SVG de
+    `figuras/` y los PNG se generan con `--figuras`.
+  - `informe/guion.md` → `docs/guion.md`, con los nombres nuevos de las figuras (`tradeoff.png`,
+    `curva_diferencia_H1.png`, `semillas_replicas.png`, `rondas.png`, `grilla_veredictos.png`, …).
+  - README raíz: solo los enlaces a los archivos borrados pasan a los README nuevos (se reescribe en 3.10).
+- Verificado: `python -m scripts.verificar_readme` «todos los números están en el bloque bloque-a-completo y todos los
+  enlaces existen». `scripts/sitio.sh`: en Resultados solo fallan los enlaces a `corridas.md` y `exploratorios/README.md`
+  (3.8); `index.md` y el README raíz siguen con nombres hasta 3.9 y 3.10.
+- 3.8 `experimentos/sampling_1/corridas.md` y `experimentos/sampling_1/exploratorios/README.md`. Destino de cada
+  sección vieja:
+  - `docs/diseno.md` encabezado y lista de dónde está cada diseño → descartados (D8). § Estimación de horas y costo →
+    § Costo (la tabla de u·min por variante se resume en los factores y el total; las A estimadas eran de costo, no
+    predicciones). § Reparto y fases (fases 1–7, listas, cargas, cuotas, costo, «quién: Agustina») → § Fases (tabla por
+    fase con tag, listas, VMs y carga, y notas por fase) y § Costo; «todo lo lanza Agustina desde su cuenta» → «las
+    corridas se lanzaron todas desde una sola cuenta» (D8). «El detalle de los exploratorios está en
+    `openspec/changes/incorporar-aportes/design.md`» → descartado (el cambio está archivado; la página de exploratorios
+    enlaza los README). § Orden entre fases y § Corridas perdidas → § Fases. § Fuera de la grilla → descartado (lo que
+    decía ya entró como `h4` y `H3R-0.1`, y el fuera de grilla de cada hipótesis está en su README). § Devolución del
+    tutor → § Devoluciones del curso. § Dependencias → `sampling_1/README.md` § Dependencias (3.7).
+  - `docs/operacion.md` § Una configuración, § Qué cuenta y qué no, § Consolidar y reportar, § VM → las secciones del mismo
+    nombre (con `comun.reporte --todos` escribiendo bloques, `scripts.comparar_rondas`, `lanzar_fase.sh` y
+    `vm.sh --en-seco`).
+  - `control/docs/diseno.md` § Máquina (3.2) → § Máquina: template, gcloud, zonas, Ice Lake, una corrida por VM, bucket,
+    tags. Se agrega que `vm.sh` crea las VMs a pedido por defecto (como dice su código). Proyecto y cuotas de una cuenta
+    y fecha del trial → descartados (están en la memoria de la sesión y en el historial); queda la cuota de 32 vCPU.
+  - Bloque B y «Lectura del bloque B» del informe (3.7) → `exploratorios/README.md`: una sección por estudio con su
+    lectura, sin autores, con el enlace a su README en GitHub; las cifras en el bloque `bloque-b`.
+  - `validacion_20_semillas/exploratorio.json`: la advertencia decía «script de Luis» y salía en el bloque B; pasa a
+    «script de validacion_50_semillas» (el campo `autor` queda, el generador no lo muestra).
+- Verificado: `python -m comun.variantes --verificar` sale con 0 y sin `PROBLEMA`. Ninguna página publicada tiene una
+  tabla con texto de exploratorios (`git grep` de filas de tabla con sus carpetas: solo los README internos de cada
+  exploratorio, que no se publican). `grep -ci autor` sobre `exploratorios/README.md` da 0. `scripts/sitio.sh`: solo
+  fallan `index.md` (3.9) y el README raíz (3.10).
+- 3.9 `index.md`, `sitio/hipotesis.md`, `sitio/como-medimos.md` y `docs/metodo.md`. Destino de cada sección vieja:
+  - `index.md`: encabezado YAML de Jekyll → descartado. Integrantes y tutor → descartados (D8). Pregunta → primer
+    párrafo, sin «del tutor». Párrafos de respuesta (con A de una ronda vieja: 4,53 a 11,82 y 13,17) → callout de tres
+    líneas sin números (los números están en Resultados). Botón al informe conjunto → botón a Resultados. § Dónde seguir
+    → descartado (D8: la barra lateral y las tarjetas llevan a cada página). Nuevo: mapa del tradeoff y bloque
+    `tarjetas`.
+  - `sitio/{resultados,experimentos,proceso,especificaciones}.md` → borrados. Los reemplazan `sitio/hipotesis.md`
+    (bloque `tarjetas`) y `sitio/como-medimos.md` (tarjetas a control, corridas y exploratorios); las bitácoras y las
+    specs pasan a enlaces de GitHub en `docs/metodo.md` § Registros.
+  - `docs/metodo.md`: § Etapas, § Modelo por etapa y § Tokens → iguales («devolución del tutor» → «del curso»;
+    `docs/revision.md` como enlace a GitHub). § Agregar un experimento → fundido en § Agregar una hipótesis (repetía los
+    pasos). § Agregar una hipótesis › 1 y 2 → con la estructura nueva (README con secciones fijas, `## Dependencias` en el
+    README, `reporte --exp hN` escribe el bloque `resultado`, verificador del texto, alta en `nav` y `exclude_docs` de
+    `mkdocs.yml` en lugar de `defaults:` de `_config.yml`). › 3 → igual. › 4 (ejemplo ficticio con `informado` y
+    `pesado`) → el H4 real. Nuevo: § Registros con los enlaces a GitHub a las seis bitácoras, las siete specs, los cambios
+    archivados, `docs/revision.md`, el guion y las rutas.
+  - `mkdocs.yml`: `nav` final (Inicio · Resultados · Hipótesis con H1–H4 · Cómo medimos con control, corridas y
+    exploratorios · Cómo trabajamos) y `exclude_docs` con cada página y sus figuras.
+- Verificado («Llegar a una bitácora»): ninguna bitácora está en `nav` ni en `site/` (`find site -path '*bitacora*'`
+  vacío), y `site/docs/metodo/index.html` tiene el enlace a
+  `https://github.com/…/blob/main/experimentos/h3/docs/bitacora.md`. `mkdocs build --strict` pasa sin advertencias; la
+  búsqueda de nombres solo encuentra el README raíz (3.10).
+- Observación para la revisión: las tarjetas generadas dicen el veredicto de cada hipótesis pero no su idea en una
+  línea (escenario «Abrir Hipótesis» de `sitio-informes`). El generador es del grupo 2; no lo toqué.
+- 3.10 README raíz y `CLAUDE.md`. Destino de cada sección vieja del README raíz:
+  - Título y línea de integrantes y tutor → título igual; la línea de nombres se descarta (D8). § La pregunta y la
+    respuesta corta → primer párrafo y «Respuesta corta», sin números (están en Resultados) y sin nombres.
+  - § Resultados (bloques A y B comentados), § Experimentos (tabla con estado de cada uno), § Aportes de Martín y Luis y
+    § Qué sigue → descartados del README: los cubren Resultados, las páginas de cada hipótesis, Exploratorios y
+    § Qué sigue de Resultados. Queda § El sitio con un enlace a cada página.
+  - § Ver el sitio localmente → § El sitio › Ver el sitio localmente, igual. § Cómo correr → igual (`reporte --exp`,
+    `lanzar_fase.sh <lista>`, `vm.sh --en-seco`, `.env`; el reparto y la operación → Corridas). § Estructura → con la
+    estructura nueva (README por experimento, `figuras/`, `sitio/`, `mkdocs.yml`, verificadores).
+  - `CLAUDE.md`: el mapa del primer párrafo describe el README por experimento, el sitio y lo que publica, la regla de
+    redacción impersonal, `h1` a `h4`, y que los entregables son los README con bloques generados.
+- Verificado: `python -m scripts.verificar_readme` «todos los números están en el bloque bloque-a-completo y todos los
+  enlaces existen»; `python scripts/nombres_sitio.py` sin hallazgos; `scripts/sitio.sh` sale con 0;
+  `python -m comun.variantes --verificar` sale con 0.
+- Cierre del grupo 3 (aplicar): `python -m pytest` entero, 258 passed (6 min 27 s). Con `pytest` a secas el entorno no
+  encuentra `comun`; con `python -m pytest` sí. Queda para la revisión en sesión limpia del grupo 3 y para 4.1:
+  `_config.yml`, `_sass/` y `Gemfile*` siguen en la raíz hasta 4.1 (los `reporte.html` y las carpetas `informe/` ya se
+  borraron con cada README), y los
+  comentarios de `comun/` que nombran `docs/hipotesis.md` o `docs/diseno.md` los revisa el `git grep` de 4.1.
+
+### 13-nov-2026 · sitio-legible grupo 3 · revisión en sesión limpia (tarea 3.11)
+
+- Sesión: `ffaa4e11` (headless, sin contexto de la sesión que aplicó) · modelo: Opus · etapa: **revision**. Revisor:
+  Claude (Opus). Lista: `docs/revision.md` § 5 sobre los README nuevos (`control`, `h1`–`h4`, `sampling_1`, corridas,
+  exploratorios, `index.md`, `sitio/*.md`, `docs/metodo.md`) y `sampling_1/docs/guion.md`, más las verificaciones de
+  3.1–3.10. `tasks.md` no tenía tarea de revisión para el grupo 3: se agregó como 3.11.
+- Comandos: `python -m comun.variantes --verificar` sin `PROBLEMA`; `python -m scripts.verificar_readme` ✓;
+  `python -m scripts.verificar_informe_h3` (623 números, 0 sin fuente) y con `--informe` sobre cada `hN/README.md` (60,
+  56, 296 y 211 números, 0 sin fuente); `scripts/sitio.sh` construye sin advertencias y sin nombres;
+  `python -m pytest`: 258 passed (6 min 38 s).
+- Lista § 5:
+  - ✓ Decisión con la regla escrita: las reglas de H1 en § Predicción son idénticas a las de
+    `git show 6fcc1e6~:experimentos/h1/docs/hipotesis.md`, y los veredictos del texto coinciden con el bloque A (12 de
+    21 valen la pena: ocho H3, tres de fast-retrain y `U0.5`). Los commits citados en cada callout de Predicción
+    (`2f05cae`, `7c34254`, `ca60a45`, `d9d9303`, `c390beb`, `159ee0d`, `9e1889e`) existen, con la fecha y el contenido
+    que se les atribuye.
+  - ✗ → ✓ Afirmaciones con fuente: los verificadores no encuentran números sin fuente. Las 21 `CONSTANTES` que sumó
+    3.7 a `verificar_informe_h3.py` se buscaron en los `docs/` viejos (`git grep` en `ad4884a`): salen de las
+    predicciones y los diseños de h3 y h4, no tapan cifras de resultado. **Corregido**: § Comparación entre hipótesis
+    › AUC y ganancia decía que «las variantes de H3» tienen ΔAUC negativo (venía del `informe.md` viejo), pero
+    `H3L-0.25` (+0,0004) y `H3R-0.25` (+0,0000) no; ahora dice «negativo o cercano a 0» y las nombra.
+  - ✓ Refutaciones y empates con el mismo peso: H2 refutada, búsqueda informada de H4 refutada, H1 ninguna de las dos,
+    GOSS indeterminado, en Resultados, en cada Veredicto y en el guion.
+  - ✓ Limitaciones: réplicas solo en parte de las variantes y semillas, un solo mes de test (§ Limitaciones comunes) y la
+    adaptación de H2 (`h2/README.md` § Limitaciones y § Predicción, como adaptación declarada).
+  - ✓ Guion (`docs/guion.md`): estructura de hipótesis, diseño, limitaciones, resultados y conclusiones en 10 minutos;
+    nombra el baseline sin explicarlo. Las figuras que nombra existen como SVG en `figuras/` con el mismo nombre que
+    escribe `--figuras`. Tiene nombres de integrantes, pero no se publica.
+  - ✓ Bibliografía en `sampling_1/README.md` § Bibliografía.
+- Otros: ningún nombre de docente ni integrante en las páginas publicadas (`nombres_sitio.py` y `grep`). 3.6 declara
+  en un callout de Predicción que las variantes de H4 salen de mirar 201910.
+- Observación sin corregir (para 4.2): el escenario «Abrir Hipótesis» pide, en cada tarjeta, la idea en una línea y el
+  veredicto. Las tarjetas generadas tienen el título (que funciona como idea) y el conteo de veredictos de las variantes,
+  pero no «confirmada/refutada». Eso es texto escrito a mano en cada README, y el generador es del grupo 2. No lo cuento
+  como ✗ de esta lista; lo decide el recorrido de 4.2.
+- Sin ✗ abiertos: la etapa cierra.
+- `comun/tokens.py --experimento sampling_1` corrido. Siguen sin etapa las sesiones de otros días ya listadas en la
+  revisión del grupo 2 (y `4d587e21`, 118 turnos, ~212.000, que supera el objetivo y no es de esta revisión).
+- Tokens: ~35 turnos · contexto ~85.000 por turno · ≈ US$ 1,6.
+- Tutor: —
+
+### 13-nov-2026 · sitio-legible grupo 4 · aplicar (tareas 4.1 y 4.2)
+
+- Sesión: `dd71be63-e352-4bfa-97d0-e6830bf212f3` (la agregó la revisión 4.3, desde `g4_aplicar_20261113T140709.json`) · etapa: **codigo** (Sonnet, headless). 4.1: se borraron `_config.yml`, `_sass/`, `Gemfile`, `Gemfile.lock`, `_site/` y
+  `.jekyll-cache/` (no había `reporte.html` ni carpetas `informe/` versionados). Se corrigieron los comentarios de
+  `comun/{baseline,ganancia,ledger,metodos,variantes}.py` y las rutas de `h3/sensibilidad_muestra`; el cambio en `comun/`
+  es solo de comentarios. **4.1 queda sin marcar**: el `git grep` de la tarea todavía da resultados que no son bitácora,
+  `archive` ni scripts de una sola vez, y arreglarlos pide una decisión que no es de este grupo:
+  - `comun/reporte.py` (7) conserva la salida vieja (página Jekyll `informe/reporte.html` y `tabla_resultados.md`) para
+    los README sin marcadores; `main()` y `tests/test_reporte.py` la usan. Borrarla es quitar código con tests.
+  - `comun/variantes.py` (3) y `tests/test_variantes.py` (1) nombran `docs/diseno.md` a propósito (el escenario de
+    `dependencias-entre-experimentos` pide fallar si existe uno con § Dependencias).
+  - `openspec/specs/*` (28) se actualiza al archivar `sitio-legible` (consolidación de specs).
+  - Procedencia histórica (commits donde se fijó cada predicción): READMEs de control, h1, h2, h3 y sampling_1;
+    `sampling_1/docs/rutas.md` (mapa de rutas viejas a nuevas); `exploratorios/validacion_20_semillas/README.md`
+    (compara con el informe original). `docs/revision.md` y `docs/metodo.md` nombran `docs/hipotesis.md` y
+    `docs/diseno.md` como las etapas de la plantilla vieja: los revisa la sesión de revisión.
+- 4.2, verificaciones (todo en verde): `python -m pytest` 258 passed (6 min 33 s; con `pytest` a secas no encuentra
+  `comun`); `python -m comun.variantes --verificar`; `python -m scripts.verificar_readme` (13 enlaces);
+  `verificar_informe_h3 --informe` sobre h1, h2, h3 y h4 (0 sin fuente); `scripts/sitio.sh` sale con 0 y
+  `scripts/nombres_sitio.py` sin hallazgos.
+- 4.2, recorrido estructural en `site/` (sin navegador): 12 páginas (Inicio, Resultados, Hipótesis, H1–H4, Cómo medimos,
+  Control y reglas, Corridas, Exploratorios, Cómo trabajamos) en el nav de cinco secciones; las 12 tienen
+  `md-sidebar--secondary`; la tabla del bloque A (columna `R`) está en una sola página, Resultados (`U0.25` sale en
+  Resultados y en la tabla de resultado de H1, que tiene otras columnas); ninguna página tiene `table-wrapper` propio ni
+  una `<table>` dentro de otra; sin nombres. Tarjetas de `sitio/hipotesis.md`: título, idea en una línea y conteo de
+  veredictos (la «más rápida que no pierde»), lo que cierra la observación del grupo 3.
+- Limitación para 4.2: `sitio/hipotesis.md` y `sitio/como-medimos.md` tienen un solo encabezado, así que su índice
+  lateral está vacío (el panel existe). Lo visual no se miró: Teléfono, doble recuadro a 1280 px de las tablas fuera de
+  Resultados, H2–H4 y Cómo medimos (el orquestador vio Inicio, H1 y las figuras de Resultados).
+- Tokens: no se corrió `comun/tokens.py` en esta sesión.
+
+### 13-nov-2026 · sitio-legible grupo 4 · revisión en sesión limpia (tarea 4.3)
+
+- Sesión: `b40fd38f-0ddd-4602-85d9-c94da91154aa` (headless, sin contexto de la sesión que aplicó) · modelo: Opus · etapa: **revision**. Revisor:
+  Claude (Opus). Lista: `docs/revision.md` § 5, más las verificaciones de 4.1 y 4.2. El grupo 4 son los commits
+  `21010dd`, `9be47fe` y `183d87f`.
+- Comandos, todos en verde: `python -m pytest` 258 passed (6 min 39 s); `python -m comun.variantes --verificar` sin
+  `PROBLEMA`; `python -m scripts.verificar_readme` ✓ (5 números, 13 enlaces); `python -m scripts.verificar_informe_h3`
+  (623 números, 0 sin fuente) y con `--informe` sobre h1–h4 (60, 56, 296 y 211, 0 sin fuente); `scripts/sitio.sh`
+  construye con `--strict` y sin nombres; `site/` no tiene `.py`, bitácoras, `.csv` ni restos de Jekyll.
+  `python -m comun.reporte --todos` deja el árbol igual, así que lo commiteado es lo que sale del generador.
+- Lista § 5: el texto escrito a mano de los README no cambió desde la revisión 3.11. El grupo 4 solo tocó comentarios
+  de `comun/`, tamaños y posiciones de las figuras, y una línea de idea en las tarjetas (generada desde el README). Por
+  eso valen los ✓ de 3.11:
+  - ✓ Decisión con la regla escrita (sin cambios desde 3.11).
+  - ✓ Afirmaciones con fuente (verificadores en 0 sin fuente).
+  - ✓ Refutaciones y empates con el mismo peso: las tarjetas muestran pierde, no pierde e indeterminada por igual.
+  - ✓ Limitaciones: semillas, un mes de test y adaptación de H2 (sin cambios).
+  - ✓ Guion: 10 minutos, estructura completa y no explica el baseline (sin cambios).
+  - ✓ Bibliografía (sin cambios).
+- 4.1 (✗ abierto, no es de la lista § 5): el `git grep` de la tarea todavía encuentra resultados. Los clasifiqué así:
+  - Registros históricos: `ledger/sesiones`, `originales/` y la procedencia de las predicciones en los README.
+  - Previstos por el diseño: D9 (`variantes.py`, `test_variantes.py`, `concordar_d3.py`) y D2 (`revision.md` sin
+    cambios).
+  - Artefactos de openspec que se actualizan al archivar.
+  - La salida vieja de `comun/reporte.py` (página Jekyll y `tabla_resultados.md`), que es lo único vivo. Ya no la
+    ejecuta nadie, porque los siete README tienen marcadores.
+
+  Borrarla o ampliar la verificación de la tarea es una decisión de diseño, así que 4.1 sigue sin marcar y queda en
+  `ledger/sesiones/bloqueo.txt`.
+- **Corregido**: `.gitignore` todavía tenía el bloque «Sitio Jekyll» (`_site/`, `.jekyll-cache/`, `.sass-cache/`,
+  `vendor/`, `.bundle/`); lo borré. La entrada del aplicar del grupo 4 no tenía id de sesión: le agregué `dd71be63`, que
+  sale de `g4_aplicar_20261113T140709.json`, para que `comun/tokens.py` la clasifique.
+- Pendiente después del push (lo decide Agustina): los escenarios «Primera visita del tutor» y «Teléfono» en el sitio
+  publicado, y 1.3 (el workflow en una rama). Están en `bloqueo.txt`.
+- La lista § 5 no tiene ✗ abiertos: la revisión cierra. 4.1 no se cierra hasta que se tome la decisión de `bloqueo.txt`.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~40 turnos · contexto ~73.000 por turno · ≈ US$ 1,5.
+- Tutor: —
+
+## 2026-11-13 — sitio-legible 4.1 cerrada (cambio en `comun/`)
+
+- Siguiendo D4 (el generador escribe en los README), borré de `comun/reporte.py` la salida vieja: `generar_con_tabla`,
+  `generar`, `html_resultados`, `seccion_hipotesis`, `enlaces`, `commit`, `_leer`, `markdown_resultados`, `tarjetas_b`, el
+  bucle de `main` que escribía `reporte.html` y `tabla_resultados.md`, el argumento `--salida` y el respaldo de
+  `_titulo_hipotesis` a `docs/hipotesis.md`. Quedaron sin uso y también se borraron `markdown`, `_inline`, `secciones`,
+  `seccion` y `ENCABEZADO`. `main` ahora avisa los archivos sin marcadores.
+- Tests: salen `test_es_una_pagina_jekyll` y `test_tabla_de_resultados_conserva_el_bloque_a`; los demás comparan lo que
+  devuelve `planificar()` (bloques y archivos SVG). En el bloque B queda `lista_b`. El orden figura-antes-de-tabla ya no
+  lo fija el generador sino cada README. Sin réplicas, `varianza` y `diferencias` salen pendientes.
+- `validacion_20_semillas/README.md`: el enlace a `control/docs/hipotesis.md` pasa a `control/README.md`.
+- Resultados que quedan del `git grep -nE "informe/(informe|reporte|tabla_resultados)|docs/(hipotesis|diseno)\.md"`, todos
+  esperados:
+  - Registros históricos: `ledger/sesiones/`, `ledger/martin/.../referencia_grupo/`, `validacion_20_semillas/originales/`,
+    la procedencia de las predicciones en los README de `control`, `h1`–`h3` y `sampling_1`, y las bitácoras.
+  - `sampling_1/docs/rutas.md` (rutas viejas, a propósito) y la descripción de lo que se comparó en
+    `validacion_20_semillas/README.md`.
+  - El chequeo de D9 en `comun/variantes.py` y `tests/test_variantes.py`, que detecta un `docs/diseno.md` viejo.
+  - `docs/metodo.md` (mismo chequeo) y `docs/revision.md` (sin cambios por D2).
+  - Scripts de una vez: `scripts/concordar_d3.py`.
+  - Artefactos de openspec (`changes/` y `specs/`), que se actualizan al archivar.
+- Verificado: `pytest tests/test_reporte.py` (35), `python -m comun.reporte --todos` dos veces sin cambios en `git status`,
+  `scripts/sitio.sh` y `pytest` entero (251) en verde.
+
+### 13-nov-2026 · sitio-legible grupo 4 · segunda revisión en sesión limpia (tarea 4.3, después de cerrar 4.1)
+
+- Sesión: `2a98183e-4192-44a2-aee1-ae5872024ea2` (sin contexto de la sesión que aplicó) · modelo: Opus · etapa:
+  **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 5, más las verificaciones de 4.1 y 4.2. Revisa
+  sobre todo `9310bd9` (4.1: salida vieja de `comun/reporte.py` borrada), que llegó después de la revisión anterior.
+- Comandos, todos en verde: `python -m pytest` 251 passed (5 min 45 s; eran 258 antes de borrar los tests de la salida
+  vieja); `python -m comun.variantes --verificar` sin `PROBLEMA`; `python -m scripts.verificar_readme` ✓ (5 números, 13
+  enlaces); `python -m scripts.verificar_informe_h3` (h1–h4: 623 números, 0 sin fuente); `scripts/sitio.sh` construye
+  sin nombres; `site/` sin `.py`, bitácoras, `.csv` ni restos de Jekyll; `python -m comun.reporte --todos` deja el árbol
+  igual. `git ls-files` no tiene `_config.yml`, `_sass/`, `Gemfile*`, `reporte.html`, `tabla_resultados.md` ni carpetas
+  `informe/`.
+- 4.1: el `git grep` de la tarea solo encuentra lo que la entrada de 4.1 clasifica como esperado (registros históricos,
+  `rutas.md`, D9, D2, `concordar_d3.py`, openspec). Está bien marcada.
+- Lista § 5: desde `fdec826` no cambió el texto escrito a mano de ningún README publicado, de `index.md`, de `sitio/` ni
+  del guion. Siguen valiendo los ✓ de la revisión anterior (regla escrita, fuentes, mismo peso para refutaciones y
+  empates, limitaciones, guion de 10 minutos sin el baseline, bibliografía). No quedan ✗ abiertos.
+- **Corregido**:
+  - `comun/reporte.py` (cambio en `comun/`, solo comentarios): cuatro docstrings y comentarios seguían nombrando
+    `tabla_resultados.md` o la «salida vieja» como si existieran. Ahora dicen que la rama sin `DESTINO` de `figura()`
+    no la usa ningún llamador. Esa rama es código muerto, pero no la borré porque eso es una decisión de diseño:
+    `scripts/comparar_rondas.py` y todos los generadores fijan `DESTINO`. `pytest tests/test_reporte.py` volvió a correr.
+  - `validacion_20_semillas/README.md`: el enlace que 4.1 apuntó a `control/README.md` todavía mostraba el texto
+    `control/docs/hipotesis.md`. Ahora el texto coincide con el destino.
+  - `ledger/sesiones/bloqueo.txt`: lo borró `4f520fe` (tiempos-confiables-y-consistencia 2.5) al levantar su propio
+    bloqueo, y con eso se perdieron los pendientes de sitio-legible. Lo volví a crear con lo que sigue abierto: los
+    escenarios después del push, las tareas 1.3 y 1.4 y el archivo del cambio.
+- Pendiente (necesita a una persona, está en `bloqueo.txt`): decidir el push y, después del push, verificar los
+  escenarios «Primera visita del tutor» y «Teléfono»; cerrar 1.3 y 1.4; archivar sitio-legible.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: 35 turnos · contexto ~56.000 por turno · ≈ US$ 1,1 (`tokens.py` todavía no tiene el costo de esta sesión).
+- Tutor: —
+
+### 13-nov-2026 · sitio-legible, cierre de 1.3 y 1.4 (orquestador)
+
+- 1.3: el workflow de Pages corrió con `workflow_dispatch` en la rama `sitio-legible-ci` (run 43482664191) y terminó en
+  verde; el deploy se saltó, porque solo publica desde `main`. Localmente, `scripts/sitio.sh` pasa y falla con «tutor»
+  nombrando archivo y línea (verificado en el grupo 1).
+- 1.4: corrido tal como está escrito en el README raíz. `pip install -r requirements-sitio.txt` y `scripts/sitio.sh serve`
+  sirven en 127.0.0.1:8000; `/experimentos/h3/` da 200 y `/experimentos/h3/docs/bitacora/` da 404.
+- Correcciones del orquestador después del grupo 3 (21010dd): la letra de las figuras era ilegible a ~750 px y pasó a 11–14 pt;
+  la leyenda del mapa del tradeoff se cortaba; las etiquetas contra el borde o sobre un vecino ahora se corren; las
+  tarjetas suman la idea en una línea. Revisado con capturas a 1280 y 390 px.
+- Se unió `origin/main` (PR #2, dos líneas en `h3/sensibilidad_muestra/README.md`) antes del push.
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (tarea 1.7)
+
+- Sesión: `e0f0768f-4f79-4114-8014-b3b26ac73ae5` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, más las verificaciones de 1.1–1.6. El
+  grupo 1 son los commits `cd6f1e8` (1.1, 1.2), `9dee99d` (1.3), `e743d1c` (1.5) y `16af289` (1.4, 1.6); `1bf8daf`
+  (1.12 parcial) y lo de 1.8–1.12 en `16af289` quedan para la revisión 1.11.
+- Comandos, todos en verde:
+  - `pytest tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py`: 93 passed (6 min 51 s).
+  - `pytest tests/test_figuras_nuevas.py tests/test_tablas_d9.py`: 6 passed, incluido el test de 1.4 (ensamble de K = 20
+    del control igual a «ensamble de 20 semillas del control» de `tiempo-igual`).
+  - `python -m comun.variantes --verificar`: 0 `PROBLEMA`.
+  - `python -m scripts.verificar_readme`: ✓, con 65 números y 31 enlaces.
+  - `python -m scripts.verificar_informe_h3`: 623 números, 0 sin fuente.
+  - `python -m comun.reporte --todos` y `python -m scripts.extraer_figuras_exploratorios` dejan `git status` igual.
+  - `scripts/sitio.sh` construye y no encuentra nombres.
+- Verificaciones de las tareas:
+  - ✓ 1.1: `site_name`, paleta con `media` y `toggle`, y en `site/index.html` la barra dice «H4 · Muestras informadas
+    por clase» y «Control y reglas».
+  - ✓ 1.2: sin `75ch` ni `89ch` en `estilos.css`, y hay variables para `slate`. El encabezado del teléfono se hace con
+    `sitio/hooks.py` en lugar de `overrides/partials/header.html`; el desvío está declarado en `cd6f1e8`. Las capturas
+    a 1440 y 390 px son del orquestador (n/a acá).
+  - ✓ 1.3: los marcadores de `anexo.md`, `index.md` y Resultados existen. Las tablas de `bloque-a-completo`,
+    `diferencias`, `varianza` y `rondas` tienen las mismas cifras que en `git show 5566e5d~:…/README.md`; los marcadores
+    salieron del README en `5566e5d`, no en `HEAD~` de 1.3. Faltan solo tres números (35.2, 0.05 y −5.9), que eran
+    del texto alternativo de dos figuras que ya no viven en esos bloques.
+  - ✓ 1.4: hay cuatro figuras nuevas, con test, y regenerar no cambia los SVG.
+  - ✓ 1.5: son diez PNG y no nueve (está declarado en `e743d1c`). Correr el script dos veces no cambia nada, y el test
+    de figura faltante está en `test_variantes.py`. Las leyendas no tienen autor: los únicos nombres son el dueño del
+    repo en las URL de GitHub.
+  - ✓ 1.6: están los tests de exploratorio sin CSV, de bloque B sin autor y de columna con escala, y las 37 `<img>` de
+    `site/` resuelven.
+- Lista § 3: el grupo no toca el corredor, `consolidar.py` ni `vm.sh`. Por eso son n/a el smoke test, el determinismo
+  del entrenamiento, que 201910 no se lea, las columnas del ledger, `codigo_sucio`, las filas de train, el apareo de
+  semillas y el borrado de la VM. El determinismo del generador sí se verificó (regenerar no cambia nada). ✓ No hay
+  datos del dataset en el repo: no hay `.csv.gz`, `.parquet` ni `.feather`, y los PNG son figuras.
+- Correcciones: ninguna. No queda ningún ✗ abierto, así que la revisión cierra.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: 25 turnos · contexto ~54.000 por turno · ≈ US$ 1.
+- Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (tarea 1.11)
+
+- Sesión: `8aa38176-83be-42a7-8f48-8a05da32fc4a` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, más las verificaciones de 1.8, 1.9 y
+  1.12 y `python -m scripts.medir_sitio`. Commits revisados: `16af289` (1.8, 1.9 y parte de 1.12), `1bf8daf` y
+  `7de226c` (1.12).
+- Comandos:
+  - `python -m pytest tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py
+    tests/test_figuras_nuevas.py tests/test_tablas_d9.py`: 99 passed (8 min 28 s) antes de las correcciones;
+    99 passed (8 min 3 s) después. Ojo: el `pytest` del PATH es el de miniconda y no encuentra `comun`; hay que usar
+    `python -m pytest`.
+  - `python -m comun.variantes --verificar`: 0 `PROBLEMA`. `verificar_readme`: ✓ (65 números, 31 enlaces).
+    `verificar_informe_h3`: 623 números, 0 sin fuente. Las dos cosas antes y después de las correcciones.
+  - `scripts/sitio.sh` construye y no encuentra nombres.
+  - `python -m scripts.medir_sitio`: al empezar, 2 problemas en Resultados. Después de las correcciones queda 1 (ver ✗).
+- Verificaciones de las tareas:
+  - ✓ 1.8, escenario «Tabla de una hipótesis sin redundancias» (`h3/README.md`): sin columnas «hipótesis» ni
+    «semillas», la nota «Todas las variantes con 20 semillas» debajo de la tabla, las semillas ganadas con barrita y
+    número, y los tres encabezados nuevos. ✗→✓: la fila del control escribía la aceleración «1,00» con coma, y las
+    demás filas usan punto («4.37»). Corregido.
+  - ✓ 1.9: en los ejes, los títulos y los textos generados ya no dice «envíos». En el sitio sí aparece tres veces,
+    todas en texto escrito a mano (`control/README.md:71`, `h4/README.md:307`, `sampling_1/README.md:241`). El
+    escenario «Clientes contactados» se cumple recién cuando el grupo 2 (2.1 y 2.7b) cambie esas palabras.
+  - ✓ 1.12: los colores por hipótesis salen de una sola constante (`COLOR_HIPOTESIS`), el bloque A tiene las pestañas
+    «Valen la pena» y H1 a H4, y el Anexo tiene la tabla entera. Observación: `desglose_tiempo` usa `PALETA[0..2]`
+    para las etapas, que son los mismos tonos de H1 a H3. D16 lo permite (la figura no cambia de forma), pero se
+    puede leer como si fueran hipótesis.
+  - ✗→✓ D16, tope de 800 px: la tabla de tiempo igual de Resultados medía 1349 px. Ahora, en el agregador, va en
+    pestañas por hipótesis, igual que el bloque A (en cada `hN/README.md` sigue siendo una sola tabla).
+  - ✗ abierto, D16, tope de 800 px: la pestaña «Valen la pena» mide 1031 px (12 variantes con celdas de dos
+    líneas). Para arreglarla hay que tomar una decisión de diseño, así que queda en
+    `ledger/sesiones/bloqueo.txt` con opciones.
+  - ✗ abierto, regenerar dos veces sin cambios: de tres corridas de `comun.reporte --todos` con los mismos datos,
+    dos bajaron R en «tiempo igual, réplicas» (H3-0.25 a R=7 en una, H3L-0.25 a R=6 en otra, y el bootstrap de
+    H3L-0.1 quedó en «pendiente»). La tercera coincidió con HEAD, y dentro de un mismo proceso el cálculo da siempre
+    R=8. Sospecho que las predicciones de `experimentos/*/ledger/predicciones/` dejan de verse por un rato
+    (`Path.exists`). Queda en `bloqueo.txt`. Los archivos que se commitean salen de una corrida que coincide con HEAD
+    en todo lo que no tocaron las correcciones.
+- Lista § 3: el grupo no toca el corredor, `consolidar.py` ni `vm.sh`. Por eso son n/a el smoke test, el determinismo
+  del entrenamiento, que 201910 no se lea, las columnas del ledger, `codigo_sucio`, las filas de train, el apareo de
+  semillas y el borrado de la VM. El determinismo del generador queda ✗ (ver arriba). ✓ No hay datos del dataset en el
+  repo: no hay `.parquet` versionados, y `predicciones/` está excluido en `.git/info/exclude`.
+- Correcciones (cambio en `comun/reporte.py`): «1.00» en la fila del control y pestañas por hipótesis en la tabla de
+  tiempo igual de Resultados. Se regeneraron los README de H1 a H4 y Resultados.
+- Quedan dos ✗ que necesitan a un humano (`bloqueo.txt`). La tarea 1.11 se marca hecha porque la revisión está hecha;
+  el tope de 1.12 sigue abierto.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~80 turnos · contexto ~77.000 por turno · ≈ US$ 2,6 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (tarea 1.16)
+
+- Sesión: `f33b551e-4870-4d30-aec3-0ac91904bd35` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, más las verificaciones de 1.13 y 1.14.
+  Commits revisados: `bfbc37f` (1.13) y `8749379` (1.14).
+- Comandos:
+  - `python -m pytest tests`, con la corrección de `vm.sh`: 219 passed (8 min 20 s). El commit de 1.14 dice 267,
+    que probablemente sumaba los tests de `experimentos/`. Esos no los toca ninguno de los dos commits y no los corrí.
+  - `python -m comun.variantes --verificar`: 0 `PROBLEMA`. `verificar_readme`: ✓ (65 números, 31 enlaces).
+    `verificar_informe_h3`: 623 números, 0 sin fuente.
+  - `python -m comun.reporte --todos` dos veces: `git status` sin cambios fuera de `ledger/sesiones/` las dos veces.
+    `DATOS_DIR/ledger/` todavía no existe (1.15 no se hizo), así que todas las predicciones se leyeron por la ruta vieja.
+  - `mkdocs build` y `python -m scripts.medir_sitio --pagina experimentos/sampling_1/`: 0 problemas.
+  - `bash -n scripts/vm.sh` y `scripts/vm.sh <lista> --en-seco`: el script remoto y los destinos de las predicciones
+    salen bien (después de la corrección).
+- Verificaciones de las tareas:
+  - ✓ 1.13: la primera pestaña es «Lo mejor de cada hipótesis», con una fila por hipótesis, como pide D16: U0.5 (H1),
+    B0.25 (H2, ninguna vale la pena y es la de mayor Δ), H3-0.05 (H3) y H4F-0.05 (H4). «Valen la pena» ya no aparece.
+    Observación para el grupo 2: la pestaña no tiene la columna «vale la pena», así que B0.25 se ve igual que las
+    otras tres aunque no vale la pena (aceleración 1.23). El texto de Resultados (2.1) tiene que aclararlo.
+  - ✓ 1.14: `rutas.ledger_datos()` y `rutas.prediccion()` hacen lo que pide D18. `correr.py` escribe en
+    `DATOS_DIR/ledger/<dueño>/` con la misma ruta relativa que guarda `predicciones_201910`, también en exploración.
+    `reporte._absolutas` es el único lugar que lee predicciones y usa esa función. Hay cuatro tests: uno para
+    `DATOS_DIR`, uno para la ruta vieja, uno para cuando el archivo está en los dos lugares y uno para el reporte.
+  - ✗→✓ `scripts/vm.sh`, en `subir()` de la VM, no tenía espacio entre el origen y el destino de
+    `gsutil rsync` (`…/predicciones/"$BUCKET/…"`). El script remoto corre sin `-e`, así que ese `gsutil` fallaba sin
+    cortar nada, la VM terminaba con DONE y las predicciones no llegaban al bucket: se perdían al borrar la VM.
+    Corregido.
+  - ✗→✓ `scripts/vm.sh`, rescate con FALLO: traía `~/repo/experimentos/*/ledger` de la VM, pero las predicciones nuevas
+    ya no están ahí, así que se perdían las que no habían llegado al bucket. Ahora además trae `~/datos/ledger` (sin
+    exploración) a `$DATOS/ledger/` con `--ignore-existing`. Quedó probado con `bash -n` y en seco, no contra una VM.
+- Lista § 3: ninguno de los dos commits toca el entrenamiento, los meses leídos, las columnas del ledger,
+  `codigo_sucio`, las filas de train ni `consolidar.py`. Por eso son n/a el smoke test, el determinismo del
+  entrenamiento, que 201910 no se lea, las columnas obligatorias, `codigo_sucio`, las filas de train y el apareo de
+  semillas. ✓ Determinismo del generador: dos regeneraciones sin cambios. ✓/n/a `vm.sh` deja la VM borrada: el trap
+  no cambió. ✓ No hay datos del dataset en el repo: no hay `.parquet` versionados, y desde 1.14 las predicciones
+  nuevas van fuera del repo.
+- Correcciones: `scripts/vm.sh` (el espacio en `subir()` y el rescate de las predicciones con FALLO). No se tocó
+  `comun/`.
+- Pendiente para el orquestador: 1.15 (mover las predicciones a `DATOS_DIR`). Las dos regeneraciones de esta revisión
+  coincidieron con HEAD, pero eso no cierra la intermitencia de 1.11: falta medirla después de 1.15.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~40 turnos · contexto ~73.500 por turno · ≈ US$ 1,5 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados grupo 1 · revisión en sesión limpia (sin tarea nueva)
+
+- Sesión: headless, sin contexto de la que aplicó · modelo: Opus · etapa: **revision**. Revisor: Claude (Opus).
+  Lista: `docs/revision.md` § 3.
+- Alcance: desde `e87329e` (1.16) no hay commits nuevos en `comun/`, `scripts/`, las hipótesis ni `openspec/`. La
+  última sesión de aplicar (`g1_aplicar_20261113T194200.json`) no cambió nada. Todas las tareas de revisión del grupo 1
+  (1.7, 1.11 y 1.16) ya estaban marcadas, así que `tasks.md` no cambia. Lo único que faltaba revisar en limpio era la
+  corrección de `scripts/vm.sh` que hizo la propia revisión 1.16.
+- ✓ `scripts/vm.sh`, `subir()`: el `gsutil rsync` de las predicciones ahora tiene el origen y el destino separados. El
+  origen `\$DATOS_DIR/ledger/\$e/predicciones/` existe porque la línea 68 lo crea antes.
+- ✓ `scripts/vm.sh`, rescate con FALLO: en la VM, `cd ~/datos` coincide con el valor por defecto de `DATOS_DIR` en el
+  script remoto (`\$HOME/datos`). El tar trae `ledger/<exp>/predicciones/` sin la exploración, y el `rsync` local copia
+  a `$DATOS/ledger/` sin pisar nada, con la misma estructura que lee `rutas.prediccion()`. Si algún paso falla, la
+  cadena de `&&` sigue con `|| true` y el `rm -rf "$T"` del final limpia igual. `bash -n` da sin errores. No se probó
+  contra una VM.
+- Lo demás de la lista § 3 es n/a: no hubo cambios desde la revisión 1.16, que ya lo cubrió.
+- Correcciones: ninguna.
+- Pendiente: 1.15 es del orquestador. Después hay que medir la intermitencia de 1.11 regenerando tres veces. El borrado
+  de `ledger/sesiones/bloqueo.txt` en el árbol de trabajo no es de esta sesión, así que no lo commiteo.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~15 turnos · contexto ~45.000 por turno · ≈ US$ 0,6 (presupuesto de la sesión).
+- Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados 1.15 · predicciones a DATOS_DIR (orquestador)
+
+- Sesión: interactiva, orquestador · modelo: Opus · etapa: **codigo**.
+- Se movieron las cinco carpetas `experimentos/<exp>/ledger/predicciones/` a `DATOS_DIR/ledger/<exp>/predicciones/`
+  con un renombre en el mismo disco: 4950 archivos, 8,5 GB, con la misma cantidad de archivos y de bytes antes y
+  después en cada experimento (control 330, h1 360, h2 120, h3 2360, h4 1780). En el repo no queda ninguna carpeta
+  `predicciones/`. La rama de `tiempos-confiables-y-consistencia` (otro worktree) no se tocó.
+- ✓ `python -m comun.reporte --todos` tres veces seguidas: las tres dejan `git status` igual que al empezar (solo
+  cambian los logs de las sesiones) y ninguna escribe «pendiente» ni baja R. La intermitencia de la revisión 1.11
+  (R = 7 o 6 en «tiempo igual, réplicas») no volvió a aparecer.
+- Causa (D18): el repo está en `~/Documents`, que iCloud sincroniza («Escritorio y Documentos»). Con ~10 GB de parquet
+  en sincronización, un archivo podía no verse por un rato, y el generador lo tomaba como faltante sin avisar.
+- `bloqueo.txt` de la revisión 1.11 resuelto con las decisiones de `9e44863` y borrado.
+
+### 13-nov-2026 · inicio-y-resultados 2.1 · Resultados en el orden de D1
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- Secciones viejas de `sampling_1/README.md` y su destino (antes de mover):
+  - § Pregunta, § Respuesta y el bloque `mapa`: quedan arriba.
+  - § Predicción (la del 1-nov, las notas del 2-nov y del 9-nov y la línea de la ronda): a `control/README.md`
+    § Predicción, como «Predicción del experimento (1-nov)», antes de la de la ronda.
+  - § Comparación entre hipótesis: a «¿Qué conviene achicar?», con `grilla`, `desglose`, `bloque-a` y los hallazgos
+    por hipótesis. El ítem «AUC y ganancia» pasa a «¿Qué tan estable es?».
+  - § Varianza entre réplicas y entre semillas: a «¿Qué tan estable es?», con `semillas`.
+  - § Más figuras: se reparte. `fraccion` va a «¿Cuánto se puede achicar?»; `desglose` y `grilla` van a «¿Qué conviene
+    achicar?».
+  - § A tiempo igual: a «¿Qué se hace con el tiempo ahorrado?», con `ensamble` y `tiempo-igual`.
+  - § Rondas: tres puntos en «¿Qué tan estable es?», con enlace al Anexo. Los tres resultados completos van a
+    `anexo.md` § Rondas (2.2).
+  - § Exploratorios: una línea, después de § Qué sigue.
+  - § Diseño: a `corridas.md` § Protocolo.
+  - § Dependencias: queda al final.
+  - § Limitaciones comunes: queda, pero sin recuadros, como lista con el nombre en negrita (D11).
+  - § Conclusiones: queda, y suma si la predicción acertó, con enlace a `control/README.md` § Predicción.
+  - § Qué sigue: queda.
+  - § Bibliografía: a `docs/metodo.md` § Bibliografía.
+- La página se arma con `tmp_etapas/armar_resultados.py`, que copia los ocho bloques generados sin tocarlos y pone el
+  texto a mano alrededor. «Envíos» pasa a «clientes contactados» en el protocolo (D14).
+- ✓ `verificar_readme` (52 números, 30 enlaces), `verificar_informe_h3`, `comun.variantes --verificar` (lee
+  § Dependencias) y `scripts/sitio.sh` sin avisos. El ancla `#prediccion-del-experimento-1-nov` existe en el HTML.
+- Entre la respuesta y las conclusiones ya no queda ninguna tabla completa: las del Anexo (bloque A completo, varianza,
+  diferencias, rondas) se enlazan. Quedan el bloque A resumen (detalle plegado) y las pestañas de tiempo igual, que
+  D1 pone en Resultados. Las pestañas de tiempo igual no están plegadas: eso lo decide el generador, no se toca a mano.
+
+### 13-nov-2026 · inicio-y-resultados 2.2 · Anexo de resultados
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- `anexo.md`: una línea por sección; en § Rondas, los tres resultados de la predicción de la ronda que estaban en
+  Resultados § Rondas, con enlace a la predicción en `control/README.md`. Resultados conserva un resumen en tres puntos.
+- ✓ Bloque A completo contra `efdf873~1` (antes del cambio): las mismas 21 variantes en el mismo orden y 48 filas de
+  tabla iguales salvo el encabezado, que cambió con D9 («A» → «aceleración (×)», «veredicto» → «ganancia contra el
+  control»). `verificar_readme` y `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.3 · Inicio
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- No se borra ni se mueve texto. `index.md` suma 2–3 líneas por hallazgo (qué mirar y por qué) y un recuadro con
+  «Test ya mirado», «Un mes, un año, una máquina» y «Réplicas solo en parte de las variantes», con enlace a Resultados
+  § Limitaciones comunes. El único número a mano es el 94 %, que sale del título del desglose (D2).
+- ✓ Escenario «Primera visita del tutor» en `site/index.html`: pregunta, respuesta, `tradeoff.svg`,
+  `desglose_tiempo.svg`, `ensamble.svg` con su explicación, recuadro de limitaciones, botón primario a Resultados y
+  tarjetas hasta H4. `verificar_readme` (53 números, 31 enlaces) y `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.4 · Exploratorios
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- No se borra texto. Se suma el diagrama de motivaciones (D5, `flowchart TB`): `sensibilidad_muestra` → R = 8,
+  `validacion_50_semillas` → H4 y extensiones de H3, `validacion_20_semillas` → ronda vigente, con la aclaración de que
+  ninguno decide un veredicto. El enlace a § Rondas pasa al Anexo.
+- ✓ Escenario «Exploratorios»: cada estudio es una sección con sus párrafos (qué mostró) y, en el bloque B, sus cifras y
+  figuras. Escenario «Figuras de un exploratorio»: las de `validacion_50_semillas` dicen «Reporte original (50 semillas,
+  hiperparámetros fijos)», sin autor. `scripts/sitio.sh` sin avisos (incluido el control de nombres); el diagrama sale
+  en el HTML.
+
+### 13-nov-2026 · inicio-y-resultados 2.5 · Corridas
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- Texto movido o borrado y destino:
+  - columna «qué corre» de la tabla de fases: a la lista «Qué corrió cada fase», un ítem por fase (fases 1, 2 y 3 por
+    separado; en 4 a 7, al principio del ítem que ya existía);
+  - columna «definida»: pasa a llamarse «fecha»;
+  - § Devoluciones del curso: se borra (lo pide la tarea); que la bitácora anota la devolución del curso ya lo dice
+    `docs/metodo.md` § Etapas;
+  - comentarios al final de las líneas de código: pasan a una línea propia arriba del comando.
+- § Protocolo vino de Resultados en 2.1. Se suman la línea de tiempo de las fases (`timeline`) y el recorrido de una
+  corrida (`flowchart TB`: `lanzar_fase.sh`, VM, bucket, `gsutil rsync`, ledger, `comun/reporte.py`, páginas).
+- ✓ Ninguna línea de código pasa de 80 caracteres ni ninguna celda de 60 (`tmp_etapas/anchos.py`). `scripts/sitio.sh`
+  sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.6 · Cómo trabajamos
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- No se borra texto. Se suman tres diagramas (D5): las etapas con la revisión en sesión limpia en cada compuerta y el
+  modelo de cada una (antes del detalle de § Etapas), una etapa sin supervisión (`etapas.sh`, `etapa.sh`, aplicar,
+  revisar, `bloqueo.txt` o `en_curso.txt`) y los pasos de § Agregar una hipótesis, antes de la lista. § Bibliografía vino
+  de Resultados en 2.1. El bloque de carpetas pasa a dos columnas angostas y suma `anexo.md`.
+- ✓ Escenario «Cómo trabajamos»: el diagrama de etapas va antes del detalle y sale en el HTML (tres diagramas). Ninguna
+  línea de código pasa de 80 caracteres. `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.7 · guion, CLAUDE.md y README raíz
+
+- Sesión: headless · modelo: Opus · etapa: **informe**.
+- `guion.md`: el diseño se muestra desde Corridas § Protocolo; las limitaciones, desde Resultados § Limitaciones
+  comunes; `rondas.png` pasa a `ic_rondas.png` (Anexo § Rondas); `ensamble.png` (según el tiempo) entra en H4 y en la
+  conclusión; «envíos» pasa a «clientes contactados». No se borra texto dicho.
+- `CLAUDE.md` y `README.md` suman `anexo.md` al mapa de archivos.
+- ✓ Las 11 figuras que cita el guion tienen su SVG (`tmp_etapas/figuras_guion.py`). `verificar_readme` (32 enlaces) y
+  `scripts/sitio.sh` sin avisos.
+
+### 13-nov-2026 · inicio-y-resultados 2.7b · control y H1 a H4
+
+- Sesión: `bb6fd3f0-a8c7-4d80-ac42-bada6bb70ffa` (headless, tareas 2.1 a 2.7b) · modelo: Opus · etapa: **informe**.
+  Anotado por la revisión 2.8: 107 turnos, ~143.700 de contexto por turno (US$ 5,92), por encima del objetivo de
+  100.000 porque hizo las siete tareas de redacción en una sola sesión.
+- Recuadros de § Veredicto y § Limitaciones y su destino (D11), antes de tocarlos. Un recuadro que pasa a ítem queda
+  como `- **título.** cuerpo`, con el cuerpo entero:
+  - `control` § Limitaciones: los dos «Limitación» pasan a ítems «Hiperparámetros de cuatro meses en un final de seis»
+    y «`C-rep` en la misma cuenta».
+  - `h1` § Veredicto: «Veredicto: ninguna de las dos» queda como único recuadro. § Limitaciones: los dos «Limitación»
+    pasan a «Una sola búsqueda por variante» y «Estudios compartidos con H3».
+  - `h2` § Veredicto: «Veredicto: refutada» queda como único recuadro. § Limitaciones: los tres «Limitación» pasan a
+    «GOSS es descriptiva», «`bagging_fraction` fuera de Optuna» y «Una sola búsqueda por variante».
+  - `h3` § Veredicto: «Conclusión» queda como único recuadro y pasa primero; «H3 (réplica 0): confirmada», «Reglas 1 a
+    4, con réplicas y el δ de la ronda (5,65 M$)» y «Reglas 5 a 8, extensiones» pasan a ítems. § Limitaciones: «Depende
+    de `h1`», «Variantes que comparten estudios», «Reescalado y final de seis meses», «Test ya mirado», «Comparaciones
+    múltiples» y «Ocho réplicas» pasan a ítems con el mismo nombre.
+  - `h4` § Veredicto: «Conclusión» queda como único recuadro y pasa primero; «1. Búsqueda informada: refutada», «2.
+    Difícil contra uniforme: no cambia», «3. Fast-retrain: confirmada en las dos tasas» y «4 y 5. `H4O-0.5`: no pierde
+    y no cambia contra `H4F-0.05`» pasan a ítems. § Limitaciones: «Test ya mirado», «Comparaciones múltiples»,
+    «Estudios compartidos con H3», «Proporción de clases» y «Final con la mitad de CONTINUA» pasan a ítems.
+  - Fuera de estas dos secciones no se toca ningún recuadro (las predicciones y el aviso de H4 § Predicción quedan).
+- La conversión la hace `tmp_etapas/recuadros.py`; tres ítems cuyo cuerpo empezaba con una lista (H3 reglas 1 a 4 y 5
+  a 8, H4 regla 3) se corrigieron a mano para que la lista quede anidada.
+- Diagramas: los cinco `flowchart LR` (control y H1 a H4) pasan a `flowchart TB` (D12); las etiquetas ya eran cortas.
+- § Variantes de H3 y H4: la columna «estudio (réplica 0 / réplica k ≥ 1)» pasa a «búsqueda de hiperparámetros», con
+  la línea que explica estudio y réplica (D15). H1, H2 y el control no tienen esa columna.
+- «envíos» → «clientes contactados» en `control` § Reglas (N\*) y en H4 § Limitaciones (D14).
+- ✓ Escenario «Veredicto y limitaciones legibles»: un recuadro en cada § Veredicto y ninguno en § Limitaciones (ni en
+  Resultados § Limitaciones comunes). `grep -rn envío` vacío en las páginas publicadas. `verificar_readme`,
+  `verificar_informe_h3` (623 números, 0 sin fuente), `comun.variantes --verificar` y `scripts/sitio.sh` en verde.
+  `medir_sitio --pagina` de control y H1 a H4: 0 problemas en 5 páginas, columna de 720 px (solo avisos de tablas más
+  anchas, que se desplazan en su recuadro).
+- Tokens: sesión de las tareas 2.1 a 2.7b, ≈ US$ 5,6 (presupuesto de la sesión).
+
+### 13-nov-2026 · inicio-y-resultados grupo 2 · revisión en sesión limpia (tarea 2.8)
+
+- Sesión: `b0dd584a-b3ed-4e13-8543-85bc11586343` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 5, más las reglas del grupo 2 de
+  `tasks.md`. Commits revisados: `3d95c0a` (2.1) a `43b3f7c` (2.7b); base de comparación `bf64611`.
+- Texto perdido: `tmp_etapas/texto_perdido.py` separa en frases el texto escrito a mano de
+  `git show bf64611:experimentos/sampling_1/README.md` (fuera de los bloques generados) y busca cada una en Resultados,
+  Anexo, Corridas, Exploratorios, Inicio, Cómo trabajamos, control y H1 a H4. De 139 frases, 114 están igual; las 25
+  restantes están reformuladas, no perdidas: «A» → «aceleración» y «envíos» → «clientes contactados» (D9, D14), los
+  recuadros de Limitaciones comunes pasan a lista (D11), los enlaces a «Control y reglas» y al Anexo se reescribieron,
+  «Sus cifras no se comparan una a una» sigue en § Exploratorios y en `exploratorios/README.md`, y N\* = 3.300 está en
+  `corridas.md` § Protocolo y en `control` § Reglas.
+- Comandos: `verificar_readme` ✓ (53 números, 32 enlaces); `verificar_informe_h3` (623 números, 0 sin fuente);
+  `comun.variantes --verificar` sin problemas; `scripts/sitio.sh` en verde; `python -m scripts.medir_sitio`: 0
+  problemas en 13 páginas (solo avisos de tablas anchas en H1 a H4 y el Anexo, que se desplazan en su recuadro);
+  `grep -rn envío` vacío en las páginas publicadas; ningún «A =/≥/≤» en el texto escrito a mano de Inicio, Resultados,
+  Anexo, Exploratorios y Corridas; las anclas de Resultados (`#prediccion-del-experimento-1-nov`, `#protocolo`,
+  `#rondas`) y de Inicio existen en `site/`. Las tres líneas de más de 80 caracteres dentro de bloques ``` son
+  `mermaid` (control, H2, H3), no código, y `medir_sitio` dice que los diagramas entran en la columna.
+- Lista § 5:
+  - ✓ Cada hipótesis se decide con la regla de `control` § Reglas (no pierde y aceleración ≥ 2; H3 con las reglas 1
+    a 8 con réplicas); no aparecen reglas nuevas.
+  - ✓ Cada afirmación cita una fila o una figura: `verificar_readme` y `verificar_informe_h3` sin números sin fuente.
+  - ✓ Refutaciones con el mismo peso: H2 refutada, H1 «ninguna de las dos» y la búsqueda informada de H4 refutada van
+    en la misma lista que las confirmaciones, y las conclusiones dicen que la predicción falló con H1.
+  - ✓ Limitaciones: semillas y réplicas («Réplicas solo en parte de las variantes» y § ¿Qué tan estable es?), un solo
+    mes de test («Un mes, un año, una máquina»), adaptación de H2 (H2 § Limitaciones, «`bagging_fraction` fuera de
+    Optuna»).
+  - ✓ El guion entra en 10 minutos (bloques de 0:00 a 10:00, 978 palabras) y sigue hipótesis, diseño, limitaciones,
+    resultados y conclusiones. Las figuras citadas son los PNG de `comun.reporte --figuras`, con los nombres de los SVG
+    de `figuras/`, como dice el guion.
+  - ✓ El guion no explica el baseline: lo nombra y lo sigue.
+  - ✓ Bibliografía lista en `docs/metodo.md` § Bibliografía (cuatro referencias y el baseline con su id de Zulip).
+- Reglas del grupo 2: ✓ secciones viejas listadas con su destino antes de mover (2.1, 2.5, 2.7b); ✓ D1 en el orden de
+  Resultados; ✓ la tabla completa de consulta entre la respuesta y las conclusiones está plegada (`<details>`); ✓
+  redacción impersonal (`sitio.sh`).
+- Correcciones: en Resultados § ¿Qué conviene achicar? se agrega, antes del bloque A, que la primera pestaña muestra
+  la mejor variante de cada hipótesis valga la pena o no, y que `B0.25` acelera 1,23 veces y no vale la pena (era la
+  observación abierta de la revisión 1.16; el texto lo decía solo más abajo, en la lista de veredictos).
+  `verificar_readme` y `sitio.sh` en verde después del cambio.
+- `comun/tokens.py --experimento sampling_1` corrido. La sesión que aplicó 2.1 a 2.7b quedó anotada en la entrada de
+  2.7b (supera el objetivo de contexto por turno).
+- Tokens: ~40 turnos · contexto ~78.000 por turno · ≈ US$ 1,6 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados 3.1 · sesión de aplicación (anotada en la revisión)
+
+- Sesión: `3740c881-ea86-4200-b29a-51a49eae2ec4` (headless, `ledger/sesiones/g3_aplicar_20261113T200358.json`) ·
+  modelo: Sonnet · etapa: **codigo**. Aplicó 3.1 (commit `b378e7c`) y no dejó entrada propia; la clasifica la
+  revisión 3.2 para que `comun/tokens.py` no la cuente sin etapa. 31 turnos, contexto ~67.000 por turno.
+
+### 13-nov-2026 · inicio-y-resultados grupo 3 · revisión en sesión limpia del cambio completo (tarea 3.2)
+
+- Sesión: `6b3c391e-8127-4621-b95b-7de49841c666` (headless, sin contexto de la sesión que aplicó) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: los escenarios de `sitio-informes` y `reporte-visual` del cambio
+  (tarea 3.2), con `docs/revision.md` § 3 para el cambio de código. Commits revisados: `27482e5` (3.0), `0b82c95`
+  (3.0b) y `b378e7c` (3.1), y el cambio entero sobre `site/`.
+- Comandos: `pytest` entero, 267 en verde (219 en `tests/`, 48 fuera); `comun.variantes --verificar` sin problemas;
+  `verificar_readme` ✓ (53 números, 32 enlaces); `verificar_informe_h3` (623 números, 0 sin fuente);
+  `comun.reporte --todos` tres veces (antes y después de la corrección) sin cambios en `git status` (escenarios
+  «Regenerar dos veces» y «Regenerar con las predicciones fuera del repo»); `scripts/sitio.sh` en verde;
+  `python -m scripts.medir_sitio`: 0 problemas en 13 páginas (desborde a 390 px, ancho único a 1440 px y tope de 800 px
+  en Resultados; solo avisos de tablas anchas en H1 a H4 y el Anexo, que se desplazan en su recuadro).
+- Escenarios sobre `site/` (`tmp_etapas/r32_escenarios.py`):
+  - ✓ Contenido publicado: 13 páginas; no existen bitácora de h3, `comun/reporte.py`, `openspec/`, `docs/revision.md`,
+    el guion ni la plantilla. «Cómo trabajamos» enlaza bitácoras y `openspec/specs` en GitHub.
+  - ✓ Navegación: `site_name` «Sampling_1 · DMEyF 2026», «H4 · Muestras informadas por clase» igual en la barra y en el
+    título, «Control y reglas», Anexo como hija de Resultados; botón de modo con `media` y `toggle`. «GOSS» en la
+    búsqueda devuelve H2.
+  - ✓ Portada: tradeoff, desglose y ensamble desde `figuras/`, recuadro de limitaciones, botón a Resultados, tarjetas
+    y ninguna tabla. Hipótesis: H1 a H4 con su veredicto.
+  - ✓ Resultados: pestañas con «Lo mejor de cada hipótesis» (4 columnas visibles), ninguna tabla entre Limitaciones
+    comunes y Conclusiones; el bloque B se enlaza en una línea con «no se comparan una a una».
+  - ✓ H1 a H4: el primer párrafo dice qué se prueba; Veredicto con un solo recuadro; Limitaciones en lista con negritas
+    y sin recuadros; en H3 el diagrama va antes de la primera tabla.
+  - ✓ Exploratorios: diagrama, pregunta y advertencia por estudio, `validacion_50_semillas` con figuras; las 11
+    imágenes resuelven en `site/`.
+  - ✓ Corridas y Cómo trabajamos con diagramas; ninguna línea de código de más de 80 caracteres.
+  - ✓ «envío» no aparece ni en el HTML de `site/` ni en los SVG.
+  - ✓ Con tests: hipótesis nueva sin tocar el generador, ledger vacío pendiente, exploratorio sin CSV, marcador faltante,
+    PNG con `--figuras`, curva de `U0.05` debajo de 0 en N\*, bloque B sin autor; «Gráfico sin ronda anterior» en
+    `fig_rondas` (solo el punto vigente, sin segmento).
+  - ✗ → corregido: «Gráfico sin datos» pide que, sin réplicas, el gráfico de semillas y réplicas muestre solo las
+    semillas; `bloques_sampling` lo dejaba pendiente («ninguna variante tiene réplicas») aunque `fig_semillas` ya
+    dibuja sin rombos cuando no hay réplicas.
+  - Sin verificar acá (capturas del orquestador, 1.2, 1.10, 3.0 y 3.1): encabezado en el teléfono, barras laterales
+    parejas, modo oscuro recordado y contraste de tablas y figuras en oscuro.
+- Correcciones: `comun/reporte.py` (`bloques_sampling`): el bloque `semillas` llama siempre a `fig_semillas`. Test
+  renombrado a `test_sin_replicas_semillas_se_dibuja_y_varianza_y_diferencias_salen_pendientes`, que ahora espera
+  la figura. `pytest tests/test_reporte.py tests/test_verificadores.py` (42) en verde; regenerar no cambia nada porque
+  hoy hay réplicas.
+- `comun/tokens.py --experimento sampling_1` corrido.
+- Tokens: ~40 turnos · contexto ~70.000 por turno · ≈ US$ 1,5 (presupuesto de la sesión; `tokens.py` da «US$ ?»).
+- Tutor: —
+
+### 13-nov-2026 · inicio-y-resultados archivado
+
+- Specs sincronizadas en `openspec/specs/`: protocolo-experimental (1 requisito modificado), reporte-visual (4
+  modificados) y sitio-informes (7 modificados y «Modo oscuro recordado», nuevo). Se verificó que cada requisito
+  coincide con su delta y `openspec validate --specs` da 7 de 7.
+- El cambio pasa a `openspec/changes/archive/2026-11-13-inicio-y-resultados/`. 29 de 29 tareas, 12 sesiones headless,
+  US$ 22,58.
+- **Para quien una `main` en la rama de `tiempos-confiables-y-consistencia`:** `bloque-a-completo` y `rondas` ahora
+  viven en `experimentos/sampling_1/anexo.md`, no en `sampling_1/README.md`, y `comparar_rondas.py` y los dos
+  verificadores leen y escriben ahí. Las predicciones de `main` están en `DATOS_DIR/ledger/<exp>/predicciones/` (D18):
+  `comun/rutas.prediccion()` también acepta la ruta vieja del repo. Después de unir, hay que regenerar. Se le avisó a
+  la sesión «consistencia», que espera conflicto en `scripts/vm.sh`.
+
+### 13-nov-2026 · sitio: barras, navegación y diagramas (pedido de ajustes)
+
+- Barras laterales: cada renglón ocupa el ancho de la línea bajo el título; la página activa se marca solo con fondo
+  (sin borde izquierdo); los subniveles se sangran sin guía vertical; en oscuro el renglón bajo el mouse va en blanco; una
+  página sin índice ya no muestra un recuadro vacío a la derecha.
+- Navegación: Inicio, Resultados y Anexo de resultados al mismo nivel; «Cómo medimos» pasa a **Método**
+  (`sitio/como-medimos/` → `sitio/metodo/`) y suma Cómo trabajamos como cuarta hija y cuarta tarjeta.
+- Tarjetas: al pasar el mouse, borde y fondo del color de acento (la sombra del tema no se veía en oscuro).
+- Diagramas Mermaid de H1–H4 y del control: `style` no acepta `var(--…)` (Mermaid falla al parsear), así que los
+  cuadros destacados van con tinte semitransparente (hex de 8 dígitos) y borde de color; el texto queda del tema y se
+  lee en claro y en oscuro.
+- Secuencias sin ramas: la línea de tiempo de fases (Mermaid `timeline`, chica y con colores fijos) y el recorrido de
+  una corrida en Corridas, y las etapas en Cómo trabajamos, pasan a `.pasos` (lista numerada con círculos y línea;
+  `.fechas` para la línea de tiempo y `.compuertas` para la revisión entre etapas). El diagrama de los pasos para
+  agregar una hipótesis se saca: la lista detallada misma va como `.pasos`. Los meses del control pasan a una grilla
+  etapa × mes (Optuna y final, con historia, train, AUC y test).
+- De paso: cuatro listas se publicaban pegadas a un párrafo (Corridas § Máquina, Control § Diseño, Cómo trabajamos
+  § Tokens y paso 5); se separaron con una línea en blanco.
+- Spec `sitio-informes` actualizada (navegación, tarjetas, barras, diagramas). `scripts/sitio.sh` y `medir_sitio`
+  (13 páginas, 0 problemas) en verde; capturas en claro y oscuro de H1, H4, control, corridas, método y cómo trabajamos.
+- Corrección (mismo día): los renglones seguían sin llegar al ancho del separador y los grupos quedaban más separados.
+  Causas, medidas en Chrome: Material pone `[dir=ltr] .md-nav--primary .md-nav__list { padding-left: .6rem;
+  padding-bottom: .4rem }` y `margin-right: .4rem` en cada enlace, con más especificidad que `estilos.css`, y el
+  `padding-bottom` queda también en un grupo cerrado. Ahora las reglas llevan `[dir]`, el grupo cerrado no ocupa lugar
+  y la separación es un `gap` de 2 px en la lista y en el ítem con sublista: todos los renglones de las dos barras van de
+  borde a borde del separador, con la misma separación dentro, al entrar y al salir de un grupo.

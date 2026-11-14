@@ -1,16 +1,26 @@
 # experimento-sampling — mapa y reglas
 
-Repo de experimentos de DMEyF 2026: **una carpeta por experimento** en `experimentos/<nombre>/` (docs, src,
-scripts, ledger, informe), lo compartido en `comun/`, `plantilla/` para empezar uno nuevo, `docs/` con el método y las
-listas de revisión. Desde el 3-nov cada hipótesis tiene su carpeta (`control`, `h1`, `h2`, `h3`) y `sampling_1` es el experimento **Sampling_1** (comisión lunes): Agustina Razanov, Martín López, Luis María Laguinge; tutor
+Repo de experimentos de DMEyF 2026: **una carpeta por experimento** en `experimentos/<nombre>/` (`README.md` con
+idea, predicción, diseño, dependencias, resultado generado, veredicto y limitaciones; `figuras/`, `docs/bitacora.md`,
+`ledger/`, y `src/` o `scripts/` si hacen falta), lo compartido en `comun/`, `plantilla/` para empezar uno nuevo, `docs/`
+con el método (`metodo.md`) y las listas de revisión (`revision.md`). El sitio (MkDocs Material, `mkdocs.yml`,
+`scripts/sitio.sh`) publica solo los README de los experimentos, `index.md`, `sitio/{hipotesis,metodo}/README.md`,
+`experimentos/sampling_1/{anexo.md,corridas.md,exploratorios/README.md}` y `docs/metodo.md`; lo demás se enlaza en GitHub. Las páginas publicadas y el
+README raíz son impersonales: sin nombres de docentes ni integrantes («el baseline», «la pregunta del experimento», ids de Zulip);
+`scripts/sitio.sh` lo verifica.
+`experimentos/sampling_1/README.md` es Resultados y `anexo.md`, el Anexo de resultados (tablas completas y rondas);
+`sampling_1/docs/` tiene la bitácora, el guion del video y las rutas
+viejas (`rutas.md`). Desde el 3-nov cada hipótesis tiene su carpeta (`control`, `h1` a `h4`) y `sampling_1` es el experimento **Sampling_1** (comisión lunes): Agustina Razanov, Martín López, Luis María Laguinge; tutor
 Joaquín I. Aramendía; tópico Zulip `Experimentos - Lunes > sampling_1`. Pregunta del tutor (1-nov): ¿vale la pena el
 tradeoff entre velocidad y pérdida de performance? Sampling_2 hace undersampling de la clase mayoritaria; **nosotros
 aislamos la velocidad sin tocar la proporción de clases**.
 
 **El cambio `experimento-sampling-velocidad` está cerrado y archivado** (2-nov-2026) en
 `openspec/changes/archive/2026-11-02-experimento-sampling-velocidad/` (proposal, design, tasks); las specs vigentes
-quedaron consolidadas en `openspec/specs/`. Los entregables están en `experimentos/sampling_1/informe/` y en el
-`informe/` de cada hipótesis. Agregar una hipótesis: `docs/metodo.md` § Agregar una hipótesis (variantes y estudios se
+quedaron consolidadas en `openspec/specs/`. Los entregables están en el `README.md` de `sampling_1` y de cada
+hipótesis: las tablas y figuras salen de `python -m comun.reporte --todos` entre marcadores `<!-- generado:… -->` (no se
+editan a mano) y el texto de afuera se escribe a mano (`python -m scripts.verificar_informe_h3` y
+`python -m scripts.verificar_readme` comprueban sus números). Agregar una hipótesis: `docs/metodo.md` § Agregar una hipótesis (variantes y estudios se
 registran en `comun/variantes.py`; `python -m comun.variantes --verificar` antes de commitear). Todo se corre desde la raíz del repo.
 Un experimento nuevo (propio o de otro integrante) se propone con `openspec new change` siguiendo `plantilla/` y
 `docs/metodo.md`; los scripts headless `scripts/etapas.sh <exp> <cambio>` sirven para cualquier cambio. Cada experimento importa solo de `comun/` y de su carpeta; un cambio en `comun/` se anuncia en el
@@ -27,8 +37,9 @@ commit.
 - **Revisión en sesión limpia**: la lista de cada compuerta está en `docs/revision.md`; revisa una sesión nueva sin
   contexto (o un subagente `general-purpose`, que arranca vacío) o un integrante distinto.
 - **Commitear sin pedir permiso**, en cualquier sesión (interactiva o headless), al cerrar una tarea o un grupo, con
-  mensaje descriptivo y sin `Co-Authored-By` ni pie de Claude. El push y los tags de corridas los decide Agustina salvo
-  que una tarea lo pida. Nada del dataset en el repo.
+  mensaje descriptivo y sin `Co-Authored-By` ni pie de Claude. **Pushear siempre** después de commitear, sin preguntar.
+  Las sesiones headless de `scripts/etapa.sh` no pushean: pushea quien las orquesta, al terminar cada grupo. Los tags de
+  corridas los decide Agustina, salvo que una tarea los pida. Nada del dataset en el repo.
 
 ## Hechos que no están en el código
 

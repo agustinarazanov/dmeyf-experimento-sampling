@@ -2,8 +2,8 @@
 
 ## Purpose
 
-Define el sitio público que reúne los documentos del repo (conclusión, evidencia, método y proceso) para que el grupo y
-el tutor lean el experimento navegando desde una sola dirección, sin clonar el repo.
+Define el sitio público que reúne los documentos del repo (conclusión, evidencia, método y proceso) para que quien lo
+lea recorra el experimento desde una sola dirección, sin clonar el repo.
 
 ## Requirements
 
@@ -12,68 +12,106 @@ El sitio SHALL construirse y publicarse en GitHub Pages en cada push a `main`, a
 manuales después del push. Si el build falla, SHALL quedar publicada la versión anterior.
 
 #### Scenario: Push con un informe editado
-- **WHEN** se commitea un cambio en `experimentos/h3/informe/informe.md` y se pushea a `main`
-- **THEN** al terminar el workflow la página del informe de h3 en el sitio muestra el cambio
+- **WHEN** se commitea un cambio en `experimentos/h3/README.md` y se pushea a `main`
+- **THEN** al terminar el workflow la página de H3 en el sitio muestra el cambio
 
 #### Scenario: Build roto
 - **WHEN** el build del sitio falla
 - **THEN** el workflow termina en error y el sitio sigue mostrando la última versión publicada
 
 ### Requirement: Contenido publicado
-El sitio SHALL publicar como páginas, por cada experimento, su informe, su reporte, su hipótesis, su diseño y su
-bitácora, además de `docs/metodo.md`, `docs/revision.md`, las specs vigentes de `openspec/specs/` y los documentos
-enlazados desde los informes. El sitio SHALL NOT publicar código, tests, scripts, la plantilla, la configuración de
-Claude ni los cambios de OpenSpec.
+El sitio SHALL publicar como páginas solo los documentos de lectura: la portada, el `README.md` de cada experimento
+(`sampling_1`, `control`, `h1` a `h4`), el anexo de resultados, la página de corridas, la de exploratorios,
+`docs/metodo.md` y las páginas de sección. El sitio SHALL NOT publicar bitácoras, el archivo de Zulip, las specs,
+`docs/revision.md`, el guion del video, los README de cada exploratorio, código, tests, scripts, ledgers, la plantilla,
+la configuración de Claude ni los cambios de OpenSpec. Lo que queda fuera se enlaza en GitHub desde «Cómo trabajamos».
 
 #### Scenario: Documento de un experimento
-- **WHEN** se abre en el sitio la hipótesis de h4
-- **THEN** se ve `experimentos/h4/docs/hipotesis.md` como página, con sus tablas renderizadas
+- **WHEN** se abre en el sitio la página de H4
+- **THEN** se ve `experimentos/h4/README.md` con su idea, predicción, diseño, resultado, veredicto y limitaciones, y sus
+  tablas y figuras
+
+#### Scenario: Anexo publicado
+- **WHEN** se abre en el sitio la ruta de `experimentos/sampling_1/anexo.md`
+- **THEN** se ven las tablas completas del bloque A, la varianza, las diferencias entre variantes y la comparación entre
+  rondas
+
+#### Scenario: Bitácora fuera del sitio
+- **WHEN** se pide en el sitio la ruta de `experimentos/h3/docs/bitacora.md` o de una spec de `openspec/specs/`
+- **THEN** el sitio responde que la página no existe, y «Cómo trabajamos» tiene el enlace a ese archivo en GitHub
 
 #### Scenario: Código excluido
 - **WHEN** se pide en el sitio la ruta de `comun/reporte.py` o de un archivo de `openspec/changes/`
 - **THEN** el sitio responde que la página no existe
 
 ### Requirement: Navegación por secciones
-El sitio SHALL tener una barra lateral con secciones en este orden: Resultados (informe conjunto, reporte conjunto,
-tabla de resultados, decisiones, guion), Experimentos (control, h1 a h4, cada uno con informe, reporte, hipótesis y
-diseño, y los exploratorios), Método, Proceso (bitácoras) y Especificaciones. El sitio SHALL tener búsqueda de texto completo sobre todas
-las páginas.
+El sitio SHALL tener una barra lateral con estas entradas en este orden: Inicio, Resultados, Anexo de resultados (las
+tres al mismo nivel), Hipótesis (H1 a H4) y Método (control y reglas, corridas, exploratorios y cómo trabajamos). Cada entrada de la
+barra SHALL llevar el título de su página (por ejemplo «H4 · Muestras informadas por clase»). Cada resultado SHALL tener
+una sola página donde buscarlo. El sitio SHALL tener búsqueda de texto completo sobre todas las páginas publicadas.
+
+#### Scenario: Buscar un resultado
+- **WHEN** alguien quiere el Δ de `H3-0.1`
+- **THEN** lo encuentra en Resultados y en la página de H3, con su detalle completo en el Anexo, y no existe otra página
+  de resultados entre las que elegir
+
+#### Scenario: Título en la barra
+- **WHEN** se abre la sección Hipótesis en la barra lateral
+- **THEN** cada entrada dice «HN · <título de la hipótesis>», igual que el título de su página
 
 #### Scenario: Llegar a una bitácora
 - **WHEN** alguien busca la bitácora de h3
-- **THEN** la encuentra en la sección Proceso de la barra lateral, no entre los resultados
+- **THEN** no la encuentra en la barra lateral, y «Cómo trabajamos» tiene el enlace a ese archivo en GitHub
 
 #### Scenario: Buscar un término
 - **WHEN** se busca «GOSS» en el sitio
-- **THEN** la búsqueda devuelve las páginas de H2 que lo mencionan
+- **THEN** la búsqueda devuelve la página de H2
 
 ### Requirement: Portada orientada a la conclusión
-La página de inicio SHALL presentar el experimento (pregunta del tutor, integrantes, comisión) y llevar primero al
-informe conjunto de `sampling_1`, y después a los reportes, las hipótesis y el método.
+La página de inicio SHALL ser un resumen que se lee sin ir a otra página: la pregunta, la respuesta corta, tres
+hallazgos con su figura y dos o tres líneas cada uno (qué vale la pena, por qué alcanza con achicar la optimización,
+qué se hace con el tiempo ahorrado), las limitaciones principales en un recuadro, un enlace destacado a Resultados y una
+tarjeta por hipótesis. La portada SHALL NOT nombrar personas ni copiar tablas.
 
 #### Scenario: Primera visita del tutor
-- **WHEN** el tutor abre la dirección del sitio
-- **THEN** ve la pregunta, un enlace destacado al informe conjunto y la barra lateral con el resto
+- **WHEN** alguien abre la dirección del sitio
+- **THEN** ve la pregunta, la respuesta en pocas líneas, el mapa del tradeoff, el desglose del tiempo y la comparación a
+  tiempo igual con su explicación, las limitaciones principales, un enlace destacado a Resultados y una tarjeta por
+  hipótesis
+
+#### Scenario: Figuras de la ronda vigente
+- **WHEN** se regenera con una ronda nueva
+- **THEN** las tres figuras de la portada y sus títulos cambian solos, sin editar el texto escrito a mano
 
 ### Requirement: Enlaces relativos conservados
-Las páginas SHALL estar en la misma ruta que el archivo del repo, de modo que un enlace relativo entre documentos que
-funciona en github.com funcione también en el sitio, sin reescribir los documentos.
-
-#### Scenario: Del informe al reporte
-- **WHEN** en el informe de h1 se sigue el enlace `reporte.html`
-- **THEN** se abre la página del reporte de h1 dentro del sitio
+Las páginas SHALL estar en la misma ruta que el archivo del repo, y el `README.md` de una carpeta SHALL ser la página de
+esa carpeta. Así, un enlace relativo entre documentos que funciona en github.com funciona también en el sitio, sin
+reescribir los documentos.
 
 #### Scenario: Enlace entre Markdown
-- **WHEN** en el informe conjunto se sigue el enlace `../../h3/docs/diseno.md`
-- **THEN** se abre la página del diseño de h3 en el sitio
+- **WHEN** en `experimentos/sampling_1/README.md` se sigue el enlace `../h3/README.md`
+- **THEN** se abre la página de H3 en el sitio
+
+#### Scenario: Del informe al reporte
+- **WHEN** en la página de H1 se sigue el enlace a una figura generada en `figuras/`
+- **THEN** se ve la figura dentro del sitio, igual que en github.com
+
+#### Scenario: Carpeta como página
+- **WHEN** se abre `experimentos/h1/` en github.com y la misma ruta en el sitio
+- **THEN** los dos muestran el contenido de `experimentos/h1/README.md`
 
 ### Requirement: Enlaces internos verificados
 El build SHALL fallar si alguna página publicada tiene un enlace interno o una imagen que no resuelve dentro del sitio.
-Los enlaces externos SHALL NOT hacer fallar el build.
+Un enlace a un archivo del repo que no se publica SHALL apuntar a GitHub y no hacer fallar el build. Los enlaces
+externos SHALL NOT hacer fallar el build.
 
 #### Scenario: Enlace a un documento borrado
-- **WHEN** un informe enlaza a un `.md` que ya no existe
+- **WHEN** una página enlaza a un `.md` que ya no existe
 - **THEN** el build falla nombrando la página y el enlace roto, y no se publica
+
+#### Scenario: Enlace a una página no publicada
+- **WHEN** una página publicada enlaza en forma relativa a `docs/bitacora.md`
+- **THEN** el build falla, porque ese enlace tiene que apuntar a GitHub
 
 #### Scenario: Enlace externo caído
 - **WHEN** un enlace a Zulip o a un sitio externo no responde
@@ -81,8 +119,143 @@ Los enlaces externos SHALL NOT hacer fallar el build.
 
 ### Requirement: Vista previa local
 El sitio SHALL poder construirse y verse localmente con un solo comando documentado, con el mismo contenido y la misma
-verificación de enlaces que el build publicado.
+verificación de enlaces que el build publicado, usando solo el entorno de Python del repo.
 
 #### Scenario: Revisar antes de pushear
-- **WHEN** Agustina corre el comando documentado en el README
+- **WHEN** un integrante corre el comando documentado en el README
 - **THEN** el sitio queda servido en `localhost` y la verificación de enlaces informa lo mismo que en CI
+
+### Requirement: Redacción impersonal
+Las páginas publicadas y el README raíz SHALL NOT nombrar docentes ni integrantes, ni decir quién hizo cada tarea.
+Llevan «el baseline» y no «el baseline de» alguien, «la pregunta del experimento» y no «la pregunta del» alguien, y no
+tienen línea de autor. Las fuentes del curso se citan por el id del mensaje de Zulip.
+
+#### Scenario: Buscar nombres
+- **WHEN** se busca en las páginas publicadas «tutor», «Bolaños», «autor» o el nombre de un integrante
+- **THEN** no hay resultados
+
+#### Scenario: Exploratorio sin autor
+- **WHEN** se lee la entrada de un exploratorio en la página de exploratorios
+- **THEN** tiene pregunta, protocolo, cifras y advertencia, y no dice quién lo hizo
+
+### Requirement: Cada dato en un solo lugar
+Cada número de una tabla SHALL aparecer en un solo lugar del sitio: la tabla resumen del bloque A en Resultados, las
+tablas completas en el Anexo y las de cada hipótesis en su página. Una figura generada SHALL poder mostrarse en más de
+una página, porque es el mismo archivo. Los números escritos a mano en la portada y en Resultados SHALL estar en las
+tablas completas del Anexo. Las conclusiones SHALL escribirse una vez: las de cada hipótesis en su página, la
+comparación y la respuesta en Resultados; la portada las resume y enlaza. Una página SHALL NOT abrir con un párrafo que
+explique dónde están otras páginas.
+
+#### Scenario: Tabla del bloque A
+- **WHEN** se busca en el sitio la fila de `U0.25` del bloque A
+- **THEN** su resumen aparece solo en Resultados y su fila completa solo en el Anexo
+
+#### Scenario: Número de la portada
+- **WHEN** la portada dice que en el control la optimización es el 94 % del tiempo, o cita un Δ o una aceleración
+- **THEN** el verificador de números encuentra ese valor en las tablas completas del Anexo o en un bloque generado, y
+  falla nombrándolo si no está
+
+#### Scenario: Comienzo de una hipótesis
+- **WHEN** se abre la página de H1
+- **THEN** su primer párrafo dice qué se prueba, no dónde están las reglas ni los números
+
+### Requirement: Índice de la página
+Cada página SHALL mostrar, en pantallas de escritorio, un índice lateral con sus títulos, que marca la sección que se
+está leyendo y lleva a cada una con un clic. En pantallas angostas el índice SHALL quedar accesible sin tapar el
+contenido.
+
+#### Scenario: Página larga
+- **WHEN** se lee Resultados en una ventana de 1440 px y se baja hasta Limitaciones
+- **THEN** el índice de la derecha muestra todos los títulos y marca Limitaciones
+
+### Requirement: Páginas de sección como índice
+Una entrada de la barra lateral que tiene hijas y no tiene contenido propio (Hipótesis, Método) SHALL ser una página
+corta con una tarjeta por hija (título y una línea). El contenido SHALL estar en las hijas. Al pasar el mouse por una
+tarjeta, su borde SHALL cambiar de color con contraste suficiente en claro y en oscuro.
+
+#### Scenario: Abrir Hipótesis
+- **WHEN** se abre la sección Hipótesis
+- **THEN** se ven cuatro tarjetas, H1 a H4, cada una con su idea en una línea y su veredicto
+
+#### Scenario: Abrir Resultados
+- **WHEN** se hace clic en Resultados en la barra lateral
+- **THEN** se abre la página de Resultados, y el Anexo de resultados es la entrada siguiente, al mismo nivel
+
+### Requirement: Encabezado que entra
+El encabezado SHALL decir «Sampling_1 · DMEyF 2026» y SHALL leerse completo en todos los anchos, del teléfono al
+escritorio: en una línea en escritorio y, en pantallas angostas, en un encabezado más alto, con «Sampling_1» y «DMEyF
+2026» en dos líneas, sin cortar palabras ni tapar los botones de menú, búsqueda y modo.
+
+#### Scenario: Barra lateral en escritorio
+- **WHEN** se abre el sitio a 1280 px
+- **THEN** el nombre del sitio («Sampling_1 · DMEyF 2026») se ve en una sola línea
+
+#### Scenario: Barras laterales parejas
+- **WHEN** se abre una página con índice a 1440 px, en claro y en oscuro
+- **THEN** las dos barras muestran su título, arrancan a la misma altura, van en un recuadro, y la página activa y la
+  sección que se lee están marcadas con un fondo, sin borde lateral
+- **AND** cada renglón ocupa el ancho de la línea bajo el título, los subniveles se sangran sin guía vertical, y en
+  oscuro el renglón bajo el mouse va en blanco
+- **AND** en una página sin índice no hay recuadro a la derecha
+
+#### Scenario: Veredicto y limitaciones legibles
+- **WHEN** se abre la página de H3
+- **THEN** Veredicto tiene un solo recuadro (la conclusión) y Limitaciones ninguno: listas con el nombre en negrita
+- **AND** el diagrama de la hipótesis entra en la columna a 1440 px con la letra a tamaño de texto
+
+#### Scenario: Encabezado en el teléfono
+- **WHEN** se abre el sitio a 390 px
+- **THEN** el encabezado es más alto que el de escritorio y muestra «Sampling_1» y «DMEyF 2026» completos, en dos líneas,
+  junto a los botones
+
+### Requirement: Páginas con estructura visual
+Cada página publicada SHALL ayudar a leer con elementos visuales y no solo con texto:
+- los veredictos y las limitaciones van en recuadros destacados;
+- cada hipótesis tiene un diagrama del pipeline que marca dónde corta;
+- Control y reglas tiene los meses que usa cada etapa (una fila por etapa, una columna por mes) y la regla de
+  veredicto como diagrama;
+- Corridas tiene la línea de tiempo de las fases y los pasos del recorrido de una corrida, de la VM al ledger y a las
+  páginas;
+- Cómo trabajamos tiene un diagrama de las etapas con sus compuertas de revisión y uno de los pasos para agregar una
+  hipótesis;
+- Exploratorios tiene un diagrama de qué motivó cada estudio en el experimento.
+
+Una secuencia sin ramas (una caja por paso) SHALL ir como lista de pasos numerados unidos por una línea, no como
+diagrama de flujo. Los colores de los diagramas SHALL leerse en claro y en oscuro: tintes semitransparentes con borde
+de color, nunca un fondo claro fijo. Un texto largo SHALL NOT ir dentro de una celda de tabla.
+
+#### Scenario: Página de H3
+- **WHEN** se abre la página de H3
+- **THEN** antes de los números hay un diagrama que muestra que H3 achica solo la optimización, y el veredicto va en un
+  recuadro destacado
+
+#### Scenario: Exploratorios
+- **WHEN** se abre la página de exploratorios
+- **THEN** cada estudio es una sección con sus párrafos y sus cifras, no una fila de tabla con texto
+
+#### Scenario: Fases de las corridas
+- **WHEN** se abre Corridas
+- **THEN** las fases se ven en una línea de tiempo y cada fase tiene su sección o su ítem con lo que corrió, sin texto
+  largo dentro de una celda de tabla
+
+#### Scenario: Cómo trabajamos
+- **WHEN** se abre Cómo trabajamos
+- **THEN** antes del detalle hay un diagrama de las etapas, con la revisión en sesión limpia en cada compuerta
+
+### Requirement: Modo oscuro recordado
+El sitio SHALL ofrecer un modo claro y uno oscuro, con un botón en el encabezado para cambiar de uno a otro. La primera
+visita SHALL seguir la preferencia del sistema, y la elección SHALL recordarse en las visitas siguientes del mismo
+navegador. En los dos modos, los colores de veredicto, las barras de IC, las tablas generadas y las figuras SHALL
+leerse con contraste suficiente.
+
+#### Scenario: Cambiar a oscuro
+- **WHEN** alguien toca el botón de modo en el encabezado
+- **THEN** el sitio pasa a oscuro, y al abrir otra página o volver otro día sigue en oscuro
+
+#### Scenario: Tabla de veredictos en oscuro
+- **WHEN** se abre Resultados en modo oscuro
+- **THEN** las celdas y las etiquetas de *pierde*, *no pierde* e *indeterminado* se distinguen y su texto se lee
+
+#### Scenario: Figura en oscuro
+- **WHEN** se abre la portada en modo oscuro
+- **THEN** los ejes, las etiquetas y los títulos de las figuras se leen sobre el fondo de la página

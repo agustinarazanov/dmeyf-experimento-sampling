@@ -5,8 +5,118 @@
   "protocolo": "9 estrategias con hiperparámetros fijos, 50 semillas finales (10 oficiales + 110017 + i·19937), presupuesto de 900 s; ranking y curva según K en 201908, 201910 solo informado",
   "advertencia": "origen: commit 9e1889e, script de Colab con su propio panel; el resumen original elige con 201910 (ya mirado) y hay piezas reconstruidas (presupuesto, resumen CSV, H4_Hard); no es una variante ni cambia el veredicto de ninguna hipótesis",
   "tablas": [
-    {"csv": "resultados/resumen_50_semillas_original.csv", "columnas": ["g_201908", "gmax_201908", "auc_201908", "g_201910", "auc_201910", "tiempo_s"]},
-    {"csv": "resultados/ranking_201908_original.csv", "columnas": ["puesto_201908", "g_201908", "g_201908_sd"]},
-    {"csv": "resultados/presupuesto_original.csv", "columnas": ["k_presupuesto", "ens_k_201908", "ens_k_201910"]}
+    {
+      "csv": "resultados/resumen_50_semillas_original.csv",
+      "columnas": [
+        {
+          "columna": "g_201908",
+          "etiqueta": "G en 201908",
+          "escala": 1e-06,
+          "unidad": "M$"
+        },
+        {
+          "columna": "gmax_201908",
+          "etiqueta": "G máxima en 201908",
+          "escala": 1e-06,
+          "unidad": "M$"
+        },
+        {
+          "columna": "auc_201908",
+          "etiqueta": "AUC en 201908",
+          "escala": 1,
+          "unidad": ""
+        },
+        {
+          "columna": "g_201910",
+          "etiqueta": "G en 201910",
+          "escala": 1e-06,
+          "unidad": "M$"
+        },
+        {
+          "columna": "auc_201910",
+          "etiqueta": "AUC en 201910",
+          "escala": 1,
+          "unidad": ""
+        },
+        {
+          "columna": "tiempo_s",
+          "etiqueta": "Tiempo",
+          "escala": 1,
+          "unidad": "s"
+        }
+      ]
+    },
+    {
+      "csv": "resultados/ranking_201908_original.csv",
+      "columnas": [
+        {
+          "columna": "puesto_201908",
+          "etiqueta": "Puesto en 201908",
+          "escala": 1,
+          "unidad": ""
+        },
+        {
+          "columna": "g_201908",
+          "etiqueta": "G en 201908",
+          "escala": 1e-06,
+          "unidad": "M$"
+        },
+        {
+          "columna": "g_201908_sd",
+          "etiqueta": "Desvío de G en 201908",
+          "escala": 1e-06,
+          "unidad": "M$"
+        }
+      ]
+    },
+    {
+      "csv": "resultados/presupuesto_original.csv",
+      "columnas": [
+        {
+          "columna": "k_presupuesto",
+          "etiqueta": "K que entran en el presupuesto",
+          "escala": 1,
+          "unidad": ""
+        },
+        {
+          "columna": "ens_k_201908",
+          "etiqueta": "G del ensamble en 201908",
+          "escala": 1e-06,
+          "unidad": "M$"
+        },
+        {
+          "columna": "ens_k_201910",
+          "etiqueta": "G del ensamble en 201910",
+          "escala": 1e-06,
+          "unidad": "M$"
+        }
+      ]
+    }
+  ],
+  "figuras": [
+    {
+      "archivo": "figuras/contraccion_ic_95.png",
+      "leyenda": "Reporte original (50 semillas, hiperparámetros fijos): contracción del IC 95 % de Δ"
+    },
+    {
+      "archivo": "figuras/curva_k_semillas_y_pipeline_15_min.png",
+      "leyenda": "Reporte original (50 semillas, hiperparámetros fijos): ganancia según K y pipeline de 15 minutos"
+    },
+    {
+      "archivo": "figuras/boxplot_50_semillas.png",
+      "leyenda": "Reporte original (50 semillas, hiperparámetros fijos): ganancia por estrategia con las 50 semillas"
+    },
+    {
+      "archivo": "figuras/bandas_de_curvas_completas.png",
+      "leyenda": "Reporte original (50 semillas, hiperparámetros fijos): bandas de las curvas de ganancia"
+    },
+    {
+      "archivo": "figuras/g_en_201908_por_estrategia.png",
+      "leyenda": "Resumen original de 50 semillas: ganancia en 201908 por estrategia"
+    },
+    {
+      "archivo": "figuras/g_segun_k.png",
+      "leyenda": "Resumen original de 50 semillas: ganancia en 201908 según K"
+    }
   ]
 }

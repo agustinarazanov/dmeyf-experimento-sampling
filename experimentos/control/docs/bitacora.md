@@ -57,3 +57,39 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - `H4O-0.5` (regla en `h4/docs/hipotesis.md`): contra `C`, Δ con réplicas −1,33 [−4,27; 1,60] M$, cota ≥ −δ → *no
   pierde*, **se confirma**; contra `H4F-0.05`, D_OF = −2,74 [−5,69; 0,21] M$ → *no cambia*, **se confirma**.
   A(`H4O-0.5`) = 2,31 contra A(`H4F-0.05`) = 12,50 (T mediana 434 s contra 80 s).
+
+### 2026-11-13 — `docs/hipotesis.md`, `docs/diseno.md` e `informe/reporte.html` fundidos en `README.md` (sitio-legible 3.2)
+
+- Sesión: aplicar del grupo 3 de `sitio-legible`, headless, Opus. Etapa: informe.
+- Destino de cada sección vieja:
+  - `hipotesis.md` encabezado (parte de Sampling_1, escrito antes de correr, cambios a la bitácora) → § Reglas, primer
+    párrafo, con las fechas y commits (`2f05cae` 1-nov, `dc6d9ce` 3-nov, `159ee0d` 12-nov). El enlace a
+    `sampling_1/docs/hipotesis.md` se descarta: la pregunta va en Resultados.
+  - `hipotesis.md` § Control → § Baseline (datos, modelo, Optuna con la tabla del espacio, semillas) y § Baseline ›
+    Parámetros fijos (la adaptación `deterministic`/`force_col_wise`/`feature_pre_filter`).
+  - `hipotesis.md` § Métricas y reglas comunes → § Reglas (N\*, G, Δ, δ, veredicto, T, A) más el diagrama de la regla de
+    veredicto.
+  - `hipotesis.md` § Ronda 201903–201908 (ventana, N\* fijo, δ, 20 semillas) → § Diseño › Rondas y § Diseño › Grilla
+    (lista de semillas). «La fórmula de Luis» → «la fórmula 110017 + i · 19937» (D8). La cita de quién preguntó y quién
+    respondió en 211210 → «la consigna pide…» con el id.
+  - `hipotesis.md` › Apartamientos del baseline (tabla) → § Diseño › Apartamientos del baseline, como lista (D8: sin
+    texto largo en celdas). «Agustina confirmó» → «quedaron confirmados el 13-nov-2026».
+  - `hipotesis.md` › Predicción y regla de la ronda → § Predicción, con fecha y commit.
+  - `diseno.md` encabezado → descartado (decía dónde estaba cada cosa).
+  - `diseno.md` § Variantes → § Diseño › Variantes. § Grilla (estudio `C`, `C-rep`, `C@1…7`, semillas) → § Diseño ›
+    Grilla. `C-rep` en VMs de la misma cuenta → § Limitaciones.
+  - `diseno.md` § Parámetros fijos → § Baseline › Parámetros fijos. § Métricas que se calculan → § Diseño › Grilla
+    (consolidado y lo que guarda el ledger).
+  - `diseno.md` § Máquina (template, gcloud, zonas, cuotas, trial, bucket, tags, Ice Lake) → lo que define T (solo
+    `n2-highmem-8` con Ice Lake) va a § Reglas › T; lo operativo va a `sampling_1/corridas.md` (tarea 3.8). Cuotas,
+    proyecto y alta del trial de una cuenta → descartados del sitio (quedan en el historial y en la memoria del repo).
+  - `diseno.md` § Ronda 201903–201908 → § Diseño › Grilla (160 + 20 finales, sin `auc_val`) y › Rondas.
+  - `diseno.md` § Dependencias → § Dependencias.
+  - `informe/reporte.html` (salida vieja) → bloque `estado` generado; el resto de su intro repetía `hipotesis.md`.
+- Nuevo: línea de tiempo de meses (Mermaid) y § Limitaciones con el apartamiento que la tabla nombraba.
+- `scripts/nombres_sitio.py`: quita las URL del repo y del sitio antes de buscar nombres, porque llevan el usuario de
+  GitHub y los enlaces a archivos no publicados tienen que ir ahí.
+- Verificado: `python -m comun.reporte --exp control` escribe el bloque `estado`; `python -m pytest
+  tests/test_reporte.py tests/test_variantes.py` 91 passed (`pytest` a secas no encuentra `comun` en este entorno).
+  `comun.variantes --verificar` ya no nombra a `control`; sigue fallando por h1–h4 y sampling_1 (tareas 3.3–3.7).
+  `scripts/sitio.sh`: en `control/README.md` solo fallan los enlaces a páginas que crean 3.5–3.8.

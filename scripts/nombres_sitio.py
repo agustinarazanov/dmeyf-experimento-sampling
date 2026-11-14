@@ -14,6 +14,9 @@ import yaml
 
 RAIZ = Path(__file__).resolve().parent.parent
 PROHIBIDOS = re.compile(r"tutor|bolaños|aramend|agustina|martín|luis|laguinge|razanov|lópez|autor", re.IGNORECASE)
+# Las direcciones del repo y del sitio llevan el usuario de GitHub; los enlaces a archivos no publicados tienen que ir
+# ahí (sitio-informes § Enlaces internos verificados), así que se quitan antes de buscar.
+URLS_DEL_REPO = re.compile(r"https://(github\.com/agustinarazanov|agustinarazanov\.github\.io)/dmeyf-experimento-sampling\S*")
 
 # (archivo, línea): motivo. Cada excepción lleva motivo; una línea que se mueve deja de estar exceptuada y vuelve a
 # fallar, a propósito.
@@ -47,7 +50,7 @@ def buscar() -> list[str]:
     hallazgos = []
     for ruta in paginas_publicadas():
         for n, linea in enumerate((RAIZ / ruta).read_text(encoding="utf-8").splitlines(), start=1):
-            m = PROHIBIDOS.search(linea)
+            m = PROHIBIDOS.search(URLS_DEL_REPO.sub("", linea))
             if m and (ruta, n) not in EXCEPCIONES:
                 hallazgos.append(f"{ruta}:{n}: «{m.group(0)}»: {linea.strip()[:120]}")
     return hallazgos

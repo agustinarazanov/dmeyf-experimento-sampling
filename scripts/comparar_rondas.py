@@ -1,6 +1,10 @@
 """Tabla de rondas (D9): por variante, Δ y veredicto en la ronda 201903-201906 y en la vigente, con los dos δ.
 
-    python scripts/comparar_rondas.py [--experimentos experimentos] [--salida experimentos/sampling_1/informe/comparacion_rondas.md]
+    python scripts/comparar_rondas.py [--experimentos experimentos] [--salida ARCHIVO.md]
+
+Escribe el bloque `rondas` de `experimentos/sampling_1/README.md` (gráfico de rondas y tabla; `sitio-legible` 2.5). Si ese
+README todavía no tiene marcadores (antes del grupo 3), o con `--salida`, escribe el archivo
+`sampling_1/informe/comparacion_rondas.md` como antes.
 
 Lee, de cada `<exp>/ledger/`, `ronda_201903-201906/{apareado,replicas}.csv` (ronda anterior, copiados antes del cambio) y
 `{apareado,replicas}.csv` (ronda vigente). Una fila por variante de la ronda anterior; las que solo existen en la nueva
@@ -58,7 +62,7 @@ def _celdas(v: str, ap: pd.DataFrame, rep: pd.DataFrame) -> list[str]:
     ]
 
 
-def tabla(experimentos: Path) -> str:
+def tabla(experimentos: Path, titulo: bool = True) -> str:
     ap_v, rep_v, delta_v = ronda(experimentos, True)
     ap_n, rep_n, delta_n = ronda(experimentos, False)
     variantes = sorted(set(ap_v.index) | set(rep_v.index))
@@ -71,7 +75,7 @@ def tabla(experimentos: Path) -> str:
         filas.append([v, *a, *b, "sí" if any(cambia) else ("no" if cambia else "pendiente")])
     esc = lambda c: str(c).replace("|", "\\|")
     texto = [
-        "# Comparación de rondas\n",
+        *(["# Comparación de rondas\n"] if titulo else []),
         "Generado por `python scripts/comparar_rondas.py`; no editar a mano. Cada ronda se lee de su propio `apareado.csv` "
         "y `replicas.csv` (G, Δ y δ salen del control de esa ronda); T y A no se comparan entre rondas.\n",
         f"- Ronda {RONDA_VIEJA} (final con 4 meses, 10 semillas, N* de validación): δ = {_m(delta_v)} M$.",
@@ -83,11 +87,36 @@ def tabla(experimentos: Path) -> str:
     return "\n".join(texto) + "\n"
 
 
+def bloque_rondas(experimentos: Path) -> str:
+    """Contenido del bloque `rondas` del Anexo: la tabla (el gráfico es el bloque `ic-rondas`, de `comun/reporte.py`)."""
+    return tabla(experimentos, titulo=False)
+
+
+def con_marcadores(ruta: Path) -> bool:
+    return ruta.is_file() and "<!-- generado:" in ruta.read_text()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--experimentos", type=Path, default=Path("experimentos"))
     ap.add_argument("--salida", type=Path, default=None)
     a = ap.parse_args()
+    readme = a.experimentos / "sampling_1" / "anexo.md"
+    if not a.salida and con_marcadores(readme):
+        from comun import reporte
+        reporte.DESTINO = reporte.Destino(readme.parent / "figuras")
+        try:
+            contenido = bloque_rondas(a.experimentos)
+            archivos = dict(reporte.DESTINO.archivos)
+        finally:
+            reporte.DESTINO = None
+        try:
+            reporte.escribir_bloques([(readme, {"rondas": contenido})], archivos)
+        except reporte.MarcadorFaltante as e:
+            print(f"error: {e}; no se escribió nada", file=sys.stderr)
+            return 1
+        print(readme)
+        return 0
     salida = a.salida or a.experimentos / "sampling_1" / "informe" / "comparacion_rondas.md"
     salida.parent.mkdir(parents=True, exist_ok=True)
     salida.write_text(tabla(a.experimentos), encoding="utf-8")

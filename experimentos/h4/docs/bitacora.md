@@ -72,3 +72,34 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
 - Revisión en sesión limpia de la etapa informe (lista `docs/revision.md` § 5), sin ✗ abiertos ni correcciones en
   `informe/informe.md`; detalle en `sampling_1/docs/bitacora.md`. Reglas 1 a 3 aplicadas tal como quedaron escritas;
   D_HU recalculado aparte (−3,07 M$ [−7,61; 1,47]). `verificar_informe_h3 --informe`: 0 sin fuente.
+
+### 2026-11-13 — `docs/hipotesis.md`, `docs/diseno.md` e `informe/` fundidos en `README.md` (sitio-legible 3.6)
+
+- Sesión: aplicar del grupo 3 de `sitio-legible`, headless, Opus. Etapa: informe.
+- Destino de cada sección vieja:
+  - `hipotesis.md` encabezado (fecha, revisión, valores fijos de H3) → callout de § Predicción › H4 (`c390beb`, 9-nov)
+    y párrafo inicial de § Predicción.
+  - `hipotesis.md` § Pregunta → línea de apertura y § Idea. § Origen (las variantes salen de mirar 201910) → callout
+    «Las variantes salen de mirar 201910» en § Predicción (D8: «aporte de Luis María Laguinge» → exploratorio
+    `validacion_50_semillas`; «no sabemos» → «no se sabe»).
+  - `hipotesis.md` § Variantes (tabla) → § Diseño › Variantes (con `H4O-0.5`). § H4 y › Predicciones y reglas 1–3 →
+    § Predicción › H4. § `H4O-0.5` y reglas 4–5 → § Predicción › `H4O-0.5` (`159ee0d`, 12-nov; «el tutor pidió, Tschopp»
+    → «la consigna pide»). § Comparaciones múltiples → § Predicción › Comparaciones múltiples.
+  - `hipotesis.md` § Limitaciones previstas → § Limitaciones (test mirado, comparaciones, estudios compartidos, sonda,
+    proporción de clases; el enlace a `sampling_1/docs/hipotesis.md` § Pregunta pasa a texto: «regla de Sampling_1 de no
+    tocar la proporción»).
+  - `diseno.md` encabezado → una línea en § Diseño. § Dependencias → § Dependencias. § Variantes → § Diseño › Variantes.
+    § Muestras → § Diseño › Muestras (más la muestra de `F0.5@k`). § Tiempo → § Diseño › Tiempo.
+  - `diseno.md` § Grilla (tabla de horas), § Parámetros fijos, § Métricas, § Máquina, § Estimación, § Reparto y fases →
+    § Diseño › Grilla con los totales; parámetros, métricas y máquina son los del control (una línea lo dice); el
+    reparto por fase va a `sampling_1/corridas.md`. «Luis midió 12,3 s calibrados» descartado (era la base de una
+    estimación ya reemplazada por los tiempos medidos).
+  - `diseno.md` § `H4O-0.5` y § Ronda 201903–201908 → § Diseño › Variantes, › Muestras, › Grilla y › Rondas.
+  - `diseno.md` § Fuera de la grilla → § Diseño › Grilla.
+  - `informe.md` encabezado, § Hipótesis (tabla de variantes) y › Ronda → descartados o en § Diseño. Tablas copiadas de
+    `tabla_resultados.md` → bloque `resultado` y bloques de Resultados (una línea enlaza). Veredictos 1–5, AUC y
+    ganancia, «Lo que no decide» y § Conclusión → § Veredicto, con los mismos números.
+  - `informe.md` § Limitaciones → § Limitaciones, salvo hiperparámetros de cuatro meses (parte común → Resultados; la
+    propia, final con la mitad de CONTINUA, queda) y año/mes/máquina con el bootstrap → Limitaciones comunes de
+    Resultados.
+- Nuevo: diagrama del pipeline con las tres búsquedas y los dos finales.

@@ -1,4 +1,4 @@
-site_name: Sampling_1
+site_name: Sampling_1 · DMEyF 2026
 site_description: Experimento Sampling_1 de DMEyF 2026. ¿Vale la pena el tradeoff entre velocidad y pérdida de performance?
 repo_url: https://github.com/agustinarazanov/dmeyf-experimento-sampling
 edit_uri: ""
@@ -10,6 +10,17 @@ site_dir: site
 theme:
   name: material
   language: es
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Cambiar a modo oscuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Cambiar a modo claro
   features:
     - navigation.indexes
     - navigation.top
@@ -20,10 +31,20 @@ theme:
 extra_css:
   - sitio/estilos.css
 
+# Tablas ordenables y filtrables (D17): tablesort desde unpkg, con versión fija, y sitio/tablas.js.
+extra_javascript:
+  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - https://unpkg.com/tablesort@5.3.0/dist/sorts/tablesort.number.min.js
+  - sitio/tablas.js
+
 plugins:
   - same-dir
   - search:
       lang: es
+  # Clic en una figura: se abre a pantalla completa con zoom (D17). Sin leyenda: el título ya está en la figura.
+  - glightbox:
+      auto_caption: false
+      zoomable: true
 
 hooks:
   - sitio/hooks.py
@@ -52,11 +73,42 @@ exclude_docs: |
   !/assets/**
   !/index.md
   !/sitio/estilos.css
-  !/experimentos/h1/informe/informe.md
+  !/sitio/tablas.js
+  !/sitio/hipotesis/README.md
+  !/sitio/metodo/README.md
+  !/experimentos/sampling_1/README.md
+  !/experimentos/sampling_1/anexo.md
+  !/experimentos/sampling_1/figuras/**
+  !/experimentos/sampling_1/corridas.md
+  !/experimentos/sampling_1/exploratorios/README.md
+  !/experimentos/control/README.md
+  !/experimentos/h1/README.md
+  !/experimentos/h1/figuras/**
+  !/experimentos/h2/README.md
+  !/experimentos/h2/figuras/**
+  !/experimentos/h3/README.md
+  !/experimentos/h3/figuras/**
+  !/experimentos/h4/README.md
+  !/experimentos/h4/figuras/**
+  !/docs/metodo.md
+  !/experimentos/**/figuras/**
 
 nav:
   - Inicio: index.md
-  - H1: experimentos/h1/informe/informe.md
+  - experimentos/sampling_1/README.md
+  - experimentos/sampling_1/anexo.md
+  - Hipótesis:
+    - sitio/hipotesis/README.md
+    - experimentos/h1/README.md
+    - experimentos/h2/README.md
+    - experimentos/h3/README.md
+    - experimentos/h4/README.md
+  - Método:
+    - sitio/metodo/README.md
+    - experimentos/control/README.md
+    - experimentos/sampling_1/corridas.md
+    - experimentos/sampling_1/exploratorios/README.md
+    - docs/metodo.md
 
 validation:
   links:

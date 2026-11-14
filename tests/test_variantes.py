@@ -90,10 +90,10 @@ def test_rutas():
 
 
 def _experimento(raiz, nombre, dependencias):
-    d = raiz / "experimentos" / nombre / "docs"
+    d = raiz / "experimentos" / nombre
     d.mkdir(parents=True)
     cuerpo = "".join(f"- `{x}`: algo\n" for x in dependencias)
-    (d / "diseno.md").write_text(f"# Diseño\n\n## Variantes\n\ntexto\n\n## Dependencias\n\n{cuerpo}\n## Otra\n\n`h9`\n")
+    (d / "README.md").write_text(f"# Exp\n\n## Diseño\n\n### Variantes\n\ntexto\n\n## Dependencias\n\n{cuerpo}\n## Otra\n\n`h9`\n")
 
 
 def _arbol_completo(raiz):
@@ -118,18 +118,34 @@ def test_arbol_consistente_pasa_y_dice_que_se_rompe(tmp_path):
 
 def test_declaracion_distinta_del_registro(tmp_path):
     _arbol_completo(tmp_path)
-    (tmp_path / "experimentos" / "h3" / "docs" / "diseno.md").write_text("## Dependencias\n\n- `control`\n")
+    (tmp_path / "experimentos" / "h3" / "README.md").write_text("## Dependencias\n\n- `control`\n")
     problemas, _ = variantes.verificar(tmp_path)
     assert any("h3" in p and "h1" in p for p in problemas)
 
 
 def test_ciclo_armado_a_mano(tmp_path):
     _arbol_completo(tmp_path)
-    (tmp_path / "experimentos" / "h1" / "docs" / "diseno.md").write_text("## Dependencias\n\n- `control`\n- `h3`\n")
+    (tmp_path / "experimentos" / "h1" / "README.md").write_text("## Dependencias\n\n- `control`\n- `h3`\n")
     problemas, _ = variantes.verificar(tmp_path)
     assert any(p.startswith("ciclo de dependencias") and "h1" in p and "h3" in p for p in problemas)
     assert variantes.ciclos({"a": {"b"}, "b": {"c"}, "c": {"a"}}) == [["a", "b", "c", "a"]]
     assert variantes.ciclos({"a": {"b"}, "b": set()}) == []
+
+
+def test_seccion_en_el_archivo_viejo_falla_nombrando_experimento_y_archivo(tmp_path):
+    _arbol_completo(tmp_path)
+    viejo = tmp_path / "experimentos" / "h2" / "docs"
+    viejo.mkdir()
+    (viejo / "diseno.md").write_text("## Dependencias\n\n- `control`\n")
+    problemas, _ = variantes.verificar(tmp_path)
+    assert any("h2" in p and "docs/diseno.md" in p and "experimentos/h2/README.md" in p for p in problemas)
+
+
+def test_readme_sin_la_seccion_falla(tmp_path):
+    _arbol_completo(tmp_path)
+    (tmp_path / "experimentos" / "h2" / "README.md").write_text("# H2\n\nsin sección\n")
+    problemas, _ = variantes.verificar(tmp_path)
+    assert any("h2" in p and "README.md" in p and "falta la sección" in p for p in problemas)
 
 
 def test_carpeta_faltante_lista_lo_que_se_rompe(tmp_path):
@@ -163,3 +179,27 @@ def test_exploratorio_sin_advertencia_falla_nombrando_carpeta_y_campo(tmp_path):
     _exploratorio(tmp_path, advertencia="")
     problemas, _ = variantes.verificar(tmp_path)
     assert any("h3/sensibilidad_muestra" in p and "advertencia" in p for p in problemas)
+
+
+def test_figura_declarada_que_no_existe_falla_y_con_el_archivo_pasa(tmp_path):
+    _arbol_completo(tmp_path)
+    _exploratorio(tmp_path, figuras=[dict(archivo="figuras/a.png", leyenda="Reporte original")])
+    problemas, _ = variantes.verificar(tmp_path)
+    assert any("h3/sensibilidad_muestra" in p and "figuras/a.png" in p for p in problemas)
+    (tmp_path / "experimentos/h3/sensibilidad_muestra/figuras").mkdir()
+    (tmp_path / "experimentos/h3/sensibilidad_muestra/figuras/a.png").write_bytes(b"png")
+    assert variantes.verificar(tmp_path)[0] == []
+
+
+def test_figura_generada_desde_un_csv_no_necesita_archivo(tmp_path):
+    _arbol_completo(tmp_path)
+    _exploratorio(tmp_path, figuras=[dict(csv="r.csv", columna="x", leyenda="Δ por muestra")])
+    assert variantes.verificar(tmp_path)[0] == []
+    _exploratorio_sin_leyenda = [dict(csv="r.csv", columna="x")]
+    (tmp_path / "experimentos/h3/sensibilidad_muestra/exploratorio.json").unlink()
+    _exploratorio_json = tmp_path / "experimentos/h3/sensibilidad_muestra"
+    import json
+    (_exploratorio_json / "exploratorio.json").write_text(json.dumps(dict(
+        autor="A", fecha="d", pregunta="p", protocolo="p", advertencia="a", tablas=[dict(csv="r.csv", columnas=["x"])],
+        figuras=_exploratorio_sin_leyenda)))
+    assert any("leyenda" in p for p in variantes.verificar(tmp_path)[0])

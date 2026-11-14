@@ -29,10 +29,14 @@
 # antes de la primera línea y `... fin` después de la última, y sube el ledger una vez más después de la del final; cada una
 # deja `ledger/tiempos/calibracion_<lista>_<momento>.csv` (subcarpeta: viaja con el resto del ledger). No se calibra con
 # flags extra (`--filas`, smoke) ni con SIN_CALIBRACION=1.
+# Las predicciones de test (`ledger/predicciones/`, ~10 GB) no viven en el repo (D18, el repo está en iCloud): viajan por
+# el mismo bucket (`$BUCKET/experimentos/<exp>/ledger/predicciones/`) pero acá y en la VM están en
+# `$DATOS_DIR/ledger/<exp>/predicciones/`.
 # `--en-seco`: imprime los comandos y los destinos y sale antes de cualquier gcloud o gsutil (no crea nada).
 set -euo pipefail
 cd "$(dirname "$0")/.."                # raíz del repo
 [ -f .env ] && { set -a; . ./.env; set +a; }   # PROYECTO y BUCKET pueden venir de .env
+DATOS=${DATOS_DIR:-$HOME/datos/experimentos-dmeyf}   # fuera del repo: panel, Optuna y predicciones de test (D18)
 LISTA=${1:?uso: vm.sh configuraciones.txt [--filas N] [--en-seco]}
 shift || true
 EN_SECO=""; EXTRA=""                    # EXTRA: p. ej. --filas 20000 (smoke de la propia VM)
@@ -68,12 +72,14 @@ export DATOS_DIR=\${DATOS_DIR:-\$HOME/datos}; mkdir -p \$DATOS_DIR/optuna
 gsutil -q cp "$BUCKET/panel_2019.parquet" \$DATOS_DIR/ 2>/dev/null || true
 gsutil -q -m cp "$BUCKET/optuna/*.db" \$DATOS_DIR/optuna/ 2>/dev/null || true
 for e in \$(ls experimentos | grep -v ' '); do
-  mkdir -p experimentos/\$e/ledger
-  gsutil -q -m rsync -r -x '^sesiones/|^[^/]*\.csv$' "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
+  mkdir -p experimentos/\$e/ledger \$DATOS_DIR/ledger/\$e/predicciones
+  gsutil -q -m rsync -r -x '^(sesiones|predicciones)/|^[^/]*\.csv$' "$BUCKET/experimentos/\$e/ledger/" experimentos/\$e/ledger/ 2>/dev/null || true
+  gsutil -q -m rsync -r "$BUCKET/experimentos/\$e/ledger/predicciones/" \$DATOS_DIR/ledger/\$e/predicciones/ 2>/dev/null || true
 done
 subir() {
   for e in \$(ls experimentos | grep -v ' '); do
-    gsutil -q -m rsync -r -x '^(exploracion|sesiones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
+    gsutil -q -m rsync -r -x '^(exploracion|sesiones|predicciones)/|^[^/]*\.csv$' experimentos/\$e/ledger/ "$BUCKET/experimentos/\$e/ledger/"
+    gsutil -q -m rsync -r \$DATOS_DIR/ledger/\$e/predicciones/ "$BUCKET/experimentos/\$e/ledger/predicciones/"
   done
 }
 calibrar() {   # momento: inicio o fin; sube lo que dejó (la calibración del final llega al bucket antes de dar la lista por terminada)
@@ -119,6 +125,7 @@ if [ -n "$EN_SECO" ]; then
   echo "destinos de los ledgers (VM -> bucket -> acá):"
   for e in $EXPERIMENTOS; do
     echo "  experimentos/$e/ledger/  ->  $BUCKET/experimentos/$e/ledger/  ->  experimentos/$e/ledger/"
+    echo "  predicciones: \$DATOS_DIR/ledger/$e/predicciones/ (VM)  ->  $BUCKET/experimentos/$e/ledger/predicciones/  ->  $DATOS/ledger/$e/predicciones/"
   done
   echo "otros destinos: panel $BUCKET/panel_2019.parquet, Optuna $BUCKET/optuna/ (el $BUCKET/ledger/ viejo no se toca)"
   echo "-- script remoto ($TMPV/remoto-$COMMIT.sh) --"
@@ -194,8 +201,9 @@ echo "== estado: $ESTADO"
 echo "== trayendo los ledgers"
 tomar_candado
 for e in $EXPERIMENTOS; do
-  mkdir -p "experimentos/$e/ledger"
-  gsutil -q -m rsync -r -x '^sesiones/|^[^/]*\.csv$' "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
+  mkdir -p "experimentos/$e/ledger" "$DATOS/ledger/$e/predicciones"
+  gsutil -q -m rsync -r -x '^(sesiones|predicciones)/|^[^/]*\.csv$' "$BUCKET/experimentos/$e/ledger/" "experimentos/$e/ledger/" || true
+  gsutil -q -m rsync -r "$BUCKET/experimentos/$e/ledger/predicciones/" "$DATOS/ledger/$e/predicciones/" || true
 done
 # Lo que el bucket no alcanzó a recibir: los ledgers de la VM, sin exploración. Con DONE la VM ya subió todo y una VM
 # perdida no responde, así que solo se intenta con FALLO; no pisa nada de lo que vino del bucket.
@@ -205,6 +213,11 @@ if [ "$ESTADO" = FALLO ]; then
     && $G scp "$NOMBRE":~/ledgers.tgz "$T/ledgers.tgz" --zone="$ZONA" "${SCPF[@]}" 2>/dev/null \
     && tar xzf "$T/ledgers.tgz" -C "$T" && rm "$T/ledgers.tgz" \
     && rsync -a --ignore-existing "$T/" experimentos/ || true
+  rm -rf "$T"; T=$(mktemp -d)   # las predicciones de test, que en la VM están en ~/datos/ledger/ (D18)
+  $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command='cd ~/datos && tar czf ~/predicciones.tgz --exclude=exploracion ledger' 2>/dev/null \
+    && $G scp "$NOMBRE":~/predicciones.tgz "$T/predicciones.tgz" --zone="$ZONA" "${SCPF[@]}" 2>/dev/null \
+    && tar xzf "$T/predicciones.tgz" -C "$T" && rm "$T/predicciones.tgz" \
+    && mkdir -p "$DATOS/ledger" && rsync -a --ignore-existing "$T/ledger/" "$DATOS/ledger/" || true
   rm -rf "$T"
 fi
 soltar_candado

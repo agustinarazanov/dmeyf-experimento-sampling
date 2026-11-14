@@ -1,0 +1,43 @@
+# Spec Delta
+
+## MODIFIED Requirements
+
+### Requirement: Estudios exploratorios declarados
+Un integrante puede sumar un estudio que no sigue el protocolo, ya sea por usar otra grilla, otro entorno o variantes
+elegidas mirando el test. Ese estudio SHALL vivir en una carpeta dentro del experimento al que pertenece:
+- en el de la hipótesis que estudia;
+- o en `sampling_1/exploratorios/` si cruza varias.
+
+La carpeta SHALL tener un `README.md` (quién, cuándo, qué pregunta, qué corre, en qué se aparta del protocolo) y un
+`exploratorio.json` con:
+- autor y fecha;
+- pregunta;
+- protocolo, en una línea;
+- advertencia, en una línea;
+- los CSV de resultados y las columnas que se muestran como cifras principales, cada una con una etiqueta legible y,
+  si hace falta, una escala (por ejemplo, de $ a M$);
+- opcionalmente, figuras: un archivo de imagen dentro de la carpeta del estudio y su leyenda, que dice de dónde sale la
+  figura (el reporte original o un CSV) y bajo qué protocolo.
+
+Un exploratorio SHALL quedar fuera del registro de variantes, SHALL NOT escribir en el `ledger/` del experimento y SHALL
+NOT cambiar ningún veredicto. Una idea que surja de un exploratorio y se quiera confirmar SHALL volver a correrse como
+variante, con hipótesis escrita antes.
+
+#### Scenario: Aporte de Martín
+- **WHEN** se lee `experimentos/h3/sensibilidad_muestra/exploratorio.json`
+- **THEN** su advertencia dice que las 10 muestras dan solo 4 modelos distintos y que hay un solo 201910, y el reporte
+  de `sampling_1` lo muestra en el bloque B
+
+#### Scenario: Figura declarada
+- **WHEN** `validacion_50_semillas/exploratorio.json` declara la figura de contracción del IC
+- **THEN** la página de exploratorios la muestra en la sección del estudio con su leyenda, y si el archivo no existe
+  `python -m comun.variantes --verificar` falla nombrando la carpeta y el archivo
+
+#### Scenario: Idea de un exploratorio que se confirma
+- **WHEN** el grupo quiere confirmar el reescalado √(1/r) que propuso un exploratorio
+- **THEN** se registra la variante `H3R-0.1`, su predicción se escribe en `h3/README.md` antes de correr y su
+  resultado va al bloque A
+
+#### Scenario: Manifiesto incompleto
+- **WHEN** a un `exploratorio.json` le falta la advertencia o el protocolo
+- **THEN** `python -m comun.variantes --verificar` falla nombrando la carpeta y el campo

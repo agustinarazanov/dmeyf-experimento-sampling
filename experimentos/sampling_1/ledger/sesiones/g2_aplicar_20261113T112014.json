@@ -1,0 +1,224 @@
+{
+ "duration_api_ms": 615783,
+ "stop_reason": "end_turn",
+ "session_id": "a1a6304c-c736-486e-9a05-0d7dc671a001",
+ "total_cost_usd": 3.415911000000001,
+ "usage": {
+  "input_tokens": 176,
+  "cache_creation_input_tokens": 246761,
+  "cache_read_input_tokens": 15249250,
+  "output_tokens": 90359,
+  "output_tokens_details": {
+   "thinking_tokens": 33645
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 246761,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1149,
+    "cache_read_input_tokens": 256457,
+    "cache_creation_input_tokens": 2156,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2156
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 176,
+   "outputTokens": 90359,
+   "cacheReadInputTokens": 15249250,
+   "cacheCreationInputTokens": 246761,
+   "webSearchRequests": 0,
+   "costUSD": 3.415911000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 33645,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 246761,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01NbYxcgh3GD2pX61oZxqnqp",
+   "tool_input": {
+    "command": "cd experimentos; for e in control h1 h3; do echo == $e; ls $e/ledger | head -20; done; head -c 1500 h1/ledger/resultados.csv; echo; head -3 h1/ledger/estudios.csv; head -3 h1/ledger/apareado.csv; head -3 h3/ledger/replicas.csv; ls h1/ledger/ronda_201903-201906; ls h1/informe sampling_1/informe sampling_1/informe/figuras"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Ud5NXE46yi2GKqTo9WYhrh",
+   "tool_input": {
+    "command": "cd /private/tmp/claude-501/bundled-skills/2.1.311/8d72c54c40661c093d18786ea87e4284/dataviz; sed -n 1,80p references/palette.md; node scripts/validate_palette.js \"#2a6fb0,#c4501b,#2e8b57,#8e5ea2,#b8860b,#c0392b\" --mode light 2>&1 | head -40"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_015dwCWm7hwpqWFmQN5MjfN1",
+   "tool_input": {
+    "command": "node /private/tmp/claude-501/bundled-skills/2.1.311/8d72c54c40661c093d18786ea87e4284/dataviz/scripts/validate_palette.js \"#2a6fb0,#c4501b,#2e8b57,#8e5ea2,#b8860b,#c0392b\" --mode light 2>&1 | head -40"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01AkaGW8FRZnWzqRcAiSjj4T",
+   "tool_input": {
+    "command": "node /private/tmp/claude-501/bundled-skills/2.1.311/8d72c54c40661c093d18786ea87e4284/dataviz/scripts/validate_palette.js \"#2a78d6,#eb6834,#1baf7a,#eda100,#e87ba4,#008300\" --mode light"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01KFW5aJpWCrg2Ypw8Hiq2Ya",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; python - <<'E'\nimport re\np='comun/reporte.py'; s=open(p).read()\n\n# docstring\na=s.index('\"\"\"Genera'); b=s.index('\"\"\"\\n\\nfrom __future__')+4\ns=s[:a]+'''\"\"\"Genera las tablas y figuras de los README de `experimentos/` desde los ledgers (bloques entre marcadores).\n\n    python -m comun.reporte --exp h1 [--figuras DIR]\n    python -m comun.reporte --todos\n\nEn cada README, `<!-- generado:NOMBRE -->` … `<!-- /generado:NOMBRE -->` delimita un bloque que se reemplaza; el resto\ndel archivo no se toca (sitio-legible D4). Si falta un marcador, falla nombrando archivo y marcador antes de escribir nada.\nBloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `bloque-a`,\n`bloque-a-completo`, `varianza`, `diferencias`, `tiempo-igual`, `figuras` (y `rondas`, de `scripts/comparar_rondas.py`);\n`sampling_1/exploratorios/README.md` → `bloque-b`; `index.md` y `sitio/hipotesis.md` → `tarjetas`. Las figuras salen como\nSVG en `experimentos/<exp>/figuras/` (con `--figuras` también PNG a 200 dpi para el video).\n\nUn archivo sin ningún marcador todavía no migró (grupo 3): su experimento sigue con la salida vieja, una página Jekyll\n`informe/reporte.html` (y `tabla_resultados.md` en `sampling_1`) con las figuras en línea. Las variantes sin datos salen\ncomo pendientes; ningún número se escribe a mano.\n\"\"\"\n'''+s[b:]\ns=s.replace('import argparse\\nimport html\\nimport io\\n','import argparse\\nimport html\\nimport io\\nimport json\\n')\ns=s.replace('''            md = rutas.docs(e) / \"hipotesis.md\"\n            sec = secciones(md.read_text()) if md.exists() else {}\n            clave = next((k for k in sec if re.match(r\"^H\\\\d+\\\\b\", k)), e.upper())\n            nombre, titulo = re.match(r\"^(\\\\S+)\\\\s*(?:—\\\\s*)?(.*)$\", clave).groups()\n''','''            nombre, titulo = _titulo_hipotesis(e)\n''')\ns=s.replace('''class Contexto:''','''def _titulo_hipotesis(e: str) -> tuple[str, str]:\n    \"\"\"(`H1`, título) del experimento `e`: del `# H1 · título` de su README, y mientras no lo migró del `## H1 — título`\n    de `docs/hipotesis.md`.\"\"\"\n    readme = rutas.experimento(e) / \"README.md\"\n    if readme.exists() and (m := re.search(r\"^# (H\\\\d+)\\\\s*[·—-]\\\\s*(.*)$\", readme.read_text(), re.M)):\n        return m.group(1), m.group(2).strip()\n    md = rutas.docs(e) / \"hipotesis.md\"\n    sec = secciones(md.read_text()) if md.exists() else {}\n    clave = next((k for k in sec if re.match(r\"^H\\\\d+\\\\b\", k)), e.upper())\n    nombre, titulo = re.match(r\"^(\\\\S+)\\\\s*(?:—\\\\s*)?(.*)$\", clave).groups()\n    return nombre, titulo or nombre\n\n\nclass Contexto:''',1)\nopen(p,'w').write(s)\nE\ngrep -n \"svg.hashsalt\" comun/reporte.py"
+   }
+  },
+  {
+   "tool_name": "Write",
+   "tool_use_id": "toolu_01ALtELta9e9hDn2dNivWEHU",
+   "tool_input": {
+    "file_path": "/tmp/borrar_funciones.py",
+    "content": "\"\"\"Borra funciones de nivel módulo de un archivo (con su comentario previo pegado) por nombre.\"\"\"\nimport ast\nimport sys\n\nruta, *nombres = sys.argv[1:]\nsrc = open(ruta).read()\nlineas = src.splitlines(keepends=True)\narbol = ast.parse(src)\nrangos = []\nfor nodo in arbol.body:\n    if isinstance(nodo, ast.FunctionDef) and nodo.name in nombres:\n        ini = (nodo.decorator_list[0].lineno if nodo.decorator_list else nodo.lineno) - 1\n        rangos.append((ini, nodo.end_lineno))\nfor ini, fin in sorted(rangos, reverse=True):\n    # también las dos líneas en blanco que lo separan del siguiente\n    while fin < len(lineas) and lineas[fin].strip() == \"\":\n        fin += 1\n    del lineas[ini:fin]\nopen(ruta, \"w\").write(\"\".join(lineas))\nprint(\"borradas\", len(rangos), \"de\", len(nombres))\n"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012LFmq2kfWfPeT6j1Sy3PYL",
+   "tool_input": {
+    "command": "cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; python - <<'E'\np='comun/reporte.py'; s=open(p).read()\ni=s.index('def generar(exp: str')\ns=s[:i]+open('.tmp_cola.py').read()\nold=s[s.index('    n_est = f\"Final entrenado con {VENTANA}'):s.index('    completos = sum(')]\ns=s.replace(old,'    n_est = linea_ronda(ap)\\n')\ns=s.replace('''            + \"<p>El gráfico de tiempo igual, con los intervalos de réplicas y de bootstrap, está en el bloque A.</p>\")''','''            )''')\nopen(p,'w').write(s)\nE\nrm .tmp_cola.py; python -c \"import comun.reporte\" && python -m pytest tests/test_reporte.py -x -q 2>&1 | tail -20"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01BHpELjz8d8fFmDeDRcW7Ds",
+   "tool_input": {
+    "command": "python - <<'E'\np='scripts/comparar_rondas.py'; s=open(p).read()\ns=s.replace('''\"\"\"Tabla de rondas (D9): por variante, Δ y veredicto en la ronda 201903-201906 y en la vigente, con los dos δ.\n\n    python scripts/comparar_rondas.py [--experimentos experimentos] [--salida experimentos/sampling_1/informe/comparacion_rondas.md]\n''','''\"\"\"Tabla de rondas (D9): por variante, Δ y veredicto en la ronda 201903-201906 y en la vigente, con los dos δ.\n\n    python scripts/comparar_rondas.py [--experimentos experimentos] [--salida ARCHIVO.md]\n\nEscribe el bloque `rondas` de `experimentos/sampling_1/README.md` (tabla y gráfico de rondas, `sitio-legible` 2.5). Si ese\nREADME todavía no tiene marcadores (antes del grupo 3), o con `--salida`, escribe el archivo\n`sampling_1/informe/comparacion_rondas.md` como antes.\n''')\ns=s.replace(\"def tabla(experimentos: Path) -> str:\",\"def tabla(experimentos: Path, titulo: bool = True) -> str:\")\ns=s.replace('''    texto = [\n        \"# Comparación de rondas\\\\n\",''','''    texto = [\n        *([\"# Comparación de rondas\\\\n\"] if titulo else []),''')\ns=s.replace('''def main() -> int:''','''def bloque_rondas(experimentos: Path) -> str:\n    \"\"\"Contenido del bloque `rondas`: el gráfico (dumbbell, archivo SVG junto al README) y la tabla.\"\"\"\n    from comun import reporte\n    ctx, ap_ = reporte.Contexto(reporte.reg.AGREGADOR), None\n    fin, ap_ = reporte.cargar([reporte.reg.CONTROL, *ctx.exps])\n    a = reporte.calcular_bloque_a(ctx, fin, ap_, n_boot=1)\n    return reporte.fig_rondas(ctx, a, None) + \"\\\\n\\\\n\" + tabla(experimentos, titulo=False)\n\n\ndef main() -> int:''')\ns=s.replace('''    salida = a.salida or a.experimentos / \"sampling_1\" / \"informe\" / \"comparacion_rondas.md\"\n    salida.parent.mkdir(parents=True, exist_ok=True)''','''    readme = a.experimentos / \"sampling_1\" / \"README.md\"\n    if not a.salida and reporte_tiene_marcadores(readme):\n        from comun import reporte\n        reporte.DESTINO = reporte.Destino(readme.parent / \"figuras\")\n        try:\n            contenido = bloque_rondas(a.experimentos)\n            archivos = dict(reporte.DESTINO.archivos)\n        finally:\n            reporte.DESTINO = None\n        try:\n            reporte.escribir_bloques([(readme, {\"rondas\": contenido})], archivos)\n        except reporte.MarcadorFaltante as e:\n            print(f\"error: {e}; no se escribió nada\", file=sys.stderr)\n            return 1\n        print(readme)\n        return 0\n    salida = a.salida or a.experimentos / \"sampling_1\" / \"informe\" / \"comparacion_rondas.md\"\n    salida.parent.mkdir(parents=True, exist_ok=True)''')\ns=s.replace('''def main() -> int:''','''def reporte_tiene_marcadores(ruta: Path) -> bool:\n    return ruta.is_file() and \"<!-- generado:\" in ruta.read_text()\n\n\ndef main() -> int:''',1)\nopen(p,'w').write(s)\nE\ngrep -n \"bloque_rondas\\|def main\" scripts/comparar_rondas.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01TVDddtEeTJwvQwi7YA47Xz",
+   "tool_input": {
+    "command": "sed -i 's|pagina.index(\"<table><tr><th>variante</th>\")|pagina.index(\"<th>Δ [IC 95%] (M$)</th>\")|' tests/test_reporte.py; python -m pytest tests/test_reporte.py -q -x -n0 2>&1 | tail -3; python -m pytest tests/test_reporte.py -q -x 2>&1 | tail -30",
+    "timeout": 600000,
+    "run_in_background": true
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_015EFbTh7ybEASTE73H1CWEk",
+   "tool_input": {
+    "command": "md5 -q experimentos/h1/figuras/tradeoff_h1.svg experimentos/h1/figuras/curva_diferencia_H1.svg > /tmp/a.md5; python -m comun.reporte --exp h1 >/dev/null; md5 -q experimentos/h1/figuras/tradeoff_h1.svg experimentos/h1/figuras/curva_diferencia_H1.svg | diff - /tmp/a.md5 && echo IGUAL; ls /tmp/pngtest; grep -o 'font[^;\"]*' experimentos/h1/figuras/tradeoff_h1.svg | sort | uniq -c | head -3; grep -c \"<style\" experimentos/h1/figuras/tradeoff_h1.svg",
+    "timeout": 400000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DkoNubtX5x73v2BQjDN6CV",
+   "tool_input": {
+    "command": "cp -r experimentos/h1/figuras /tmp/fig_a && cp experimentos/h1/README.md /tmp/readme_a.md; python -m comun.reporte --exp h1",
+    "timeout": 400000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01PKXEoSafbAograY4tfkxPs",
+   "tool_input": {
+    "command": "cp -r experimentos/h1/figuras .tmp_fig_a"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019GEs16L9k1sZ34WVF6zbZD",
+   "tool_input": {
+    "command": "ls /tmp/pngtest"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01EgthJanG5hqL19TfPQiDDB",
+   "tool_input": {
+    "command": "sed -i '' 's|  !/experimentos/h1/informe/informe.md|  !/experimentos/h1/informe/informe.md\\n  !/experimentos/h1/README.md\\n  !/experimentos/h1/figuras/**|; s|  - H1: experimentos/h1/informe/informe.md|  - H1: experimentos/h1/informe/informe.md\\n  - Prueba: experimentos/h1/README.md|' mkdocs.yml && mkdocs build -q 2>&1 | tail -5; ls site/experimentos/h1 site/experimentos/h1/figuras",
+    "timeout": 300000
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 114,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Hice las tareas 2.1 a 2.7 del grupo 2 de `sitio-legible`, las marqué en `tasks.md` y las commiteé. La 2.8 es de revisión y la dejé sin marcar. Los 96 tests de `test_reporte`, `test_comparar_rondas`, `test_variantes` y `test_verificadores` pasan, y no hice push.\n\n- **2.1, marcadores:** `comun/reporte.py` reemplaza los bloques `<!-- generado:… -->` y deja intacto el resto. Si falta un marcador, falla nombrando archivo y marcador, sin escribir nada. Se corre con `--exp` o `--todos`. Un README sin ningún marcador sigue con la salida vieja hasta el grupo 3.\n- **2.2, tablas y bloque B:** `html_tabla()` ya no envuelve en `.table-wrapper` y el bloque B no muestra autor.\n- **2.3, figuras:** salen como SVG en `experimentos/<exp>/figuras/`, y con `--figuras` también PNG. Regenerar dos veces dio README y SVG idénticos.\n- **2.4, gráficos:** cargué la skill `dataviz` y generé los siete gráficos de D6, con el título calculado en el generador. Borré las cinco figuras viejas. No pude correr `validate_palette.js` porque `node` no está permitido en esta sesión, así que usé la paleta de referencia de la skill, que ya viene validada. En el PNG que miré, las etiquetas no se pisan.\n- **2.5, tarjetas y rondas:** las tarjetas de hipótesis salen del ledger y coinciden con `apareado.csv` y `replicas.csv`. `scripts/comparar_rondas.py` escribe el bloque `rondas` cuando el README ya tiene marcadores.\n- **2.6, dependencias:** `comun/variantes.py` lee `## Dependencias` del README y falla si `docs/diseno.md` todavía la tiene. Pasé a la ruta nueva `tests/test_variantes.py`, con el escenario del archivo viejo.\n- **2.7, verificadores:** `verificar_readme.py` y `verificar_informe_h3.py` leen el bloque `bloque-a-completo`. Un número alterado a mano falla nombrándolo.\n\nEstos tres comandos fallan hoy, a propósito, hasta que el grupo 3 cree los README y el bloque:\n- `python -m comun.variantes --verificar`\n- `python -m scripts.verificar_readme`\n- `python -m scripts.verificar_informe_h3`\n\nEn MkDocs armé una página temporal con el README de h1 en el nav y ya la saqué junto con el cambio en `mkdocs.yml`. Salió una sola `<table>` sin envoltorio propio, y las `<img>` apuntan a archivos que existen en `site/`. En la bitácora de `sampling_1` quedaron tres líneas `VISUAL PENDIENTE`: el recuadro y el scroll de una tabla a 390 px, los SVG en github.com y en el sitio, y el mapa del tradeoff a 1280 px.\n\nNo hubo corridas en VM, así que no escribí `en_curso.txt` ni `bloqueo.txt`. El cambio en `comun/` está anunciado en el commit 283d23d.",
+ "ttft_ms": 1552,
+ "type": "result",
+ "duration_ms": 2895156,
+ "uuid": "f5ccfa6b-fbc8-4886-af23-a2d9426250b7",
+ "ttft_stream_ms": 717,
+ "time_to_request_ms": 109,
+ "first_content_frame_ms": 717,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 176,
+   "outputTokens": 90359,
+   "cacheReadInputTokens": 15249250,
+   "cacheCreationInputTokens": 246761,
+   "webSearchRequests": 0,
+   "costUSD": 3.415911000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 33645,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 246761,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

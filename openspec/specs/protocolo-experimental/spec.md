@@ -8,15 +8,16 @@ un experimento nuevo sin tocar los existentes.
 ## Requirements
 
 ### Requirement: Un experimento, una carpeta
-Cada experimento SHALL vivir en `experimentos/<nombre>/` con la misma estructura (`docs/`, `ledger/`, `informe/`, y
-`scripts/` o `src/` solo si los necesita), con un nombre que sea un identificador válido de Python (`h1`, no `h-1`).
+Cada experimento SHALL vivir en `experimentos/<nombre>/` con la misma estructura: un `README.md` con la hipótesis, el
+diseño, los resultados y las conclusiones; `docs/bitacora.md`; `ledger/`; `figuras/` con las figuras generadas; y
+`scripts/` o `src/` solo si los necesita. El nombre SHALL ser un identificador válido de Python (`h1`, no `h-1`).
 Además de `comun/` y de su propia carpeta, SHALL depender solo de los experimentos que declara (ver
 `dependencias-entre-experimentos`). El código compartido (datos, baseline, ganancia, ledger, tokens, corredor, métodos,
 consolidación, reporte) SHALL vivir en `comun/`.
 
 #### Scenario: Agregar un experimento nuevo
-- **WHEN** un integrante copia `plantilla/` a `experimentos/<nombre>/`, completa `docs/hipotesis.md` y registra sus
-  variantes
+- **WHEN** un integrante copia `plantilla/` a `experimentos/<nombre>/`, completa las secciones Idea, Predicción y
+  Diseño de su `README.md` y registra sus variantes
 - **THEN** el experimento aparece en el README del repo y sus corridas se registran en su propio `ledger/`. Ningún
   archivo de otro experimento cambia, salvo el registro de variantes en `comun/`
 
@@ -25,27 +26,34 @@ consolidación, reporte) SHALL vivir en `comun/`.
 - **THEN** el commit lo dice en el mensaje y cada experimento activo anota en su bitácora si lo afecta
 
 ### Requirement: Hipótesis escritas antes de ejecutar
-El experimento SHALL tener en `docs/hipotesis.md`, antes de la primera corrida real, la pregunta, cada hipótesis con su
-predicción cuantitativa y su regla de decisión (qué resultado la confirma y cuál la refuta), y el baseline de control
-sin modificar salvo la variable experimental.
+El experimento SHALL tener en su `README.md`, antes de la primera corrida real, la pregunta y cada hipótesis con su
+predicción cuantitativa y su regla de decisión (qué resultado la confirma y cuál la refuta), en la sección Predicción.
+También SHALL tener el baseline de control sin modificar salvo la variable experimental. La sección Predicción SHALL NOT
+cambiar después de la primera corrida real. Cualquier cambio posterior se anota en la bitácora, y el historial de git de
+la sección prueba la fecha.
 
 #### Scenario: Corrida sin hipótesis aprobada
-- **WHEN** se intenta registrar una corrida real en el ledger y `docs/hipotesis.md` no tiene la etapa marcada como
-  revisada en `docs/bitacora.md`
+- **WHEN** se intenta registrar una corrida real en el ledger y la sección Predicción del `README.md` no tiene la etapa
+  marcada como revisada en `docs/bitacora.md`
 - **THEN** la corrida se considera exploratoria y se registra con `etapa = exploracion`, no como evidencia
 
 #### Scenario: Hipótesis con regla de decisión
-- **WHEN** se lee cualquier hipótesis del documento
+- **WHEN** se lee cualquier hipótesis del README
 - **THEN** se encuentra una predicción con umbral numérico y la métrica que la decide (por ejemplo, "la ganancia media
   apareada en 201910 no cae más que un desvío entre semillas")
 
+#### Scenario: Probar que la predicción es previa
+- **WHEN** alguien quiere saber si la predicción de H1 se escribió antes de correr
+- **THEN** la sección Predicción indica la fecha y el commit en que quedó fijada, anterior a la primera fila real del
+  ledger de `h1`
+
 ### Requirement: Diseño experimental explícito
-El diseño SHALL fijar, en `docs/diseno.md`, la grilla completa (métodos, tasas, semillas, trials de optimización), las
-métricas, el procedimiento de comparación apareada por semilla, el tipo de máquina y el reparto de corridas entre las
-tres personas.
+El diseño SHALL fijar, en la sección Diseño del `README.md`, la grilla completa (métodos, tasas, semillas, trials de
+optimización), las métricas, el procedimiento de comparación apareada por semilla y el tipo de máquina. El reparto de
+corridas SHALL describirse por máquina y por fase, no por persona.
 
 #### Scenario: Grilla reproducible por cualquier integrante
-- **WHEN** un integrante lee `docs/diseno.md` y el ledger
+- **WHEN** un integrante lee la sección Diseño y el ledger
 - **THEN** puede identificar qué configuraciones faltan y lanzarlas con el corredor sin consultar a nadie
 
 ### Requirement: Revisión que cierra cada etapa
@@ -76,23 +84,29 @@ tarea, y el loop de etapas SHALL detenerse ahí.
 - **THEN** la sesión escribe el bloqueo con el motivo y `scripts/etapa.sh` termina con código 2
 
 ### Requirement: Comunicación con el tutor desde los documentos
-El post al tópico `sampling_1` y cualquier respuesta posterior SHALL derivarse de `docs/hipotesis.md` y
-`docs/diseno.md`, y las devoluciones del tutor SHALL volcarse en la bitácora con la fecha y el id del mensaje de Zulip.
+Lo que se responde al curso SHALL poder leerse en las secciones Predicción, Diseño y Resultados de los `README.md`. El
+repo SHALL NOT guardar borradores de mensajes de Zulip, y ninguna sesión SHALL escribir ni mandar mensajes: los escribe
+y los manda Agustina. El archivo de Zulip se lee solo cuando Agustina lo pide. Las devoluciones del curso SHALL volcarse
+en la bitácora con la fecha y el id del mensaje de Zulip.
+
+#### Scenario: Responder una pregunta del curso
+- **WHEN** el curso hace una pregunta sobre el experimento
+- **THEN** la respuesta queda como texto en el `README.md` que corresponde, y no como borrador de mensaje en el repo
 
 #### Scenario: Devolución del tutor
-- **WHEN** el tutor pide un cambio en el diseño
-- **THEN** se actualiza el documento, se anota en la bitácora y, si cambia la grilla, se marcan las corridas previas
-  como de la versión anterior
+- **WHEN** una devolución en Zulip pide un cambio en el diseño
+- **THEN** se actualiza la sección Diseño, se anota en la bitácora y, si cambia la grilla, se marcan las corridas
+  previas como de la versión anterior
 
 ### Requirement: El control es un experimento
 El control (`C`) y su réplica (`C-rep`) SHALL vivir en `experimentos/control/`, con las reglas comunes de decisión (G,
-Δ, δ, T, A, N*, veredictos) en su `docs/hipotesis.md`. Las hipótesis SHALL citar esas reglas en lugar de repetirlas.
-Cambiar una regla común SHALL anotarse en la bitácora de `control` y en la de cada experimento que depende de él.
+Δ, δ, T, A, N*, veredictos) en su `README.md`. Las hipótesis SHALL enlazar esas reglas en lugar de repetirlas. Cambiar
+una regla común SHALL anotarse en la bitácora de `control` y en la de cada experimento que depende de él.
 
 #### Scenario: Leer la regla de decisión de H2
-- **WHEN** se abre `experimentos/h2/docs/hipotesis.md`
-- **THEN** encuentra su variable, su predicción y su regla de confirmación, y para δ y los veredictos hay una
-  referencia a `experimentos/control/docs/hipotesis.md`
+- **WHEN** se abre `experimentos/h2/README.md`
+- **THEN** encuentra su variable, su predicción y su regla de confirmación, y para δ y los veredictos hay un enlace a
+  `experimentos/control/README.md`
 
 ### Requirement: Una hipótesis, una carpeta
 Cada hipótesis con variantes propias SHALL tener su experimento (`h1`, `h2`, `h3`, …). La comparación entre hipótesis, la
@@ -116,7 +130,10 @@ La carpeta SHALL tener un `README.md` (quién, cuándo, qué pregunta, qué corr
 - pregunta;
 - protocolo, en una línea;
 - advertencia, en una línea;
-- los CSV de resultados y las columnas que se muestran como cifras principales.
+- los CSV de resultados y las columnas que se muestran como cifras principales, cada una con una etiqueta legible y,
+  si hace falta, una escala (por ejemplo, de $ a M$);
+- opcionalmente, figuras: un archivo de imagen dentro de la carpeta del estudio y su leyenda, que dice de dónde sale la
+  figura (el reporte original o un CSV) y bajo qué protocolo.
 
 Un exploratorio SHALL quedar fuera del registro de variantes, SHALL NOT escribir en el `ledger/` del experimento y SHALL
 NOT cambiar ningún veredicto. Una idea que surja de un exploratorio y se quiera confirmar SHALL volver a correrse como
@@ -127,9 +144,14 @@ variante, con hipótesis escrita antes.
 - **THEN** su advertencia dice que las 10 muestras dan solo 4 modelos distintos y que hay un solo 201910, y el reporte
   de `sampling_1` lo muestra en el bloque B
 
+#### Scenario: Figura declarada
+- **WHEN** `validacion_50_semillas/exploratorio.json` declara la figura de contracción del IC
+- **THEN** la página de exploratorios la muestra en la sección del estudio con su leyenda, y si el archivo no existe
+  `python -m comun.variantes --verificar` falla nombrando la carpeta y el archivo
+
 #### Scenario: Idea de un exploratorio que se confirma
 - **WHEN** el grupo quiere confirmar el reescalado √(1/r) que propuso un exploratorio
-- **THEN** se registra la variante `H3R-0.1`, su predicción se escribe en `h3/docs/hipotesis.md` antes de correr y su
+- **THEN** se registra la variante `H3R-0.1`, su predicción se escribe en `h3/README.md` antes de correr y su
   resultado va al bloque A
 
 #### Scenario: Manifiesto incompleto
@@ -166,14 +188,14 @@ el README y en el código, y dejar escrita la interpretación elegida cuando la 
   muestra la primera diferencia
 
 ### Requirement: Ideas que vienen de mirar el test
-Una variante que se registra a partir de un resultado ya visto en 201910 SHALL declararlo en su `docs/hipotesis.md`, y
-el informe de su experimento y el de `sampling_1` SHALL listarla entre las limitaciones. Su predicción y su regla se
-escriben igual que las demás, antes de correr.
+Una variante que se registra a partir de un resultado ya visto en 201910 SHALL declararlo en la sección Predicción de su
+`README.md`, y las Limitaciones de su experimento y de Resultados SHALL listarla. Su predicción y su regla se escriben
+igual que las demás, antes de correr.
 
 #### Scenario: H4 viene del aporte de Luis
-- **WHEN** se lee `experimentos/h4/docs/hipotesis.md`
-- **THEN** dice que las variantes salieron de estrategias que Luis eligió mirando 201910, y que el resultado de H4 no
-  cuenta con un mes de test que no se haya mirado
+- **WHEN** se lee `experimentos/h4/README.md`
+- **THEN** dice que las variantes salieron de estrategias elegidas mirando 201910, y que el resultado de H4 no cuenta con
+  un mes de test que no se haya mirado
 
 ### Requirement: 201910 solo para la comparación
 Como pide la consigna (Zulip 208135), toda elección SHALL hacerse con 201908. Esto vale para las variantes del registro
@@ -200,22 +222,22 @@ SHALL usarse.
   ella; la métrica que decide sigue siendo G al corte N\* fijado en 201908
 
 ### Requirement: Adaptaciones del baseline declaradas
-Cada apartamiento del baseline (208135 y su hilo) o de una indicación de un tutor en Zulip SHALL quedar escrito, con el
-id del mensaje y el motivo, en `control/docs/hipotesis.md` o en el `docs/diseno.md` que corresponda. Solo los que no son
-la variable de una hipótesis ni están justificados en el diseño SHALL figurar entre las limitaciones de los informes y
-del guion.
+Cada apartamiento del baseline (208135 y su hilo) o de una indicación del curso en Zulip SHALL quedar escrito, con el
+id del mensaje y el motivo, en `control/README.md` o en la sección Diseño que corresponda. Solo los que no son la
+variable de una hipótesis ni están justificados en el diseño SHALL figurar entre las limitaciones de los README y del
+guion.
 
 #### Scenario: Apartamiento que es la hipótesis
 - **WHEN** se lee por qué `H3` no reoptimiza para el dataset del final, frente al "siempre OP" (211718)
-- **THEN** `h3/docs/diseno.md` lo explica con el id 211718 (reoptimizar con todo convertiría a `H3` en el control), y
-  § Limitaciones no lo lista
+- **THEN** la sección Diseño de `h3/README.md` lo explica con el id 211718 (reoptimizar con todo convertiría a `H3` en
+  el control), y § Limitaciones no lo lista
 
 #### Scenario: Apartamiento que se convierte en variante
-- **WHEN** el diseño de `h4` cita 211718 para `H4F`
+- **WHEN** la sección Diseño de `h4` cita 211718 para `H4F`
 - **THEN** remite a `H4O-0.5`, que optimiza sobre el mismo set con el que entrena, y el contraste entre las dos sale en
-  el informe de `h4` como resultado, no como limitación
+  el README de `h4` como resultado, no como limitación
 
 #### Scenario: Aclaración nueva en Zulip
-- **WHEN** aparece en Zulip una aclaración del baseline que el repo no cumple
+- **WHEN** Agustina pide leer Zulip y aparece una aclaración del baseline que el repo no cumple
 - **THEN** la bitácora de `sampling_1` la anota con su id y, hasta que se corrija, se justifique en el diseño o se declare
   como limitación, la revisión de la etapa informe (`docs/revision.md` § 5) tiene un ✗ abierto
