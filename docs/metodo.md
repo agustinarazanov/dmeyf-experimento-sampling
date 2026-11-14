@@ -168,6 +168,12 @@ plantilla/      la estructura vacía de un experimento: README.md,
    nombres de personas y construye con `mkdocs build --strict`, que falla con un enlace roto o con un enlace relativo a un
    archivo que no se publica; con `serve` lo deja en `localhost:8000`).
 
+**Grilla común, antes de correr (paso 2 o 3).** Cada variante nueva declara su fila de la grilla común
+([`sampling_1/corridas.md`](../experimentos/sampling_1/corridas.md) § Fases), corre las cuatro tasas (0,5; 0,25; 0,1 y
+0,05) con 8 réplicas de optimización y declara sus pares directos en `comun/variantes.py` (`PARES_APAREADOS` o
+`PARES_WELCH`). Si no puede, declara el hueco con su motivo en `CELDAS_SIN_CORRER` (la tabla de cobertura de Resultados
+lo muestra), y lo hace antes de correr, no después de ver el resultado.
+
 </div>
 
 ### 3. Usar un estudio de otra hipótesis

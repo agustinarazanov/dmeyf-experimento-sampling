@@ -32,6 +32,9 @@ Las listas son las mismas para todos los experimentos. Las rutas son relativas a
 - [ ] Las horas de VM y el costo están estimados y entran en el trial.
 - [ ] El reparto por persona y por fase está escrito y no deja huecos ni solapes.
 - [ ] La devolución del tutor, si llegó, está incorporada con id de Zulip.
+- [ ] Cada variante nueva declara su fila de la grilla común, las cuatro tasas con 8 réplicas y sus pares directos, o
+      el hueco con su motivo en `CELDAS_SIN_CORRER` de `comun/variantes.py`, antes de correr
+      (`docs/metodo.md` § Agregar una hipótesis).
 
 ## 3. Código (`src/`, `scripts/`)
 

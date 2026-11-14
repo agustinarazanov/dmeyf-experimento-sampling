@@ -290,7 +290,7 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
   Resultados y el README raíz son páginas publicadas: impersonales, como verifica `scripts/sitio.sh`. Verificar con
   `python -m scripts.verificar_readme` (0 números fuera de `bloque-a-completo`), `scripts/sitio.sh` y
   `python -m scripts.medir_sitio` sin avisos.
-- [ ] 6.4 `docs/metodo.md` § Agregar una hipótesis y `docs/revision.md` § 2: la regla de D14.
+- [x] 6.4 `docs/metodo.md` § Agregar una hipótesis y `docs/revision.md` § 2: la regla de D14.
 - [ ] 6.5 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), actualizada con la tabla de cobertura, los cuatro
   contrastes principales con las filas de cada lado y la sección de tiempos. No se escribe ningún borrador de mensaje.
 - [ ] 6.6 Revisión en sesión limpia de Resultados, el Anexo y los README de `h1`–`h4` con `docs/revision.md` § 5, cierre en las bitácoras y
