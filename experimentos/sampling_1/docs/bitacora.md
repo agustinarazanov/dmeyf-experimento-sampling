@@ -2801,3 +2801,34 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
   estén corridas, y ya lo están (p. ej. `h4/ledger/hp/F0.25.json`); no vienen de la unión. `pytest` a secas no
   recolecta `h3/sensibilidad_muestra/tests` (`No module named 'experimentos'`). La unión a `main` la hace el orquestador.
 - 2b.3 no se hizo en esta sesión (presupuesto).
+
+### 14-nov-2026 · tiempos-confiables-y-consistencia grupo 2b · revisión en sesión limpia (2b.1)
+
+- Sesión: `13bfcead-f7b8-4e79-bf8e-b9412079dafb` (headless, sin contexto de la sesión que unió) · modelo: Opus ·
+  etapa: **revision**. Revisor: Claude (Opus). Lista: `docs/revision.md` § 3, aplicada a la unión `9da9fe9`.
+- Comandos: `pytest` entero: 319 pasan, 2 fallan en `tests/test_fase8.py` (las mismas que anotó la unión: la fase 8 ya
+  está corrida); `comun.variantes --verificar` sin `PROBLEMA`; `comun.consolidar --sanity` todo OK (control
+  reproducido, fase 8 con 8 × 20 en 249 celdas); `scripts/sitio.sh` (nombres + `mkdocs build --strict`) en verde;
+  `comun.reporte --todos` no cambia nada en `git status`; sin marcadores de conflicto (`git grep '^<<<<<<< '`); sin
+  datos del dataset en el repo; `bash -n scripts/vm.sh` sin errores.
+- § 3, ítem por ítem: smoke, determinismo, `optimizar` sin 201910, columnas del ledger, `codigo_sucio`, filas de train y
+  apareo de `consolidar.py` no cambian con la unión (`correr.py`, `ledger.py`, `metodos.py` y `consolidar.py` solo
+  traen los cambios ya revisados de cada rama) y siguen cubiertos por `pytest`; las filas de train y la ausencia de
+  `codigo_sucio`, además, por `--sanity`. `vm.sh` conserva `trap borrar EXIT` con `instances delete`, la calibración
+  de esta rama y las dos correcciones de main.
+- Hallazgos:
+  1. ✗→✓ `verificar_informe_h3` se cortaba con «esperaba 8 estudios de U0.1, hay 1»: buscaba `U0.1@k` en `h3`, y desde
+     2.1 (`74ba9f0`, D10) están en `h1`. No venía de la unión (las dos ramas tenían `h3`), pero la unión es la que tiene
+     que dejarlo andando.
+  2. ✗→✓ Con eso corrido, 21 números sin fuente en las secciones del 13-nov que la unión pasó de `hipotesis.md` y
+     `diseno.md` a los README (21 estudios, 560/720/1.120 finales, 36 estudios de h2, Zulip 212124, filas de la receta
+     con bajas de h4). Son diseño; antes no se verificaban porque estaban en `docs/`.
+  3. Abierto (datos de la fase 8 sobre texto escrito antes; lo resuelven los grupos 3 y 6): `verificar_informe_h3`
+     marca 4 números de `h2/README.md` (1,54 de la predicción, con la regla de A de una sola referencia de 3.1;
+     −0,0044, 0,0005 y 1,84 de § Resultado), y `verificar_readme` el 1,23 de `sampling_1/README.md`, que la unión ya
+     anotó.
+  4. Menor, sin corregir: `vm.sh` deja la carpeta `$TMPV` (tgz y bundle del repo) en `/tmp` en cada invocación.
+- Correcciones: `scripts/verificar_informe_h3.py` busca `U0.1@k` en `h1` y suma a `CONSTANTES` las cifras de diseño del
+  hallazgo 2, con comentario; queda en 4 sin fuente (895 números). `tests/test_verificadores.py` pasa.
+- 2b.2 sigue abierta: faltan los verdes de los verificadores (hallazgo 3) y unir la rama a `main`. 2b.3 sin hacer.
+- Tokens: los cuenta `comun/tokens.py` al cerrar el grupo (esta sesión no lo corre).

@@ -51,6 +51,11 @@ CONSTANTES = [3300, 8, 0, 7, 10, 50, 80, 95, 2019, 201908, 201910, 5, 25, 0.05, 
 # `validacion_50_semillas` que cita el origen de H4 (+7,19, −2,31, 283,25 y 276,65 M$)
 CONSTANTES += [40, 100, 0.01, 0.08, 30, 0.02, 5.52, 276.10, 5.8, 8000, 35, 900, 64, 1280, 800, -0.83, 4.54,
                7.19, -2.31, 283.25, 276.65]
+# desde la unión de `tiempos-confiables` con `main` (2b.1) las secciones del 13-nov de diseño están en los README: 21
+# estudios `U{r}@k`, 560, 720 y 1.120 finales, 36 estudios de h2, el mensaje de Zulip 212124 del tutor y las filas de
+# la receta con bajas de h4 (506.871 filas y 5.312 bajas del train; filas al azar y con bajas por tasa, cocientes, 531)
+CONSTANTES += [21, 560, 720, 1120, 36, 212124, 506871, 5312, 253436, 256092, 126718, 130702, 50687, 55468, 25344,
+               30390, 1.094, 1.199, 531]
 
 NUM_TABLA = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 NUM_TEXTO = re.compile(r"(?<![\w.,@−-])[−-]?\d+(?:\.\d{3})*(?:,\d+)?(?![\w@])")
@@ -84,7 +89,7 @@ def _fuentes(bloque: str) -> list[float]:
     for c in ("g_control", "delta_g_margen", "delta_g_media", "delta_g_ic_inf", "delta_g_ic_sup"):
         valores += list(ap[c] / 1e6)
     valores += list(ap["aceleracion"]) + list(-ap["delta_g_margen"] / 1e6)  # −δ, el umbral de pierde
-    for base, dueno_k, est in (("control", "control", "C"), ("h1", "h3", "U0.1")):
+    for base, dueno_k, est in (("control", "control", "C"), ("h1", "h1", "U0.1")):
         hps = [EXP / base / "ledger/hp" / f"{est}.json"] + sorted((EXP / dueno_k / "ledger/hp").glob(f"{est}@*.json"))
         ff = [json.loads(p.read_text())["hp"]["feature_fraction"] for p in hps]
         if len(ff) != 8:

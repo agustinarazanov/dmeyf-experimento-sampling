@@ -130,6 +130,7 @@ Qué puede ir en paralelo:
 - [x] 2b.1 Unir `main` en la rama `tiempos-confiables` y resolver los conflictos esperados (design § Restricciones):
   `comun/variantes.py`, `tests/test_variantes.py`, `cargar_replicas` y las secciones nuevas de hipótesis y diseño, que
   pasan al README de cada experimento con su fecha original.
+  - [x] Revisión en sesión limpia de 2b.1 con `docs/revision.md` § 3 (14-nov, bitácora de `sampling_1`).
 - [ ] 2b.2 `pytest`, `python -m comun.variantes --verificar`, `python -m comun.consolidar --sanity` y el verificador de
   enlaces del sitio sobre la unión. Unir la rama a `main`.
 - [ ] 2b.3 Actualizar con `/opsx:update` las rutas de los grupos 3, 4 y 6 de este cambio a la estructura que dejó
