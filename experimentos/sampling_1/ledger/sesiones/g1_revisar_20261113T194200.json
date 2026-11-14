@@ -1,0 +1,119 @@
+{
+ "duration_api_ms": 57012,
+ "stop_reason": "end_turn",
+ "session_id": "68f4f4f7-515c-489a-94f6-44c6a1c5c020",
+ "total_cost_usd": 0.6524652,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 50599,
+  "cache_read_input_tokens": 714606,
+  "output_tokens": 5232,
+  "output_tokens_details": {
+   "thinking_tokens": 1357
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50599,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 819,
+    "cache_read_input_tokens": 63360,
+    "cache_creation_input_tokens": 699,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 699
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 28,
+   "outputTokens": 5232,
+   "cacheReadInputTokens": 714606,
+   "cacheCreationInputTokens": 50599,
+   "webSearchRequests": 0,
+   "costUSD": 0.6524652,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1357,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 50599,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 16,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "No encontré nada nuevo que revisar en el grupo 1: desde la revisión 1.16 (`e87329e`) no hay commits que toquen `comun/`, `scripts/`, las hipótesis ni `openspec/`. La última sesión de aplicar tampoco cambió nada.\n\n- **Lo que sí revisé:** la corrección que la propia revisión 1.16 había hecho en `scripts/vm.sh`, porque nadie la había revisado en limpio todavía:\n  - **Subida de las predicciones:** origen y destino ya van separados, y la carpeta de origen existe antes de subirla.\n  - **Rescate cuando la VM termina con fallo:** trae las predicciones de la VM a `DATOS_DIR/ledger/` sin pisar las que ya están, con la misma estructura que lee `rutas.prediccion()`. Si un paso falla, el script sigue y borra igual la carpeta temporal.\n\n  Está bien y la revisión de sintaxis con `bash -n` no da errores. No la probé contra una VM real. No hubo nada que corregir.\n- **`tasks.md`:** no lo cambié. Las tres tareas de revisión del grupo (1.7, 1.11 y 1.16) ya estaban marcadas, y la única abierta, 1.15, es del orquestador.\n- **Cierre:** quedó anotado en `experimentos/sampling_1/docs/bitacora.md` y corrí `comun/tokens.py`. Commit `9b9716d`, con la bitácora y `tokens.csv`.\n- **Archivos de la sesión que no commiteé:** el borrado de `ledger/sesiones/bloqueo.txt` y los logs nuevos de `ledger/sesiones/` no son de esta revisión, así que los dejé como estaban. No escribí un `bloqueo.txt` nuevo porque no quedó nada que necesite a un humano.\n\nLo que sigue es la 1.15, mover las predicciones a `DATOS_DIR`. Después hay que regenerar los README tres veces para ver si los resultados siguen cambiando de una regeneración a otra, como pasó en «tiempo igual, réplicas» en la 1.11.\n\nUna falla mía: la salida larga de `comun/tokens.py` fue al chat en vez de a un archivo, contra la regla del repo.",
+ "ttft_ms": 1683,
+ "type": "result",
+ "duration_ms": 60073,
+ "uuid": "9678f393-c6b0-4354-a297-034c19e7f5ef",
+ "ttft_stream_ms": 940,
+ "time_to_request_ms": 211,
+ "first_content_frame_ms": 940,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 28,
+   "outputTokens": 5232,
+   "cacheReadInputTokens": 714606,
+   "cacheCreationInputTokens": 50599,
+   "webSearchRequests": 0,
+   "costUSD": 0.6524652,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1357,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 50599,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

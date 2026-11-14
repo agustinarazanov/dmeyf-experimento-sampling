@@ -1,0 +1,124 @@
+{
+ "duration_api_ms": 343159,
+ "stop_reason": "end_turn",
+ "session_id": "8aa38176-83be-42a7-8f48-8a05da32fc4a",
+ "total_cost_usd": 2.829394599999999,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 2349,
+  "cache_read_input_tokens": 447332,
+  "output_tokens": 2322,
+  "output_tokens_details": {
+   "thinking_tokens": 73
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2349,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1350,
+    "cache_read_input_tokens": 112661,
+    "cache_creation_input_tokens": 808,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 808
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 176,
+   "outputTokens": 32148,
+   "cacheReadInputTokens": 6928293,
+   "cacheCreationInputTokens": 100009,
+   "webSearchRequests": 0,
+   "costUSD": 2.829394599999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 8887,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 100009,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "origin": {
+  "kind": "task-notification",
+  "producer": "session-task",
+  "runId": "0mwfiy5b0-30ca4c8c"
+ },
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 5,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Hice la revisión de 1.8, 1.9 y 1.12 (tarea 1.11) y está commiteada en `17e0769`, sin `Co-Authored-By`. Quedan dos problemas que necesitan una decisión tuya; los dejé en `experimentos/sampling_1/ledger/sesiones/bloqueo.txt`.\n\n**Lo que corrí:** los tests de reporte dan 99 passed, antes y después de las correcciones. `comun.variantes --verificar` da 0 problemas, los dos verificadores pasan, `scripts/sitio.sh` construye sin nombres y no hay `.parquet` versionados. El `pytest` suelto toma el Python de miniconda y no encuentra `comun`; hay que usar `python -m pytest`.\n\n**Corregí dos cosas en `comun/reporte.py`:**\n- La fila del control mostraba la aceleración como «1,00» y las demás filas usan punto («4.37»). Ahora dice «1.00».\n- La tabla de tiempo igual de Resultados medía 1349 px y el tope de D16 es 800. Ahora va en pestañas por hipótesis, igual que el bloque A. En cada `hN/README.md` sigue siendo una sola tabla.\n\n**Lo que queda abierto (en `bloqueo.txt`):**\n1. **La pestaña «Valen la pena» mide 1031 px**, más que el tope de 800. Son 12 variantes con celdas de dos líneas, y D16 solo dice cómo partir las figuras, no las tablas. Hay que elegir una salida:\n   - partirla en dos pestañas (H1–H2 y H3–H4);\n   - dejar solo la mejor variante de cada hipótesis;\n   - poner el intervalo en la misma línea que el valor;\n   - aceptar la excepción en D16.\n2. **Regenerar no siempre da lo mismo.** Corrí `comun.reporte --todos` tres veces con los mismos datos:\n   - En dos corridas bajó el número de réplicas en «tiempo igual, réplicas» (H3-0.25 a R=7 en una, H3L-0.25 a R=6 en otra), y en una de ellas el bootstrap de H3L-0.1 quedó en «pendiente».\n   - La tercera coincidió con lo commiteado, y dentro de un mismo proceso el cálculo da siempre R=8.\n   - Sospecho que las predicciones de `experimentos/*/ledger/predicciones/` (dentro de `~/Documents`) dejan de verse por un momento, pero no lo confirmé. Si esa carpeta se sincroniza (iCloud u otro), conviene mover las predicciones a `DATOS_DIR`.\n   - Lo commiteado sale de una corrida que coincide con lo anterior en todo lo que no tocaron las correcciones. Hasta resolverlo, conviene mirar el diff de cada regeneración antes de commitear.\n\n**Otras observaciones:**\n- «envíos» aparece todavía tres veces en el sitio, siempre en texto escrito a mano: `control/README.md:71`, `h4/README.md:307` y `sampling_1/README.md:241`. Lo que arma `comun/reporte.py` ya está bien; esas tres le tocan al grupo 2.\n- La figura `desglose_tiempo` colorea las etapas con los mismos tonos que H1 a H3. D16 lo permite, pero se puede leer como si fueran hipótesis.\n\nMarqué 1.11 como hecha en `tasks.md`, con una nota de que el tope de 800 px de 1.12 sigue sin cumplirse. La entrada de cierre está en la bitácora de `sampling_1`. `comun/tokens.py` da unos 80 turnos con ~77.000 tokens de contexto por turno; el costo (≈ US$ 2,8) lo saqué del presupuesto de la sesión, porque `tokens.py` no lo calcula.",
+ "ttft_ms": 1731,
+ "type": "result",
+ "duration_ms": 21719,
+ "uuid": "45cb1a7e-c911-4336-b4b4-abcb3d340818",
+ "ttft_stream_ms": 810,
+ "time_to_request_ms": 116,
+ "first_content_frame_ms": 810,
+ "queued_turn_count": 0,
+ "result_index": 3,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 2322,
+   "cacheReadInputTokens": 447332,
+   "cacheCreationInputTokens": 2349,
+   "webSearchRequests": 0,
+   "costUSD": 0.15473040000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 73,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 2349,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

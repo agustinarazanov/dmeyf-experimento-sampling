@@ -1,0 +1,329 @@
+{
+ "duration_api_ms": 726973,
+ "stop_reason": "end_turn",
+ "session_id": "c352cb44-cdaf-4799-b9e1-17c8ebe310e9",
+ "total_cost_usd": 4.9303127999999985,
+ "usage": {
+  "input_tokens": 306,
+  "cache_creation_input_tokens": 286726,
+  "cache_read_input_tokens": 27368968,
+  "output_tokens": 104590,
+  "output_tokens_details": {
+   "thinking_tokens": 25369
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 286726,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1413,
+    "cache_read_input_tokens": 298134,
+    "cache_creation_input_tokens": 444,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 444
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 306,
+   "outputTokens": 104590,
+   "cacheReadInputTokens": 27368968,
+   "cacheCreationInputTokens": 286726,
+   "webSearchRequests": 0,
+   "costUSD": 4.9303127999999985,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 25369,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 286726,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01AdNCvdpspSeg62w2ebHHKk",
+   "tool_input": {
+    "command": "cat sitio/estilos.css; cat sitio/hooks.py | head -40; pip list 2>/dev/null | grep -i -E \"mkdocs|material\"; ls $(python -c \"import material,os;print(os.path.dirname(material.__file__))\")/templates/partials | grep header"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01QvKFn5p9bdr2tR4aVohUM1",
+   "tool_input": {
+    "command": "cat /opt/miniconda3/lib/python3.14/site-packages/material/templates/partials/header.html; ls experimentos/sampling_1/*.md; head -c 600 experimentos/sampling_1/README.md"
+   }
+  },
+  {
+   "tool_name": "Read",
+   "tool_use_id": "toolu_01UR2mkAxoC9X3MP7cBjyQvo",
+   "tool_input": {
+    "file_path": "/opt/miniconda3/lib/python3.14/site-packages/material/templates/partials/header.html"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_014Rn3n6wVuQxRqRhhUcVhKa",
+   "tool_input": {
+    "command": "mkdir -p sitio/overrides/partials && cp /opt/miniconda3/lib/python3.14/site-packages/material/templates/partials/header.html sitio/overrides/partials/header.html && grep -n \"site_name\\|config.site_name\\|page.meta.title\" sitio/overrides/partials/header.html"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011T33651ek68SwMyhQ1bAYT",
+   "tool_input": {
+    "command": "cat >> sitio/hooks.py <<'E'\n\n\n_NOMBRE = \"Sampling_1 · DMEyF 2026\"\n_PARTIDO = '<span class=\"md-ellipsis\">\\n            Sampling_1<span class=\"sitio-anio\"> · DMEyF 2026</span>\\n          </span>'\n\n\ndef on_post_page(output, page, config):\n    \"\"\"Parte el nombre del sitio en el encabezado para que en el teléfono «DMEyF 2026» baje a una segunda línea\n    (estilos.css). Es lo que haría un override de partials/header.html, sin copiar la plantilla del tema.\"\"\"\n    marca = f'<span class=\"md-ellipsis\">\\n            {_NOMBRE}\\n          </span>'\n    return output.replace(marca, _PARTIDO, 1)\nE\npython - <<'E'\nimport re\ns=open('sitio/estilos.css').read()\ni=s.index(\"/* Página a lo ancho\"); j=s.index(\"/* En escritorio el nombre\")\ns=s[:i]+\"\"\"/* Una sola columna: el ancho fijo va en el contenido y todo lo de adentro (párrafos, figuras, código, recuadros,\n   plegables) ocupa el 100 %. Las tablas más anchas se desplazan en su recuadro. */\n.md-grid { max-width: 90rem; }\n.md-content__inner { max-width: 36rem; margin-left: auto; margin-right: auto; }\n.md-typeset .admonition,\n.md-typeset details,\n.md-typeset pre,\n.md-typeset .highlight { max-width: 100%; }\n\n.md-typeset img { max-width: 100%; }\n\n\"\"\"+s[j:]\ns=s.replace(\"\"\"/* Figuras generadas (una imagen sola en su párrafo): el párrafo no lleva el tope de 75ch; en pantallas angostas la\n   figura no baja de 40rem, para que el texto se lea, y se desplaza dentro de su recuadro, como las tablas. */\n.md-typeset p:has(> img:only-child) { max-width: none; overflow-x: auto; }\n.md-typeset p > img:only-child { width: 100%; min-width: 40rem; max-width: none; }\n\"\"\",\"\"\"/* Figuras (una imagen sola en su párrafo): al 100 % de la columna; en pantallas angostas no bajan de 40rem, para que\n   el texto se lea, y se desplazan dentro de su recuadro, como las tablas. Fondo blanco, borde redondeado y margen\n   interno: se leen igual en claro y en oscuro (los SVG y PNG llevan texto oscuro). */\n.md-typeset p:has(> img:only-child) { overflow-x: auto; }\n.md-typeset p > img:only-child { width: 100%; min-width: 40rem; max-width: none; }\n.md-typeset img { background: #ffffff; border-radius: 0.4rem; padding: 0.4rem; box-sizing: border-box; }\n\n/* Encabezado: en el teléfono «DMEyF 2026» baja a una segunda línea, en letra más chica (D7b). */\n@media screen and (max-width: 59.9375em) {\n  .md-header { height: 3.6rem; }\n  .md-header__title .md-header__topic:first-child .md-ellipsis { white-space: normal; line-height: 1.15; }\n  .md-header__title .sitio-anio { display: block; font-size: 0.7em; opacity: 0.85; }\n  .md-sidebar { top: 3.6rem; }\n  .md-main { padding-top: 0; }\n}\n\"\"\")\n# colores a variables\nrep={\"#f8d7d0\":\"--c-pierde-bg\",\"#d6ecd9\":\"--c-ok-bg\",\"#fbefc8\":\"--c-ind-bg\"}\nfor k,v in rep.items(): s=s.replace(k,f\"var({v})\")\ns=s.replace(\"#8a2a1e\",\"var(--c-pierde-fg)\").replace(\"#1f5e3a\",\"var(--c-ok-fg)\").replace(\"#7a5a00\",\"var(--c-ind-fg)\")\ns=s.replace(\"#2e8b57\",\"var(--c-pos)\").replace(\"#c0392b\",\"var(--c-neg)\")\ns=s.replace(\"background: #eeeeee;\\n  color: #333333;\",\"background: var(--c-pill-bg);\\n  color: var(--c-pill-fg);\")\ns=s.replace(\"background: #eeeeee; color: #666666;\",\"background: var(--c-pill-bg); color: var(--c-muted);\")\ns=s.replace(\"#888888\",\"var(--c-muted)\").replace(\"color: #777777\",\"color: var(--c-muted)\").replace(\"color: #666666\",\"color: var(--c-muted)\")\ns=s.replace(\"background: #f1f1f1\",\"background: var(--c-icbar-bg)\").replace(\"background: #9a9a9a\",\"background: var(--c-icbar)\").replace(\"background: #333333\",\"background: var(--c-icbar-zero)\")\nvars_=\"\"\":root {\n  --c-pierde-bg: #f8d7d0; --c-pierde-fg: #8a2a1e;\n  --c-ok-bg: #d6ecd9; --c-ok-fg: #1f5e3a;\n  --c-ind-bg: #fbefc8; --c-ind-fg: #7a5a00;\n  --c-pill-bg: #eeeeee; --c-pill-fg: #333333; --c-muted: #666666;\n  --c-pos: #2e8b57; --c-neg: #c0392b;\n  --c-icbar-bg: #f1f1f1; --c-icbar: #9a9a9a; --c-icbar-zero: #333333;\n}\n\n[data-md-color-scheme=\"slate\"] {\n  --c-pierde-bg: #5a2a24; --c-pierde-fg: #ffb4a8;\n  --c-ok-bg: #1f4a2e; --c-ok-fg: #a8e6bd;\n  --c-ind-bg: #5a4a14; --c-ind-fg: #f5dc8a;\n  --c-pill-bg: #3a3d4a; --c-pill-fg: #e2e4ec; --c-muted: #a9adbb;\n  --c-pos: #5fd38d; --c-neg: #ff7b6b;\n  --c-icbar-bg: #3a3d4a; --c-icbar: #8d90a0; --c-icbar-zero: #e2e4ec;\n}\n\n\"\"\"\nk=s.index(\"/* Reporte generado\")\ns=s[:k]+vars_+s[k:]\nopen('sitio/estilos.css','w').write(s)\nE\ngrep -n \"#[0-9a-f]\\{6\\}\" sitio/estilos.css | sed -n 1,40p; mkdocs build -q 2>&1 | grep -i -E \"warn|error\" | head; grep -c sitio-anio site/index.html"
+   }
+  },
+  {
+   "tool_name": "Write",
+   "tool_use_id": "toolu_01QE5gmcetDHm4yAh564DPU4",
+   "tool_input": {
+    "file_path": "/tmp/esti/ajustar_css.py",
+    "content": "s = open('sitio/estilos.css').read()\ni = s.index(\"/* Página a lo ancho\")\nj = s.index(\"/* En escritorio el nombre\")\ns = s[:i] + \"\"\"/* Una sola columna: el ancho fijo va en el contenido y todo lo de adentro (párrafos, figuras, código, recuadros,\n   plegables) ocupa el 100 %. Las tablas más anchas se desplazan en su recuadro. */\n.md-grid { max-width: 90rem; }\n.md-content__inner { max-width: 36rem; margin-left: auto; margin-right: auto; }\n.md-typeset .admonition,\n.md-typeset details,\n.md-typeset pre,\n.md-typeset .highlight { max-width: 100%; }\n\n.md-typeset img { max-width: 100%; }\n\n\"\"\" + s[j:]\nviejo = s[s.index(\"/* Figuras generadas\"):s.index(\"/* Reporte generado\")]\ns = s.replace(viejo, \"\"\"/* Figuras (una imagen sola en su párrafo): al 100 % de la columna; en pantallas angostas no bajan de 40rem, para que\n   el texto se lea, y se desplazan dentro de su recuadro, como las tablas. Fondo blanco, borde redondeado y margen\n   interno: se leen igual en claro y en oscuro (los SVG y PNG llevan texto oscuro). */\n.md-typeset p:has(> img:only-child) { overflow-x: auto; }\n.md-typeset p > img:only-child { width: 100%; min-width: 40rem; max-width: none; }\n.md-typeset img { background: #ffffff; border-radius: 0.4rem; padding: 0.4rem; box-sizing: border-box; }\n\n/* Encabezado: en el teléfono «DMEyF 2026» baja a una segunda línea, en letra más chica (D7b). */\n@media screen and (max-width: 59.9375em) {\n  .md-header { height: 3.6rem; }\n  .md-header__title .md-header__topic:first-child .md-ellipsis { white-space: normal; line-height: 1.15; }\n  .md-header__title .sitio-anio { display: block; font-size: 0.7em; opacity: 0.85; }\n  .md-sidebar { top: 3.6rem; }\n}\n\n\"\"\")\nrep = [(\"#f8d7d0\", \"var(--c-pierde-bg)\"), (\"#d6ecd9\", \"var(--c-ok-bg)\"), (\"#fbefc8\", \"var(--c-ind-bg)\"),\n       (\"#8a2a1e\", \"var(--c-pierde-fg)\"), (\"#1f5e3a\", \"var(--c-ok-fg)\"), (\"#7a5a00\", \"var(--c-ind-fg)\"),\n       (\"#2e8b57\", \"var(--c-pos)\"), (\"#c0392b\", \"var(--c-neg)\"),\n       (\"background: #eeeeee;\\n  color: #333333;\", \"background: var(--c-pill-bg);\\n  color: var(--c-pill-fg);\"),\n       (\"background: #eeeeee; color: #666666;\", \"background: var(--c-pill-bg); color: var(--c-muted);\"),\n       (\"#888888\", \"var(--c-muted)\"), (\"#777777\", \"var(--c-muted)\"), (\"#666666\", \"var(--c-muted)\"),\n       (\"background: #f1f1f1\", \"background: var(--c-icbar-bg)\"), (\"background: #9a9a9a\", \"background: var(--c-icbar)\"),\n       (\"background: #333333\", \"background: var(--c-icbar-zero)\")]\nk = s.index(\"/* Reporte generado\")\ncuerpo = s[k:]\nfor a, b in rep:\n    cuerpo = cuerpo.replace(a, b)\nvars_ = \"\"\":root {\n  --c-pierde-bg: #f8d7d0; --c-pierde-fg: #8a2a1e;\n  --c-ok-bg: #d6ecd9; --c-ok-fg: #1f5e3a;\n  --c-ind-bg: #fbefc8; --c-ind-fg: #7a5a00;\n  --c-pill-bg: #eeeeee; --c-pill-fg: #333333; --c-muted: #666666;\n  --c-pos: #2e8b57; --c-neg: #c0392b;\n  --c-icbar-bg: #f1f1f1; --c-icbar: #9a9a9a; --c-icbar-zero: #333333;\n}\n\n[data-md-color-scheme=\"slate\"] {\n  --c-pierde-bg: #5a2a24; --c-pierde-fg: #ffb4a8;\n  --c-ok-bg: #1f4a2e; --c-ok-fg: #a8e6bd;\n  --c-ind-bg: #5a4a14; --c-ind-fg: #f5dc8a;\n  --c-pill-bg: #3a3d4a; --c-pill-fg: #e2e4ec; --c-muted: #a9adbb;\n  --c-pos: #5fd38d; --c-neg: #ff7b6b;\n  --c-icbar-bg: #3a3d4a; --c-icbar: #8d90a0; --c-icbar-zero: #e2e4ec;\n}\n\n\"\"\"\nopen('sitio/estilos.css', 'w').write(s[:k] + vars_ + cuerpo)\n"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Rs2Rik2Z5hSi8o57V9nwuw",
+   "tool_input": {
+    "command": "git check-ignore -v tmp_trabajo 2>&1 | head -1; cat .gitignore | head -20"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01TAAVFmQcmuLr2gjKMEmQ4Q",
+   "tool_input": {
+    "command": "sed -i '5s/- \\[ \\]/- [x]/;13s/- \\[ \\]/- [x]/' openspec/changes/inicio-y-resultados/tasks.md && git add mkdocs.yml sitio/estilos.css sitio/hooks.py experimentos/sampling_1/anexo.md openspec/changes/inicio-y-resultados/tasks.md && git commit -q -m \"sitio: nav con títulos de página, modo claro/oscuro con toggle, una sola columna, colores en variables, nombre Sampling_1 · DMEyF 2026 partido en el teléfono (hook en lugar de override del header); anexo.md vacío en la lista blanca\" && echo ok; sed -n 1,80p comun/reporte.py | head -5; grep -n \"^def \\|^[A-Z_]* = \" comun/reporte.py | head -120"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_011Gcc5WzDX9cef4FZr6HtpE",
+   "tool_input": {
+    "command": "cd experimentos/sampling_1; grep -n \"^#\\|generado:\\|^!\\[\" README.md; sed -n 108,160p README.md | cut -c1-160; sed -n 236,270p README.md | cut -c1-160; sed -n 10,22p ../../index.md | cut -c1-200"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01AXikUZxyJ5HRNKPR2VFFrL",
+   "tool_input": {
+    "command": "git stash -q 2>/dev/null; git stash pop -q; git add -A experimentos/sampling_1/figuras >/dev/null; git diff --cached --stat | tail -1; python -m comun.reporte --todos >/dev/null; python -m scripts.comparar_rondas >/dev/null; git status --short | grep -v \"^A\" ; git diff --stat | tail -3"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01HtMsrxWdjrPHhpA8f9fN3T",
+   "tool_input": {
+    "command": "git restore --staged experimentos/sampling_1/ledger/sesiones/etapas_20261113T161049.log; python -m comun.reporte --todos >/dev/null; python -m scripts.comparar_rondas >/dev/null; git diff --stat | tail -3; echo ---; git show HEAD:experimentos/sampling_1/README.md > old_readme_tmp.md; python - <<'E'\nimport re\ndef blk(t,n):\n    m=re.search(rf\"<!-- generado:{n} -->(.*?)<!-- /generado:{n} -->\",t,re.S); return m.group(1)\nold=open('old_readme_tmp.md').read(); new=open('experimentos/sampling_1/anexo.md').read()\nfor n in (\"bloque-a-completo\",\"varianza\",\"diferencias\",\"rondas\"):\n    o=blk(old,n); nw=blk(new,n)\n    o=re.sub(r\"!\\[[^\\n]*\\n\",\"\",o); \n    print(n, \"completo igual\" if n==\"bloque-a-completo\" and o==nw else (\"len\",len(o),len(nw)))\nE\nrm old_readme_tmp.md"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01RCw9vgNJMHnC8cNxccrdvQ",
+   "tool_input": {
+    "command": "git restore --staged experimentos/sampling_1/ledger/sesiones/etapas_20261113T161049.log"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_017UtVXxUDxpae6Avbg82NqX",
+   "tool_input": {
+    "command": "sed -i 's#TABLA = EXP / \"sampling_1/README.md\"#TABLA = EXP / \"sampling_1/anexo.md\"#; s#bloque `bloque-a-completo` de `experimentos/sampling_1/README.md`#bloque `bloque-a-completo` de `experimentos/sampling_1/anexo.md`#; s#falta el bloque bloque-a-completo en sampling_1/README.md#falta el bloque bloque-a-completo en sampling_1/anexo.md#' scripts/verificar_informe_h3.py; sed -n 1,40p tests/test_verificadores.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01CQmmsbMvDaA5gtCHboufNK",
+   "tool_input": {
+    "command": "cd experimentos/sampling_1/exploratorios; ls validacion_20_semillas/originales validacion_20_semillas/resultados validacion_50_semillas/resultados | head -40; ls -d */; cat validacion_20_semillas/exploratorio.json | head -50; ls sensibilidad_muestra 2>&1 | head; cd ../../..; ls experimentos/sampling_1/exploratorios/validacion_20_semillas/.."
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01YGDvRT5LiFAhbYwiwCA6ie",
+   "tool_input": {
+    "command": "cat experimentos/sampling_1/exploratorios/validacion_20_semillas/exploratorio.json; grep -n \"exploratorio\\|figuras\\|tablas\" comun/variantes.py | head -30; for f in experimentos/h3/sensibilidad_muestra/resultados/08_ganancia_por_semilla.csv experimentos/h3/sensibilidad_muestra/resultados/07_resumen_por_semilla.csv experimentos/sampling_1/exploratorios/validacion_50_semillas/resultados/ranking_201908_original.csv; do head -3 $f; done"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01FVikWQa5ADyweDxJpme1x8",
+   "tool_input": {
+    "command": "python -m pytest \"tests/test_reporte.py::test_dos_veces_da_lo_mismo\" -q -x -k sampling_1 > /tmp/claude-501/t1.txt 2>&1; tail -30 /tmp/claude-501/t1.txt | cut -c1-250",
+    "timeout": 400000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_018RWkuaj54rpQSVW558unLT",
+   "tool_input": {
+    "command": "python - <<'E'\nimport json\ndef col(c,e,esc=1,u=\"\"): return {\"columna\":c,\"etiqueta\":e,\"escala\":esc,\"unidad\":u}\ndef put(path, figuras, tablas):\n    d=json.load(open(path)); d[\"figuras\"]=figuras\n    d[\"tablas\"]=[{\"csv\":t[\"csv\"],\"columnas\":[col(*c) for c in cols]} for t,cols in zip(d[\"tablas\"],tablas)]\n    open(path,\"w\").write(json.dumps(d,ensure_ascii=False,indent=2)+\"\\n\")\nb=\"experimentos/sampling_1/exploratorios/\"\nput(b+\"validacion_20_semillas/exploratorio.json\",\n [{\"archivo\":f\"figuras/bandas_h{i}.png\",\"leyenda\":f\"Reporte original de H{i} (20 semillas finales): bandas de la curva de ganancia\"} for i in range(1,5)],\n [[(\"delta_media\",\"Δ de ganancia, media de 20 semillas\",1,\"M$\"),(\"tiempo_s\",\"Tiempo reportado\",1,\"s\")],\n  [(\"diferencia_delta\",\"Δ con 20 semillas menos Δ con 10\",1,\"M$\")]])\nr=\"Reporte original (50 semillas, hiperparámetros fijos): \"\nput(b+\"validacion_50_semillas/exploratorio.json\",\n [{\"archivo\":\"figuras/contraccion_ic_95.png\",\"leyenda\":r+\"contracción del IC 95 % de Δ\"},\n  {\"archivo\":\"figuras/curva_k_semillas_y_pipeline_15_min.png\",\"leyenda\":r+\"ganancia según K y pipeline de 15 minutos\"},\n  {\"archivo\":\"figuras/boxplot_50_semillas.png\",\"leyenda\":r+\"ganancia por estrategia con las 50 semillas\"},\n  {\"archivo\":\"figuras/bandas_de_curvas_completas.png\",\"leyenda\":r+\"bandas de las curvas de ganancia\"},\n  {\"archivo\":\"figuras/g_en_201908_por_estrategia.png\",\"leyenda\":\"Resumen original de 50 semillas: ganancia en 201908 por estrategia\"},\n  {\"archivo\":\"figuras/g_segun_k.png\",\"leyenda\":\"Resumen original de 50 semillas: ganancia en 201908 según K\"}],\n [[(\"g_201908\",\"G en 201908\",1e-6,\"M$\"),(\"gmax_201908\",\"G máxima en 201908\",1e-6,\"M$\"),(\"auc_201908\",\"AUC en 201908\"),(\"g_201910\",\"G en 201910\",1e-6,\"M$\"),(\"auc_201910\",\"AUC en 201910\"),(\"tiempo_s\",\"Tiempo\",1,\"s\")],\n  [(\"puesto_201908\",\"Puesto en 201908\"),(\"g_201908\",\"G en 201908\",1e-6,\"M$\"),(\"g_201908_sd\",\"Desvío de G en 201908\",1e-6,\"M$\")],\n  [(\"k_presupuesto\",\"K que entran en el presupuesto\"),(\"ens_k_201908\",\"G del ensamble en 201908\",1e-6,\"M$\"),(\"ens_k_201910\",\"G del ensamble en 201910\",1e-6,\"M$\")]])\nput(\"experimentos/h3/sensibilidad_muestra/exploratorio.json\",\n [{\"csv\":\"resultados/08_ganancia_por_semilla.csv\",\"columna\":\"delta\",\"escala\":1e-6,\"unidad\":\"M$\",\"leyenda\":\"Δ de ganancia de H3 contra el control en cada una de las 10 muestras del 25 % (puntos) y su mediana, a partir de resultados/08_ganancia_por_semilla.csv\"}],\n [[(\"delta\",\"Δ de ganancia contra el control\",1e-6,\"M$\"),(\"delta_pct\",\"Δ de ganancia contra el control\",1,\"%\")],\n  [(\"delta\",\"Δ de AUC final contra el control\"),(\"spearman_seleccion\",\"Correlación de Spearman de la selección\"),(\"tiempo_busqueda_s\",\"Tiempo de búsqueda\",1,\"s\")]])\nE\ngit status --short | grep -v \"^ M\\|??\" ; sed -n 249,300p comun/variantes.py"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01MGv2bAyCXUcoxbMcriT9pL",
+   "tool_input": {
+    "command": "python - <<'E'\np='comun/reporte.py'\ns=open(p).read()\ni=s.index(\"def _resumen_columna\"); j=s.index(\"def tabla_md(\")\nnuevo='''def _formato(v: float, grande: bool) -> str:\n    return f\"{v:,.2f}\" if grande else f\"{v:.4g}\"\n\n\ndef _cifra(etiqueta: str, unidad: str, s: pd.Series, escala: float = 1.0) -> list[str]:\n    \"\"\"Fila numérica de una cifra de un exploratorio: etiqueta, unidad, mediana, mínimo, máximo y n (ya con la escala).\"\"\"\n    x = pd.to_numeric(s, errors=\"coerce\").dropna() * escala\n    if x.empty:\n        return [etiqueta, unidad, \"sin datos numéricos\", \"\", \"\", \"0\"]\n    grande = x.abs().max() >= 100\n    f = lambda v: _formato(v, grande)  # noqa: E731\n    return [etiqueta, unidad, f(x.median()), f(x.min()), f(x.max()), str(len(x))]\n\n\ndef fig_sensibilidad(serie: pd.Series, unidad: str, titulo: str, nombre: str, destino: Path) -> str:\n    \"\"\"Δ por muestra: un punto por muestra y su mediana, en `unidad` (la figura que `sensibilidad_muestra` declara con\n    `csv` y `columna`: el estudio original no tiene gráficos). Las figuras de un exploratorio van junto a su página.\"\"\"\n    global DESTINO\n    x = pd.to_numeric(serie, errors=\"coerce\").dropna().to_numpy()\n    previo, DESTINO = DESTINO, Destino(destino)\n    try:\n        if not len(x):\n            return pendiente(\"la columna del estudio no tiene datos\")\n        fig, ax = plt.subplots(figsize=(ANCHO * 0.6, 3.2))\n        y = np.linspace(-0.25, 0.25, len(x)) if len(x) > 1 else np.zeros(1)\n        ax.scatter(x, y, color=PALETA[0], s=36, zorder=3, label=\"muestra\")\n        ax.axvline(float(np.median(x)), color=TINTA, linestyle=\":\", label=f\"mediana {np.median(x):.2f} {unidad}\")\n        ax.axvline(0, color=\"#999999\", linewidth=0.8)\n        ax.set_yticks([])\n        ax.set_ylim(-0.6, 0.6)\n        ax.set_xlabel(f\"Δ de ganancia contra el control ({unidad})\")\n        ax.legend(loc=\"upper left\", frameon=False)\n        _ejes(ax)\n        fig.suptitle(titulo)\n        enlace = figura(fig, nombre, None)\n        archivos = dict(DESTINO.archivos)\n    finally:\n        DESTINO = previo\n    if DESTINO is not None:\n        DESTINO.archivos.update(archivos)\n    return enlace\n\n\ndef bloque_b(raiz: Path = rutas.RAIZ, pagina: Path | None = None) -> list[dict]:\n    \"\"\"Una fila por `exploratorio.json`. Un CSV que falta deja la tabla como pendiente con el nombre del archivo.\n    `cifras` mezcla filas numéricas (etiqueta, unidad, mediana, mínimo, máximo, n) y avisos de pendiente (texto);\n    `figuras` son pares (enlace Markdown relativo a `pagina`, leyenda). Una columna declarada como texto vale como\n    `{\"columna\": c}` sin escala ni unidad.\"\"\"\n    import json\n    import os\n    pagina = pagina or raiz / \"experimentos\" / \"sampling_1\" / \"exploratorios\" / \"README.md\"\n    filas = []\n    for m in reg.manifiestos(raiz):\n        d = json.loads(m.read_text())\n        cifras, figuras = [], []\n        for t in d.get(\"tablas\", []):\n            ruta = m.parent / t[\"csv\"]\n            if not ruta.is_file():\n                cifras.append(f\"pendiente: falta {t['csv']}\")\n                continue\n            df = pd.read_csv(ruta)\n            for c in t[\"columnas\"]:\n                c = c if isinstance(c, dict) else {\"columna\": c}\n                nombre = c[\"columna\"]\n                if nombre not in df:\n                    cifras.append(f\"pendiente: falta la columna {nombre} de {ruta.name}\")\n                    continue\n                cifras.append(_cifra(c.get(\"etiqueta\") or f\"{ruta.name}, {nombre}\", c.get(\"unidad\", \"\"), df[nombre],\n                                     c.get(\"escala\", 1.0)))\n        for f in d.get(\"figuras\", []):\n            if f.get(\"archivo\"):\n                figuras.append((f\"![{f['leyenda']}]({os.path.relpath(m.parent / f['archivo'], pagina.parent)})\", f[\"leyenda\"]))\n                continue\n            ruta = m.parent / f[\"csv\"]\n            if not ruta.is_file():\n                figuras.append((pendiente(f\"falta {f['csv']}\"), f[\"leyenda\"]))\n                continue\n            serie = pd.read_csv(ruta).get(f[\"columna\"], pd.Series(dtype=float)) * f.get(\"escala\", 1.0)\n            enlace = fig_sensibilidad(serie, f.get(\"unidad\", \"\"), f[\"leyenda\"], f\"{m.parent.name}\",\n                                      pagina.parent / \"figuras\")\n            figuras.append((enlace, \"\"))\n        filas.append({\"carpeta\": str(m.parent.relative_to(raiz)), \"pregunta\": d.get(\"pregunta\", \"\"),\n                      \"protocolo\": d.get(\"protocolo\", \"\"), \"figuras\": figuras, \"cifras\": cifras,\n                      \"advertencia\": d.get(\"advertencia\", \"\")})\n    return filas\n\n\n'''\ns=s[:i]+nuevo+s[j:]\ni=s.index(\"def lista_b(\"); j=s.index(\"def delta(f: dict)\")\nnuevo2='''CAB_CIFRAS = (\"cifra\", \"unidad\", \"mediana\", \"mínimo\", \"máximo\", \"n\")\n\n\ndef lista_b(b: list[dict]) -> str:\n    \"\"\"Bloque B de los exploratorios: una sección por estudio con su pregunta (`question`), el protocolo, las figuras con\n    su leyenda, las cifras en una tabla numérica plegada y la advertencia (`warning`).\"\"\"\n    if not b:\n        return \"No hay exploratorios declarados.\\\\n\"\n    sangria = lambda t: \"\\\\n\".join(\"    \" + linea if linea else \"\" for linea in t.splitlines())  # noqa: E731\n    out = []\n    for f in b:\n        out += [f\"### {Path(f['carpeta']).name}\\\\n\", f'!!! question \"Pregunta\"\\\\n{sangria(f[\"pregunta\"])}\\\\n',\n                f\"**Protocolo.** {f['protocolo']}\\\\n\"]\n        for enlace, leyenda in f.get(\"figuras\", []):\n            out.append(enlace.strip() + \"\\\\n\")\n            if leyenda:\n                out.append(f\"<p class='nota'>{html.escape(leyenda)}</p>\\\\n\")\n        filas = [c for c in f[\"cifras\"] if not isinstance(c, str)]\n        pend = [c for c in f[\"cifras\"] if isinstance(c, str)]\n        if filas:\n            out.append(_plegable(\"Cifras principales\", tabla_md(CAB_CIFRAS, filas)) + \"\\\\n\")\n        if pend:\n            out.append(\"\\\\n\".join(f\"  - {c}\" for c in pend) + \"\\\\n\")\n        out.append(f'!!! warning \"Advertencia\"\\\\n{sangria(f[\"advertencia\"])}\\\\n')\n    return \"\\\\n\".join(out)\n\n\n'''\ns=s[:i]+nuevo2+s[j:]\nopen(p,'w').write(s)\nE\ngrep -n \"^import\\|^from\" comun/reporte.py | head -20"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01FsWA113fp9dKosYcn5dgMh",
+   "tool_input": {
+    "command": "python - <<'E'\np='comun/reporte.py'\ns=open(p).read()\ns=s.replace('N* = {a[\\'n_est\\']:,} envíos; ','N* = {a[\\'n_est\\']:,} clientes contactados; ')\ns=s.replace(\"N* = {int(ap['n_estrella'].iloc[0]):,} envíos (fijo, \",\"N* = {int(ap['n_estrella'].iloc[0]):,} clientes contactados (fijo, \")\ns=s.replace('ax.set_xlabel(\"envíos\")','ax.set_xlabel(\"N clientes contactados\")')\ns=s.replace(\"en N* = {n_est:,} envíos, {len(debajo)}\",\"en N* = {n_est:,} clientes contactados, {len(debajo)}\")\ns=s.replace(\"(por envíos)\",\"(por clientes contactados)\").replace(\"contra envíos, un panel\",\"contra clientes contactados, un panel\").replace(\"por envíos, una columna\",\"por clientes contactados, una columna\")\ns=s.replace(\"    cols = min(len(difs), 3)\\n\",\"    cols = 2  # siempre dos columnas de paneles (D14)\\n\")\nopen(p,'w').write(s)\nE\ngrep -n \"envíos\\|envios\" comun/reporte.py | head; grep -rn \"envíos\" tests/*.py | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_0159phdpXAvoj1htsPbCdECV",
+   "tool_input": {
+    "command": "node /private/tmp/claude-501/bundled-skills/2.1.311/be13976aad8e29b6c1f465a729d57e81/dataviz/scripts/validate_palette.js \"#2a78d6,#eb6834,#1baf7a,#6250d6\" --mode light 2>&1 | tail -25"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LJFB897DVj2s7gTnBRtkSS",
+   "tool_input": {
+    "command": "node /private/tmp/claude-501/bundled-skills/2.1.311/be13976aad8e29b6c1f465a729d57e81/dataviz/scripts/validate_palette.js \"#2a78d6,#eb6834,#1baf7a,#6250d6\" --mode light"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019N1f1f4KaPw6aZ14oXJuFU",
+   "tool_input": {
+    "command": "cd /tmp && python -c \"print(1)\" >/dev/null; cd - >/dev/null; python - <<'E'\nimport subprocess\nE\npython -c \"import cairosvg\" 2>&1 | head -1; which rsvg-convert qlmanage | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_013KX7NPmLWoJd9RSM5W8poc",
+   "tool_input": {
+    "command": "cat > scripts/_p_tmp.py <<'E'\np='comun/reporte.py'\ns=open(p).read()\na='return f\"\\\\n![{titulo.replace(chr(10), \\' \\')}](figuras/{nombre}.svg)\\\\n\"'\nassert a in s\ns=s.replace(a,'return f\"\\\\n![{titulo.replace(chr(10), \\' \\').replace(chr(92) + \\'$\\', \\'$\\')}](figuras/{nombre}.svg)\\\\n\"')\nopen(p,'w').write(s)\nE\npython scripts/_p_tmp.py && rm scripts/_p_tmp.py; python -m comun.reporte --exp sampling_1 --figuras pngtmp >/dev/null && echo ok",
+    "timeout": 200000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Bd7REdW467eDena761PPD3",
+   "tool_input": {
+    "command": "cat >> tests/test_reporte.py <<'E'\n\n\n# --- inicio-y-resultados 1.4: figuras nuevas ---\n\ndef test_figuras_nuevas_sin_datos_salen_pendientes():\n    import pandas as pd\n    ctx = reporte.Vacio = reporte.Contexto(reg.AGREGADOR)\n    vacio = pd.DataFrame()\n    a = {\"filas\": [], \"rep\": pd.DataFrame(), \"semillas\": {}, \"delta\": 0.0}\n    assert \"class='pend'\" in reporte.fig_ensamble(ctx, vacio, vacio, a, None)\n    assert \"class='pend'\" in reporte.fig_ic_rondas(ctx, a, None, vacio)\n    assert \"class='pend'\" in reporte.fig_curvas_ganancia(ctx, \"H1\", vacio, vacio, None)\n\n\ndef test_ensamble_de_20_semillas_del_control_coincide_con_tiempo_igual():\n    ctx, fin, ap, a = reporte._agregador({})\n    g_c20, _ = reporte.calcular_tiempo_igual(ctx, fin, ap)\n    curvas = reporte.curvas_ensamble(ctx, fin, ap, a)\n    k, _, g = curvas[reg.CONTROL][-1]\n    assert k == reporte.N_SEMILLAS and g == pytest.approx(g_c20)\n    assert all(len(p) == reporte.N_SEMILLAS for p in curvas.values())\n\n\ndef test_figuras_nuevas_con_datos_son_deterministas_y_con_titulo():\n    ctx, fin, ap, a = reporte._agregador({})\n    for hacer in (lambda: reporte.fig_ensamble(ctx, fin, ap, a, None), lambda: reporte.fig_ic_rondas(ctx, a, None),\n                  lambda: reporte.fig_curvas_ganancia(ctx, \"H3\", fin, ap, None)):\n        reporte.DESTINO = reporte.Destino(rutas.RAIZ / \"x\")\n        try:\n            e1, a1 = hacer(), dict(reporte.DESTINO.archivos)\n            reporte.DESTINO = reporte.Destino(rutas.RAIZ / \"x\")\n            e2, a2 = hacer(), dict(reporte.DESTINO.archivos)\n        finally:\n            reporte.DESTINO = None\n        assert e1 == e2 and a1 == a2 and a1 and \"![\" in e1 and \"class='pend'\" not in e1\nE\nsed -i 's/ctx = reporte.Vacio = reporte.Contexto/ctx = reporte.Contexto/' tests/test_reporte.py\npython -m pytest tests/test_reporte.py -q -k \"figuras_nuevas or ensamble_de_20\"",
+    "timeout": 400000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012tGTjTx6vLMXQmiutyEXqu",
+   "tool_input": {
+    "command": "sed -i 's/curvas\\[reg.CONTROL\\]/curvas[reporte.lg.CONTROL]/' tests/test_figuras_nuevas.py; python -m pytest tests/test_figuras_nuevas.py -q 2>&1 | tail -3",
+    "timeout": 400000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_0124VFKbAPBVUNhM4TQzTQuX",
+   "tool_input": {
+    "command": "cat > scripts/_p_tmp.py <<'E'\np='comun/reporte.py'\ns=open(p).read()\ni=s.index(\"def tabla_variantes(\"); j=s.index(\"# --- celdas de las tablas del HTML\")\nnuevo='''def tabla_variantes(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:\n    \"\"\"Tabla del bloque `resultado` de una hipótesis (D9): sin columna «hipótesis»; la de «semillas» solo si alguna fila\n    difiere (si no, una línea debajo lo dice); las semillas ganadas, con una barrita de proporción.\"\"\"\n    filas, veredictos, deltas, aes, semillas = [], [], [], [], []\n    if not ap.empty:\n        filas.append([\"C\", _m(ap[\"g_control\"].iloc[0]), \"—\", \"—\", \"—\", f\"{ap['tiempo_total_control_s'].iloc[0]:,.0f}\", \"1,00\",\n                      \"—\", \"—\"])\n        semillas.append(estado(\"C\", fin)[0])\n        veredictos, deltas, aes = [\"\"], [None], [None]\n    for b in ctx.variantes:\n        r, n = fila(ap, b), estado(b, fin)[0]\n        if r is None:\n            filas.append([b] + [\"pendiente\"] * 8)\n            semillas.append(n)\n            veredictos, deltas, aes = veredictos + [\"pendiente\"], deltas + [None], aes + [None]\n            continue\n        v = veredicto(ap, fin, b)\n        vale = \"sí\" if v in (\"no pierde\", \"gana\") and r[\"aceleracion\"] >= A_VALE else \"no\"\n        ganadas, total = int(r[\"semillas_ganadas\"]), int(r[\"n_semillas\"])\n        filas.append([b, _m(r[\"g_control\"] + r[\"delta_g_media\"]),\n                      celda_ic((r[\"delta_g_media\"], r[\"delta_g_ic_inf\"], r[\"delta_g_ic_sup\"])),\n                      celda(f\"{ganadas}/{total}\", prop=ganadas / total if total else None), celda_ic(_auc(r), _a),\n                      f\"{r['tiempo_total_s']:,.0f}\", celda(f\"{r['aceleracion']:.2f}\"), celda_veredicto(v),\n                      vale if not v.startswith(\"pendiente\") else \"pendiente\"])\n        semillas.append(total)\n        veredictos, deltas, aes = veredictos + [v], deltas + [r[\"delta_g_media\"]], aes + [r[\"aceleracion\"]]\n    cab = [\"variante\", \"G media (M$)\", \"Δ [IC 95%] (M$)\", \"semillas ganadas\", \"ΔAUC [IC 95%]\", \"T (s)\", \"aceleración (×)\",\n           \"ganancia contra el control\", \"vale la pena (no pierde y ≥ 2×)\"]\n    marcar_mejores(filas, veredictos, {2: deltas, 6: aes})\n    distintas = sorted({int(n) for n in semillas})\n    if len(distintas) > 1:  # las semillas difieren entre filas: la columna vuelve\n        cab.insert(1, \"semillas\")\n        for f, n in zip(filas, semillas):\n            f.insert(1, n)\n        pie = \"\"\n    else:\n        pie = f\"<p class='nota'>Todas las variantes con {distintas[0]} semillas.</p>\" if distintas else \"\"\n    return html_tabla(cab, filas) + pie\n\n\n'''\ns=s[:i]+nuevo+s[j:]\n# celda con prop\na='''def celda(v: str, ic: str | None = None, clases: str = \"\", barra: tuple | None = None, nota: str | None = None,\n          pill: bool = False) -> dict:\n    \"\"\"Celda estructurada de `html_tabla`: valor, IC debajo, clases del `td`, barra del IC, nota al pie, etiqueta.\"\"\"\n    return {\"v\": v, \"ic\": ic, \"clases\": clases, \"barra\": barra, \"nota\": nota, \"pill\": pill}'''\nassert a in s\ns=s.replace(a,'''def celda(v: str, ic: str | None = None, clases: str = \"\", barra: tuple | None = None, nota: str | None = None,\n          pill: bool = False, prop: float | None = None) -> dict:\n    \"\"\"Celda estructurada de `html_tabla`: valor, IC debajo, clases del `td`, barra del IC, nota al pie, etiqueta y, con\n    `prop` (0 a 1), una barrita de proporción debajo del valor.\"\"\"\n    return {\"v\": v, \"ic\": ic, \"clases\": clases, \"barra\": barra, \"nota\": nota, \"pill\": pill, \"prop\": prop}''')\na='''        if c[\"barra\"]:\n            lo, ancho = escala[j]'''\nassert a in s\ns=s.replace(a,'''        if c.get(\"prop\") is not None:\n            partes.append(f\"<span class='prop' style='--p:{100 * c['prop']:.0f}%'></span>\")\n        if c[\"barra\"]:\n            lo, ancho = escala[j]''')\n# encabezados del Anexo y resumen\ns=s.replace('\"ΔAUC en 201910 [IC]\", \"T mediana (s)\", \"A\",','\"ΔAUC en 201910 [IC]\", \"T mediana (s)\", \"aceleración (×)\",')\ns=s.replace('CAB_RESUMEN = (\"variante\", \"hipótesis\", \"R\", \"Δ [IC 95%] (M$)\", \"A\", \"veredicto\")','CAB_RESUMEN = (\"variante\", \"hipótesis\", \"R\", \"Δ [IC 95%] (M$)\", \"aceleración (×)\", \"ganancia contra el control\")')\nopen(p,'w').write(s)\nc=open('sitio/estilos.css').read()\nc+='''\n/* Barrita de proporción (semillas ganadas sobre el total): --p es el ancho lleno. */\n.md-typeset .prop {\n  display: block;\n  position: relative;\n  min-width: 4rem;\n  height: 6px;\n  margin-top: 3px;\n  background: var(--c-icbar-bg);\n}\n\n.md-typeset .prop::before {\n  content: \"\";\n  position: absolute;\n  inset: 0 auto 0 0;\n  width: var(--p);\n  background: var(--c-pos);\n}\n'''\nopen('sitio/estilos.css','w').write(c)\nE\npython scripts/_p_tmp.py && rm scripts/_p_tmp.py; sed -n 1,3p scripts/verificar_informe_h3.py | head -2; grep -n '\"A\"\\|veredicto\"\\|hipótesis\"' scripts/verificar_*.py tests/test_reporte.py | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_015HHz862zpx6UMKpu2r4nW1",
+   "tool_input": {
+    "command": "sed -i 's/\"veredicto (fuente)\")/\"ganancia contra el control (fuente)\")/' comun/reporte.py; grep -n \"^AVISO_A = \" -A3 comun/reporte.py; grep -n \"A ≥\\|aceleración A\\| A \\b\" comun/reporte.py | head"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012PKXGbsPmtYj39eq82hoZj",
+   "tool_input": {
+    "command": "git add -A experimentos index.md sitio comun scripts tests 2>/dev/null; git reset -q experimentos/sampling_1/ledger/sesiones; git status --short | grep -v \"^[AM] \"; python -m comun.reporte --todos >/dev/null; python -m scripts.comparar_rondas >/dev/null; git status --short | grep -v \"^[AM] \"; python -m scripts.verificar_readme | tail -1; python -m scripts.verificar_informe_h3 | tail -1; python -m comun.variantes --verificar | head -1; mkdocs build 2>&1 | grep -i \"warning\" | grep -v \"MkDocs\\|plugin\\|DISABLE\\|NO_MKDOCS\"",
+    "timeout": 500000
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01W8TGwD28emTv7GUia85qHS",
+   "tool_input": {
+    "command": "sed -i 's/^- \\[ \\] 1\\.4 /- [x] 1.4 /; s/^- \\[ \\] 1\\.6 /- [x] 1.6 /; s/^- \\[ \\] 1\\.8 /- [x] 1.8 /; s/^- \\[ \\] 1\\.9 /- [x] 1.9 /' openspec/changes/inicio-y-resultados/tasks.md; grep -n \"^- \\[\" openspec/changes/inicio-y-resultados/tasks.md | head -14 | cut -c1-40"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 211,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Apliqué 1.3 a 1.6, 1.8 y 1.9 del grupo 1, y 1.12 quedó a medias: hay que terminarla en otra sesión. Todo está commiteado, sin push. `pytest` entero dio 263 pasan (antes del último cambio, `fraccion` en 2×2; después corrí solo los tests de `fraccion`, de variantes sin datos y de dos corridas iguales). `scripts/sitio.sh` y los dos verificadores quedan en verde, `comun.variantes --verificar` corre sin errores, y regenerar con `comun.reporte --todos` dos veces no cambia nada.\n\n**Qué quedó hecho**\n- **1.3:** nace `anexo.md` y absorbe los bloques de consulta que salían de Resultados. `index.md` suma los tres hallazgos y `comparar_rondas.py` escribe en el Anexo. `verificar_readme` revisa también los números a mano de `index.md` y de Resultados. Para que pasara tuve que agregar a `NO_RESULTADOS` años, ids de Zulip y dos razones de IC (0,96 y 1,44). Esas dos son de texto viejo que reescribe 2.1, y hay un comentario para retirarlas entonces.\n- **1.4:** figuras nuevas `ensamble` y `ensamble_k` (2×2 por hipótesis), cajas por semilla, `ic_rondas` y `curvas_<H>`. El test confirma que el ensamble de K = 20 del control coincide con el de `tiempo-igual`.\n- **1.5:** `extraer_figuras_exploratorios.py` guarda 10 PNG, no nueve como dice la tarea: 4 de las 20 semillas y 6 de las 50. Los tres `exploratorio.json` declaran figuras y columnas con etiqueta, escala y unidad, y `variantes --verificar` falla si falta una figura declarada.\n- **1.6:** el bloque B tiene una sección por estudio (pregunta, protocolo, figuras con leyenda, cifras plegadas, advertencia). Las 11 imágenes resuelven en `site/`.\n- **1.8:** la tabla de cada hipótesis va sin columna «hipótesis»; la de «semillas» solo vuelve si difieren. Las semillas ganadas llevan barrita y los encabezados nuevos valen también en el Anexo.\n- **1.9:** `tradeoff` en 2×2 por hipótesis y `ANCHO = 9`. Las curvas contra clientes contactados van siempre en dos columnas, y el generador ya no dice «envíos».\n\n**1.12, a medias**\nYa están el color fijo por hipótesis (`COLOR_HIPOTESIS`), el veredicto en el marcador, `tradeoff`, `ensamble`, `fraccion` en 2×2 y el bloque A de Resultados en pestañas. Falta:\n- `semillas_replicas` y `tiempo_igual` en 2×2.\n- Validar la paleta con la skill `dataviz`: el validador queda fuera de las rutas permitidas y no pude correrlo.\n- Medir que ninguna figura de Resultados supere 800 px en pantalla; con la pantalla fuera de alcance, queda para el orquestador.\n\n**Decisión mía (1.2):** el nombre del encabezado en dos líneas lo resolví con un hook de `sitio/hooks.py` en lugar de `sitio/overrides/partials/header.html`, porque no pude leer la plantilla de Material para copiarla.\n\n**Hecho por otros durante la sesión:** el orquestador commiteó 1.10, cambió `mkdocs.yml` y `requirements-sitio.txt`, y amplió `design.md`/`tasks.md` con 1.8, 1.9, 1.12 y D9 a D17. No toqué esos archivos salvo `tasks.md`, donde solo marqué mis tareas.\n\nNo hice 1.7 ni 1.11 (las revisiones) ni lancé corridas en VM. No hay `bloqueo.txt` ni `en_curso.txt`.",
+ "ttft_ms": 1388,
+ "type": "result",
+ "duration_ms": 5417977,
+ "uuid": "938114c0-f83e-41f4-9fb1-afbbcc21950b",
+ "ttft_stream_ms": 917,
+ "time_to_request_ms": 156,
+ "first_content_frame_ms": 917,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 306,
+   "outputTokens": 104590,
+   "cacheReadInputTokens": 27368968,
+   "cacheCreationInputTokens": 286726,
+   "webSearchRequests": 0,
+   "costUSD": 4.9303127999999985,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 25369,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 286726,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

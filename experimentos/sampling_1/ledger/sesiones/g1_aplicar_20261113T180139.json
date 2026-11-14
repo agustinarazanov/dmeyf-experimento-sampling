@@ -1,0 +1,7 @@
+{
+ "subtype": "sin_resultado",
+ "is_error": true,
+ "total_cost_usd": 0,
+ "num_turns": 0,
+ "result": "claude no emitió un evento result (flag inválido, autenticación o corte antes de empezar)"
+}

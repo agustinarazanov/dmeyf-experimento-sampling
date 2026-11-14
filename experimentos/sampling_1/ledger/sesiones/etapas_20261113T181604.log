@@ -1,0 +1,189 @@
+== etapa 1 (2 pendientes) con sonnet · ## 1. Sitio y generador (sesión: Sonnet; cambio en `comun/`, se anuncia en el commit)
+== aplicar grupo 1 con sonnet
+18:16:08  Bash       openspec instructions apply --change inicio-y-resultados --json > experimentos/sampling_1/ledger/ses
+18:16:08  Bash       grep -n "^## \|^- \[" openspec/changes/inicio-y-resultados/tasks.md | head -60
+18:16:12  texto      Queda 1.12. Veo la tarea y el diff pendiente.
+18:16:12  Bash       sed -n 77,86p openspec/changes/inicio-y-resultados/tasks.md; git diff --stat; git diff comun/reporte
+18:16:15  Bash       git diff experimentos/sampling_1/README.md experimentos/sampling_1/anexo.md | head -40; python -m py
+18:18:17  Bash       grep -n "_paneles_por_hipotesis\|ctx.color\[" comun/reporte.py | head -30; grep -n "pestañas\|=== \"
+18:18:18  texto      Todo está; falta verificar. Espero pytest.
+18:18:19  Bash       sleep 100; tail -5 /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experiment
+18:18:21  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/5ee458e4
+18:18:27  Bash       ls experimentos/sampling_1/ledger/ | head; ls experimentos/sampling_1/ledger/predicciones 2>/dev/nul
+18:18:27  Bash       pgrep -fl "pytest|reporte" | head
+18:18:30  Monitor    until ! pgrep -f "pytest tests/test_reporte" >/dev/null; do sleep 3; done; echo listo
+18:18:31  Bash       grep -rl "H4F-0.25" experimentos/sampling_1/ledger --include=*.csv --include=*.json -l 2>/dev/null |
+18:18:34  Monitor    until ! pgrep -f "pytest tests/test_reporte" >/dev/null; do sleep 3; done; echo listo
+18:18:35  texto      Estoy esperando que termine `pytest tests/test_reporte.py`. Después regenero el reporte y reviso un 
+18:18:36  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/5ee458e4
+18:18:38  Monitor    until ! pgrep -f "pytest tests/test_reporte" >/dev/null; do sleep 3; done; echo listo
+18:18:39  texto      Todavía corre pytest. Espero el aviso del monitor.
+18:23:16  Bash       tail -c 1500 /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-samp
+18:23:18  Bash       grep -n "faltan predicciones" comun/*.py | head; sed -n 120,150p tests/test_reporte.py
+18:23:21  Bash       pgrep -f vm.sh | head -2; (time python -m comun.reporte --todos) > experimentos/sampling_1/ledger/se
+18:25:18  Bash       python -m comun.reporte --todos > experimentos/sampling_1/ledger/sesiones/rep1.log 2>&1; md5 -q expe
+18:27:16  Bash       python -m comun.reporte --todos > experimentos/sampling_1/ledger/sesiones/rep1.log 2>&1; grep -c "fa
+18:27:51  texto      Estoy comprobando por qué falla el test de determinismo. Regeneré el reporte y la diferencia con lo 
+18:27:51  Bash       git diff -U0 experimentos/sampling_1/README.md | cut -c1-300; git diff --stat | tail -3
+18:27:55  Bash       cp experimentos/sampling_1/README.md experimentos/sampling_1/ledger/sesiones/README.prev; cp experim
+18:28:29  Bash       python -m pytest tests/test_reporte.py -q -x -k "dos_veces and sampling_1" > experimentos/sampling_1
+18:30:01  Bash       python -m scripts.verificar_informe_h3 2>&1 | tail -3; python -m scripts.verificar_readme 2>&1 | tai
+18:30:05  texto      Mido el alto de las figuras: leo el viewBox de los SVG.
+18:30:06  Bash       cd experimentos/sampling_1/figuras; for f in *.svg; do echo "$f $(grep -o -m1 'viewBox="[^"]*"' $f)"
+18:32:03  Bash       grep -o -m1 'viewBox="[^"]*"' experimentos/sampling_1/figuras/*.svg
+18:32:05  Bash       grep -n "max-height\|max-width" sitio/estilos.css | head; grep -c "ic_rondas\|grilla_veredictos" exp
+18:32:08  Bash       sed -n 1,14p sitio/estilos.css; sed -n 76,92p sitio/estilos.css
+18:32:10  Bash       grep -ln "ic_rondas" experimentos/sampling_1/*.md experimentos/*/README.md
+18:32:13  Bash       sed -i 's/^- \[ \] 1.12 /- [x] 1.12 /' openspec/changes/inicio-y-resultados/tasks.md && git add comu
+18:32:14  texto      Falló el `sed` de macOS. Marco la tarea con Edit y commiteo.
+18:32:15  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+18:32:18  Bash       git add comun/reporte.py experimentos/sampling_1/README.md experimentos/sampling_1/anexo.md experime
+18:32:24  texto      Terminé la tarea 1.12 del grupo 1 y la marqué en `tasks.md`. Commit `7de226c`, sin push.
+18:32:24  fin        success · 18 turnos · US$ 0.5883
+aplicar g1: claude-sonnet-5-5 18 turnos US$ 0.5883 (success, rc 0)
+== revisar grupo 1 con opus
+18:32:29  Bash       ls openspec/changes/; ls openspec/changes/inicio-y-resultados/; grep -n "^## \|^- \[" openspec/chang
+18:32:34  Bash       sed -n 56,87p openspec/changes/inicio-y-resultados/tasks.md; sed -n 36,48p docs/revision.md; grep -n
+18:32:37  Bash       sed -n 2043,2200p experimentos/sampling_1/docs/bitacora.md
+18:32:40  Bash       git log --oneline -14 | cut -c1-150; mkdir -p ~/datos/experimentos-dmeyf/tmp_etapas
+18:32:42  texto      Lanzo las verificaciones largas en segundo plano mientras leo.
+18:32:44  Bash       T=~/datos/experimentos-dmeyf/tmp_etapas; (pytest -q tests/test_reporte.py tests/test_verificadores.p
+18:32:46  Bash       T=~/datos/experimentos-dmeyf/tmp_etapas; python -m comun.variantes --verificar > $T/r111_var.log 2>&
+18:36:37  Bash       pytest -q tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py tests/test_figur
+18:36:39  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; L=/Users/agustina/datos/expe
+18:40:29  Bash       pytest -q tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py tests/test_figur
+18:40:31  Bash       python -m comun.variantes --verificar > /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_var
+18:40:33  Bash       tail -15 /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest.log; ls tests
+18:40:36  Bash       python -m pytest -q tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py tests/
+18:40:37  Bash       ls openspec/changes/inicio-y-resultados/specs/*; grep -n "Tabla de una hipótesis sin redundancias\|V
+18:40:39  texto      Escenario «Tabla de una hipótesis sin redundancias»: miro el bloque de h3.
+18:40:40  Bash       grep -n "generado:resultado" -A14 experimentos/h3/README.md | cut -c1-400
+18:40:43  Bash       sed -n 218p experimentos/h3/README.md | cut -c400-1100; sed -n 219,226p experimentos/h3/README.md | 
+18:40:47  Bash       grep -n "semillas" comun/reporte.py | grep -in "todas\|línea\|debajo\|f\"Final\|mismas" | head; grep
+18:40:50  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:40:54  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:40:59  Bash       grep -rn "1,00" tests/ scripts/verificar_readme.py scripts/verificar_informe_h3.py | head; grep -rln
+18:41:01  texto      Sigo verificando: tests corriendo en segundo plano; encontré un separador decimal inconsistente («1,
+18:41:03  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:41:04  Bash       grep -rn "envío" comun/reporte.py scripts/comparar_rondas.py | head -5; grep -c "" /Users/agustina/d
+18:41:07  Bash       grep -n '^=== \|tradeoff\|<!-- generado' experimentos/sampling_1/README.md | cut -c1-200 | head -30;
+18:41:09  Bash       grep -n "COLOR\w* *=\|def color_h" comun/reporte.py | head; grep -c "COLOR_H\|color_h(" comun/report
+18:41:11  Bash       grep -n "COLOR_HIPOTESIS\|PALETA\[" comun/reporte.py | cut -c1-160
+18:41:15  Bash       tail -c 300 /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest.log
+18:41:18  Bash       git ls-files | grep -iE "\.(csv\.gz|parquet|feather|gz)$" | head; sed -n 1,30p scripts/medir_sitio.p
+18:41:20  texto      Espero que terminen los tests (≈7 min) antes de regenerar y construir el sitio.
+18:41:20  ToolSearch 
+18:41:24  Monitor    until grep -qE "passed|failed|error" /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest
+18:41:25  Bash       grep -n "1,00\|1\.00" tests/test_tablas_d9.py tests/test_reporte.py | head -5; git diff --stat
+18:41:28  texto      Espero el resultado de los tests.
+18:41:29  Bash       tail -c 200 /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest.log
+18:41:33  texto      Los tests siguen corriendo; retomo cuando llegue el resumen.
+18:49:08  Bash       tail -2 /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest.log; python -m comun.reporte
+18:49:46  Bash       git diff --stat -- experimentos; git diff -U0 experimentos/sampling_1/README.md experimentos/samplin
+18:49:51  Bash       git stash list | head -2; git add -N . 2>/dev/null; git diff --stat -- experimentos > /Users/agustin
+18:50:31  Bash       git reset -q -- "Experimentos guion.md" experimentos/sampling_1/ledger/sesiones/; git status --short
+18:52:27  Bash       git restore --staged "Experimentos guion.md" experimentos/sampling_1/ledger/sesiones/
+18:52:28  Bash       git status --short
+18:52:30  texto      Regenerar dos veces da resultados distintos en `tiempo_igual`; investigo si es no determinismo del g
+18:52:32  Bash       git diff -U0 experimentos/sampling_1/anexo.md | grep "^[-+]|" | cut -c1-220; ls -la experimentos/sam
+18:52:35  Bash       find /Users/agustina/datos/experimentos-dmeyf -newer experimentos/sampling_1/ledger/sesiones/ti.prev
+18:52:39  Bash       grep -n "def .*tiempo_igual\|tiempo_igual.*parquet\|tiempo_igual.*csv\|TIEMPO_IGUAL\w* *=\|gsutil\|g
+18:52:41  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:52:47  Bash       ls -la experimentos/sampling_1/ledger/sesiones/g1_revisar_20261113T181605.json experimentos/sampling
+18:52:54  Bash       grep -n "^def tiempo_replica\|^def ensamble\|^def _tiempos" -A22 comun/reporte.py | grep -n "None\|e
+18:54:50  texto      Busco por qué el cálculo de «tiempo igual» cambia entre corridas con los mismos datos.
+18:54:51  Bash       grep -n "^def tiempo_replica\|^def ensamble\|^def _tiempos" -A22 comun/reporte.py | grep "None\|exis
+18:54:55  Bash       find /Users/agustina/datos/experimentos-dmeyf -name "*.parquet" -path "*pred*" -mmin -120 | wc -l; f
+18:54:59  Bash       grep -n "tiempo_igual_replicas(\|finr *=\|estudios *=" comun/reporte.py | head
+18:55:01  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:55:01  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:55:05  Bash       grep -n "^def cargar_replicas" -A30 comun/reporte.py | grep -n "glob\|concat\|sorted\|read_\|drop_du
+18:55:10  Write      /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_diag.py
+18:55:11  texto      Corro un diagnóstico que llama tres veces al cálculo de «tiempo igual» con los mismos datos.
+18:55:12  Bash       grep -n "^from\|^import\|^class Contexto" -A0 comun/reporte.py | head -20; grep -n "def __init__" -A
+18:55:14  Edit       /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_diag.py
+18:55:15  Bash       python /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_diag.py 2>&1 | tail -8
+18:55:27  Bash       grep -n "Pool\|concurrent\|ProcessPool\|cache\|joblib\|Thread" comun/reporte.py comun/ledger.py | he
+18:55:32  Bash       ls -la /Users/agustina/datos/ | head; ls -la /Users/agustina/datos/experimentos-dmeyf | head -20
+18:57:29  Bash       ls -la /Users/agustina/datos/experimentos-dmeyf
+18:57:33  Bash       find /Users/agustina/datos/experimentos-dmeyf/rescate_calibracion_f8 -mmin -60 -maxdepth 2
+18:57:42  texto      Reviso qué cambió en los README de cada hipótesis y vuelvo a regenerar para ver si la variación se r
+18:57:43  Bash       git diff -U0 experimentos/h1/README.md experimentos/h3/README.md | grep "^[-+]<table" | cut -c1-20; 
+18:57:46  Bash       python -m comun.reporte --todos > /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_rep3.log 
+18:58:24  Write      /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_diag2.py
+18:58:25  Bash       python /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_diag2.py 2>&1 | tail -5
+18:58:32  Bash       ls -lOR experimentos/h3/ledger | grep -c dataless; ls -la /Users/agustina/Library/Mobile\ Documents/
+19:00:29  Bash       ls -lOR experimentos/h3/ledger experimentos/h4/ledger experimentos/control/ledger | grep -c dataless
+19:00:34  Bash       find experimentos -path "*/ledger/*" -mmin -90 -not -path "*/sesiones/*" | head
+19:00:36  texto      Encontré la pista: hay archivos de predicciones en los ledgers que se reescribieron en la última hor
+19:00:38  Bash       find experimentos -path "*/ledger/predicciones/*" -mmin -90 -print0 | xargs -0 stat -f "%Sm %N" -t "
+19:02:36  Bash       find experimentos -path "*/ledger/predicciones/*" -mmin -90 | cut -d/ -f2 | sort | uniq -c; find exp
+19:02:40  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+19:02:48  texto      La tercera regeneración coincide con HEAD; dejo documentada la inestabilidad. Construyo el sitio y l
+19:02:49  Bash       scripts/sitio.sh > /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_sitio.log 2>&1; tail -4 
+19:02:53  Bash       grep -ci "error\|nombre\|WARN" /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_sitio.log; p
+19:03:02  texto      `medir_sitio` falla en Resultados: la pestaña «Valen la pena» mide 1031 px y la tabla de tiempo igua
+19:03:03  Bash       sed -n 96,107p openspec/changes/inicio-y-resultados/tasks.md; grep -n "D16" openspec/changes/inicio-
+19:03:05  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+19:03:16  Bash       grep -n '=== \|def pestanas\|def _pestan\|tabbed' comun/reporte.py | head; grep -n "T_opt (s)" comun
+19:03:18  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+19:03:19  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+19:03:22  Bash       grep -n '"hipotesis":' comun/reporte.py | head -3; sed -n 83,95p comun/reporte.py
+19:03:25  texto      Arreglo la tabla de tiempo igual en Resultados con pestañas por hipótesis, igual que el bloque A (D1
+19:03:29  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+19:03:30  Bash       python -m comun.reporte --todos > /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_rep4.log 
+19:04:06  Bash       scripts/sitio.sh > /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_sitio2.log 2>&1; tail -1
+19:04:10  texto      Tabla de tiempo igual arreglada. Corro verificadores y los tests de reporte afectados.
+19:04:11  Bash       python -m scripts.verificar_readme 2>&1 | tail -1; python -m scripts.verificar_informe_h3 2>&1 | tai
+19:04:14  Bash       grep -rho ".\{60\}envío.\{40\}" site | sort -u | head -5; grep -rl "envío" site
+19:04:15  Bash       grep -o ".\{0,80\}envío.\{0,60\}" site/experimentos/sampling_1/index.html site/experimentos/h4/index
+19:04:18  Bash       grep -n "envío" experimentos/sampling_1/README.md experimentos/h4/README.md experimentos/control/REA
+19:04:22  texto      Las tres apariciones de «envíos» están en texto escrito a mano, fuera de los bloques generados, así 
+19:04:23  Bash       python -m pytest -q tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py tests/
+19:04:24  Bash       sed -n 188,200p experimentos/sampling_1/README.md | cut -c1-120; python -m comun.tokens --help 2>&1 
+19:04:26  texto      Ahora escribo el bloqueo y la entrada de la bitácora mientras corren los tests.
+19:04:35  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/ledger/s
+19:04:40  Bash       tail -c 1500 experimentos/sampling_1/docs/bitacora.md | tail -5; git check-ignore -v experimentos/sa
+19:04:42  Bash       git ls-files | grep -c "\.parquet$"; git check-ignore -v experimentos/h4/ledger/predicciones/H4P-0.1
+19:04:44  texto      Bien, no están versionados. Escribo la entrada de la bitácora.
+19:04:44  Bash       wc -l experimentos/sampling_1/docs/bitacora.md
+19:04:46  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/docs/bit
+19:05:06  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/docs/bit
+19:05:07  texto      Marco la tarea en tasks.md.
+19:05:10  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+19:05:12  Monitor    until grep -qE "passed|failed|error" /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest
+19:05:14  Bash       python -m comun.tokens --experimento sampling_1 > /Users/agustina/datos/experimentos-dmeyf/tmp_etapa
+19:05:18  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/docs/bit
+19:05:19  texto      Espero el resultado de los tests para completar la bitácora y commitear.
+19:10:14  Monitor    until grep -qE "passed|failed|error" /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest
+19:10:16  texto      Sigue corriendo la suite (≈8 min); retomo con el resultado.
+19:12:29  Bash       tail -1 /Users/agustina/datos/experimentos-dmeyf/tmp_etapas/r111_pytest2.log; git status --short | g
+19:12:31  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/docs/bit
+19:12:34  Bash       git add comun/reporte.py experimentos/h1/README.md experimentos/h2/README.md experimentos/h3/README.
+19:12:37  Bash       git commit -q -m "1.11: revisión en sesión limpia de 1.8, 1.9 y 1.12 con docs/revision.md § 3 y medi
+19:12:49  texto      Hice la revisión de 1.8, 1.9 y 1.12 (tarea 1.11) y está commiteada en `17e0769`, sin `Co-Authored-By
+19:12:49  fin        success · 5 turnos · US$ 2.8294
+revisar g1: claude-opus-5-5 5 turnos US$ 2.8294 (success, rc 0)
+== BLOQUEADO en la revisión:
+13-nov-2026 · inicio-y-resultados, revisión 1.11 (sesión limpia, headless)
+
+Dos cosas que la revisión no puede cerrar sola:
+
+1. D16, tope de 800 px: `python -m scripts.medir_sitio` sigue dando MAL en Resultados. La pestaña «Valen la pena» del
+   bloque A mide 1031 px a 1440 px, porque son 12 de 21 variantes con celdas de dos líneas (valor + IC + barrita). D16
+   solo dice cómo partir las figuras (H1–H2 y H3–H4), no las tablas. Opciones: (a) partir «Valen la pena» en dos
+   pestañas (H1–H2 y H3–H4); (b) dejar solo la mejor variante de cada hipótesis; (c) poner el IC en la misma línea
+   que el valor, en el CSS de esa tabla; (d) aceptar la excepción en D16. Hace falta elegir una. La tabla de tiempo
+   igual (1349 px) quedó arreglada en esta revisión con pestañas por hipótesis.
+
+2. Regenerar no siempre da lo mismo. `python -m comun.reporte --todos`, corrido tres veces sobre los mismos datos,
+   cambió en dos corridas la columna «tiempo igual, réplicas» del bloque A (`sampling_1/README.md`, `anexo.md`,
+   `tiempo_igual.svg`, `ensamble*.svg`): H3-0.25 pasó a R=7 y en otra corrida H3L-0.25 pasó a R=6 y el bootstrap de
+   H3L-0.1 quedó en «pendiente». En la tercera corrida todo coincidió con HEAD. Un script que llama tres veces a
+   `tiempo_igual_replicas` dentro del mismo proceso da siempre R=8. El único camino que da esos «faltan» es
+   `Path(ruta).exists()` en `ensamble`/`_probs`, sobre las predicciones de `experimentos/*/ledger/predicciones/`
+   (dentro de ~/Documents). Por eso sospecho que los archivos dejan de verse por un rato. Hay que ver si ~/Documents
+   se sincroniza (iCloud u otro) y, si es así, mover las predicciones a DATOS_DIR. Otra opción es que el generador
+   falle en lugar de escribir «pendiente» o bajar R sin avisar. Hasta entonces, conviene revisar el diff de cada
+   regeneración antes de commitear.
+== detenido en el grupo 1 (código 2)

@@ -67,3 +67,357 @@ p='experimentos/sampling_1/README
 16:28:57  Bash       git diff --stat experimentos/sampling_1/figuras/rondas.svg; git diff experimentos/sampling_1/figuras
 16:29:01  Bash       git stash -q 2>/dev/null; git stash pop -q; git add -A experimentos/sampling_1/figuras >/dev/null; g
 16:30:58  Bash       git add experimentos/sampling_1 index.md sitio comun scripts && git status --short | head -20
+16:31:02  Bash       git restore --staged experimentos/sampling_1/ledger/sesiones/etapas_20261113T161049.log; python -m c
+16:32:58  texto      Sigo con 1.3: verifico que la regeneración sea idempotente y que las tablas del Anexo coincidan con 
+16:32:59  Bash       git restore --staged experimentos/sampling_1/ledger/sesiones/etapas_20261113T161049.log
+16:32:59  Bash       python -m comun.reporte --todos > /dev/null
+16:32:59  Bash       python -m scripts.comparar_rondas
+16:35:18  Bash       git diff --stat
+16:35:18  Bash       git status --short
+16:35:20  Bash       git log --oneline | head -4; git show --stat HEAD | head -20
+16:35:22  Bash       git show --stat HEAD~1 | tail -15; grep -c bloques_anexo comun/reporte.py; git log --oneline -8 -- c
+16:35:25  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+16:35:25  Bash       sed -n 203,300p openspec/changes/inicio-y-resultados/design.md
+16:35:30  Bash       git show cd6f1e8:experimentos/sampling_1/README.md > experimentos/sampling_1/_old.md; python - <<'E'
+16:35:33  Bash       sed -i 's#TABLA = EXP / "sampling_1/README.md"#TABLA = EXP / "sampling_1/anexo.md"#; s#bloque `bloqu
+16:37:30  texto      Uso Edit en su lugar.
+16:37:30  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/verificar_informe_h3.py
+16:37:31  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/verificar_informe_h3.py
+16:37:32  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_verificadores.py
+16:37:43  Bash       python - <<'E'
+p='scripts/verificar_readme.py'
+s=open(p).read()
+s=s.replace('''"""Comprueba que los 
+16:37:46  Bash       grep -n "0,96\|1,44\|\b38\b\|\b40\b\|5,65" experimentos/sampling_1/README.md | cut -c1-260
+16:37:55  Bash       python - <<'E'
+p='scripts/verificar_readme.py'
+s=open(p).read()
+s=s.replace('''NO_RESULTADOS = {"202
+16:38:01  Bash       python - <<'E'
+p='tests/test_verificadores.py'
+s=open(p).read()
+s=s.replace("`sampling_1/README.md`"
+16:38:03  Bash       python -m pytest tests/test_verificadores.py tests/test_reporte.py -q 2>&1 | tail -25
+16:40:05  texto      Corriendo los tests de 1.3 en segundo plano; mientras tanto leo cómo los tests de `reporte` arman lo
+16:40:05  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_reporte.py
+16:40:06  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_reporte.py
+16:40:12  Bash       python - <<'E'
+p='tests/test_reporte.py'
+s=open(p).read()
+s=s.replace('''    bloques = generar(reg.A
+16:40:15  Bash       python - <<'E'
+p='tests/test_reporte.py'
+s=open(p).read()
+s=s.replace('''set(por_pagina["experimento
+16:40:18  Bash       python - <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+s=s.replace('''`sampling_1/README.md` → `mapa`,
+16:40:19  Bash       sleep 100; cat /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sa
+16:40:21  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/c352cb44
+16:40:24  Bash       cd experimentos/sampling_1/exploratorios; ls validacion_20_semillas/originales validacion_20_semilla
+16:42:20  texto      Mientras terminan los tests de 1.3, empiezo 1.5 (extraer los PNG de los reportes de los estudios exp
+16:42:20  Bash       find experimentos -name exploratorio.json -o -name "reporte*.html" | grep -v ledger
+16:42:23  Bash       cat experimentos/h3/sensibilidad_muestra/exploratorio.json; python - <<'E'
+import re,glob
+for f in g
+16:42:28  Bash       python - <<'E'
+import re,glob,base64,hashlib
+for f in sorted(glob.glob('experimentos/sampling_1/expl
+16:42:30  Bash       python - <<'E'
+import re
+t=open('experimentos/sampling_1/exploratorios/validacion_50_semillas/result
+16:42:34  Bash       python - <<'E'
+import re,base64,hashlib
+t=open('experimentos/sampling_1/exploratorios/validacion_50_
+16:42:44  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/extraer_figuras_explorat
+16:42:44  Bash       python -m scripts.extraer_figuras_exploratorios --seco
+16:42:48  Bash       python -m scripts.extraer_figuras_exploratorios | wc -l; git status --short | head; cat /private/tmp
+16:42:50  Bash       pgrep -fl pytest | head -3; git diff --stat mkdocs.yml requirements-sitio.txt | tail -3
+16:42:52  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:42:53  Bash       cat experimentos/sampling_1/exploratorios/validacion_20_semillas/exploratorio.json; grep -n "explora
+16:44:50  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/c352cb44
+16:44:53  Bash       python -m pytest "tests/test_reporte.py::test_dos_veces_da_lo_mismo" -q -x -k sampling_1 > /tmp/clau
+16:46:50  texto      Vuelvo a correr el test que falló (`test_dos_veces_da_lo_mismo[sampling_1]`) para ver si el fallo es
+16:46:50  Bash       python -m pytest tests/test_reporte.py -q -x -k "test_dos_veces_da_lo_mismo and sampling_1"
+16:46:54  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/c352cb44
+16:46:56  Bash       head -2 experimentos/h3/sensibilidad_muestra/resultados/08_ganancia_por_semilla.csv
+16:46:57  Bash       head -2 experimentos/h3/sensibilidad_muestra/resultados/07_resumen_por_semilla.csv
+16:46:57  Bash       cat experimentos/sampling_1/exploratorios/validacion_20_semillas/exploratorio.json
+16:46:57  Bash       grep -n "manifiesto\|exploratorio" comun/variantes.py | head -20
+16:47:02  Bash       python - <<'E'
+import pandas as pd, json, glob
+for m in glob.glob('experimentos/**/exploratorio.json
+16:47:13  Bash       python - <<'E'
+import json
+def col(c,e,esc=1,u=""): return {"columna":c,"etiqueta":e,"escala":esc,"u
+16:49:10  Read       /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/c352cb44
+16:49:13  Bash       python -m pytest tests/test_reporte.py tests/test_verificadores.py -q
+16:49:20  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/_manifiestos_tmp.py
+16:49:24  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/variantes.py
+16:49:25  texto      Extiendo `problemas_exploratorios` para que falle si una figura declarada con `archivo` no existe, y
+16:49:27  Bash       python - <<'E'
+p='comun/variantes.py'
+s=open(p).read()
+s=s.replace('''        if not (m.parent / "RE
+16:49:29  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_variantes.py
+16:49:33  Bash       cat >> tests/test_variantes.py <<'E'
+
+
+def test_figura_declarada_que_no_existe_falla_y_con_el_archiv
+16:49:44  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_reporte.py
+16:49:44  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:50:02  Bash       python - <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+i=s.index("def _resumen_columna"); j=s.index("d
+16:52:12  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:52:16  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:52:27  Bash       python - <<'E'
+p='tests/test_reporte.py'
+s=open(p).read()
+s=s.replace('assert "  - pendiente: falta 
+16:52:31  Monitor    until grep -q "passed\|failed" /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestr
+16:52:34  Bash       grep -n "^def tabla_variantes\|^def fig_tradeoff\|^def fig_curva_diferencia\|^def fig_semillas\|^def
+16:52:35  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:52:37  Bash       grep -n "### D9" openspec/changes/inicio-y-resultados/design.md; sed -n 190,215p openspec/changes/in
+16:52:40  Bash       sed -n 205,300p openspec/changes/inicio-y-resultados/design.md
+16:52:40  Bash       sed -n 56,84p openspec/changes/inicio-y-resultados/tasks.md
+16:52:43  Bash       sed -n 84,120p openspec/changes/inicio-y-resultados/tasks.md
+16:52:46  Bash       tail -c 600 /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampl
+16:52:49  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:52:49  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:52:59  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:53:03  Bash       tail -c 1500 /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuatrimestre-experimento-samp
+16:53:05  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:53:22  Bash       python - <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+s=s.replace('N* = {a[\'n_est\']:,} envíos; ','N
+16:55:23  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/_envios_tmp.py
+16:55:24  Bash       python scripts/_envios_tmp.py && rm scripts/_envios_tmp.py; grep -n "envíos\|envios" comun/reporte.p
+16:55:26  Bash       python scripts/_manifiestos_tmp.py && rm scripts/_manifiestos_tmp.py; git status --short | head -20
+16:55:28  Bash       python -m comun.variantes --verificar | tail -3; python -m pytest tests/test_variantes.py -q 2>&1 | 
+16:55:35  texto      My test expectation was wrong (the path is relative to the page, so it is `est/figuras/a.png`). Corr
+16:55:36  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_reporte.py
+16:55:37  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_reporte.py
+16:55:38  Bash       python -m pytest tests/test_reporte.py -q -k "bloque_b or exploratorio" 2>&1 | tail -5; python -m co
+16:56:02  Bash       mkdocs build 2>&1 | grep -i "warn\|error\|not found" | grep -v "MkDocs\|plugins" | head; ls site/exp
+16:56:08  Bash       python -m scripts.extraer_figuras_exploratorios > /dev/null; python -m scripts.verificar_readme | ta
+16:56:09  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+16:56:12  Bash       git diff --stat openspec/ | tail -3; git diff openspec/changes/inicio-y-resultados/tasks.md | grep "
+16:56:15  Bash       git add openspec/changes/inicio-y-resultados/tasks.md && git commit -q -m "1.3: anexo.md con sus blo
+16:56:17  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+16:56:20  Bash       git add scripts/extraer_figuras_exploratorios.py experimentos/sampling_1/exploratorios/validacion_20
+16:56:25  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:56:27  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:56:28  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:56:51  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+16:56:54  Bash       sed -n 56,95p comun/reporte.py
+16:56:57  Skill      
+16:57:00  Bash       node /private/tmp/claude-501/bundled-skills/2.1.311/be13976aad8e29b6c1f465a729d57e81/dataviz/scripts
+16:58:56  texto      Voy a validar la paleta de las cuatro hipótesis con el validador de la skill, sin el `2>&1` que se b
+16:58:57  Bash       node /private/tmp/claude-501/bundled-skills/2.1.311/be13976aad8e29b6c1f465a729d57e81/dataviz/scripts
+17:00:56  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+a="        self.color = {h: PALE
+17:01:04  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+def r(a,b):
+    global s
+    ass
+17:01:35  texto      Miro las figuras nuevas (ensamble, IC por ronda, curvas) para detectar problemas de layout.
+17:01:36  Bash       cd /tmp && python -c "print(1)" >/dev/null; cd - >/dev/null; python - <<'E'
+import subprocess
+E
+pyth
+17:03:33  Bash       python -m comun.reporte --exp sampling_1 --figuras pngtmp > /dev/null; ls pngtmp | head -20
+17:04:06  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/pngtmp/ensamble.png
+17:04:06  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/pngtmp/ic_rondas.png
+17:04:25  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+i=s.index("def fig_ensamble("); 
+17:04:30  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+a='return f"\\n![{titulo.replace
+17:06:27  texto      Uso Edit directamente.
+17:06:28  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+17:06:28  Bash       python -m comun.reporte --exp sampling_1 --figuras pngtmp >/dev/null && echo ok
+17:07:01  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/pngtmp/ensamble.png
+17:07:09  Bash       cat >> tests/test_reporte.py <<'E'
+
+
+# --- inicio-y-resultados 1.4: figuras nuevas ---
+
+def test_fig
+17:09:11  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_figuras_nuevas.py
+17:09:11  Bash       python -m pytest tests/test_figuras_nuevas.py -q
+17:10:02  Bash       sed -i 's/curvas\[reg.CONTROL\]/curvas[reporte.lg.CONTROL]/' tests/test_figuras_nuevas.py; python -m
+17:11:58  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_figuras_nuevas.py
+17:11:59  Bash       python -m pytest tests/test_figuras_nuevas.py -q
+17:13:06  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+i=s.index("def tabla_variantes("
+17:15:12  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/_p_tmp.py
+17:15:13  Bash       python scripts/_p_tmp.py && rm scripts/_p_tmp.py; grep -n "CAB_A = \|CAB_DETALLE = " -A2 comun/repor
+17:15:17  Bash       sed -i 's/"veredicto (fuente)")/"ganancia contra el control (fuente)")/' comun/reporte.py; grep -n "
+17:17:14  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+17:17:14  Bash       grep -n "AVISO_A = " -A3 comun/reporte.py; grep -n "A ≥\|aceleración A" comun/reporte.py | head
+17:17:18  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+17:17:19  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+17:17:22  Bash       grep -n "^def fig_tradeoff" comun/reporte.py; grep -n "^def fig_fraccion" comun/reporte.py
+17:17:37  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/_p_tmp.py
+17:17:40  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/scripts/_p_tmp.py
+17:17:40  Bash       python scripts/_p_tmp.py && rm scripts/_p_tmp.py; python -m comun.reporte --exp sampling_1 --figuras
+17:18:13  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/pngtmp/tradeoff.png
+17:18:18  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+a='_etiquetas_sin_pisar(ax, punt
+17:18:51  texto      Reviso el panel H3 del gráfico del tradeoff tras ajustar las etiquetas.
+17:18:51  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/pngtmp/tradeoff.png
+17:19:00  Write      /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/tests/test_tablas_d9.py
+17:19:00  Bash       python -m pytest tests/test_tablas_d9.py tests/test_variantes.py tests/test_verificadores.py -q 2>&1
+17:19:36  Bash       python -m comun.reporte --todos >/dev/null; python -m scripts.comparar_rondas >/dev/null; rm -rf png
+17:20:17  Bash       grep -n "^def tabla_resumen" -A8 comun/reporte.py; grep -n "pagina_s1" tests/*.py | head -4; grep -n
+17:20:18  Bash       sed -n 128,145p tests/test_reporte.py
+17:20:25  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+a='''        "bloque-a": "\\n\\n
+17:20:57  texto      Las pestañas se generan (un `tabbed-set` en el HTML). Ahora ajusto los tests viejos del bloque A y c
+17:20:57  Bash       sed -n 214,236p tests/test_reporte.py
+17:21:02  Bash       cat > scripts/_p_tmp.py <<'E'
+p='tests/test_reporte.py'
+s=open(p).read()
+i=s.index("def test_resalta
+17:21:03  Bash       python -m pytest -q -x 2>&1 | tail -15
+17:21:09  TaskStop   
+17:21:11  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+s=s.replace("ANCHO * 0.75","ANCH
+17:21:13  Monitor    until grep -q "passed\|failed\|error" /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuat
+17:21:17  Bash       until grep -q "passed\|failed\|error" /private/tmp/claude-501/-Users-agustina-Documents-segundo-cuat
+17:30:11  texto      263 tests pasan. Verifico idempotencia, los verificadores, el sitio y la lista de variantes antes de
+17:30:12  Bash       git add -A experimentos index.md sitio comun scripts tests 2>/dev/null; git reset -q experimentos/sa
+17:32:10  Bash       git add experimentos/control experimentos/h1 experimentos/h2 experimentos/h3 experimentos/h4 experim
+17:32:11  Bash       python -m comun.reporte --todos >/dev/null
+17:32:11  Bash       python -m scripts.comparar_rondas >/dev/null
+17:32:11  Bash       git status --short | grep -v "^[AM] "
+17:32:45  texto      Regenerar no cambia nada (idempotente). Ahora los verificadores y el build del sitio.
+17:32:46  Bash       python -m scripts.verificar_readme | tail -1
+17:32:46  Bash       python -m scripts.verificar_informe_h3 | tail -1
+17:32:46  Bash       python -m comun.variantes --verificar | head -2
+17:32:46  Bash       cat scripts/sitio.sh | head -30
+17:32:48  Bash       scripts/sitio.sh 2>&1 | tail -8
+17:32:51  Bash       grep -rli "envíos" site --include=*.html | head
+17:32:52  Bash       grep -rn "envíos" index.md experimentos/*/README.md experimentos/sampling_1/*.md docs/metodo.md siti
+17:32:56  Bash       find site/experimentos/sampling_1/exploratorios -name "*.png" -o -name "*.svg" | wc -l; grep -o 'src
+17:32:57  texto      Todo resuelve. Marco 1.4, 1.6, 1.8 y 1.9 y commiteo.
+17:32:58  Bash       sed -i 's/^- \[ \] 1\.4 /- [x] 1.4 /; s/^- \[ \] 1\.6 /- [x] 1.6 /; s/^- \[ \] 1\.8 /- [x] 1.8 /; s/
+17:34:55  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+17:34:56  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+17:34:57  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+17:34:57  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+17:35:00  Bash       git add openspec/changes/inicio-y-resultados/tasks.md && git commit -q -m "1.4, 1.6, 1.8, 1.9 (y par
+17:35:12  Bash       cat > scripts/_p_tmp.py <<'E'
+p='comun/reporte.py'
+s=open(p).read()
+i=s.index("def fig_fraccion("); 
+17:35:44  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/pngtmp/fraccion.png
+17:35:47  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+17:35:48  Bash       rm -rf pngtmp; python -m comun.reporte --todos >/dev/null; python -m scripts.comparar_rondas >/dev/n
+17:40:55  Bash       git add comun/reporte.py experimentos/sampling_1/figuras experimentos/sampling_1/README.md experimen
+17:41:08  texto      Apliqué 1.3 a 1.6, 1.8 y 1.9 del grupo 1, y 1.12 quedó a medias: hay que terminarla en otra sesión. 
+17:41:08  fin        success · 211 turnos · US$ 4.9303
+aplicar g1: claude-sonnet-5-5 211 turnos US$ 4.9303 (success, rc 0)
+== revisar grupo 1 con opus
+17:41:12  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; ls openspec/changes/; grep -
+17:41:15  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; sed -n '1,9p;36,48p' docs/re
+17:41:18  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; sed -n '1936,1974p;2031,2080
+17:41:24  Bash       cd /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling; export PYENV_VERSION=faculta
+17:43:22  Bash       mkdir -p /tmp/rev17 && PYENV_VERSION=facultad python -m pytest tests/test_reporte.py tests/test_veri
+17:43:24  Bash       (PYENV_VERSION=facultad python -m comun.variantes --verificar > /tmp/rev17/var.txt 2>&1; echo var ex
+17:47:14  texto      Estoy corriendo las verificaciones de la revisión del grupo 1. Simplifico los comandos para que pase
+17:47:15  Bash       python -m pytest tests/test_reporte.py tests/test_verificadores.py tests/test_variantes.py -q 2>&1 |
+17:54:09  Bash       python -m comun.variantes --verificar 2>&1 | grep -c PROBLEMA; python -m scripts.verificar_readme 2>
+17:54:11  texto      Ahora la idempotencia del generador y del extractor (git status antes y después).
+17:54:12  Bash       git status --short; python -m comun.reporte --todos > /dev/null 2>&1; echo rep=$?; git status --shor
+17:56:09  Bash       python -m comun.reporte --todos 2>&1 | tail -2
+17:56:09  Bash       git status --short
+17:56:42  texto      Generador sin cambios. Ahora el extractor de figuras y `mkdocs build`.
+17:56:43  Bash       python -m scripts.extraer_figuras_exploratorios 2>&1 | tail -2
+17:56:44  Bash       scripts/sitio.sh 2>&1 | tail -4
+17:56:48  Bash       git status --short; grep -o 'site_name:.*' mkdocs.yml; grep -n 'toggle\|media' mkdocs.yml | head; gr
+17:56:50  texto      Extractor idempotente, sitio construye. Verifico que las imágenes de los estudios resuelvan en `site
+17:56:54  Bash       python3 - <<'EOF'
+import re,pathlib,urllib.parse
+site=pathlib.Path('site'); falt=[]; n=0
+for h in si
+17:56:57  texto      Comparo las cifras del bloque A completo del Anexo con las del README antes de 1.3 (`9dee99d~`); los
+17:57:01  Bash       git show 9dee99d~:experimentos/sampling_1/README.md > .rev17_viejo.md; python3 - <<'EOF'
+import re,p
+17:57:03  Bash       git show 9dee99d~:experimentos/sampling_1/README.md | grep -o '<!-- generado:[a-z0-9_-]*' | sort | u
+17:57:06  Bash       git log --oneline -S'generado:bloque-a-completo' -- experimentos/sampling_1/README.md experimentos/s
+17:57:12  Bash       git show 5566e5d~:experimentos/sampling_1/README.md > .rev17_viejo.md; grep -o '<!-- generado:[a-z0-
+17:57:14  texto      Faltan tres números en el Anexo; miro de dónde vienen.
+17:57:15  Bash       git show 5566e5d~:experimentos/sampling_1/README.md | grep -n '35\.2\|0\.05\|5\.9' | cut -c1-260; ec
+17:57:23  Bash       git diff --stat efdf873 HEAD -- . ':!experimentos/*/figuras' ':!openspec' | tail -40; git ls-files |
+17:57:26  texto      Faltan dos tests nuevos que no corrí; los corro y reviso 1.2 (CSS) y el test de K = 20 de 1.4.
+17:57:28  Bash       python -m pytest tests/test_figuras_nuevas.py tests/test_tablas_d9.py -q 2>&1 | tail -2; grep -n '75
+17:58:52  Bash       grep -il 'agustina\|martín\|martin\|luis\|laguinge\|razanov\|aramend\|bolaños\|tutor' experimentos/s
+17:58:55  Bash       grep -inoE '.{60}(agustina|martín|martin|luis|laguinge|razanov|aramend|bolaños|tutor).{40}' experime
+17:58:57  texto      Todo pasa. Busco el id de esta sesión para la bitácora y corro `comun/tokens.py`.
+17:58:58  Bash       ls -t ~/.claude/projects/-Users-agustina-Documents-segundo-cuatrimestre-experimento-sampling/*.jsonl
+17:59:00  Bash       grep -c 'rev17\|revisión en sesión limpia del grupo 1' ~/.claude/projects/-Users-agustina-Documents-
+17:59:01  texto      Es esta sesión (`e0f0768f`). Escribo el cierre en la bitácora.
+17:59:02  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/docs/bit
+17:59:17  Bash       cat >> experimentos/sampling_1/docs/bitacora.md <<'EOF'
+
+### 13-nov-2026 · inicio-y-resultados grupo
+17:59:21  Bash       sed -i '' 's/- Tokens: ~30 turnos · contexto ~45.000 por turno · ≈ US\$ 1\./- Tokens: 25 turnos · co
+18:01:19  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/docs/bit
+18:01:20  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+18:01:22  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/openspec/changes/inicio-y-result
+18:01:25  Bash       git diff --stat
+18:01:27  texto      Commiteo la bitácora, el `tasks.md` y el `tokens.csv` que actualizó `comun/tokens.py`. Los registros
+18:01:28  Bash       git add experimentos/sampling_1/docs/bitacora.md experimentos/sampling_1/ledger/tokens.csv openspec/
+18:01:38  texto      La revisión del grupo 1 (tareas 1.1 a 1.6) pasó entera y no hubo nada que corregir. Lo commiteé en `
+18:01:38  fin        success · 35 turnos · US$ 1.0698
+revisar g1: claude-opus-5-5 35 turnos US$ 1.0698 (success, rc 0)
+== grupo 1 cerrado
+== etapa 1 (2 pendientes) con sonnet · ## 1. Sitio y generador (sesión: Sonnet; cambio en `comun/`, se anuncia en el commit)
+== aplicar grupo 1 con sonnet
+18:01:42  Bash       openspec instructions apply --change inicio-y-resultados --json > /tmp/apply.json; head -c 3000 /tmp
+18:03:39  Bash       openspec instructions apply --change inicio-y-resultados --json > /tmp/apply.json; head -c 4000 /tmp
+18:03:40  Bash       ls experimentos/sampling_1/ledger/sesiones | tail -20; cat experimentos/sampling_1/ledger/sesiones/e
+18:05:37  Bash       openspec instructions apply --change inicio-y-resultados --json
+18:05:39  texto      Group 1 pending: 1.12 (and 1.11 is review → skip). Read the tasks.
+18:05:39  Bash       sed -n 1,95p openspec/changes/inicio-y-resultados/tasks.md
+18:05:43  Bash       git show 1bf8daf --stat | head -20; grep -n "D16" -A25 openspec/changes/inicio-y-resultados/design.m
+18:05:43  Bash       grep -n "def \|COLOR\|^ANCHO" comun/reporte.py | head -150; wc -l comun/reporte.py
+18:05:45  Bash       sed -n 40,60p comun/reporte.py; sed -n 820,1080p comun/reporte.py
+18:05:48  Bash       sed -n 1360,1420p comun/reporte.py; sed -n 1456,1500p comun/reporte.py; grep -n "pestanas_bloque_a\|
+18:06:08  Bash       cat > /tmp/edit.py <<'EOF'
+import re
+p='comun/reporte.py'
+s=open(p).read()
+
+# helper
+helper='''def _
+18:06:23  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:06:30  Edit       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/comun/reporte.py
+18:06:32  texto      Pasé semillas_replicas y tiempo_igual a paneles de 2 × 2 por hipótesis. Ahora regenero y reviso.
+18:06:33  Bash       python -m comun.reporte --todos > /tmp/rep.log 2>&1; tail -5 /tmp/rep.log; git status --short
+18:08:29  Bash       python -m comun.reporte --todos
+18:09:05  Read       /Users/agustina/Documents/segundo-cuatrimestre/experimento-sampling/experimentos/sampling_1/figuras/
+18:09:06  Bash       git status --short; grep -o 'viewBox="[^"]*"\|width="[^"]*pt" height="[^"]*pt"' experimentos/samplin
+18:11:03  Bash       git status --short; for f in semillas_replicas tiempo_igual tradeoff fraccion; do grep -o 'height="[
+18:11:03  fin        sin_resultado · 0 turnos · US$ 0
+18:11:03  error      claude no emitió un evento result (flag inválido, autenticación o corte antes de empezar)
