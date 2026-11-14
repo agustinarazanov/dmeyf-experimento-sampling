@@ -2,6 +2,9 @@
 
 H3 prueba si alcanza con correr Optuna sobre una muestra chica del train y entrenar el modelo final con todas las filas.
 
+Responde a **dónde achicar**: solo la búsqueda de hiperparámetros, con filas al azar
+([Resultados § ¿Dónde achicar?](../sampling_1/README.md#donde-achicar)).
+
 ## Idea
 
 En el baseline, casi todo el tiempo se va en Optuna: 40 trials, cada uno un entrenamiento entero. El modelo final es un
@@ -173,6 +176,7 @@ suerte de la búsqueda; la réplica 0 es la búsqueda original.
 
 | variante | búsqueda de hiperparámetros | final |
 |---|---|---|
+| `H3-0.5` | `U0.5` / `U0.5@k` | r = 1 |
 | `H3-0.25` | `U0.25` / `U0.25@k` | r = 1 |
 | `H3-0.1` | `U0.1` / `U0.1@k` | r = 1 |
 | `H3-0.05` | `U0.05` / `U0.05@k` | r = 1 |
@@ -182,7 +186,14 @@ suerte de la búsqueda; la réplica 0 es la búsqueda original.
 | `H3L-0.1` | `U0.1` / `U0.1@k` | r = 1, `min_data_in_leaf` × 10 (lineal) |
 | `H3K-0.1` | `K0.1` / `K0.1@k` | r = 1, sin reescalar |
 
-- Todas optimizan con el espacio del control (5 hp) y tienen 8 réplicas.
+- Todas optimizan con el espacio del control (5 hp) y tienen 8 réplicas. Entre las `H3-*`, `H3-0.5` completa la fila
+  «al azar, solo búsqueda» de la grilla común, con las tasas 0,5; 0,25; 0,1 y 0,05, y sin reescalar `min_data_in_leaf`.
+
+#### Extensiones: reescalado de `min_data_in_leaf` y muestra por cliente
+
+`H3R` y `H3L` (reescalado) y `H3K` (muestra por cliente) son extensiones de H3: usan la misma búsqueda sobre una
+muestra y entrenan el final con todo, y cambian una sola cosa. Su regla está en la Predicción (reglas 5 a 8).
+
 - **Reescalados**: el `min_data_in_leaf` del estudio se multiplica por el factor, se redondea y se recorta a [1; 8000];
   los demás hiperparámetros no cambian. Los efectivos quedan en la fila del ledger. `H3R-r` y `H3L-r` leen el mismo
   estudio que `H3-r`, así que las tres se aparean por réplica y semilla.
@@ -193,71 +204,46 @@ suerte de la búsqueda; la réplica 0 es la búsqueda original.
 
 ### Estudios y réplicas
 
-- **Réplica 0**: H3 no tiene estudios propios. `H3-0.25` usa el estudio `U0.25`, `H3-0.1` y `H3R-0.1` el `U0.1`, y
-  `H3-0.05` el `U0.05`, que son de `h1` y se leen de su `ledger/hp/`. Por qué se comparten está en [H1](../h1/README.md).
+- **Réplica 0**: los estudios `U{r}` son de `h1` y H3 los lee de su `ledger/hp/`; por qué se comparten está en
+  [H1](../h1/README.md). `H3-0.5` usa `U0.5`, `H3-0.25` usa `U0.25`, `H3-0.1`, `H3R-0.1` y `H3L-0.1` el `U0.1`, y
+  `H3-0.05` el `U0.05`.
 - **Réplica k**: semilla del sampler TPE = semilla del sorteo de la muestra de optimización = k. Las réplicas k ≥ 1 se
   llaman `<estudio>@k` (`U0.1@3`); el `id` de la fila suma `@k` solo si k ≥ 1 y la columna `replica_opt` guarda k.
-- **Dueños**: el estudio base `U{r}` es de `h1`; sus réplicas `U{r}@k` (k ≥ 1) son de `h3`, sirven solo a H3 y así `h1`
-  queda intacto: sus hiperparámetros van a `experimentos/h3/ledger/hp/U{r}@k.json`. `K0.1` y `K0.1@k` son de `h3`.
-  `C@k` es de `control`. La regla vive en el registro (`comun/variantes.py`) y la cubre un test.
+- **Dueños**: todos los estudios `U{r}` y `U{r}@k` son de `h1` (`h1/ledger/hp/`), para que `h1` no dependa de `h3` y `h3`
+  de `h1`. `K0.1` y `K0.1@k` son de `h3`. `C@k` es de `control`. La regla vive en el registro (`comun/variantes.py`) y la
+  cubre un test.
 - Pedir una réplica k ≥ 1 de una variante que no la admite falla antes de cargar datos.
 
 ### Grilla
 
-- **Réplicas, primera tanda** (fase 5, `corridas-v2`): `C`, `H3-0.25`, `H3-0.1`, `H3-0.05` y `H3R-0.1` × 8 réplicas, con
-  28 estudios nuevos (`C@k`, `U0.25@k`, `U0.1@k`, `U0.05@k` con k = 1…7). Estimado: ~5,6 h de VM.
-- **Extensiones** (fase 6, `corridas-v3`): `H3R-0.25`, `H3L-0.25`, `H3L-0.1` y `H3K-0.1` × 8 réplicas, con 8 estudios
-  nuevos (`K0.1`, `K0.1@1…7`). Estimado: ~3,3 h de VM.
-- **Ronda vigente** (fase 7, `corridas-v4`): sin estudios nuevos. Las 8 variantes × 8 réplicas × 20 semillas = 64 celdas,
-  1.280 finales, en las listas `fase7_r0` … `fase7_r7`, una por réplica ([Corridas](../sampling_1/corridas.md)).
+- **Variantes y réplicas**: las 9 variantes × 8 réplicas (k = 0…7) × 20 semillas finales con la ventana 201903–201908.
+  T suma el tiempo del estudio de la réplica (compartido con la `U{r}` de H1) y la media del final; es la
+  mediana entre réplicas, y A usa una sola referencia ([`control`](../control/README.md) § Medición de tiempos).
+- **Estudios propios**: `C@1…7` (de `control`) y `K0.1`, `K0.1@1…7` (de `h3`); el resto son de `h1`. Las listas
+  están en [Fases](../sampling_1/corridas.md) § Fases.
 - **Por qué R = 8.** Si el desvío entre réplicas fuera de unos 4 M$ (la escala que sugería el exploratorio
   [`sensibilidad_muestra`](https://github.com/agustinarazanov/dmeyf-experimento-sampling/blob/main/experimentos/h3/sensibilidad_muestra/README.md)),
   con 8 contra 8 el IC de Welch tiene una semiamplitud cercana a ±4,3 M$: alcanza para decidir *no pierde* si el Δ real
   está cerca de 0. Con 5 réplicas la semiamplitud sube a unos ±5,8 y *no pierde* deja de ser decidible; con 10 el costo
   crece un 30 % para ganar poco.
-- **Fuera de la grilla**: réplicas de `U*`, `B*` y `GOSS` (pierden o no aceleran, y las réplicas no cambian eso).
+### Reoptimización y ventana del final
 
-### Rondas
+La ventana vigente (201903–201908) reusa el diseño de los estudios (Optuna con 201903–201906 y AUC en 201908) y entrena
+los finales con las 20 semillas. Los reescalados de `H3R` y `H3L` se calculan con la r del estudio.
 
-En la ronda 201903–201906 los finales tenían 10 semillas. La ronda vigente (201903–201908) reusa todos los estudios tal
-como están (Optuna con 201903–201906 y AUC en 201908) y repite los finales con la ventana y las 20 semillas nuevas. Los
-reescalados de `H3R` y `H3L` siguen calculándose con la r del estudio.
-
-**Por qué `H3` no reoptimiza para el final (Zulip 211718).** La consigna pide reoptimizar siempre que cambia el dataset
-(«siempre OP»). En `H3` el dataset de la búsqueda (una muestra de tasa r de 201903–201906) y el del final (201903–201908
-completo) difieren a propósito: esa diferencia es la hipótesis. H3 pregunta si los hiperparámetros elegidos sobre una
-muestra sirven para entrenar con todo; reoptimizar con el set del final convertiría a `H3` en el control y dejaría la
-pregunta sin respuesta. Por eso no es un apartamiento a corregir ni una limitación. El caso de `h4`, donde 211718 sí da
-lugar a una variante (`H4O-0.5`), está en [H4](../h4/README.md).
-
-### `H3-0.5` y dueño de las réplicas (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
-
-Predicción y regla: § `H3-0.5` de la Predicción. Completa la fila "al azar, solo búsqueda" de la grilla común
-([`sampling_1/corridas.md`](../sampling_1/corridas.md) § Fases).
-
-| variante | método | tasa | estudio (k = 0 / k ≥ 1) | dueño del estudio | final |
-|---|---|---|---|---|---|
-| `H3-0.5` | `opt-muestra` | 0,5 | `U0.5` / `U0.5@k` | `h1` | r = 1, sin reescalar |
-
-- **Dueño de `U{r}@k`.** Desde el 13-nov todos los estudios `U{r}` y `U{r}@k` son de `h1`. Los 21 estudios `U0.25@k`,
-  `U0.1@k` y `U0.05@k` que corrió este experimento se mueven a `h1/ledger/` (repo y bucket) sin cambiar ids ni
-  contenido. Lo que dice § Estudios y réplicas sobre el dueño `h3` de las réplicas queda como registro de entonces.
-- **Finales nuevos**: `H3-0.5` en k = 0…7 con las 20 semillas de la ronda 201903–201908: 8 × 20 = **160 finales**. Sin
-  estudios propios nuevos.
-- **T y A**: T suma el tiempo del estudio `U0.5@k` (compartido con `U0.5`) y la media del final; mediana entre réplicas
-  y A con una sola referencia ([`control`](../control/README.md) § Medición de tiempos).
-- **"Siempre OP" (Zulip 211718)**: el mismo apartamiento que el resto de H3.
-- Van en las listas `fase8_r0_a` … `fase8_r7_a` de la fase 8 ([`sampling_1/corridas.md`](../sampling_1/corridas.md)
-  § Fases).
-- Las réplicas de `U*`, `B*` y `GOSS`, que quedaban fuera de la grilla, entran ahora (`h1` y `h2`).
+**Por qué `H3` no reoptimiza para el final.** La regla del curso pide reoptimizar siempre que cambia el dataset («siempre
+OP», Zulip 211718). En `H3` el dataset de la búsqueda (una muestra de tasa r de 201903–201906) y el del final
+(201903–201908 completo) difieren a propósito: esa diferencia es la hipótesis. H3 pregunta si los hiperparámetros
+elegidos sobre una muestra sirven para entrenar con todo; reoptimizar con el set del final convertiría a `H3` en el
+control y dejaría la pregunta sin respuesta. Es un apartamiento declarado de la regla, que `H3-0.5` comparte con el resto
+de la familia. El caso de `h4`, donde esa regla sí da lugar a una variante (`H4O-0.5`), está en [H4](../h4/README.md).
 
 ## Dependencias
 
 - `control`: finales de `C` y de sus réplicas `C@1…7`, N\* y δ.
 - `h1`: todos los estudios `U{r}` y sus réplicas `U{r}@k`, r ∈ {0,5; 0,25; 0,1; 0,05} (`ledger/hp/U{r}.json` y
   `ledger/hp/U{r}@k.json`), que usan `H3-*`, `H3R-*` y `H3L-*`. El estudio propio `K0.1` y sus `K0.1@k` no agregan
-  dependencias. (Actualizado el 13-nov-2026, cambio `tiempos-confiables-y-consistencia`, con el cambio de dueño de
-  `U{r}@k`.)
+  dependencias.
 
 ## Resultado
 
@@ -284,59 +270,51 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
 
 ## Veredicto
 
-!!! success "Conclusión"
+!!! success "Veredicto con réplicas: confirmada"
     Optimizar sobre una muestra del 5 %, 10 % o 25 % y entrenar con todas las filas no pierde contra el control, también
-    cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,38 a 10,56 veces. La réplica 0 sola exagera o
-    achica la ventaja según la suerte del estudio; con réplicas Δ queda entre 1,42 y 2,08 M$ con IC que contiene a 0, y
-    el mecanismo (regulariza o suerte del control) queda sin resolver. El reescalado √(1/r) de `min_data_in_leaf` no
-    cambia contra no reescalar. De las extensiones, todas no pierden contra el control: la raíz no mejora a no reescalar,
-    le gana a la lineal solo en r = 0,1, y buscar sobre el 10 % de los clientes no cambia contra buscar sobre el 10 % de
-    las filas.
+    cuando se mide la suerte de Optuna con 8 réplicas, y acelera de 4,38 a 10,56 veces; con 50 % tampoco pierde y
+    acelera 2,28 veces. Con réplicas Δ queda entre 1,42 y 2,08 M$ en las tres primeras tasas, con IC que contiene a 0, y
+    el mecanismo (regulariza o suerte del control) queda sin resolver. Las 9 variantes de H3, extensiones incluidas, *no
+    pierden* contra el control y valen la pena. El δ de la ronda vigente es 5,65 M$ (el de § Predicción, 5,52 M$, era el
+    de la ronda anterior: la regla de δ saca su valor del control de cada ronda).
 
-- **H3 (réplica 0): confirmada.** Las dos tasas no pierden y aceleran 4,37 y 8,04 veces (A contra el T_C de la réplica 0,
-    con la regla vieja; con una sola referencia, los A con réplicas son los de la conclusión); `H3-0.25` además *gana*. Ese IC solo ve la semilla final:
-    el estudio de Optuna es uno por variante, así que la suerte de la optimización queda adentro de Δ sin medir.
+    - Regla 1, `H3-0.1` y `H3-0.25` *no pierden* con réplicas: **se cumplió**. Las cotas inferiores del IC de Welch
+      (−1,07 y −2,82 M$) quedan por encima de −5,65 M$.
+    - Regla 2, A contra B: **mecanismo sin resolver**. En `H3-0.1`, el IC de Δ con réplicas, [−1,07; 4,49] M$, contiene
+      a 0, pero Ḡ_{C,0} = 282,48 M$ queda arriba de la mediana de las 8 Ḡ_{C,k}, 282,40 M$, así que (B) no se cumple.
+      (A) tampoco: Δ con réplicas no *gana* (cota inferior −1,07 < 0), aunque la mediana de `feature_fraction` sí es
+      menor en `H3-0.1` (0,518) que en `C` (0,641).
+    - Regla 3, `H3-0.05` *no pierde* y A ≥ 8: **se cumplió**. Cota inferior −0,87 ≥ −5,65 M$ y A = 10,56, con T como
+      mediana entre réplicas (95 s).
+    - Regla 9, `H3-0.5` *no pierde* y A ≥ 2: **se cumplió**. Δ −0,08 M$, IC de Welch [−3,17; 3,00], cota inferior
+      ≥ −5,65 M$; A = 2,28, con intervalo [1,55; 2,85] que baja de 2 (la regla decide con A puntual). Muestrear también
+      el final (`U{r}` − `H3-{r}`) *empeora* en las cuatro tasas (tabla «Diferencias entre variantes» del
+      [Anexo](../sampling_1/anexo.md)).
+    - Secundaria, A ≥ 2 con r_opt = 0,25 y A ≥ 4 con r_opt = 0,1: **se cumplió**, con A = 4,38 y 7,76.
 
-- **Reglas 1 a 4, con réplicas y el δ de la ronda (5,65 M$).** El δ = 5,52 M$ de § Predicción es el de la ronda
-    anterior; la regla de δ dice que su valor sale del control de cada ronda, y la vigente usa 5,65 M$.
+### Extensiones: reescalado y muestra por cliente
 
-    1. **H3 con réplicas: confirmada.** `H3-0.1` y `H3-0.25` *no pierden* con réplicas: las cotas inferiores del IC de
-       Welch (−1,07 y −2,82 M$) quedan por encima de −5,65 M$. Con réplicas, Δ pasa de 4,73 a 1,42 M$ en `H3-0.25` (la
-       réplica 0 había salido arriba de la media) y de 1,26 a 1,71 M$ en `H3-0.1` (había salido abajo): la suerte de
-       Optuna mueve Δ en los dos sentidos.
-    2. **A contra B: mecanismo sin resolver.** En `H3-0.1`, el IC de Δ con réplicas, [−1,07; 4,49] M$, contiene a 0,
-       pero Ḡ_{C,0} = 282,48 M$ queda arriba de la mediana de las 8 Ḡ_{C,k}, 282,40 M$, así que (B) no se cumple. (A)
-       tampoco: Δ con réplicas no *gana* (cota inferior −1,07 < 0), aunque la mediana de `feature_fraction` sí es menor
-       en `H3-0.1` (0,518) que en `C` (0,641). En la ronda anterior la regla daba (B) por poco; con el final de seis
-       meses la réplica 0 de `C` queda casi en la mediana.
-    3. **`H3-0.05`: confirmada.** *No pierde* con réplicas (cota inferior −0,87 ≥ −5,65 M$) y A = 10,56 ≥ 8, con T como
-       mediana entre réplicas (95 s). En la réplica 0 sale *gana* ([2,96; 7,49] M$); con réplicas ya no.
-    4. **`H3R-0.1`: no cambia.** La diferencia apareada `H3R-0.1` − `H3-0.1` es −0,12 M$ con IC t entre réplicas
-       [−1,95; 1,71] (7 g.l.). La predicción (*mejora*) no se cumple: reescalar `min_data_in_leaf` × √10 no mueve la
-       ganancia. Contra `C`, `H3R-0.1` *no pierde* (cota inferior −1,80 M$).
+Reglas 4 a 8 de la Predicción. No cambian el veredicto de H3, que es el de la regla 1.
 
-- **Reglas 5 a 8, extensiones.**
+- **Regla 4, `H3R-0.1`: no cambia.** La diferencia apareada `H3R-0.1` − `H3-0.1` es −0,12 M$ con IC t entre réplicas
+  [−1,95; 1,71] (7 g.l.). La predicción (*mejora*) **no se cumplió**: reescalar `min_data_in_leaf` × √10 no mueve la
+  ganancia. Contra `C`, `H3R-0.1` *no pierde* (cota inferior −1,80 M$).
 
-    5. **Raíz contra lineal: gana la raíz en r = 0,1; no cambia en r = 0,25.** `H3R-0.1` − `H3L-0.1` = 1,45 M$, IC t
-       entre réplicas [0,65; 2,25]. `H3R-0.25` − `H3L-0.25` = 0,72 M$, IC [−0,90; 2,35]. La predicción se cumple solo en
-       r = 0,1, igual que en la ronda anterior. La raíz no es mejor que no reescalar (reglas 4 y 6).
-    6. **Raíz contra nada en r = 0,25: no cambia.** `H3R-0.25` − `H3-0.25` = 0,52 M$, IC [−1,59; 2,64]. La predicción
-       (*mejora*) no se cumple.
-    7. **Por cliente: no cambia.** D_K = −1,93 M$, IC de Welch [−6,68; 2,83]. La predicción (*empeora*) no se cumple.
-       `H3K-0.1` es la variante con más varianza entre réplicas (58 %, sd 5,51 M$); una explicación posible, que no se
-       probó, es que sortear clientes enteros hace más distinta una muestra de otra que sortear filas.
-    8. **Contra `C`, cada una *no pierde* con réplicas**: cotas inferiores del IC de Welch −0,85 (`H3R-0.25`), −1,59
-       (`H3L-0.25`), −3,30 (`H3L-0.1`) y −5,05 M$ (`H3K-0.1`), todas ≥ −5,65 M$.
+- **Regla 5, raíz contra lineal: gana la raíz en r = 0,1; no cambia en r = 0,25.** `H3R-0.1` − `H3L-0.1` = 1,45 M$, IC t
+  entre réplicas [0,65; 2,25]. `H3R-0.25` − `H3L-0.25` = 0,72 M$, IC [−0,90; 2,35]. La predicción (gana la raíz con las
+  dos tasas) **se cumplió solo en r = 0,1**. La raíz no es mejor que no reescalar (reglas 4 y 6).
+- **Regla 6, raíz contra nada en r = 0,25: no cambia.** `H3R-0.25` − `H3-0.25` = 0,52 M$, IC [−1,59; 2,64]. La predicción
+  (*mejora*) **no se cumplió**.
+- **Regla 7, por cliente: no cambia.** D_K = −1,93 M$, IC de Welch [−6,68; 2,83]. La predicción (*empeora*) **no se
+  cumplió**. `H3K-0.1` es la variante con más varianza entre réplicas (58 %, sd 5,51 M$); una explicación posible, que no
+  se probó, es que sortear clientes enteros hace más distinta una muestra de otra que sortear filas.
+- **Regla 8, contra `C`, cada una *no pierde* con réplicas**: cotas inferiores del IC de Welch −0,85 (`H3R-0.25`), −1,59
+  (`H3L-0.25`), −3,30 (`H3L-0.1`) y −5,05 M$ (`H3K-0.1`), todas ≥ −5,65 M$.
 
-    La única diferencia que sale distinta de 0 (raíz contra lineal en r = 0,1) es una de las más de diez sin corrección
-    por comparaciones múltiples.
+La única diferencia que sale distinta de 0 (raíz contra lineal en r = 0,1) es una de las más de diez sin corrección
+por comparaciones múltiples.
 
-- **Regla 9, `H3-0.5` (fase 8): confirmada.** *No pierde* con réplicas: Δ −0,08 M$, IC de Welch [−3,17; 3,00], cota
-    inferior ≥ −5,65 M$; y A = 2,28 ≥ 2, con intervalo [1,55; 2,85] que baja de 2 (la regla decide con A puntual). No
-    cambia el veredicto de H3. Muestrear también el final (`U{r}` − `H3-{r}`) *empeora* en las cuatro tasas (tabla
-    «Diferencias entre variantes» del [Anexo](../sampling_1/anexo.md)).
-
-**AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). Las cuatro variantes de la primera tanda tienen ΔAUC
+**AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). Las cuatro `H3-*` tienen ΔAUC
 negativo con Δ de ganancia positivo. En `H3-0.1` la diferencia de AUC es distinguible de 0 (−0,0017, IC [−0,0030;
 −0,0003]) mientras Δ de ganancia es 1,71 M$ con IC que contiene a 0. `H3K-0.1` es la única extensión con ΔAUC
 distinguible de 0 (−0,0033, IC [−0,0050; −0,0017]) y su Δ de ganancia (−0,21 M$) casi no se mueve. El AUC mide el orden

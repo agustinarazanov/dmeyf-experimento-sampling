@@ -39,7 +39,7 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 - [x] 4.1 H1 y H2: Diseño sin subtítulos de proceso, un solo recuadro de Veredicto con réplicas (una línea por
   predicción: se cumplió o no), una línea inicial con el eje que responde. Verificación: verificadores en verde, tarea
   1.1 en verde.
-- [ ] 4.2 H3: lo mismo; las extensiones (K, R, L) como subsección de Diseño y de Veredicto, no por cambio.
+- [x] 4.2 H3: lo mismo; las extensiones (K, R, L) como subsección de Diseño y de Veredicto, no por cambio.
   Verificación: ídem.
 - [ ] 4.3 H4: Diseño y Veredicto en tres partes (búsqueda informada, final con bajas, grilla común); las menciones a
   211718 y 212124 pasan a la regla del curso que aplican. Verificación: ídem.
