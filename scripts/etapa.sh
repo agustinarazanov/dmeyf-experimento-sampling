@@ -15,6 +15,7 @@ MODELO=$2
 EXP=${3:-sampling_1}
 CAMBIO=${4:-separar-hipotesis}
 MODELO_REV=${5:-opus}
+REVISAR=${REVISAR:-1}             # 0: sin sesión de revisión por grupo (una sola revisión al final del cambio)
 PRESUPUESTO_APLICAR=${PRESUPUESTO_APLICAR:-3}
 PRESUPUESTO_REVISAR=${PRESUPUESTO_REVISAR:-2}
 INDICACIONES=${INDICACIONES:-}   # texto que se agrega al final del prompt de aplicar (lo que el orquestador sabe del cambio)
@@ -95,7 +96,7 @@ J_REVISAR="$LOG/g${GRUPO}_revisar_$SELLO.json"
 
 TAREAS="openspec/changes/$CAMBIO/tasks.md"
 SIN_REVISAR=$(grep -E "^- \[ \] $GRUPO\." "$TAREAS" | grep -v -i -c "revis" || true)
-if [ "$SIN_REVISAR" -eq 0 ]; then
+if [ "$SIN_REVISAR" -eq 0 ] && [ "$REVISAR" -ne 0 ]; then
     echo "== grupo $GRUPO: solo queda la revisión; salteo la sesión de aplicar"
 else
 echo "== aplicar grupo $GRUPO con $MODELO"
@@ -122,6 +123,7 @@ if [ "$RC" -ne 0 ] || ! exitoso "$J_APLICAR"; then echo "== la sesión de aplica
 if [ -f "$EN_CURSO" ]; then echo "== EN_CURSO (VMs trabajando):"; cat "$EN_CURSO"; exit 4; fi
 fi
 
+if [ "$REVISAR" -eq 0 ]; then echo "== grupo $GRUPO aplicado (sin revisión por grupo)"; exit 0; fi
 echo "== revisar grupo $GRUPO con $MODELO_REV"
 RC=0
 correr_claude "$MODELO_REV" "$PRESUPUESTO_REVISAR" "$J_REVISAR" \

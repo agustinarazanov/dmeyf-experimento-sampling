@@ -7,6 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 EXP=${1:-sampling_1}
 CAMBIO=${2:-separar-hipotesis}
+HASTA=${HASTA:-}   # último grupo a correr (vacío: todos)
 TAREAS="openspec/changes/$CAMBIO/tasks.md"
 [ -f "$TAREAS" ] || { echo "no existe $TAREAS"; exit 1; }
 
@@ -15,6 +16,7 @@ pendientes_de() { grep -c -E "^- \[ \] $1\." "$TAREAS" || true; }
 while :; do
     GRUPO=$(grep -m1 -E '^- \[ \] [0-9]+\.' "$TAREAS" | sed -E 's/^- \[ \] ([0-9]+)\..*/\1/' || true)
     if [ -z "$GRUPO" ]; then echo "== no quedan tareas pendientes"; exit 0; fi
+    if [ -n "$HASTA" ] && [ "$GRUPO" -gt "$HASTA" ]; then echo "== llegué al grupo $GRUPO (HASTA=$HASTA); me detengo"; exit 0; fi
     ENCABEZADO=$(grep -m1 -E "^## $GRUPO\. " "$TAREAS" || echo "## $GRUPO.")
     case "$ENCABEZADO" in
         *"sesión: Opus"*)   MODELO=opus ;;
