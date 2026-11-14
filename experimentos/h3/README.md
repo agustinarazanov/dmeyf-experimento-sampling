@@ -298,7 +298,8 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
 - **H3 (réplica 0): confirmada.** Las dos tasas no pierden y aceleran 4,37 y 8,04 veces; `H3-0.25` además *gana*. Ese IC solo ve la semilla final:
     el estudio de Optuna es uno por variante, así que la suerte de la optimización queda adentro de Δ sin medir.
 
-- **Reglas 1 a 4, con réplicas y el δ de la ronda (5,65 M$).**
+- **Reglas 1 a 4, con réplicas y el δ de la ronda (5,65 M$).** El δ = 5,52 M$ de § Predicción es el de la ronda
+    anterior; la regla de δ dice que su valor sale del control de cada ronda, y la vigente usa 5,65 M$.
 
     1. **H3 con réplicas: confirmada.** `H3-0.1` y `H3-0.25` *no pierden* con réplicas: las cotas inferiores del IC de
        Welch (−1,07 y −2,82 M$) quedan por encima de −5,65 M$. Con réplicas, Δ pasa de 4,73 a 1,42 M$ en `H3-0.25` (la

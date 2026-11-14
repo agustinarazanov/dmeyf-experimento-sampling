@@ -194,7 +194,7 @@ Diseño, Resultado, Limitaciones); el informe conjunto es Resultados, `experimen
 completas en `anexo.md`; `guion.md` está en `sampling_1/docs/`; `decisiones.md` y la lista de figuras del informe
 conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo dónde se buscó.
 
-- [ ] 4.1 Correcciones de texto que no citan números nuevos (D16):
+- [x] 4.1 Correcciones de texto que no citan números nuevos (D16):
   - `h4/README.md` y Resultados, donde dicen que los dos IC quedan enteros debajo de −δ: solo el de `H4H-0.1`;
     `H4U-0.1` pierde por la media.
   - `decisiones.md` pasó a Resultados: lo que quede de él en `sampling_1/README.md` con números de las fases 1–4 lleva
@@ -212,6 +212,15 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
     ("predecía que…").
 
   Verificar con `python -m scripts.verificar_readme` y `python -m scripts.verificar_informe_h3 --informe <README>`.
+
+  Hecho (14-nov): IC de H4 en `h4/README.md` § Veredicto y en Resultados; `decisiones.md` no existe en `experimentos/`
+  y Resultados y `guion.md` no tienen números de las fases 1–4 (se buscaron 276,10, 5,52, «decisiones» y «fases 1»);
+  varianza 17–58 % (H3 y las H4 que ya tenían réplicas, sin números de la fase 8) en Resultados y `guion.md`; frase de
+  AUC limitada a las cuatro H3 de la primera tanda y `H4F-0.05`; `h4` ya estaba nombrado y enlazado en la tabla de
+  § Pregunta; `bandas_H4` no existe en ninguna carpeta `figuras/` ni en `comun/reporte.py`, no hay figura que mostrar;
+  «VMs del mismo tipo» en `guion.md`; línea de δ en `h3/README.md` § Veredicto; H1 como «predecía que…» en
+  `h1/README.md` y Resultados. `verificar_readme` en verde; `verificar_informe_h3` sin faltantes en h1, h3 y h4, y en
+  Resultados solo los dos previos que no tocan estas frases (Zulip 208986 y 0,96 de § Entre rondas).
 - [ ] 4.2 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), con lo que ya se
   sabe: sale de los README vigentes de `h1` y `h4` y de las secciones del 13-nov de 1.1–1.3 (hoy en el README de cada
   experimento y en `sampling_1/corridas.md`). No afirma un contraste directo entre H1 y H4: da los dos Δ contra el control y

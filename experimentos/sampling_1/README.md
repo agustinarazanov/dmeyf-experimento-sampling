@@ -116,7 +116,8 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
 
 <!-- /generado:bloque-a -->
 
-- **H1, ninguna de las dos** ([H1](../h1/README.md)): `U0.5` *no pierde* y `U0.25` ya *pierde*; la frontera observada es
+- **H1, ninguna de las dos** ([H1](../h1/README.md)). Predecía que r = 0,5 y 0,25 no pierden y que r = 0,05
+  pierde: `U0.5` *no pierde* y `U0.25` ya *pierde*; la frontera observada es
   r = 0,5. La pérdida crece a medida que baja r.
 - **H2, refutada** ([H2](../h2/README.md)): con f = 0,1 pierde y con 0,5 y 0,25 casi no acelera (aceleración ≤ 1,23). GOSS es
   descriptiva y queda *indeterminado*.
@@ -129,7 +130,7 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
   gana a la lineal en r = 0,1 y no en r = 0,25; buscar sobre el 10 % de los clientes no cambia contra el 10 % de las
   filas.
 - **H4, búsqueda informada: refutada** ([H4](../h4/README.md)). `H4H-0.1` y `H4U-0.1` *pierden* con réplicas (−11,41 y
-  −8,02 M$, con los IC enteros debajo de −δ). Elegir negativos difíciles en vez de uniformes no cambia.
+  −8,02 M$): el IC de `H4H-0.1` queda entero debajo de −δ y `H4U-0.1` pierde por la media. Elegir negativos difíciles en vez de uniformes no cambia.
 - **H4, fast-retrain: confirmada en las dos tasas.** `H4F-0.05` no pierde, acelera 12,50 veces (más que `H3-0.05`,
   10,56) y a tiempo igual *gana*. `H4F-0.25` también cumple las tres condiciones.
 - **`H4O-0.5`, reoptimizar sobre el set del final** (respuesta a Zulip 211718): no pierde contra el control y no cambia
@@ -246,8 +247,9 @@ Generado por `comun/reporte.py` el 2026-11-14; no editar.
 
 <!-- /generado:semillas -->
 
-**¿Alcanzan más semillas finales?** No, con un solo estudio de Optuna: entre el 24 % (`H3-0.1`) y el 58 % (`H3K-0.1`) de
-la varianza de G es suerte de la optimización (25 % en `C`), y esa parte no baja con más semillas finales. Pasar de 10 a
+**¿Alcanzan más semillas finales?** No, con un solo estudio de Optuna: en H3 y en las H4 que ya tenían réplicas (`H4H`,
+`H4U`, `H4F` y `H4O-0.5`), entre el 17 % (`H4F-0.25`) y el 58 % (`H3K-0.1`) de la varianza de G es suerte de la
+optimización (25 % en `C`), y esa parte no baja con más semillas finales. Pasar de 10 a
 20 semillas angostó el IC por semilla pero no el de réplicas. Las cuentas están en [H3](../h3/README.md); las tablas de
 varianza y de diferencias entre variantes, en el [Anexo](anexo.md).
 
@@ -258,8 +260,8 @@ varianza y de diferencias entre variantes, en el [Anexo](anexo.md).
 - el IC por semilla se angosta (mediana de la razón de anchos 1,44);
 - con réplicas el IC prácticamente no se angosta (0,96), porque la suerte de Optuna no depende de las semillas finales.
 
-**AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). En H3 y `H4F-0.05` el ΔAUC es negativo o cercano a
-0 (`H3L-0.25` y `H3R-0.25`) mientras la ganancia no pierde: en `H3-0.1` la caída de AUC es distinguible de 0 y el Δ de
+**AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). En las cuatro variantes de la primera tanda de H3
+y en `H4F-0.05` el ΔAUC es negativo mientras el Δ de ganancia es positivo: en `H3-0.1` la caída de AUC es distinguible de 0 y el Δ de
 ganancia no. En GOSS va al revés. El AUC mide el orden de todos los clientes; G, solo los 3.300 de arriba. En H1, `B0.1`
 y la búsqueda informada de H4 las dos bajan juntas.
 

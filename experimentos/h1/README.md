@@ -36,8 +36,8 @@ flowchart TB
 
 - **Variable**: tasa r de filas de train tomadas al azar sin distinguir clase, r ∈ {0,5, 0,25, 0,1, 0,05}.
 - **Métrica que decide**: el veredicto de cada tasa contra el control.
-- **Predicción**: *no pierde* con r = 0,5 y 0,25; *pierde* con r = 0,05. Como predicciones secundarias, que no deciden:
-  *pierde* con r = 0,1, y A ≥ 2 con r = 0,25. La predicción en 201908 tiene un costo fijo, por eso la aceleración no es
+- **Predicción** (pre-registrada): predecía que la variante *no pierde* con r = 0,5 y 0,25 y *pierde* con r = 0,05.
+  Como predicciones secundarias, que no deciden, predecía que *pierde* con r = 0,1 y que A ≥ 2 con r = 0,25. La predicción en 201908 tiene un costo fijo, por eso la aceleración no es
   4×.
 - **Se confirma** si con r = 0,5 y 0,25 la variante *no pierde* y con r = 0,05 *pierde*: hay margen y después hay caída.
 - **Se refuta** si con r = 0,5 la variante *pierde* (no hay margen) o si con r = 0,05 *no pierde* (no hay caída dentro de

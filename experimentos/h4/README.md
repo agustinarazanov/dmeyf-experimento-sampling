@@ -388,8 +388,9 @@ Las reglas se aplican tal como quedaron escritas, con el δ de la ronda (5,65 M$
 de la ronda anterior, y la regla de δ dice que su valor sale del control de cada ronda).
 
 - **1. Búsqueda informada: refutada.** Las dos variantes *pierden* con réplicas: la media de Δ con réplicas queda debajo de −5,65 M$ en `H4H-0.1`
-    (−11,41 M$, IC [−15,80; −7,03]) y en `H4U-0.1` (−8,02 M$, IC [−11,52; −4,53]). En esta ronda los dos IC enteros
-    quedan debajo de −δ. Optimizar sobre una muestra con todas las bajas y el 10 % de CONTINUA rinde peor que optimizar
+    (−11,41 M$, IC [−15,80; −7,03]) y en `H4U-0.1` (−8,02 M$, IC [−11,52; −4,53]). Solo el IC de `H4H-0.1` queda
+    entero debajo de −δ; el de `H4U-0.1` llega a −4,53 M$, arriba de −5,65, así que `H4U-0.1` pierde por la media.
+    Optimizar sobre una muestra con todas las bajas y el 10 % de CONTINUA rinde peor que optimizar
     sobre una muestra uniforme del 10 % (`H3-0.1`, Δ con réplicas 1,71 M$). Una explicación posible, que no se probó, es
     que la proporción de clases distorsionada en la búsqueda lleva a hiperparámetros que no sirven para el train
     completo.
