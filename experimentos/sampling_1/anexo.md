@@ -4,7 +4,7 @@ Las tablas de consulta de [Resultados](README.md): cada una sale de los ledgers 
 
 ## Tablas completas del bloque A
 
-Las 21 variantes con todas las columnas, la varianza por variante y las diferencias entre variantes, como texto.
+Las 30 variantes con todas las columnas, la varianza por variante y las diferencias entre variantes, como texto.
 
 <!-- generado:bloque-a-completo -->
 Generado por `comun/reporte.py` el 2026-11-14; no editar.

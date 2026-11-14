@@ -5,8 +5,8 @@ Optuna), cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) 
 
 !!! success "Respuesta"
     Vale la pena achicar la **optimización**: correr Optuna sobre una muestra al azar y entrenar el final con todas las
-    filas no pierde contra el control y es varias veces más rápido. Achicar el final al azar sí pierde; conservando todas
-    las bajas y la mitad de CONTINUA con peso, no.
+    filas no pierde contra el control y es varias veces más rápido. Achicar el final al azar pierde o queda
+    indeterminado; conservando todas las bajas y la mitad de CONTINUA con peso, no.
 
 ## Resultados
 
@@ -54,7 +54,8 @@ Generado por `comun/reporte.py` el 2026-11-14; no editar.
 !!! warning "Limitaciones principales"
     - **Test ya mirado.** H4 y las extensiones de H3 salen de un estudio que miró 201910, y no hay otro mes de test.
     - **Un mes, un año, una máquina.** Solo 2019, solo 201910 como test y tiempos medidos en `n2-highmem-8`.
-    - **Réplicas solo en parte de las variantes.** H1 y H2 se deciden con una sola búsqueda de hiperparámetros.
+    - **Ocho réplicas.** Todas las variantes repiten la búsqueda de hiperparámetros ocho veces: alcanza para decidir
+      que no pierden, no para separar de cero una ventaja chica.
 
     El resto, en [Resultados § Limitaciones comunes](experimentos/sampling_1/README.md#limitaciones-comunes).
 

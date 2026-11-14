@@ -92,7 +92,8 @@ lee de acá.
 
 ### Grilla
 
-- **Optimización**: 4 estudios (`U0.5`, `U0.25`, `U0.1`, `U0.05`) × 40 trials, sin réplicas de optimización.
+- **Optimización**: 4 estudios (`U0.5`, `U0.25`, `U0.1`, `U0.05`) × 40 trials, sin réplicas de optimización en la fase 7
+  (las réplicas, en § Réplicas y grilla común).
 - **Finales**: 4 variantes × 20 semillas = 80 corridas, en la lista `fase7_r0` de la fase 7
   ([Corridas](../sampling_1/corridas.md)). La muestra de tasa r se sortea sobre los seis meses del final con la semilla
   final.

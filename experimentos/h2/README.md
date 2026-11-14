@@ -101,7 +101,8 @@ declara igual.
 
 ### Grilla
 
-- **Optimización**: 4 estudios (`B0.5`, `B0.25`, `B0.1`, `GOSS`) × 40 trials, sin réplicas de optimización.
+- **Optimización**: 4 estudios (`B0.5`, `B0.25`, `B0.1`, `GOSS`) × 40 trials, sin réplicas de optimización en la fase 7
+  (las réplicas, en § Réplicas y `B0.05`).
 - **Finales**: 4 variantes × 20 semillas = 80 corridas, en la lista `fase7_r0` de la fase 7
   ([Corridas](../sampling_1/corridas.md)).
 - **Fuera de la grilla**: si la devolución del curso pide mantener `bagging_fraction` optimizado, salen `B0.5`, `B0.25` y

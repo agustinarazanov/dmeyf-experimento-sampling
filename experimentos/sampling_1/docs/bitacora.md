@@ -3013,3 +3013,42 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
 - Tokens (`comun/tokens.py`, sesión `58b66dd6`): ≈ 42 turnos, ≈ 110.000 de contexto por turno, arriba del objetivo.
   Lo infló leer Resultados entero (≈ 35.000 tokens, casi todo HTML de los bloques generados); la próxima vez, leer el
   texto a mano con un extractor en `tmp_etapas/`, como se hizo con el Anexo.
+
+### 2026-11-14 — revisión del grupo 6 de `tiempos-confiables-y-consistencia` (6.6, cierre)
+- Sesión: headless de `scripts/etapas.sh` (`c1666823`) · modelo: Opus · etapa: **revision** (grupo 6), rama
+  `tiempos-confiables`.
+- Revisor: sesión limpia, sin contexto de la sesión que aplicó. Completa la revisión parcial (6.1, 6.2 y 6.4) con 6.3
+  y 6.5: Resultados, el Anexo, el guion, el README raíz e `index.md`. Texto a mano leído con un extractor que saca los
+  bloques generados (`tmp_etapas/texto_mano.py`).
+- Lista: docs/revision.md § 5:
+  - ✓ Reglas escritas: Resultados decide con las reglas de `control` y las Predicciones de `h1`–`h4`; `U0.5`
+    *indeterminado* sale de "vale la pena" en Resultados, Conclusiones, la predicción y el guion; 15 de 30, igual que el
+    título del mapa. `B0.25` A = 1,67 [1,23; 2,08] en los dos lugares de § ¿Qué conviene achicar?
+  - ✓ Números con fuente: `verificar_readme` (86 números, 37 enlaces, todos en `bloque-a-completo` o sus fuentes) y
+    `verificar_informe_h3` (1.026 números, 0 sin fuente). La tabla de § Diálogo entre H1 y H4 (filas, Δ y veredictos de
+    los cuatro pares `H4O-{r}` − `U{r}`) pasa por el verificador con el bloque `diferencias`.
+  - ✓ Refutaciones con el mismo peso: H2, la búsqueda informada de H4, `H4P-{r}` contra `H3-{r}` y los pares en que
+    `H4O-0.05` pierde tienen su propio ítem; la predicción dice dónde falló (H1).
+  - ✓ Limitaciones: ocho réplicas y varianza de Optuna (semillas), un solo mes de test, adaptación de H2 (fuera de los
+    pares, `bagging_fraction` fuera del espacio), cómo se midió el tiempo, N\* fijo en `H4F`/`H4O`, proporción de clases
+    en H4 (§ Pregunta y README raíz).
+  - ✓ Guion: estructura de Bolaños (pregunta, hipótesis, diseño, limitaciones, resultados, conclusión), 0:00–10:00,
+    ≈ 1.100 palabras con la tabla; nombra el baseline sin explicarlo; números iguales a Resultados (2,4×, 1,2× y 1,7×,
+    4,4×–10,6×, 12,5×, 6 %–58 %).
+  - ✓ Bibliografía en `docs/metodo.md` § Bibliografía (sin cambios desde la revisión anterior).
+  - ✓ Bloques generados al día (`comun.reporte --todos` sin cambios); `comun.variantes --verificar`, `scripts/sitio.sh`
+    sin avisos y `medir_sitio` 0 problemas en 13 páginas (solo los avisos de tablas anchas de antes, que se desplazan en
+    su recuadro).
+- Hallazgos (texto a mano que 6.3 no alcanzó):
+  1. `anexo.md` § Tablas completas del bloque A decía «Las 21 variantes»; el bloque tiene 30.
+  2. `index.md` (página publicada), Limitaciones principales: «Réplicas solo en parte de las variantes. H1 y H2 se
+     deciden con una sola búsqueda»; desde la grilla común todas tienen 8 réplicas. Y la respuesta decía «achicar el
+     final al azar sí pierde», cuando `U0.5` queda *indeterminado*.
+  3. `h1/README.md` y `h2/README.md` § Grilla: «sin réplicas de optimización» sin aclarar que era la fase 7.
+- Correcciones: (1) 21 → 30. (2) El ítem pasa a «Ocho réplicas» (alcanzan para decidir que no pierden, no para separar
+  de cero una ventaja chica), como en Resultados § Limitaciones comunes; «pierde o queda indeterminado». (3) «en la fase
+  7», con el puntero a la sección de réplicas de cada README. Verificadores y sitio vueltos a correr en verde.
+- Observación, sin ✗: el párrafo generado del bloque A sigue explicando el caso «variantes sin réplicas», que ya no
+  existe; es texto de `comun/reporte.py` y queda para un cambio de código.
+- 6.6 hecha.
+- Tokens (`comun/tokens.py`, sesión `c1666823`): ≈ 38 turnos, ≈ 64.000 de contexto por turno, debajo del objetivo.
