@@ -12,11 +12,25 @@ function numeroDe(texto) {
   return Number.isNaN(n) ? null : n;
 }
 
+// Las tablas generadas en HTML no traen <thead>: el navegador pone la fila de encabezados en el <tbody> y tablesort la
+// ordenaría junto con las demás. Se pasa a un <thead> propio antes de prepararla.
+function separarEncabezado(tabla) {
+  if (tabla.tHead) return;
+  const primera = tabla.tBodies[0].rows[0];
+  if (!primera || primera.querySelector("td")) return;
+  tabla.createTHead().appendChild(primera);
+}
+
+// Sin filtro en las pestañas (ya separan por hipótesis) ni en las páginas de cada hipótesis, cuyas tablas son cortas.
+function llevaFiltro(tabla, filas) {
+  if (filas.length < 8 || tabla.closest(".tabbed-set")) return false;
+  return !/\/experimentos\/h\d\//.test(location.pathname);
+}
+
 function prepararTabla(tabla) {
-  // Sin tbody no hay filas que ordenar. Sin thead, tablesort toma la primera fila como encabezado; las filas de solo
-  // encabezados (th) no se marcan ni se filtran.
   if (tabla.dataset.preparada || !tabla.tBodies[0]) return;
   tabla.dataset.preparada = "1";
+  separarEncabezado(tabla);
   const filas = Array.from(tabla.tBodies[0].rows).filter((fila) => fila.querySelector("td"));
   for (const fila of filas) {
     for (const celda of fila.cells) {
@@ -25,7 +39,7 @@ function prepararTabla(tabla) {
     }
   }
   new Tablesort(tabla);
-  if (filas.length < 8) return;
+  if (!llevaFiltro(tabla, filas)) return;
   const campo = document.createElement("input");
   campo.type = "search";
   campo.className = "filtro-tabla";

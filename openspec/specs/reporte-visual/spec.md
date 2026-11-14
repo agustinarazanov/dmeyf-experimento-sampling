@@ -19,7 +19,8 @@ mismo comando SHALL poder regenerar todas las páginas del repo.
 
 #### Scenario: Regenerar dos veces
 - **WHEN** se regenera dos veces sin corridas nuevas
-- **THEN** cada página y cada figura quedan iguales, salvo la fecha de generación
+- **THEN** cada página y cada figura quedan iguales, byte a byte: los bloques no llevan fecha ni línea de «generado por»
+  (los marcadores ya lo dicen y no se publican)
 
 #### Scenario: Texto escrito a mano intacto
 - **WHEN** se regenera el README de H3 después de editar su sección Limitaciones
@@ -35,8 +36,10 @@ mismo comando SHALL poder regenerar todas las páginas del repo.
 
 ### Requirement: Comparación de todas las variantes en una vista
 Resultados (`experimentos/sampling_1/README.md`) SHALL mostrar todas las variantes de todas las hipótesis contra el
-control, en una tabla (ganancia media, diferencia apareada con su intervalo, tiempo, aceleración, veredicto) y en
-gráficos, cada uno con la forma que corresponde a su pregunta. Resultados SHALL ordenarse por pregunta: qué conviene
+control, en una tabla (diferencia apareada con su intervalo, aceleración con su intervalo, veredicto) y en gráficos,
+cada uno con la forma que corresponde a su pregunta. Una tabla de Resultados SHALL NOT repetir lo que ya muestra un
+gráfico de la misma página: el resumen del bloque A, que da los números del mapa del tradeoff, va plegado debajo del
+mapa; la cobertura, las tablas de tiempo igual y las de búsqueda y final van al Anexo. Resultados SHALL ordenarse por pregunta: qué conviene
 achicar, cuánto se puede achicar, qué se hace con el tiempo ahorrado y qué tan estable es el resultado; después,
 limitaciones comunes, conclusiones y qué sigue. Gráficos:
 - **mapa del tradeoff:** aceleración A en escala logarítmica contra Δ con su IC, un punto por variante coloreado por
@@ -297,7 +300,7 @@ de código, los recuadros y los plegables, con un largo de línea de ~75 a 90 ca
   ~90 caracteres por línea
 
 #### Scenario: Código que entra
-- **WHEN** se abre Corridas o Cómo trabajamos en una ventana de 1280 px
+- **WHEN** se abre Corridas en una ventana de 1280 px
 - **THEN** ninguna línea de un bloque de código queda cortada ni necesita desplazamiento
 
 #### Scenario: Teléfono
@@ -324,4 +327,4 @@ Ningún color SHALL ser la única señal: el veredicto se lee en el texto de la 
 
 #### Scenario: Regenerar resalta igual
 - **WHEN** se regenera el reporte dos veces sin corridas nuevas
-- **THEN** las mismas celdas quedan resaltadas y el archivo resultante es el mismo salvo la fecha de generación
+- **THEN** las mismas celdas quedan resaltadas y el archivo resultante es el mismo

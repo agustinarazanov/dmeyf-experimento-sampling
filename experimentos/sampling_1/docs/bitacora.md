@@ -3062,3 +3062,17 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   `corrida-reproducible`, `dependencias-entre-experimentos`, `ledger-resultados` y `reporte-visual` actualizadas
   (+14 requisitos, ~3 modificados). `openspec validate --specs`: 9 de 9.
 - Respaldo `$BUCKET/respaldo/2026-11-mover-U/` (8.157 archivos, 3,76 GiB) borrado, como estaba previsto.
+
+## 14-nov-2026 — limpieza del sitio
+
+- Resultados: «Pregunta e hipótesis» con una hipótesis general (vale la pena = no pierde y A ≥ 2, la regla del 1-nov) y
+  la tabla de hipótesis con el enlace en la primera columna; sección nueva «Configuración común» (meses, Optuna, 8
+  réplicas, 20 semillas, N\*, δ, tasas, máquina). «Diálogo entre H1 y H4» deja de ser una sección: los pares
+  `H4O-{r}` − `U{r}` pasan a § ¿Importa qué filas se conservan? y el tiempo, a § ¿Cuánto del tiempo es tamaño de datos?
+- Sin tablas que repitan un gráfico en Resultados: la cobertura (= grilla) y el detalle del bloque A salen; el resumen
+  queda plegado bajo el mapa; las tablas de tiempo igual y de búsqueda y final van al Anexo.
+- `comun/reporte.py` y `scripts/comparar_rondas.py` ya no escriben «Generado por … no editar»; los bloques regeneran
+  igual byte a byte. `verificar_informe_h3` ignora fechas (antes las «cubría» el 2026 de esa línea).
+- Sitio: el encabezado de las tablas HTML pasa a `<thead>` (no se ordena con las filas); sin filtro en pestañas ni en
+  las páginas de hipótesis; `## Dependencias` se saca al publicar (hook); «Cómo trabajamos» sale del sitio y Método
+  enlaza el repositorio. Specs `sitio-informes`, `reporte-visual` y `grilla-comun` actualizadas a mano.

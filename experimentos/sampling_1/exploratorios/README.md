@@ -60,8 +60,6 @@ Pregunta, protocolo, cifras principales, figuras y advertencia de cada estudio, 
 sus CSV. Lo que mostró cada uno está arriba, en su sección.
 
 <!-- generado:bloque-b -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 Las cifras del bloque B no se comparan una a una con las del bloque A: otro protocolo, otra muestra o otro entorno.
 
 ### sensibilidad_muestra

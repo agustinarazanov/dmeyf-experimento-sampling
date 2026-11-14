@@ -326,8 +326,6 @@ Ninguna: el control no lee de otro experimento.
 ## Estado
 
 <!-- generado:estado -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 - Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados (fijo, de la ronda anterior); δ = 5.65 M$.
 - Ḡ_C (réplica 0) = 282.48 M$; T_C = 797 s.
 - Finales del control: 20 de 20 semillas.

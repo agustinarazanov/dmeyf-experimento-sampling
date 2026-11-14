@@ -42,9 +42,10 @@ su veredicto SHALL salir de Δ con réplicas. La única excepción es `C-rep`, q
 - **THEN** el reporte la muestra con las que tiene y la tabla de cobertura dice cuántas son
 
 ### Requirement: Tabla de cobertura
-Resultados (`experimentos/sampling_1/README.md`) y el Anexo (`anexo.md`) SHALL mostrar, en un bloque generado, una tabla de cobertura armada del
+El Anexo (`anexo.md`) SHALL mostrar, en un bloque generado, una tabla de cobertura armada del
 registro de variantes: una fila por forma de muestrear, una columna por tasa y, en cada celda, la variante y su cantidad
-de réplicas. Ninguna celda SHALL estar escrita a mano en el generador.
+de réplicas. Ninguna celda SHALL estar escrita a mano en el generador. Resultados no la repite: muestra la misma
+cobertura como grilla de veredictos (reporte-visual).
 
 #### Scenario: Celda sin correr
 - **WHEN** el registro no tiene variante para una forma y una tasa

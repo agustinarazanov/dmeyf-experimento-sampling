@@ -6,8 +6,8 @@
 En cada README, `<!-- generado:NOMBRE -->` … `<!-- /generado:NOMBRE -->` delimita un bloque que se reemplaza; el resto
 del archivo no se toca (sitio-legible D4). Si falta un marcador, falla nombrando archivo y marcador antes de escribir
 nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `grilla`,
-`desglose`, `bloque-a`, `fraccion`, `tiempo-igual`, `semillas`; `sampling_1/anexo.md` → `bloque-a-completo`, `varianza`,
-`diferencias`, `ic-rondas` (y `rondas`, de `scripts/comparar_rondas.py`); `sampling_1/exploratorios/README.md` → `bloque-b`;
+`desglose`, `bloque-a`, `fraccion`, `tiempo-igual`, `semillas`; `sampling_1/anexo.md` → `bloque-a-completo`, `cobertura`, `varianza`,
+`diferencias`, `tiempo-igual-tablas`, `tiempos-completos`, `ic-rondas` (y `rondas`, de `scripts/comparar_rondas.py`); `sampling_1/exploratorios/README.md` → `bloque-b`;
 `index.md` → `hallazgo-tradeoff`, `hallazgo-tiempo`, `hallazgo-ensamble` y `tarjetas`; `sitio/hipotesis/README.md` → `tarjetas`. Las figuras salen como
 SVG en `experimentos/<exp>/figuras/` (con `--figuras` también PNG a 200 dpi para el video).
 
@@ -23,7 +23,6 @@ import io
 import json
 import math
 import re
-from datetime import datetime
 from pathlib import Path
 
 import matplotlib
@@ -1605,8 +1604,6 @@ NOTAS = {"a": "sin réplicas de optimización: Δ, T y el veredicto salen de la 
          "c": "con menos réplicas que Δ: en alguna réplica K < 2.",
          "d": "sin réplicas de la variante: el intervalo de A solo mueve el control, es un piso."}
 CAB_RESUMEN = ("variante", "hipótesis", "R", "Δ [IC 95%] (M$)", "aceleración (×)", "ganancia contra el control")
-CAB_DETALLE = ("variante", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "ΔAUC en 201910 [IC]",
-               "T mediana (s)", "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)")
 AVISO_A_HTML = AVISO_A
 
 
@@ -1617,21 +1614,6 @@ def celdas_resumen(f: dict) -> list:
             celda_ic(delta(f)),
             celda(f"{f['A']:.2f}", ic=ic_a, nota="d" if f["A_piso"] and ic_a else None) if f["A"] is not None else "pendiente",
             celda_veredicto(f["veredicto"])]
-
-
-def celdas_detalle(f: dict) -> list:
-    """Fila del detalle plegable: lo que no está en el resumen, con `—` y nota al pie donde no aplica."""
-    tr, tb, k0 = f["ti_rep"], f["ti_boot"], f["k0"]
-    if tr and tr["n"] >= 2:
-        ti_rep = celda_ic((tr["media"], tr["inf"], tr["sup"]))
-        if tr["n"] < len(tr["filas"]):
-            ti_rep["nota"] = "c"
-    else:
-        ti_rep = celda("—", nota="b" if tr else "a")
-    ti_boot = celda_ic(tb) if tb else (celda("—", nota="b") if k0 and k0[2] < 2 else "pendiente")
-    return [f["variante"], _m(f["G"]) if f["G"] is not None else "pendiente", celda_ic(f["d0"]),
-            celda_ic(f["dR"][:3]) if f["dR"] else celda("—", nota="a"), celda_ic(f["auc"], _a),
-            f"{f['T']:,.0f}" if f["T"] is not None else "pendiente", ti_rep, ti_boot]
 
 
 def tabla_resumen(filas_a: list[dict]) -> str:
@@ -1798,7 +1780,7 @@ def tabla_calibracion(cal: pd.DataFrame | None = None, por_vm: bool = False) -> 
     return html_tabla(cab, cuerpo)
 
 
-def tabla_busqueda_y_final(ctx: Contexto, a: dict, pestanas: bool = False) -> str:
+def tabla_busqueda_y_final(ctx: Contexto, a: dict) -> str:
     """Por variante, mediana entre réplicas de la búsqueda, del final y de la preparación, y la fracción de T que es
     búsqueda. La preparación no entra en T: es igual para todas las variantes."""
     finr, estudios = a.get("finr"), a.get("estudios")
@@ -1818,11 +1800,7 @@ def tabla_busqueda_y_final(ctx: Contexto, a: dict, pestanas: bool = False) -> st
                        f"{prep:,.1f}" if prep == prep else "pendiente"])
     cab = ("variante", "hipótesis", "búsqueda, mediana (s)", "final, mediana (s)", "fracción de T que es búsqueda",
            "preparación, mediana (s; no entra en T)")
-    if not pestanas:
-        return html_tabla(cab, cuerpo)
-    # en Resultados, una pestaña por hipótesis para que la tabla entre en 800 px de alto (D16)
-    sangrar = lambda t: "\n".join("    " + linea if linea else "" for linea in t.splitlines())  # noqa: E731
-    return "\n\n".join(f'=== "{h}"\n\n' + sangrar(html_tabla(cab, [f for f in cuerpo if f[1] == h])) for h in ctx.hipotesis)
+    return html_tabla(cab, cuerpo)
 
 
 NOTA_TIEMPOS = ("Predicciones de `control/docs/hipotesis.md` § Medición de tiempos; la medición es exploratoria y no cambia veredictos: "
@@ -1831,13 +1809,12 @@ NOTA_TIEMPOS = ("Predicciones de `control/docs/hipotesis.md` § Medición de tie
 
 
 def bloque_tiempos(ctx: Contexto, a: dict, completo: bool) -> str:
-    """Sección de tiempos de Resultados (`completo=False`) o sus tablas completas del Anexo (calibración por VM)."""
-    partes = [NOTA_TIEMPOS, "**Tiempo a hiperparámetros fijos.**", tabla_a_fijo(a),
-              "**Calibración de las VMs.**", tabla_calibracion(por_vm=completo)]
-    if completo:
-        partes += ["**Calibración, resumen.**", tabla_calibracion()]
-    partes += ["**Búsqueda y final por variante.**", tabla_busqueda_y_final(ctx, a, pestanas=not completo)]
-    return "\n\n".join(partes)
+    """Sección de tiempos de Resultados (`completo=False`: la medición a hiperparámetros fijos) o las tablas del Anexo
+    (calibración por VM y su resumen, búsqueda y final por variante). Ninguna tabla sale en las dos páginas."""
+    if not completo:
+        return "\n\n".join([NOTA_TIEMPOS, tabla_a_fijo(a)])
+    return "\n\n".join(["**Calibración de las VMs.**", tabla_calibracion(por_vm=True), "**Calibración, resumen.**",
+                        tabla_calibracion(), "**Búsqueda y final por variante.**", tabla_busqueda_y_final(ctx, a)])
 
 
 # --- bloques entre marcadores (sitio-legible D4) ---
@@ -1850,16 +1827,16 @@ def marcadores(nombre: str) -> tuple[str, str]:
     return f"<!-- generado:{nombre} -->", f"<!-- /generado:{nombre} -->"
 
 
-def bloque(nombre: str, contenido: str, fecha: str) -> str:
-    """El bloque completo, con sus marcadores y la línea que avisa que no se edita."""
+def bloque(nombre: str, contenido: str) -> str:
+    """El bloque completo, con sus marcadores. Los marcadores ya dicen que el bloque es generado; la página publicada
+    no lleva ninguna línea sobre cómo se generó."""
     ini, fin = marcadores(nombre)
-    return f"{ini}\nGenerado por `comun/reporte.py` el {fecha}; no editar.\n\n{contenido.strip()}\n\n{fin}"
+    return f"{ini}\n{contenido.strip()}\n\n{fin}"
 
 
-def reemplazar_bloques(texto: str, bloques: dict[str, str], archivo: str = "", fecha: str | None = None) -> str:
+def reemplazar_bloques(texto: str, bloques: dict[str, str], archivo: str = "") -> str:
     """`texto` con el contenido de cada bloque reemplazado y el resto intacto. Falla, sin devolver nada, si falta el
     marcador de apertura o de cierre de alguno."""
-    fecha = fecha or f"{datetime.now():%Y-%m-%d}"
     posiciones = {}
     for nombre in bloques:
         ini, fin = marcadores(nombre)
@@ -1870,15 +1847,14 @@ def reemplazar_bloques(texto: str, bloques: dict[str, str], archivo: str = "", f
             raise MarcadorFaltante(f"{archivo}: falta el marcador {faltante}")
         posiciones[nombre] = (i, j + len(fin))
     for nombre, (i, j) in sorted(posiciones.items(), key=lambda kv: -kv[1][0]):
-        texto = texto[:i] + bloque(nombre, bloques[nombre], fecha) + texto[j:]
+        texto = texto[:i] + bloque(nombre, bloques[nombre]) + texto[j:]
     return texto
 
 
-def escribir_bloques(plan: list[tuple[Path, dict[str, str]]], archivos: dict[Path, bytes] | None = None,
-                     fecha: str | None = None) -> list[Path]:
+def escribir_bloques(plan: list[tuple[Path, dict[str, str]]], archivos: dict[Path, bytes] | None = None) -> list[Path]:
     """Valida los marcadores de todos los archivos del `plan` y recién entonces escribe los README y las figuras
     (`archivos`): un error no deja la mitad regenerada."""
-    nuevos = {ruta: reemplazar_bloques(ruta.read_text(), bl, str(ruta), fecha) for ruta, bl in plan}
+    nuevos = {ruta: reemplazar_bloques(ruta.read_text(), bl, str(ruta)) for ruta, bl in plan}
     for ruta, texto in nuevos.items():
         ruta.write_text(texto)
     for ruta, datos in (archivos or {}).items():
@@ -1941,8 +1917,11 @@ def _sin_datos(nombres: tuple[str, ...]) -> dict[str, str]:
     return {n: sin for n in nombres}
 
 
-BLOQUES_SAMPLING = ("mapa", "grilla", "cobertura", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
-BLOQUES_ANEXO = ("bloque-a-completo", "cobertura", "varianza", "diferencias", "tiempos-completos", "ic-rondas")
+# Resultados no repite en tabla lo que ya muestra una figura: la cobertura es la grilla, el detalle del bloque A y las
+# tablas de tiempo igual y de búsqueda y final van al Anexo; el resumen del bloque A queda plegado bajo el mapa.
+BLOQUES_SAMPLING = ("mapa", "grilla", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
+BLOQUES_ANEXO = ("bloque-a-completo", "cobertura", "varianza", "diferencias", "tiempo-igual-tablas", "tiempos-completos",
+                 "ic-rondas")
 BLOQUES_INICIO = ("hallazgo-tradeoff", "hallazgo-tiempo", "hallazgo-ensamble")
 
 
@@ -1953,13 +1932,12 @@ def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, st
     return {
         "mapa": fig_tradeoff(ctx, a, figuras),
         "grilla": fig_grilla(ctx, a, figuras),
-        "cobertura": tabla_cobertura(a["filas"]),
         "desglose": fig_desglose(ctx, a, figuras),
-        "bloque-a": "\n\n".join([referencia_control(a), AVISO_A_HTML, pestanas_bloque_a(ctx, a["filas"]),
-                                 _plegable("Detalle del bloque A", html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS))]),
+        "bloque-a": _plegable("Los números del mapa", "\n\n".join([referencia_control(a), AVISO_A_HTML,
+                                                                      pestanas_bloque_a(ctx, a["filas"])])),
         "fraccion": fig_fraccion(ctx, a, figuras),
         "ensamble": fig_ensamble(ctx, fin, ap, a, figuras),
-        "tiempo-igual": tiempo_igual(ctx, fin, ap) + "\n\n" + fig_tiempo_igual_ic(ctx, a, figuras),
+        "tiempo-igual": fig_tiempo_igual_ic(ctx, a, figuras),
         "tiempos": bloque_tiempos(ctx, a, completo=False),
         "semillas": fig_semillas(ctx, a, figuras),
     }
@@ -1986,6 +1964,7 @@ def bloques_anexo(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
         "varianza": html_tabla(CAB_VAR, varianza(a["rep"], ctx)) if len(a["rep"]) else pendiente("ninguna variante tiene réplicas"),
         "diferencias": (tabla_diferencias(a["rep"], pares) + "\n\n" + fig_diferencias(ctx, a, figuras)
                         if pares_replicas(a["rep"]) or pares is not None else pendiente("no hay diferencias entre variantes con réplicas")),
+        "tiempo-igual-tablas": tiempo_igual(ctx, fin, ap),
         "tiempos-completos": bloque_tiempos(ctx, a, completo=True),
         "ic-rondas": fig_ic_rondas(ctx, a, figuras),
     }

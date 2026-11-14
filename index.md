@@ -16,8 +16,6 @@ Un panel por hipótesis y un punto por variante, con su intervalo: a la derecha,
 ganancia. Las que valen la pena quedan arriba y a la derecha del 2×, y casi todas achican solo la optimización.
 
 <!-- generado:hallazgo-tradeoff -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 ![15 de 30 variantes no pierden y aceleran 2× o más; la más rápida entre ellas es H4F-0.05 (12.5×)](experimentos/sampling_1/figuras/tradeoff.svg)
 
 <!-- /generado:hallazgo-tradeoff -->
@@ -28,8 +26,6 @@ En el control, la búsqueda de hiperparámetros se lleva el 94 % del tiempo y el
 la búsqueda acelera mucho más que achicar el final, y no toca el modelo que se entrega.
 
 <!-- generado:hallazgo-tiempo -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 ![En el control la optimización es el 94 % de T (748 s de 797 s); la variante con la optimización más corta, U0.05, la baja a 67 s](experimentos/sampling_1/figuras/desglose_tiempo.svg)
 
 <!-- /generado:hallazgo-tiempo -->
@@ -41,8 +37,6 @@ promedia sus probabilidades. Arriba, la ganancia del ensamble según el tiempo g
 modelos. Ensamblar el control también suma, así que buena parte de la ventaja es el ensamble.
 
 <!-- generado:hallazgo-ensamble -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 ![Con el tiempo del control (797 s), H4P-0.25 ensambla hasta 296.4 M$; el control con sus 20 semillas llega a 286.6 M$](experimentos/sampling_1/figuras/ensamble.svg)
 
 
@@ -64,8 +58,6 @@ Generado por `comun/reporte.py` el 2026-11-14; no editar.
 ## Hipótesis
 
 <!-- generado:tarjetas -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 <div class="grid cards" markdown>
 
 -   **[H1 · Submuestreo uniforme del train](experimentos/h1/README.md)**

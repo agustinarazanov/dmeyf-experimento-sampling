@@ -194,7 +194,6 @@ variante termina con menos semillas, el apareo usa las que tiene y se anota en l
 
 ### Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
 
-La pregunta de Zulip 212124 (12-nov) pide que H1 y H4 dialoguen: ¿se usan los mismos cortes y se ve alguna diferencia?
 Hasta la ronda 201903–201908 las hipótesis no comparten grilla, y entre H1 y H4 hay solo dos cruces, ninguno directo (dos
 Δ contra el control). Por eso se agrega una **grilla común**: las mismas cuatro tasas {0,5; 0,25; 0,1; 0,05} y 8 réplicas
 en cada forma de muestrear, para que cualquier par de celdas se pueda comparar, con **pares directos** declarados antes de

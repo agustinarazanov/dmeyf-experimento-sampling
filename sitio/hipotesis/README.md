@@ -1,8 +1,6 @@
 # Hipótesis
 
 <!-- generado:tarjetas -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 <div class="grid cards" markdown>
 
 -   **[H1 · Submuestreo uniforme del train](../../experimentos/h1/README.md)**

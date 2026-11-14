@@ -21,10 +21,12 @@ manuales después del push. Si el build falla, SHALL quedar publicada la versió
 
 ### Requirement: Contenido publicado
 El sitio SHALL publicar como páginas solo los documentos de lectura: la portada, el `README.md` de cada experimento
-(`sampling_1`, `control`, `h1` a `h4`), el anexo de resultados, la página de corridas, la de exploratorios,
-`docs/metodo.md` y las páginas de sección. El sitio SHALL NOT publicar bitácoras, el archivo de Zulip, las specs,
-`docs/revision.md`, el guion del video, los README de cada exploratorio, código, tests, scripts, ledgers, la plantilla,
-la configuración de Claude ni los cambios de OpenSpec. Lo que queda fuera se enlaza en GitHub desde «Cómo trabajamos».
+(`sampling_1`, `control`, `h1` a `h4`), el anexo de resultados, la página de corridas, la de exploratorios y las
+páginas de sección. El sitio SHALL NOT publicar bitácoras, el archivo de Zulip, las specs, `docs/metodo.md` (el
+proceso de trabajo: etapas, modelos, tokens), `docs/revision.md`, el guion del video, los README de cada exploratorio, código, tests, scripts, ledgers, la plantilla,
+la configuración de Claude ni los cambios de OpenSpec. Lo que queda fuera está en el repositorio, enlazado desde la
+página de sección Método. Las páginas publicadas SHALL NOT mostrar la sección `## Dependencias` de cada README: la
+lee `comun.variantes --verificar` y sirve a quien agrega un experimento; el hook del sitio la saca al publicar.
 
 #### Scenario: Documento de un experimento
 - **WHEN** se abre en el sitio la página de H4
@@ -38,7 +40,7 @@ la configuración de Claude ni los cambios de OpenSpec. Lo que queda fuera se en
 
 #### Scenario: Bitácora fuera del sitio
 - **WHEN** se pide en el sitio la ruta de `experimentos/h3/docs/bitacora.md` o de una spec de `openspec/specs/`
-- **THEN** el sitio responde que la página no existe, y «Cómo trabajamos» tiene el enlace a ese archivo en GitHub
+- **THEN** el sitio responde que la página no existe, y la página Método enlaza el repositorio
 
 #### Scenario: Código excluido
 - **WHEN** se pide en el sitio la ruta de `comun/reporte.py` o de un archivo de `openspec/changes/`
@@ -46,7 +48,7 @@ la configuración de Claude ni los cambios de OpenSpec. Lo que queda fuera se en
 
 ### Requirement: Navegación por secciones
 El sitio SHALL tener una barra lateral con estas entradas en este orden: Inicio, Resultados, Anexo de resultados (las
-tres al mismo nivel), Hipótesis (H1 a H4) y Método (control y reglas, corridas, exploratorios y cómo trabajamos). Cada entrada de la
+tres al mismo nivel), Hipótesis (H1 a H4) y Método (control y reglas, corridas y exploratorios). Cada entrada de la
 barra SHALL llevar el título de su página (por ejemplo «H4 · Muestras informadas por clase»). Cada resultado SHALL tener
 una sola página donde buscarlo. El sitio SHALL tener búsqueda de texto completo sobre todas las páginas publicadas.
 
@@ -61,7 +63,7 @@ una sola página donde buscarlo. El sitio SHALL tener búsqueda de texto complet
 
 #### Scenario: Llegar a una bitácora
 - **WHEN** alguien busca la bitácora de h3
-- **THEN** no la encuentra en la barra lateral, y «Cómo trabajamos» tiene el enlace a ese archivo en GitHub
+- **THEN** no la encuentra en la barra lateral, y la página Método enlaza el repositorio
 
 #### Scenario: Buscar un término
 - **WHEN** se busca «GOSS» en el sitio
@@ -216,8 +218,6 @@ Cada página publicada SHALL ayudar a leer con elementos visuales y no solo con 
   veredicto como diagrama;
 - Corridas tiene la línea de tiempo de las fases y los pasos del recorrido de una corrida, de la VM al ledger y a las
   páginas;
-- Cómo trabajamos tiene un diagrama de las etapas con sus compuertas de revisión y uno de los pasos para agregar una
-  hipótesis;
 - Exploratorios tiene un diagrama de qué motivó cada estudio en el experimento.
 
 Una secuencia sin ramas (una caja por paso) SHALL ir como lista de pasos numerados unidos por una línea, no como
@@ -237,10 +237,6 @@ de color, nunca un fondo claro fijo. Un texto largo SHALL NOT ir dentro de una c
 - **WHEN** se abre Corridas
 - **THEN** las fases se ven en una línea de tiempo y cada fase tiene su sección o su ítem con lo que corrió, sin texto
   largo dentro de una celda de tabla
-
-#### Scenario: Cómo trabajamos
-- **WHEN** se abre Cómo trabajamos
-- **THEN** antes del detalle hay un diagrama de las etapas, con la revisión en sesión limpia en cada compuerta
 
 ### Requirement: Modo oscuro recordado
 El sitio SHALL ofrecer un modo claro y uno oscuro, con un botón en el encabezado para cambiar de uno a otro. La primera

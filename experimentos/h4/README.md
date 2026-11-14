@@ -192,8 +192,7 @@ cota inferior del IC de D es > 0 M$, *empeora* si la cota superior es < 0 M$, *n
 | muestrear también el final, con bajas | `H4O-{r}` − `H4P-{r}` | 4 | t apareado | en el final cambian a la vez las filas y el peso |
 | el peso en la búsqueda | `H4P-0.1` − `H4U-0.1` | 1 | Welch | nada más: misma muestra de búsqueda, mismo final |
 
-Los pares "conservar las bajas" se comparan a igual tasa de CONTINUA, que es lo que pregunta Zulip 212124, y la tabla
-del informe muestra las filas de entrenamiento de cada lado. Los pares entre experimentos (`h4` con `h1` o `h3`, y `h1`
+Los pares "conservar las bajas" se comparan a igual tasa de CONTINUA, y la tabla del informe muestra las filas de entrenamiento de cada lado. Los pares entre experimentos (`h4` con `h1` o `h3`, y `h1`
 con `h3`) se calculan en `sampling_1`. H2 no entra en los pares ([`h2`](../h2/README.md) § Réplicas de H2 y `B0.05`).
 
 #### Predicciones y reglas
@@ -351,8 +350,6 @@ como dependencia declarada). Los estudios `F{f}` y `F{f}@k` de la grilla común 
 ## Resultado
 
 <!-- generado:resultado -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados (fijo, de la ronda anterior); δ = 5.65 M$. Vale la pena: no pierde y acelera 2× o más.
 
 

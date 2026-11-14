@@ -101,6 +101,7 @@ def _fuentes(bloque: str) -> list[float]:
 def _limpiar(linea: str) -> str:
     linea = re.sub(r"`[^`]*`", " ", linea)
     linea = re.sub(r"\]\([^)]*\)", "]", linea)
+    linea = re.sub(r"\b\d{4}-\d{2}-\d{2}\b", " ", linea)  # fechas: no son números del informe
     return re.sub(r"_\{[^}]*\}", " ", linea)
 
 

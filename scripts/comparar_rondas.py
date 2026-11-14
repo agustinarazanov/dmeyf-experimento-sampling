@@ -79,8 +79,8 @@ def tabla(experimentos: Path, titulo: bool = True) -> str:
     esc = lambda c: str(c).replace("|", "\\|")
     texto = [
         *(["# Comparación de rondas\n"] if titulo else []),
-        "Generado por `python scripts/comparar_rondas.py`; no editar a mano. Cada ronda se lee de su propio `apareado.csv` "
-        "y `replicas.csv` (G, Δ y δ salen del control de esa ronda); T y A no se comparan entre rondas.\n",
+        "Cada ronda se lee de su propio `apareado.csv` y `replicas.csv` (G, Δ y δ salen del control de esa ronda); T y A "
+        "no se comparan entre rondas.\n",
         f"- Ronda {RONDA_VIEJA} (final con 4 meses, 10 semillas, N* de validación): δ = {_m(delta_v)} M$.",
         f"- Ronda {VENTANA_NUEVA} (final con 6 meses, 20 semillas, N* fijo): δ = {_m(delta_n)} M$.\n",
         "Δ en M$ al corte N* de cada ronda, con IC 95%.\n",

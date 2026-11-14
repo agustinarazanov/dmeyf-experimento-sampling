@@ -1,4 +1,4 @@
-"""El reporte se regenera igual salvo la fecha, y con un ledger vacío deja las variantes pendientes sin fallar."""
+"""El reporte se regenera igual, y con un ledger vacío deja las variantes pendientes sin fallar."""
 
 import re
 
@@ -305,7 +305,7 @@ def test_resumen_corto(pagina_s1):
     assert len(re.findall(r"<th>", resumen.split("</tr>")[0])) <= 6
     for celdas in _filas(resumen).values():
         assert all(c.count("class='ic'") <= 1 for c in celdas)
-    assert "<summary>Detalle del bloque A</summary>" in pagina_s1
+    assert "<summary>Los números del mapa</summary>" in pagina_s1 and "Detalle del bloque A" not in pagina_s1
     assert "(R=" not in resumen and "no aplica" not in resumen and "sin réplicas" not in resumen
 
 
@@ -333,12 +333,12 @@ def test_regenerar_resalta_igual(pagina_s1, ronda_anterior):
 
 def test_regenerar_no_toca_el_texto_de_afuera():
     texto = "# H9\n\nantes\n\n<!-- generado:resultado -->\nviejo\n<!-- /generado:resultado -->\n\n## Limitaciones\n\nmías\n"
-    nuevo = reporte.reemplazar_bloques(texto, {"resultado": "tabla nueva"}, fecha="2026-11-13")
+    nuevo = reporte.reemplazar_bloques(texto, {"resultado": "tabla nueva"})
     assert "tabla nueva" in nuevo and "viejo" not in nuevo
-    assert "Generado por `comun/reporte.py` el 2026-11-13; no editar." in nuevo
+    assert "Generado por" not in nuevo
     assert nuevo.split("<!-- generado:resultado -->")[0] == texto.split("<!-- generado:resultado -->")[0]
     assert nuevo.split("<!-- /generado:resultado -->")[1] == texto.split("<!-- /generado:resultado -->")[1]
-    assert reporte.reemplazar_bloques(nuevo, {"resultado": "tabla nueva"}, fecha="2026-11-13") == nuevo
+    assert reporte.reemplazar_bloques(nuevo, {"resultado": "tabla nueva"}) == nuevo
 
 
 def test_marcador_faltante_falla_sin_escribir_nada(tmp_path):

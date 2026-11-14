@@ -67,7 +67,7 @@ markdown_extensions:
 
 # Se publica solo lo que está en esta lista (estilo gitignore: se excluye todo y se vuelve a incluir; assets/ son
 # los archivos del tema, que MkDocs filtra con la misma lista).
-# Bitácoras, specs, Zulip, código, ledgers y plantilla quedan fuera; se enlazan en GitHub desde «Cómo trabajamos».
+# Bitácoras, specs, Zulip, código, ledgers, plantilla y docs/ (el proceso de trabajo) quedan fuera; se enlazan en GitHub.
 exclude_docs: |
   *
   !/assets/**
@@ -90,7 +90,6 @@ exclude_docs: |
   !/experimentos/h3/figuras/**
   !/experimentos/h4/README.md
   !/experimentos/h4/figuras/**
-  !/docs/metodo.md
   !/experimentos/**/figuras/**
 
 nav:
@@ -108,7 +107,6 @@ nav:
     - experimentos/control/README.md
     - experimentos/sampling_1/corridas.md
     - experimentos/sampling_1/exploratorios/README.md
-    - docs/metodo.md
 
 validation:
   links:

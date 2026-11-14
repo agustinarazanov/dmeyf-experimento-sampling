@@ -6,6 +6,7 @@ verificados), así que acá se sube a WARNING y `--strict` lo cuenta.
 """
 
 import logging
+import re
 
 _MENSAJE = "which is excluded from the built site"
 
@@ -24,6 +25,15 @@ def on_config(config):
     if not any(isinstance(f, _EnlaceExcluido) for f in logger.filters):
         logger.addFilter(_EnlaceExcluido())
     return config
+
+
+_DEPENDENCIAS = re.compile(r"^## Dependencias\n.*?(?=^## |\Z)", re.S | re.M)
+
+
+def on_page_markdown(markdown, page, config, files):
+    """Saca la sección `## Dependencias` de las páginas publicadas: es para `comun.variantes --verificar` (la lee del
+    README) y para quien agrega un experimento, no para quien lee el informe."""
+    return _DEPENDENCIAS.sub("", markdown)
 
 
 _NOMBRE = "Sampling_1 · DMEyF 2026"

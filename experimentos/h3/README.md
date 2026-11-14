@@ -262,8 +262,6 @@ Predicción y regla: § `H3-0.5` de la Predicción. Completa la fila "al azar, s
 ## Resultado
 
 <!-- generado:resultado -->
-Generado por `comun/reporte.py` el 2026-11-14; no editar.
-
 Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados (fijo, de la ronda anterior); δ = 5.65 M$. Vale la pena: no pierde y acelera 2× o más.
 
 
