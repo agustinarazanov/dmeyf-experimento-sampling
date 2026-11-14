@@ -214,8 +214,9 @@ Qué puede ir en paralelo:
   - 216 filas en `tiempos_hp_fijos.csv` y, en `calibracion.csv`, las de inicio y de fin de las 17 listas;
   - las filas nuevas de la fase 8, todas en `n2-highmem-8`, con `codigo_sucio = False` y un solo commit;
   - ningún estudio `U{r}@k` volvió a `h3/ledger`;
-  - `sampling_1/ledger/pares.csv` tiene los 17 pares, ninguno pendiente.
-- [ ] 5.4 Revisión en sesión limpia de las corridas con `docs/revision.md` § 4 y cierre en la bitácora.
+  - `sampling_1/ledger/pares.csv` tiene los 24 pares, ninguno pendiente (decía 17, cifra vieja del diseño; ver la
+    bitácora de la fase 8).
+- [x] 5.4 Revisión en sesión limpia de las corridas con `docs/revision.md` § 4 y cierre en la bitácora.
 
 ## 6. Informes (sesión: Opus)
 

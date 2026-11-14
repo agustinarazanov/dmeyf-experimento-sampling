@@ -1956,3 +1956,32 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
   en `h3`) y `tiempos_hp_fijos.py --consolidar` (216 mediciones). Archivos con `b99aa71`: 67 estudios (h1 7, h2 36,
   h4 24) y 2.560 finales, todos `n2-highmem-8`, `codigo_sucio = False`. `pares.csv` tiene 24 pares, todos completos con
   8 réplicas y 160 semillas; la tarea dice 17, cifra vieja del diseño (el archivo ya tenía 24 filas antes de la fase).
+
+### 2026-11-14 — cierre revisión del grupo 5 de `tiempos-confiables-y-consistencia` (corridas de la fase 8, tarea 5.4)
+- Sesión: revisión headless del grupo 5 · modelo: Opus · etapa: **revision** (grupo 5, tareas 5.1–5.3), rama
+  `tiempos-confiables`.
+- Revisor: sesión limpia headless (Opus, sin contexto de la sesión que orquestó la fase).
+- Lista: `docs/revision.md` § 4 sobre los ledgers de `control`, `h1`–`h4` y `sampling_1`. Ningún ✗ abierto.
+  - ✓ Máquina y commit: las 2.627 filas de `resultados.csv` con `b99aa71` (2.560 finales y las 67 de `optimizar`) y los
+    67 estudios (h1 7, h2 36, h4 24) son `n2-highmem-8`; ninguna fila de la fase con otro commit (no aparece `ea66537`).
+    Cada commit del ledger tiene una sola máquina.
+  - ✓ Sin `codigo_sucio` (6.246 filas, todas False) ni `exploracion` en `resultados.csv`; todas `valida`; sin ids
+    duplicados.
+  - ✓ Filas de train: `--sanity` 5.2 OK (±0,1 %); en la fase 8 cada variante tiene un único `filas_train` por ventana y
+    los `uniforme` dan tasa × 768.499 o tasa × 506.871 (cociente 1,000 al milésimo).
+  - ✓ Control reproducido: `--sanity` 5.4 (C-rep, |ΔAUC| = 0, |Δganancia| = 0); mismo tipo de VM, no otra persona
+    (limitación ya anotada).
+  - ✓ H2: los 36 estudios y los 756 finales de `h2` con `b99aa71` no tienen `bagging_fraction` en `hp`; `--sanity` 5.3 OK
+    (840 filas).
+  - ✓ Semillas: 128 celdas de variante × réplica con 20 finales cada una; 8 réplicas por variante; `--sanity` 5.5 OK
+    (249 celdas del bloque A). Ningún `U{r}@k` en `h3`.
+  - ✓ `apareado.csv` de h1 (4), h2 (5), h3 (9) y h4 (12): media, desvío, IC 95 % y semillas ganadas sin vacíos, 20
+    semillas. `pares.csv`: 24 pares completos, 8 réplicas, 160 semillas, IC sin vacíos.
+  - ✓ VMs: `gcloud compute instances list` da 0; la lista de discos no se pudo correr en esta sesión (pide permiso),
+    la bitácora de la fase dice que no quedó ninguno. Gasto anotado (~US$ 21 estimado; el real, en la facturación).
+  - ✓ `calibracion.csv` 93 filas (31 × 3, faltan las 3 perdidas por la carrera de `vm.sh`) y `tiempos_hp_fijos.csv`
+    216 filas; predicciones fuera de git.
+- Corregido: tasks.md 5.3 decía "17 pares"; ahora 24, con la nota.
+- Hallazgos que no son ✗: (baja) las 3 calibraciones perdidas quedan como limitación de la medición de 5.3.
+- Tokens: ~20 turnos · contexto ~45.000 por turno · ≈ US$ 0,7.
+- Tutor: —
