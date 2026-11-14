@@ -3,6 +3,9 @@
 H2 prueba si dejar que LightGBM muestree filas en cada árbol (`bagging_fraction` fijo y bajo), en lugar de achicar el
 train antes, acelera sin perder ganancia.
 
+Responde a **dónde achicar**: dentro de LightGBM, sin tocar el train
+([Resultados § ¿Dónde achicar?](../sampling_1/README.md#donde-achicar)).
+
 ## Idea
 
 LightGBM ya sabe muestrear: con `bagging_fraction = f` y `bagging_freq = 1`, cada árbol se arma con una fracción f de
@@ -92,48 +95,28 @@ Lo que no se dice acá (máquina, parámetros fijos de LightGBM, semillas finale
 
 | variante | Optuna: espacio | final: parámetros fijos |
 |---|---|---|
-| `B0.5`, `B0.25`, `B0.1` | 4 hp (sin `bagging_fraction`) | `bagging_fraction = f`, `bagging_freq = 1` |
+| `B0.5`, `B0.25`, `B0.1`, `B0.05` | 4 hp (sin `bagging_fraction`) | `bagging_fraction = f`, `bagging_freq = 1` |
 | `GOSS` (descriptiva) | 4 hp (sin `bagging_fraction`) | `data_sample_strategy = goss`, `top_rate = 0,2`, `other_rate = 0,1` |
 
 Todas optimizan y entrenan con train completo (r = 1). «4 hp» son los rangos del espacio del control sin
 `bagging_fraction`. En `GOSS` sale porque LightGBM no admite bagging con GOSS; es la misma adaptación que en `B*` y se
-declara igual.
+declara igual. Si la devolución del curso pide mantener `bagging_fraction` optimizado, salen las `B` y H2 queda solo con
+`GOSS`; H1 y H3 no cambian.
 
 ### Grilla
 
-- **Optimización**: 4 estudios (`B0.5`, `B0.25`, `B0.1`, `GOSS`) × 40 trials, sin réplicas de optimización en la fase 7
-  (las réplicas, en § Réplicas y `B0.05`).
-- **Finales**: 4 variantes × 20 semillas = 80 corridas, en la lista `fase7_r0` de la fase 7
-  ([Corridas](../sampling_1/corridas.md)).
-- **Fuera de la grilla**: si la devolución del curso pide mantener `bagging_fraction` optimizado, salen `B0.5`, `B0.25` y
-  `B0.1`, y H2 queda solo con `GOSS`. H1 y H3 no cambian.
-
-### Rondas
-
-En la ronda 201903–201906 los finales eran 4 × 10 semillas = 40 corridas. La ronda vigente (201903–201908) no corre
-estudios nuevos: reusa los cuatro y repite los finales con la ventana y las semillas nuevas. Los apartamientos (208135,
-211210) están justificados en el [control](../control/README.md).
-
-### Réplicas y `B0.05` (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
-
-Predicción y regla: § Réplicas de H2 y `B0.05`. H2 forma la fila "dentro de LightGBM" de la grilla común
-([`sampling_1/corridas.md`](../sampling_1/corridas.md) § Fases), al lado de las otras y sin pares directos.
-
-| variante | método | tasa | estudio (k = 0 / k ≥ 1) | final: params fijos |
-|---|---|---|---|---|
-| `B0.05` | `bagging` | 0,05 | `B0.05` / `B0.05@k` | `bagging_fraction = 0,05`, `bagging_freq = 1` |
-
-- **Réplicas**: `B0.5`, `B0.25`, `B0.1`, `B0.05` y `GOSS` con 8 réplicas (k = 0…7). Réplica k: TPE con semilla k; no
-  hay muestra previa que sortear.
-- **Estudios nuevos**: `B0.05` en k = 0 y `B{f}@k` y `GOSS@k` en k = 1…7: 1 + 5 × 7 = **36 estudios**, todos sobre el
-  train completo con el espacio de 4 hp.
-- **Finales nuevos**, con las 20 semillas de la ronda 201903–201908: `B0.05` en k = 0 y las cinco variantes en
-  k = 1…7: 20 + 5 × 7 × 20 = **720 finales**.
+- **Optimización**: `B0.5`, `B0.25`, `B0.1`, `B0.05` y `GOSS` con 8 réplicas de optimización (k = 0…7), 40 trials cada
+  una. Réplica k: TPE con semilla k; no hay muestra previa que sortear. Son 36 estudios nuevos además de los de la
+  réplica 0 (`B0.05` en k = 0 y `B{f}@k` y `GOSS@k` en k = 1…7), todos sobre el train completo con el espacio de 4 hp.
+- **Finales**: 20 semillas por réplica, con la ventana 201903–201908: 80 corridas en la réplica 0 más 720 nuevas
+  (`B0.05` en k = 0 y las cinco variantes en k = 1…7), en las listas `fase7_r0` y `fase8_r0_b` … `fase8_r7_b`
+  ([Fases](../sampling_1/corridas.md) § Fases). Ninguna lista `_a` lee nada de una `_b`.
 - **T y A**: T como mediana entre réplicas y A con una sola referencia ([`control`](../control/README.md) § Medición de
   tiempos).
-- Van en las listas `fase8_r0_b` … `fase8_r7_b` de la fase 8 ([`sampling_1/corridas.md`](../sampling_1/corridas.md)
-  § Fases). Ninguna lista `_a` lee nada de una `_b`.
-- Las réplicas de `B*` y `GOSS`, que `h3` dejaba fuera de la grilla, entran ahora.
+- **Grilla común**: H2 forma la fila «dentro de LightGBM», al lado de las otras y sin pares directos: `bagging_fraction`
+  sale del espacio de Optuna en las `B`, así que la comparación con `U*` es descriptiva.
+
+Los apartamientos de la consigna (208135, 211210) están justificados en el [control](../control/README.md).
 
 ## Dependencias
 
@@ -161,24 +144,21 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
 
 ## Veredicto
 
-!!! success "Veredicto: refutada"
-    Con f = 0,1 pierde. Con 0,5 y 0,25 no pierde, pero casi no acelera (A ≤ 1,23), porque el `Dataset` completo se arma
-    igual. `GOSS` queda *indeterminado* (en la ronda anterior, *no pierde*) y es más lento que el control.
-
-    En la réplica 0, el AUC y la ganancia iban en direcciones distintas en `B0.25` (Δ de ganancia 0,88 M$) y en `GOSS`
-    (Δ de ganancia −4,01 M$). Con réplicas la discrepancia desaparece: `B0.25` tiene Δ −2,20 [−4,95; 0,55] y ΔAUC
-    −0,0026 [−0,0038; −0,0015]; `GOSS`, Δ −2,96 [−6,13; 0,21] y ΔAUC +0,0003 [−0,0008; +0,0014], indistinguible de 0.
-    El AUC mide el orden de todos los clientes y G solo los 3.300 de arriba; el veredicto es el de ganancia.
-
-!!! success "Con réplicas (fase 8): la regla de H2 sigue refutada y la del 13-nov se confirma"
-    Con 8 réplicas, `B0.1` *pierde* (−7,31 [−9,76; −4,86]), así que la regla de H2 sigue **refutada**. `B0.5` (0,35) y
+!!! success "Veredicto con réplicas: refutada, y ninguna `B` vale la pena"
+    Con 8 réplicas, `B0.1` *pierde* (−7,31 [−9,76; −4,86]), así que la regla de H2 queda **refutada**. `B0.5` (0,35) y
     `B0.25` (−2,20) *no pierden*, con A = 1,18 [0,86; 1,64] y 1,67 [1,23; 2,08]; `B0.1` y `B0.05` (−14,55) *pierden*,
-    con A = 2,96 [2,13; 3,57] y 3,09 [2,27; 3,86]. La predicción del 13-nov **se confirma**: ninguna `B` vale la pena.
-    `GOSS` queda *indeterminado*, con A = 1,27 [0,91; 1,53]. Las cifras salen del bloque A de
-    [Resultados](../sampling_1/README.md), con una sola referencia de T del control.
+    con A = 2,96 [2,13; 3,57] y 3,09 [2,27; 3,86]. `GOSS` queda *indeterminado*, con A = 1,27 [0,91; 1,53]. Las cifras
+    salen del bloque A de [Resultados](../sampling_1/README.md), con una sola referencia de T del control.
 
     Muestrear dentro de LightGBM ahorra poco donde no pierde: el `Dataset` completo se arma igual, y A pasa de 2 solo en
-    las fracciones que pierden.
+    las fracciones que pierden. El AUC mide el orden de todos los clientes y G solo los 3.300 de arriba; el veredicto es
+    el de ganancia.
+
+    - Con f = 0,1 *no pierde*: **no se cumplió** (`B0.1` *pierde*).
+    - A ≥ 1,5 con f = 0,1 (secundaria): **se cumplió**, con A = 2,96.
+    - Réplicas: `B0.5` y `B0.25` *no pierden* con A < 2: **se cumplió**.
+    - Réplicas: `B0.1` y `B0.05` *pierden*: **se cumplió**.
+    - Réplicas: ninguna `B` vale la pena: **se cumplió**.
 
 ## Limitaciones
 
@@ -190,8 +170,8 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
     `uniforme` la siguen optimizando. Por eso `bagging` y `uniforme` no tienen la misma fracción efectiva por iteración y
     la comparación entre ellas es solo descriptiva.
 
-- **Una sola búsqueda por variante en la réplica 0.** La tabla de § Resultado usa una sola semilla de Optuna por variante:
-  su Δ incluye la suerte de la optimización y el IC no la mide. El Δ con réplicas sí la mide.
+- **Réplica 0 aparte.** La tabla de la réplica 0 (una sola búsqueda por variante) está en el Anexo: su Δ incluye la suerte
+  de la optimización y el IC no la mide. La tabla de § Resultado usa las 8 réplicas.
 
 - **Réplicas y `B0.05` agregadas después de mirar 201910.** Se decidieron después de ver el test en las celdas vecinas,
   todas juntas y con regla previa. Sus veredictos se suman a los de la grilla común sin corrección por comparaciones

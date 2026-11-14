@@ -3,6 +3,9 @@
 H1 prueba si entrenar con una fracción de las filas de train, tomadas al azar sin mirar la clase, acelera sin perder
 ganancia.
 
+Responde a **dónde achicar**: en todo el pipeline, con filas al azar
+([Resultados § ¿Dónde achicar?](../sampling_1/README.md#donde-achicar)).
+
 ## Idea
 
 El costo de LightGBM crece con las filas: cada iteración arma histogramas sobre todo el train. Si el train tiene más filas
@@ -87,43 +90,23 @@ Un estudio de Optuna queda definido por sus datos de optimización y su espacio.
 que `U0.25` (muestra uniforme r = 0,25 con semilla 0, 5 hp, 40 trials, TPE con semilla 0), y `H3-0.1` lo mismo que
 `U0.1`. Se corre un solo estudio y lo usan las dos variantes: H1 entrena el final con la muestra y H3 con todo. Las dos
 se comparan contra el control y no entre sí, así que compartir el estudio no acopla ninguna decisión. El tiempo de ese
-estudio entra en T de las dos. Los estudios `U0.25` y `U0.1` son de `h1` (su `ledger/hp/`) y [H3](../h3/README.md) los
-lee de acá.
+estudio entra en T de las dos. Los estudios `U{r}` y `U{r}@k` son de `h1` (su `ledger/hp/`) y [H3](../h3/README.md) los
+lee de acá, así que H1 no depende de H3.
 
 ### Grilla
 
-- **Optimización**: 4 estudios (`U0.5`, `U0.25`, `U0.1`, `U0.05`) × 40 trials, sin réplicas de optimización en la fase 7
-  (las réplicas, en § Réplicas y grilla común).
-- **Finales**: 4 variantes × 20 semillas = 80 corridas, en la lista `fase7_r0` de la fase 7
-  ([Corridas](../sampling_1/corridas.md)). La muestra de tasa r se sortea sobre los seis meses del final con la semilla
-  final.
-
-### Rondas
-
-En la ronda 201903–201906 los finales eran 4 × 10 semillas = 40 corridas. La ronda vigente (201903–201908) no corre
-estudios nuevos: reusa los cuatro y repite los finales con la ventana y las semillas nuevas. Los apartamientos (208135,
-211210) están justificados en el [control](../control/README.md).
-
-### Réplicas y grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
-
-Predicción y regla: § Réplicas de H1. Las cuatro `U{r}` pasan a tener 8 réplicas (k = 0…7), como `H3-*` y `H4O-*`, y
-forman la fila "al azar, búsqueda y final" de la grilla común ([`sampling_1/corridas.md`](../sampling_1/corridas.md)
-§ Fases).
-
-- **Dueño de los estudios `U{r}@k`.** Pasan a ser de `h1` (antes, de `h3`): con réplicas, los finales de `U{r}` en la
-  réplica k leen `U{r}@k`, y si los estudios siguieran en `h3`, `h1` dependería de `h3` y `h3` de `h1`. Los 21 estudios
-  ya corridos (`U0.25@k`, `U0.1@k`, `U0.05@k`, k = 1…7) se mueven de `h3/ledger/` a `h1/ledger/` en el repo y en el
-  bucket, sin cambiar ids ni contenido.
-- **Estudios nuevos**: `U0.5@1…7` (7), muestra al azar del 50 % de train 201903–201906 sorteada con la semilla k, TPE con
+- **Optimización**: 4 estudios (`U0.5`, `U0.25`, `U0.1`, `U0.05`) × 40 trials en la réplica 0, y 8 réplicas de
+  optimización (k = 0…7) por tasa: `U0.5@1…7` sortea el 50 % de train 201903–201906 con la semilla k y corre TPE con
   semilla k, como el resto de las réplicas.
-- **Finales nuevos**: `U0.5`, `U0.25`, `U0.1` y `U0.05` en k = 1…7, con las 20 semillas de la ronda 201903–201908 y la
-  muestra de tasa r sorteada sobre los seis meses con la semilla final: 4 × 7 × 20 = **560 finales**. La réplica 0 ya
-  está corrida.
+- **Finales**: 4 variantes × 20 semillas por réplica, con la ventana 201903–201908. La muestra de tasa r se sortea sobre
+  los seis meses del final con la semilla final. Son 80 corridas en la réplica 0 (lista `fase7_r0`) y 560 en las
+  réplicas 1…7 (listas `fase8_r1_a` … `fase8_r7_a`), según [Fases](../sampling_1/corridas.md) § Fases.
 - **T y A**: T como mediana entre réplicas y A con una sola referencia ([`control`](../control/README.md) § Medición de
   tiempos).
-- Van en las listas `fase8_r1_a` … `fase8_r7_a` de la fase 8 ([`sampling_1/corridas.md`](../sampling_1/corridas.md)
-  § Fases). Los estudios `U{r}` y `U{r}@k` son de este experimento (desde el 13-nov también las réplicas), así que no
-  agregan dependencias.
+- **Grilla común**: las cuatro `U{r}` forman la fila «al azar, búsqueda y final» junto con `H3-*` y `H4O-*`. Las
+  diferencias directas con `H3-{r}` y `H4O-{r}` están en [`h4`](../h4/README.md) § Grilla común.
+
+Los apartamientos de la consigna (208135, 211210) están justificados en el [control](../control/README.md).
 
 ## Dependencias
 
@@ -151,21 +134,20 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
 
 ## Veredicto
 
-!!! success "Veredicto: ninguna de las dos"
-    `U0.5` *no pierde*, pero `U0.25` ya *pierde*, así que la predicción para r = 0,25 no se cumple. La frontera observada
-    es r = 0,5: la menor tasa que *no pierde* con todas las mayores. La pérdida crece a medida que baja r, y el AUC en
-    201910 va en la misma dirección que la ganancia en las cuatro tasas: menos filas ordena peor y gana menos. En la
-    ronda anterior `U0.5` quedaba *indeterminado* y no había frontera: con 20 semillas el IC se angosta lo suficiente
-    para decidir.
+!!! warning "Veredicto con réplicas: ninguna de las dos"
+    Con 8 réplicas de optimización, `U0.5` queda *indeterminado*: Δ con réplicas −3,64 [−6,58; −0,71], con
+    A = 2,37 [1,60; 2,98] (una sola referencia de T del control). `U0.25` (−8,09), `U0.1` (−17,47) y `U0.05` (−27,74)
+    *pierden*, con A de 4,99; 10,13 y 15,94. La pérdida crece a medida que baja r, y el AUC en 201910 va en la misma
+    dirección que la ganancia en las cuatro tasas: menos filas ordena peor y gana menos. Por la regla de § Réplicas de
+    H1, `U0.5` queda fuera de las variantes que valen la pena. Las cifras salen del bloque A de
+    [Resultados](../sampling_1/README.md); la tabla de la réplica 0 está en el
+    [Anexo](../sampling_1/anexo.md).
 
-    Entrenar con menos filas al azar pierde desde r = 0,25; solo r = 0,5 *no pierde*, con A = 2,25.
-
-!!! warning "Con réplicas (fase 8): ninguna de las dos, y `U0.5` sale de \"vale la pena\""
-    Con 8 réplicas de optimización (§ Réplicas de H1), `U0.5` queda *indeterminado*: Δ con réplicas −3,64
-    [−6,58; −0,71], con A = 2,37 [1,60; 2,98] (una sola referencia de T del control). `U0.25` (−8,09), `U0.1` (−17,47)
-    y `U0.05` (−27,74) *pierden*, con A de 4,99; 10,13 y 15,94. Por la regla escrita el 13-nov, `U0.5` deja la lista de
-    variantes que valen la pena. La tabla de arriba es la réplica 0; el veredicto con réplicas la reemplaza, y las cifras
-    salen del bloque A de [Resultados](../sampling_1/README.md).
+    - `U0.5` y `U0.25` *no pierden*: **no se cumplió** (`U0.5` *indeterminado*, `U0.25` *pierde*).
+    - `U0.05` *pierde*: **se cumplió**.
+    - `U0.1` *pierde* (secundaria): **se cumplió**.
+    - A ≥ 2 con r = 0,25 (secundaria): **se cumplió**, con A = 4,99.
+    - Réplicas: `U0.25`, `U0.1` y `U0.05` *pierden*: **se cumplió**; `U0.5` *no pierde* con A ≥ 2: **no se cumplió**.
 
 ## Limitaciones
 
@@ -173,8 +155,8 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
   celdas vecinas; entraron las cuatro tasas juntas con regla previa. Los veredictos con réplicas se suman a los de la
   grilla común sin corrección por comparaciones múltiples.
 
-- **Una sola búsqueda por variante en la réplica 0.** La tabla de § Resultado usa una sola semilla de Optuna por variante:
-  su Δ incluye la suerte de la optimización y el IC no la mide. El Δ con réplicas sí la mide.
+- **Réplica 0 aparte.** La tabla de la réplica 0 (una sola búsqueda por variante) está en el Anexo: su Δ incluye la suerte
+  de la optimización y el IC no la mide. La tabla de § Resultado usa las 8 réplicas.
 
 - **Estudios compartidos con H3.** Los estudios de `U0.25` y `U0.1` los usa también H3: Δ(`U0.25`) y Δ(`H3-0.25`) no son evidencia independiente entre
     sí.

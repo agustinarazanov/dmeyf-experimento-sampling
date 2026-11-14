@@ -36,7 +36,7 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 4. Páginas de hipótesis en estado final
 
-- [ ] 4.1 H1 y H2: Diseño sin subtítulos de proceso, un solo recuadro de Veredicto con réplicas (una línea por
+- [x] 4.1 H1 y H2: Diseño sin subtítulos de proceso, un solo recuadro de Veredicto con réplicas (una línea por
   predicción: se cumplió o no), una línea inicial con el eje que responde. Verificación: verificadores en verde, tarea
   1.1 en verde.
 - [ ] 4.2 H3: lo mismo; las extensiones (K, R, L) como subsección de Diseño y de Veredicto, no por cambio.
