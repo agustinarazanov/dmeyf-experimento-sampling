@@ -1,0 +1,119 @@
+{
+ "duration_api_ms": 60979,
+ "stop_reason": "end_turn",
+ "session_id": "41cc9094-d5a7-4388-b06c-24043d67783b",
+ "total_cost_usd": 0.7649664,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 61507,
+  "cache_read_input_tokens": 723192,
+  "output_tokens": 6408,
+  "output_tokens_details": {
+   "thinking_tokens": 2040
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 61507,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 843,
+    "cache_read_input_tokens": 74360,
+    "cache_creation_input_tokens": 607,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 607
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 28,
+   "outputTokens": 6408,
+   "cacheReadInputTokens": 723192,
+   "cacheCreationInputTokens": 61507,
+   "webSearchRequests": 0,
+   "costUSD": 0.7649664,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2040,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 61507,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 18,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Revisé el grupo 4 (tareas 4.1–4.2, diff `e406a52d..f853fd5b`) con la lista § 5 de `docs/revision.md` y encontré un error, que corregí.\n\n**El error:** en `experimentos/sampling_1/docs/guion.md` (tramo 7:50–8:30) decía «En H3 y H4, entre el 17 % y el 58 %» de la varianza. Pero el bloque `varianza` del Anexo ya incluye la fase 8, con `H4O-0.1` en 11 % y `H4O-0.25` en 14 %, así que para todas las H4 el rango es falso. Lo acoté como ya lo hace Resultados: «En H3 y en las H4 que ya tenían réplicas antes de la grilla común». El número se reescribe con los datos de la fase 8 en la tarea 6.3.\n\n**Lo que pasó la revisión:**\n- **H4 con su regla:** `H4U-0.1` pierde por la media (−8,02 < −5,65) y solo el IC de `H4H-0.1` queda entero debajo de −δ.\n- **Margen δ en h3:** la línea que pasa δ de 5,52 a 5,65 repite la regla ya escrita.\n- **Varianza:** el rango 17–58 % y el 25 % del control coinciden con el bloque `varianza`.\n- **AUC contra ganancia:** la frase se cumple en las cuatro variantes de la primera tanda de H3 y en `H4F-0.05`.\n- **§ Diálogo entre H1 y H4:** los números coinciden con los README de `h1` y `h4` y con el bloque `diferencias`. La sección da los dos Δ contra el control sin afirmar un contraste directo entre H1 y H4.\n- `python -m scripts.verificar_readme` da verde.\n\n**Otras cosas:**\n- El grupo 4 no tenía tarea de revisión en `tasks.md`. La agregué como 4.3, ya marcada como hecha, y cerré la etapa en la bitácora de `sampling_1`.\n- Commit `72926a06`, sin `Co-Authored-By`. No pusheé: las sesiones headless no pushean, lo hace quien las orquesta.\n- No incluí en el commit `costos.csv` ni `g4_aplicar_*.json`, que ya estaban modificados antes de esta sesión.\n- No hubo nada bloqueante, así que no escribí `bloqueo.txt`.",
+ "ttft_ms": 1966,
+ "type": "result",
+ "duration_ms": 63858,
+ "uuid": "6df6cc87-527c-4cc3-9d22-8b49cbf56fdb",
+ "ttft_stream_ms": 818,
+ "time_to_request_ms": 170,
+ "first_content_frame_ms": 819,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 28,
+   "outputTokens": 6408,
+   "cacheReadInputTokens": 723192,
+   "cacheCreationInputTokens": 61507,
+   "webSearchRequests": 0,
+   "costUSD": 0.7649664,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2040,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 61507,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
