@@ -17,10 +17,10 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 - [x] 2.1 `EJES` en `comun/variantes.py` (metodo → (dónde, cómo)), con los valores de la spec `lectura-por-ejes`.
   `verificar` falla nombrando un `metodo` sin ejes. Verificación: test que registra una variante de juguete sin ejes y
   ve el error; `--verificar` pasa con el registro real.
-- [ ] 2.2 Bloque `ejes` en `comun/reporte.py` (tabla HTML dónde × cómo, «familia (HN): k de n valen la pena», celdas
+- [x] 2.2 Bloque `ejes` en `comun/reporte.py` (tabla HTML dónde × cómo, «familia (HN): k de n valen la pena», celdas
   vacías sin texto) y en el docstring de bloques. Verificación: test con la celda (busqueda, azar) = H3, H3K, H3R, H3L
   con «9 de 9»; test con una familia de juguete que aparece en su celda sin tocar el generador.
-- [ ] 2.3 Rótulo del eje x de `fig_tradeoff` con `fig.supxlabel`, una vez. Verificación: abrir `tradeoff.svg`
+- [x] 2.3 Rótulo del eje x de `fig_tradeoff` con `fig.supxlabel`, una vez. Verificación: abrir `tradeoff.svg`
   regenerado (PNG por `rsvg-convert`) y ver un solo rótulo sin pisarse; el test de figuras sigue verde.
 
 ## 3. Tabla de hipótesis con réplicas

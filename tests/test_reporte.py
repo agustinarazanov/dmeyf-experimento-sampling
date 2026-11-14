@@ -490,3 +490,25 @@ def test_bloque_b_figura_generada_desde_un_csv_sale_como_archivo_y_pendiente_sin
     assert "![Δ por muestra](figuras/est.svg)" in generada and "class='pend'" in sin_csv
     destino = tmp_path / "experimentos" / "sampling_1" / "exploratorios" / "figuras" / "est.svg"
     assert b"<svg" in archivos[destino]
+
+
+def _filas_que_valen(nombres, a=3.0):
+    return [{"variante": n, "A": a, "veredicto": "no pierde"} for n in nombres]
+
+
+def test_mapa_de_ejes_busqueda_al_azar_lista_las_familias_de_h3_con_nueve_de_nueve():
+    h3 = [v.nombre for v in reg.VARIANTES.values() if v.dueno == "h3"]
+    tabla = reporte.tabla_ejes(_filas_que_valen(h3))
+    assert len(h3) == 9 and "H3, H3R, H3L, H3K (H3): 9 de 9 valen la pena" in tabla
+    assert tabla.count("<tr>") == 1 + len(reg.DONDE)
+    assert "<td></td>" in tabla  # celdas sin familias, vacías y sin texto
+    assert "U (H1): 0 de 4 valen la pena" in tabla and "dónde" in tabla
+
+
+def test_mapa_de_ejes_familia_de_juguete_aparece_en_su_celda_sin_tocar_el_generador():
+    variantes = {**reg.VARIANTES, "Z-0.5": reg.Variante("Z-0.5", "h4", "juguete", 0.5, "U0.5")}
+    ejes = {**reg.EJES, "juguete": ("final", "azar")}
+    tabla = reporte.tabla_ejes(_filas_que_valen(["Z-0.5"]), variantes, ejes)
+    fila_final = tabla.split("<tr><th>final</th>")[1].split("</tr>")[0]
+    assert fila_final.split("<td>")[1].startswith("<p class='eje'") and "Z (H4): 1 de 1 vale la pena" in fila_final.split("<td>")[1]
+    assert "Z (H4)" not in tabla.split("<tr><th>final</th>")[0]

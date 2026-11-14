@@ -89,6 +89,17 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
 
 <!-- /generado:bloque-a -->
 
+## Cómo leer las hipótesis: dos ejes
+
+Las hipótesis H1 a H4 se pueden ubicar en dos ejes: dónde del pipeline se achica y cómo se eligen las filas. La tabla da
+la ubicación de cada familia y cuántas de sus variantes valen la pena (no pierden y aceleran 2× o más); no es una
+hipótesis nueva ni tiene veredicto propio.
+
+<!-- generado:ejes -->
+<table><tr><th>dónde \ cómo</th><th>azar</th><th>bajas</th><th>bajas-peso</th><th>dificiles</th><th>interno</th></tr><tr><th>todo</th><td><p class='eje' style='border-left:4px solid #2a78d6;padding-left:6px'>U (H1): 0 de 4 valen la pena</p></td><td></td><td></td><td></td><td></td></tr><tr><th>lightgbm</th><td></td><td></td><td></td><td></td><td><p class='eje' style='border-left:4px solid #eb6834;padding-left:6px'>B, GOSS (H2): 0 de 5 valen la pena</p></td></tr><tr><th>busqueda</th><td><p class='eje' style='border-left:4px solid #1baf7a;padding-left:6px'>H3, H3R, H3L, H3K (H3): 9 de 9 valen la pena</p></td><td><p class='eje' style='border-left:4px solid #eda100;padding-left:6px'>H4U (H4): 0 de 1 valen la pena</p></td><td><p class='eje' style='border-left:4px solid #eda100;padding-left:6px'>H4P (H4): 1 de 4 vale la pena</p></td><td><p class='eje' style='border-left:4px solid #eda100;padding-left:6px'>H4H (H4): 0 de 1 valen la pena</p></td><td></td></tr><tr><th>final</th><td></td><td></td><td><p class='eje' style='border-left:4px solid #eda100;padding-left:6px'>H4F, H4O (H4): 5 de 6 valen la pena</p></td><td></td><td></td></tr></table>
+
+<!-- /generado:ejes -->
+
 ## ¿Qué conviene achicar?
 
 La optimización domina el tiempo del control, así que achicarla es lo que más acelera. La grilla dice qué variantes

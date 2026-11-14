@@ -5,7 +5,7 @@
 
 En cada README, `<!-- generado:NOMBRE -->` … `<!-- /generado:NOMBRE -->` delimita un bloque que se reemplaza; el resto
 del archivo no se toca (sitio-legible D4). Si falta un marcador, falla nombrando archivo y marcador antes de escribir
-nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `grilla`,
+nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `ejes`, `grilla`,
 `desglose`, `bloque-a`, `fraccion`, `tiempo-igual`, `semillas`; `sampling_1/anexo.md` → `bloque-a-completo`, `cobertura`, `varianza`,
 `diferencias`, `tiempo-igual-tablas`, `tiempos-completos`, `ic-rondas` (y `rondas`, de `scripts/comparar_rondas.py`); `sampling_1/exploratorios/README.md` → `bloque-b`;
 `index.md` → `hallazgo-tradeoff`, `hallazgo-tiempo`, `hallazgo-ensamble` y `tarjetas`; `sitio/hipotesis/README.md` → `tarjetas`. Las figuras salen como
@@ -1062,8 +1062,9 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
         _ejes(ax)
     for ax in axs.flat[len(hips):]:
         ax.set_visible(False)
-    for ax in axs[-1]:
-        ax.set_xlabel("aceleración (×) = T(C) / T, escala log; barra horizontal: IC 95% de A")
+    alto = 3.6 * nf + 1.0
+    # un solo rótulo del eje x para todos los paneles, entre las columnas y la leyenda (que ocupa ~0,7 pulgadas abajo)
+    fig.supxlabel("aceleración (×) = T(C) / T, escala log; barra horizontal: IC 95% de A", fontsize=10, y=0.75 / alto, va="bottom")
     for ax in axs[:, 0]:
         ax.set_ylabel("Δ contra el control (M$, IC 95%)")
     sin_perder = [f for f in filas if clase_veredicto(f["veredicto"]) == "ok" and f["A"] >= A_VALE]
@@ -1083,7 +1084,7 @@ def fig_tradeoff(ctx: Contexto, a: dict, figuras: Path | None, nombre: str = "tr
     marcas += [Line2D([], [], color=COLOR_C, ls=":", lw=1), Line2D([], [], color=COLOR_C, ls="-.", lw=0.8)]
     nombres += ["−δ (debajo, pierde)", f"{A_VALE:g}×"]
     fig.legend(marcas, nombres, frameon=False, fontsize=10, loc="lower center", ncol=3)
-    fig.tight_layout(rect=(0, 0.09, 1, 0.94))
+    fig.tight_layout(rect=(0, 1.15 / alto, 1, 0.94))
     return figura(fig, nombre, figuras, ajustar=False)
 
 
@@ -1681,6 +1682,42 @@ def tabla_cobertura(filas_a: list[dict], variantes: dict | None = None, filas_gr
     return tabla + ("\n\nFuera de la grilla:\n\n" + lista if lista else "")
 
 
+def tabla_ejes(filas_a: list[dict], variantes: dict | None = None, ejes: dict | None = None,
+               color: dict | None = None) -> str:
+    """Mapa de ejes (`lectura-por-ejes`): una fila por valor de «dónde» y una columna por valor de «cómo». Cada celda lista
+    las familias de una hipótesis que caen ahí, «familia, … (HN): k de n valen la pena» (k: no pierden y aceleran
+    `A_VALE`× o más; n: variantes registradas de esas familias). Una celda sin familias queda vacía. Da la ubicación y
+    el conteo, no Δ ni A. Los ejes salen de `reg.EJES`: una familia nueva aparece sola."""
+    variantes = reg.VARIANTES if variantes is None else variantes
+    ejes = reg.EJES if ejes is None else ejes
+    color = COLOR_HIPOTESIS if color is None else color
+    por_nombre = {f["variante"]: f for f in filas_a}
+    celdas: dict[tuple[str, str], dict[str, list]] = {}
+    for v in variantes.values():
+        if v.dueno == reg.CONTROL or v.metodo not in ejes:
+            continue
+        hip = v.dueno.upper()
+        fam = celdas.setdefault(ejes[v.metodo], {}).setdefault(hip, {})
+        k_n = fam.setdefault(reg.familia(v.nombre), [0, 0])
+        f = por_nombre.get(v.nombre)
+        k_n[1] += 1
+        k_n[0] += bool(f and f.get("A") is not None and clase_veredicto(f.get("veredicto")) == "ok" and f["A"] >= A_VALE)
+    filas = []
+    for donde in reg.DONDE:
+        tds = []
+        for como in reg.COMO:
+            items = []
+            for hip, fams in celdas.get((donde, como), {}).items():
+                k, n = (sum(x[i] for x in fams.values()) for i in (0, 1))
+                verbo = "vale" if k == 1 else "valen"
+                items.append(f"<p class='eje' style='border-left:4px solid {color.get(hip, COLOR_C)};padding-left:6px'>"
+                             f"{html.escape(', '.join(fams))} ({hip}): {k} de {n} {verbo} la pena</p>")
+            tds.append("<td>" + "".join(items) + "</td>")
+        filas.append(f"<tr><th>{donde}</th>" + "".join(tds) + "</tr>")
+    cab = "".join(f"<th>{c}</th>" for c in ("dónde \\ cómo", *reg.COMO))
+    return "\n<table><tr>" + cab + "</tr>" + "".join(filas) + "</table>\n"
+
+
 CAB_DIF = ("diferencia", "qué aísla", "principal", "filas de cada lado", "Δ [IC] (M$)", "réplicas", "IC", "veredicto")
 
 
@@ -1919,7 +1956,7 @@ def _sin_datos(nombres: tuple[str, ...]) -> dict[str, str]:
 
 # Resultados no repite en tabla lo que ya muestra una figura: la cobertura es la grilla, el detalle del bloque A y las
 # tablas de tiempo igual y de búsqueda y final van al Anexo; el resumen del bloque A queda plegado bajo el mapa.
-BLOQUES_SAMPLING = ("mapa", "grilla", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
+BLOQUES_SAMPLING = ("mapa", "ejes", "grilla", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
 BLOQUES_ANEXO = ("bloque-a-completo", "cobertura", "varianza", "diferencias", "tiempo-igual-tablas", "tiempos-completos",
                  "ic-rondas")
 BLOQUES_INICIO = ("hallazgo-tradeoff", "hallazgo-tiempo", "hallazgo-ensamble")
@@ -1931,6 +1968,7 @@ def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, st
         return _sin_datos(BLOQUES_SAMPLING)
     return {
         "mapa": fig_tradeoff(ctx, a, figuras),
+        "ejes": tabla_ejes(a["filas"]),
         "grilla": fig_grilla(ctx, a, figuras),
         "desglose": fig_desglose(ctx, a, figuras),
         "bloque-a": _plegable("Los números del mapa", "\n\n".join([referencia_control(a), AVISO_A_HTML,

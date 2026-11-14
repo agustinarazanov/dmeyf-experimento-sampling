@@ -3084,3 +3084,17 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   (5 secciones iguales); `tests/test_verificar_predicciones.py` cambia una línea de una copia y ve el fallo.
 - Verificadores del grupo: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar` y `scripts/sitio.sh`
   en verde.
+
+## 14-nov-2026 — informe-por-ejes, grupo 2 (ejes en el registro y mapa de ejes)
+
+- Cambio en `comun/`: `comun/variantes.py` gana `EJES` (método → dónde, cómo), `DONDE`, `COMO`, `familia()` y
+  `problemas_ejes()`; `verificar` falla nombrando la familia y el eje que falta. `comun/reporte.py` gana `tabla_ejes` y el
+  bloque `ejes` (en `BLOQUES_SAMPLING`), y `fig_tradeoff` rotula el eje x una vez con `fig.supxlabel`. Los demás
+  experimentos no se ven afectados: no cambia ningún número.
+- Tarea 2.1: tests de una familia de juguete sin ejes (falla) y de los ejes de las familias actuales; `--verificar` pasa.
+- Tarea 2.2: la celda (busqueda, azar) sale «H3, H3R, H3L, H3K (H3): 9 de 9 valen la pena»; una familia de juguete
+  aparece en su celda sin tocar el generador. Marcador `ejes` en `sampling_1/README.md` bajo «Cómo leer las hipótesis»
+  (el reordenamiento completo es la tarea 5.1).
+- Tarea 2.3: `tradeoff.svg` regenerado (PNG revisado): un solo rótulo del eje x, sin pisarse con la leyenda.
+- Verificadores: `pytest` (333 passed, 2 skipped), `verificar_readme`, `verificar_informe_h3`, `comun.variantes
+  --verificar` y `scripts/sitio.sh` (incluye `verificar_predicciones`) en verde.
