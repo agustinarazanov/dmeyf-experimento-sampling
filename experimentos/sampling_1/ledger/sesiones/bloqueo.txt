@@ -1,0 +1,11 @@
+BLOQUEADO — grupo 2b de tiempos-confiables-y-consistencia (14-nov-2026)
+
+2b.1 pide unir origin/main en tiempos-confiables, pero `git merge origin/main` (con y sin --no-edit) no está en la
+lista de comandos permitidos de la sesión headless: se deniega ("This command requires approval"). Sin la unión no se
+pueden resolver los conflictos (scripts/vm.sh: TMPV=mktemp de ea66537 + predicciones en DATOS_DIR de D18, 8749379 y
+e87329e; anexo.md para bloque-a-completo y rondas), ni correr 2b.2 sobre la unión, ni hacer 2b.3 contra la estructura
+de sitio-legible.
+
+Para destrabar: permitir `git merge origin/main` (y `git merge --continue` / `git add` de los archivos en conflicto) en
+las reglas de shell de etapa.sh para aplicar, o hacer la unión a mano y relanzar el grupo desde 2b.1 resuelto.
+No se tocó nada del repo.
