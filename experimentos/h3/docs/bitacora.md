@@ -164,3 +164,11 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     la propia, «no se probó el reescalado para el salto de cuatro a seis meses», queda) y un solo año/mes/máquina con el
     bootstrap de clientes → Limitaciones comunes de Resultados.
 - Nuevo: diagrama del pipeline que marca que H3 achica solo la optimización.
+
+## 2026-11-14 — regla 9 (`H3-0.5`) con la fase 8 (tarea 6.1 de `tiempos-confiables-y-consistencia`)
+
+Sesión: informes (Opus). Regla aplicada tal como quedó escrita el 13-nov. δ = 5,65 M$.
+
+- `H3-0.5`: Δ con réplicas −0,08 [−3,17; 3,00], *no pierde*; A = 2,28 [1,55; 2,85] ≥ 2 → **se confirma**. El intervalo
+  de A baja de 2, pero la regla decide con A puntual. No cambia el veredicto de H3 (regla 1).
+- Informadas sin predicción: `U{r}` − `H3-{r}` *empeora* en las cuatro tasas (−3,56 en 0,5 a −29,82 en 0,05).

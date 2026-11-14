@@ -257,7 +257,7 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
 
 ## 6. Informes (sesión: Opus)
 
-- [ ] 6.1 `python -m comun.reporte --todos` y `scripts/comparar_rondas.py`. Aplicar las reglas de 1.1 y 1.2 tal como
+- [x] 6.1 `python -m comun.reporte --todos` y `scripts/comparar_rondas.py`. Aplicar las reglas de 1.1 y 1.2 tal como
   quedaron escritas (hoy en `control/README.md` § Medición de tiempos y en § Predicción de `h1`–`h4/README.md`, con
   fecha 13-nov) y anotar cada resultado en la bitácora del experimento que corresponde (`control`, `h1`–`h4`).
 - [ ] 6.2 README de cada hipótesis, cada uno con sus variantes nuevas, sus veredictos con réplicas, sus limitaciones (el

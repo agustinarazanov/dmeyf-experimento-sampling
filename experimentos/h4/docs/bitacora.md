@@ -103,3 +103,21 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     propia, final con la mitad de CONTINUA, queda) y año/mes/máquina con el bootstrap → Limitaciones comunes de
     Resultados.
 - Nuevo: diagrama del pipeline con las tres búsquedas y los dos finales.
+
+## 2026-11-14 — reglas 6 a 11 de § Grilla común con la fase 8 (tarea 6.1 de `tiempos-confiables-y-consistencia`)
+
+Sesión: informes (Opus). Reglas aplicadas tal como quedaron escritas el 13-nov, sin corrección por comparaciones
+múltiples. δ = 5,65 M$; pares de la tabla «Diferencias entre variantes» del Anexo.
+
+- **6** (`H4O-{r}` − `U{r}`, principal): 0,5 *no cambia* (2,31 [−0,58; 5,20]); 0,1 *mejora* (15,22); 0,05 *mejora*
+  (21,60) → **se confirma**. En 0,25, sin predicción: *mejora* (7,80 [4,52; 11,07]).
+- **7** (`H4O-{r}` contra `C`): 0,25 *no pierde* (−0,30), 0,05 *pierde* (−6,14) → **se confirma**; 0,1 sin
+  predicción: *no pierde* (−2,25).
+- **8** (`H4P-{r}` contra `C`): 0,25 *no pierde*; 0,5 y 0,1 *indeterminado*; 0,05 *pierde* (−6,47) → **se refuta**.
+- **9** (`H4P-{r}` − `H3-{r}`): *no cambia* en 0,5 y 0,25; *empeora* en 0,1 (−7,08) y 0,05 (−8,55) → **se refuta**.
+- **10** (`H4P-0.1` − `H4U-0.1`): 2,65 [−2,06; 7,37], *no cambia* → **se refuta**; la explicación del informe de H4
+  (la proporción distorsionada en la búsqueda hace perder a `H4U-0.1`) queda sin sostén.
+- **11**, sin predicción: `U{r}` − `H3-{r}` *empeora* en las cuatro; `H4O-{r}` − `H4P-{r}` *no cambia* salvo 0,1
+  (*mejora*, 3,12 [0,01; 6,24]).
+- A con intervalo de las nuevas: `H4O-0.25` 3,65 [2,47; 4,40], `H4O-0.1` 5,29 [2,28; 6,35], `H4O-0.05` 4,78 [3,16;
+  6,35], `H4P-0.5` 2,20, `H4P-0.25` 3,35, `H4P-0.1` 4,51, `H4P-0.05` 3,93.

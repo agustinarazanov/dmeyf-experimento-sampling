@@ -47,3 +47,15 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
     hiperparámetros de cuatro meses y un solo año/mes/máquina → Limitaciones comunes de Resultados.
   - `informe/reporte.html` y `bandas_H2.png` → bloque `resultado` y `figuras/` (curva de diferencia).
 - Nuevo: diagrama del pipeline que marca dónde muestrea (dentro de cada árbol, con train y `Dataset` completos).
+
+## 2026-11-14 — regla de § Réplicas de H2 y `B0.05` con la fase 8 (tarea 6.1 de `tiempos-confiables-y-consistencia`)
+
+Sesión: informes (Opus). Reglas aplicadas tal como quedaron escritas. δ = 5,65 M$; A con una sola referencia.
+
+- `B0.5` 0,35 [−2,16; 2,86] *no pierde*, A = 1,18 [0,86; 1,64]; `B0.25` −2,20 [−4,95; 0,55] *no pierde*, A = 1,67
+  [1,23; 2,08]; `B0.1` −7,31 [−9,76; −4,86] *pierde*, A = 2,96 [2,13; 3,57]; `B0.05` −14,55 [−17,44; −11,66] *pierde*,
+  A = 3,09 [2,27; 3,86].
+- Regla del 13-nov: **se confirma** (las cuatro partes; ninguna `B` vale la pena).
+- Regla de H2 del 1-nov, vuelta a decidir con réplicas: `B0.1` *pierde* → **refutada**, como en la réplica 0. La
+  secundaria (A ≥ 1,5 en `B0.1`) se cumple.
+- `GOSS`, sin regla: −2,96 [−6,13; 0,21], *indeterminado* (réplica 0 también); A = 1,27 [0,91; 1,53].

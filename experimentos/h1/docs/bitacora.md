@@ -47,3 +47,11 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   - `informe.md` § Conclusión → última frase del callout de § Veredicto; la remisión al informe conjunto se descarta.
   - `informe/reporte.html` → bloque `resultado` y `figuras/`.
 - Nuevo: diagrama del pipeline que marca las dos muestras (Optuna y final).
+
+## 2026-11-14 — regla de § Réplicas de H1 con la fase 8 (tarea 6.1 de `tiempos-confiables-y-consistencia`)
+
+Sesión: informes (Opus). Regla aplicada tal como quedó escrita el 13-nov. δ = 5,65 M$; A con una sola referencia.
+
+- `U0.5`: Δ con réplicas −3,64 [−6,58; −0,71] → *indeterminado* (réplica 0: −1,38, *no pierde*); A = 2,37 [1,60; 2,98].
+- `U0.25` −8,09 [−11,58; −4,60], `U0.1` −17,47 [−20,23; −14,71], `U0.05` −27,74 [−30,35; −25,13]: las tres *pierden*.
+- **Ninguna de las dos** (`U0.5` sale *indeterminado*). Por la regla de "vale la pena", **`U0.5` sale de la lista**.

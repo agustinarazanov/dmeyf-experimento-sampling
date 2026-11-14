@@ -93,3 +93,22 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   tests/test_reporte.py tests/test_variantes.py` 91 passed (`pytest` a secas no encuentra `comun` en este entorno).
   `comun.variantes --verificar` ya no nombra a `control`; sigue fallando por h1–h4 y sampling_1 (tareas 3.3–3.7).
   `scripts/sitio.sh`: en `control/README.md` solo fallan los enlaces a páginas que crean 3.5–3.8.
+
+## 2026-11-14 — reglas de § Medición de tiempos con la fase 8 (tarea 6.1 de `tiempos-confiables-y-consistencia`)
+
+Sesión: informes (Opus). Reglas aplicadas tal como quedaron escritas el 13-nov; las dos mediciones son exploratorias y no
+cambian veredictos. Números de `python -m comun.reporte --todos` (Resultados § ¿Cuánto del tiempo es tamaño de datos?) y
+de `tiempos_hp_fijos.csv` / `calibracion.csv` del agregador.
+
+- **Medición a hiperparámetros fijos** (216 mediciones, 72 celdas):
+  - A_fijo(0,5) = 2,16 ∈ [1,6; 2,4], pero A_fijo(0,05) = 20,70, no < 10 → **refutada** la primera parte. La predicción
+    de 201908 no frena el A a tasas bajas tanto como se esperaba.
+  - Cociente entre recetas / cociente de filas: 1,00 (0,5); 0,97 (0,25); 0,99 (0,1); 0,91 (0,05), los cuatro en
+    [0,9; 1,1] → **confirmada** (0,05 queda cerca del borde).
+  - Mediana del CV entre repeticiones 2,5 % ≤ 5 % → **confirmada** (máximo 38 % en una celda).
+- **Calibración por máquina** (17 VMs, 31 de 34 calibraciones; faltan 3 por la carrera de `vm.sh`):
+  - CV entre VMs 4,9 % (trial) y 3,5 % (final) ≤ 5 %; fin / inicio en [0,95; 1,03], 0 de 14 VMs fuera.
+  - Contra las anclas: el trial contra el mejor trial de `C` en la fase 1 queda debajo de 0,9 en 4 de 17 VMs
+    (medicion, r2-b, r7-a, r7-b; 0,88–0,90); el final contra la fase 7 queda debajo de 0,9 en 15 de 17 (0,84–0,89);
+    contra `C-rep`, 0 de 17. → **refutada** (las anclas). Las VMs de la fase 8 son ~10 % más rápidas que la única
+    medición vieja de la fase 7, pero no que `C-rep`: cada ancla es una sola medición. No se descarta ninguna corrida.
