@@ -2795,6 +2795,9 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
 - 2b.2, verificaciones sobre la unión: `variantes --verificar` y `consolidar --sanity` en verde; `mkdocs build` sin
   avisos de enlaces. Abiertas, por los datos de la fase 8 sobre el texto de main (las resuelven los grupos de informe):
   `verificar_readme` marca el 1,23 de `sampling_1/README.md` (A de `B0.25` con la regla nueva) y `medir_sitio` marca
-  la figura de veredictos de Resultados (833 px > 800, ahora con 30 variantes). pytest: ver la entrada siguiente o el
-  cierre de la sesión. La unión a `main` la hace el orquestador.
+  la figura de veredictos de Resultados (833 px > 800, ahora con 30 variantes). `python -m pytest`: 319 pasan, 2 fallan
+  en `tests/test_fase8.py` (`test_ningun_final_de_la_fase_8_esta_ya_corrido` y
+  `test_cada_estudio_va_antes_que_sus_finales_y_ninguna_a_lee_de_una_b`): comprueban que las listas de la fase 8 no
+  estén corridas, y ya lo están (p. ej. `h4/ledger/hp/F0.25.json`); no vienen de la unión. `pytest` a secas no
+  recolecta `h3/sensibilidad_muestra/tests` (`No module named 'experimentos'`). La unión a `main` la hace el orquestador.
 - 2b.3 no se hizo en esta sesión (presupuesto).
