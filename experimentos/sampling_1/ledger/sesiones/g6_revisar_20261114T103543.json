@@ -1,0 +1,119 @@
+{
+ "duration_api_ms": 83856,
+ "stop_reason": "end_turn",
+ "session_id": "fce47854-6be7-4d5c-b06a-5fb327ec800a",
+ "total_cost_usd": 1.0227055999999999,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 68029,
+  "cache_read_input_tokens": 1547268,
+  "output_tokens": 8441,
+  "output_tokens_details": {
+   "thinking_tokens": 1936
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 68029,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1146,
+    "cache_read_input_tokens": 81173,
+    "cache_creation_input_tokens": 316,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 316
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 50,
+   "outputTokens": 8441,
+   "cacheReadInputTokens": 1547268,
+   "cacheCreationInputTokens": 68029,
+   "webSearchRequests": 0,
+   "costUSD": 1.0227055999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1936,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 68029,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 29,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "No pude cerrar la revisión completa del grupo 6 (tarea 6.6) porque todavía faltan 6.3 y 6.5. Hice la revisión parcial de lo que sí está hecho, no encontré nada para corregir y lo commiteé (`3b8f1e22`). No lo pusheé: en las sesiones headless pushea quien las orquesta.\n\n**Por qué 6.6 sigue abierta:** la tarea pide revisar Resultados, el Anexo y los README de `h1`–`h4`. Todavía falta actualizar Resultados (`experimentos/sampling_1/README.md`), el guion y el README raíz. Resultados sigue diciendo que `U0.5` vale la pena (cuatro lugares) y sigue citando el 1,23 de `B0.25`. Para seguir no hace falta una persona, así que no escribí `bloqueo.txt`.\n\n**Qué revisé de 6.1, 6.2 y 6.4, con la lista de `docs/revision.md` § 5 (y § 2 para 6.4):**\n- **Reglas escritas bien aplicadas:** con réplicas, `U0.5` queda *indeterminado* (−3,64 [−6,58; −0,71], con δ = 5,65) y sale de \"vale la pena\". Su A, 2,37 [1,60; 2,98], coincide con la tabla completa del bloque A del Anexo.\n- **Números con fuente:** `verificar_informe_h3` encuentra 1.024 números en el texto y ninguno sin fuente.\n- **Refutaciones con el mismo peso:** las reglas 8 a 10 de H4, refutadas, se cuentan igual que las confirmadas.\n- **Limitaciones:** los cuatro README dicen que las variantes nuevas se agregaron después de mirar 201910 y que los contrastes van sin corrección por comparaciones múltiples. El de `h4` aclara que los pares con bajas mezclan qué filas, cuántas y su peso, y el de `h2` explica la adaptación de `bagging_fraction`. Que hay un solo mes de test lo dicen `h3` y `h4`, no `h1` ni `h2`.\n- **Contrastes de `h4`:** están los cuatro principales y `H4P-0.1` contra `H4U-0.1`.\n- **6.4:** la regla de D14 está en `docs/metodo.md` y en `docs/revision.md` § 2.\n- **Bloques generados:** están al día; `comun.reporte --todos` no dejó cambios.\n- **Sitio:** `verificar_readme` y `scripts/sitio.sh` pasan, y `medir_sitio` da 0 problemas en 13 páginas.\n\nEl guion y la bibliografía quedan sin revisar hasta que se haga 6.3.\n\nEn `tasks.md` agregué debajo de 6.6 una subtarea marcada como hecha por esta revisión parcial, y 6.6 quedó sin marcar. El cierre está en la bitácora de `sampling_1`.\n\nDejé sin tocar dos archivos que ya estaban modificados en `ledger/sesiones/`: `costos.csv` y `g6_aplicar_20261114T103543.json`.",
+ "ttft_ms": 1413,
+ "type": "result",
+ "duration_ms": 148811,
+ "uuid": "b1c61847-f608-484b-8c9d-677e89f22e0d",
+ "ttft_stream_ms": 892,
+ "time_to_request_ms": 206,
+ "first_content_frame_ms": 892,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 50,
+   "outputTokens": 8441,
+   "cacheReadInputTokens": 1547268,
+   "cacheCreationInputTokens": 68029,
+   "webSearchRequests": 0,
+   "costUSD": 1.0227055999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1936,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 68029,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

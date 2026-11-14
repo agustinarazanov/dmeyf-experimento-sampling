@@ -1,0 +1,124 @@
+{
+ "duration_api_ms": 327212,
+ "stop_reason": "end_turn",
+ "session_id": "7fbe3b55-353c-4257-8c7e-f6e58ef276f1",
+ "total_cost_usd": 2.910559600000002,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 2064,
+  "cache_read_input_tokens": 269264,
+  "output_tokens": 336,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2064,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 238,
+    "cache_read_input_tokens": 135570,
+    "cache_creation_input_tokens": 188,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 188
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 132,
+   "outputTokens": 32526,
+   "cacheReadInputTokens": 6405638,
+   "cacheCreationInputTokens": 122298,
+   "webSearchRequests": 0,
+   "costUSD": 2.910559600000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 6162,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 122298,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "origin": {
+  "kind": "task-notification",
+  "producer": "session-task",
+  "runId": "0mwggifsz-c866bde3"
+ },
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 2,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "`python -m pytest` no terminó: se cortó al llegar al límite de 10 minutos que tiene un comando en segundo plano. Cuando se detuvo iba por el 65 % de la suite, sin ninguna falla hasta ahí (dos tests salteados). No lo relancé porque ya estaba en el límite máximo. Queda pendiente correr la suite completa fuera de esta sesión, por ejemplo en una terminal con `python -m pytest -q`.\n\nEl resto del cierre no cambia: 6.1, 6.2 y 6.4 están hechas y commiteadas; 6.3 y 6.5 quedan pendientes y anotadas en la bitácora de `sampling_1`.",
+ "ttft_ms": 3225,
+ "type": "result",
+ "duration_ms": 6814,
+ "uuid": "bc77e1fc-9e24-40e2-ae90-980f06183167",
+ "ttft_stream_ms": 2314,
+ "time_to_request_ms": 192,
+ "first_content_frame_ms": 2314,
+ "queued_turn_count": 0,
+ "result_index": 1,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 4,
+   "outputTokens": 336,
+   "cacheReadInputTokens": 269264,
+   "cacheCreationInputTokens": 2064,
+   "webSearchRequests": 0,
+   "costUSD": 0.0771008,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 0,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 2064,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
