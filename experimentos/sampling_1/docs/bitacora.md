@@ -2962,3 +2962,28 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   fuera de rango; hoy el reporte solo da el resumen.
 - Verificaciones: `verificar_informe_h3` 0 sin fuente; `verificar_readme`, `comun.variantes --verificar`,
   `scripts/sitio.sh` y `medir_sitio` en verde.
+
+### 2026-11-14 — revisión parcial del grupo 6 de `tiempos-confiables-y-consistencia` (6.1, 6.2 y 6.4; 6.6 sigue abierta)
+- Sesión: headless de `scripts/etapas.sh` · modelo: Opus · etapa: **revision** (grupo 6), rama `tiempos-confiables`.
+- Revisor: sesión limpia, sin contexto de la sesión que aplicó.
+- Alcance: 6.6 pide revisar Resultados, el Anexo y los README de `h1`–`h4`, pero 6.3 y 6.5 (Resultados, guion y README
+  raíz) siguen sin hacer. Se revisó lo hecho (README de `h1`–`h4`, bloques generados, 6.4) y **6.6 no se marca**: queda
+  para después de 6.3 y 6.5. No hace falta un humano, así que no hay `bloqueo.txt`.
+- Lista: docs/revision.md § 5 sobre `h1`–`h4/README.md`, y § 2 (último ítem) para 6.4:
+  - ✓ Reglas escritas: `U0.5` con réplicas −3,64 [−6,58; −0,71] con δ = 5,65 → *indeterminado* (el IC cruza −δ), y
+    sale de "vale la pena" como pedía la regla del 13-nov; A = 2,37 [1,60; 2,98] coincide con la fila de `U0.5` en el
+    bloque `bloque-a-completo` del Anexo. H4 informa las reglas 6–11 con la misma estructura, confirmadas y refutadas.
+  - ✓ Números con fuente: `python -m scripts.verificar_informe_h3` → 1.024 números, 0 sin fuente.
+  - ✓ Refutaciones con el mismo peso: las de H4 (8–10) y la pérdida de `U0.25`–`U0.05` tienen su propio párrafo.
+  - ✓ Limitaciones: en los cuatro README, origen después de mirar 201910 y contrastes sin corrección; en `h4`, pares con
+    bajas que mezclan filas, cantidad y peso; en `h2`, la adaptación de `bagging_fraction`; un solo mes de test en `h3`
+    y `h4`. `h4` tiene los cuatro principales `H4O-{r}` − `U{r}` y `H4P-0.1` − `H4U-0.1` (2,65 [−2,06; 7,37]).
+  - ✓ 6.4: `docs/metodo.md` § Agregar una hipótesis (fila de la grilla, cuatro tasas con 8 réplicas, pares o hueco en
+    `CELDAS_SIN_CORRER`) y su ítem en `docs/revision.md` § 2.
+  - ✓ Bloques generados al día: `python -m comun.reporte --todos` no deja cambios en `git status`.
+  - ✓ `verificar_readme` en verde, `scripts/sitio.sh` en verde, `medir_sitio` 0 problemas en 13 páginas.
+  - — Guion (10 minutos, baseline) y bibliografía: dependen de 6.3; sin revisar.
+- Hallazgos: ninguno en lo hecho. Pendiente conocido (6.3): Resultados todavía tiene a `U0.5` en "vale la pena" y el
+  1,23 de `B0.25`.
+- Correcciones: ninguna.
+- Tokens: ≈ 22 turnos · ≈ US$ 0,90 (presupuesto de la sesión US$ 2).

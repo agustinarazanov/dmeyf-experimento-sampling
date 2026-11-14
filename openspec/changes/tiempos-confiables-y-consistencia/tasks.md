@@ -295,6 +295,8 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
   contrastes principales con las filas de cada lado y la sección de tiempos. No se escribe ningún borrador de mensaje.
 - [ ] 6.6 Revisión en sesión limpia de Resultados, el Anexo y los README de `h1`–`h4` con `docs/revision.md` § 5, cierre en las bitácoras y
   `comun/tokens.py`.
+  - [x] Revisión parcial en sesión limpia de lo hecho (6.1, 6.2 y 6.4: README de `h1`–`h4`, bloques generados y
+    regla de D14), sin hallazgos (14-nov, bitácora de `sampling_1`). 6.6 sigue abierta hasta que se hagan 6.3 y 6.5.
 
 ## Workflow follow-up
 
