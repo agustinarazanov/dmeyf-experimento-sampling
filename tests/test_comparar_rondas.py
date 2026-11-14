@@ -33,7 +33,7 @@ def test_una_fila_por_variante_de_la_ronda_anterior_y_los_dos_delta(tmp_path):
     filas = [l for l in texto.splitlines() if l.startswith("| U") or l.startswith("| H4O")]
     assert len(filas) == 2 and not any("H4O-0.5" in l for l in filas)
     u05 = next(l for l in filas if l.startswith("| U0.5"))
-    assert "2.00 [1.00; 3.00]" in u05 and "3.00 [2.00; 4.00]" in u05  # Δ de cada ronda, sin mezclar
+    assert "2.00 [1.00; 3.00]" in u05 and "3.00 [2.00; 4.00]" in u05  # Δ de cada ronda, sin mezclar
     assert u05.rstrip().endswith("| sí |")  # no pierde -> gana
     assert next(l for l in filas if l.startswith("| U0.1")).rstrip().endswith("| no |")
 

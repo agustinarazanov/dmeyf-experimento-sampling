@@ -331,6 +331,12 @@ def marcar_mejores(filas: list[list], veredictos: list, columnas: dict[int, list
                 c["clases"] = (c["clases"] + " mejor").strip()
 
 
+def sin_corte(s: str) -> str:
+    """Los intervalos `[a; b]` con espacio duro, para que una celda angosta no deje el extremo de arriba en otro
+    renglón; la celda se puede cortar antes del `[`."""
+    return re.sub(r"\[([^\[\];]*); ([^\[\]]*)\]", "[\\1; \\2]", s)
+
+
 def html_tabla(cab, filas, notas: dict[str, str] | None = None) -> str:
     """Tabla HTML sin envoltorio propio: el recuadro y el desplazamiento los pone el tema con un solo contenedor (D4).
     Con una línea en blanco antes y después, para que Markdown la tome como bloque. Cada celda es texto (si es un
@@ -346,7 +352,7 @@ def html_tabla(cab, filas, notas: dict[str, str] | None = None) -> str:
 
     def td(c, j):
         if not isinstance(c, dict):
-            c = str(c)
+            c = sin_corte(str(c))
             clase = clase_veredicto(c)
             return f"<td class='{clase}'>{html.escape(c)}</td>" if clase else f"<td>{html.escape(c)}</td>"
         v = html.escape(c["v"])
@@ -851,7 +857,7 @@ def bloque_b(raiz: Path = rutas.RAIZ, pagina: Path | None = None) -> list[dict]:
 
 
 def tabla_md(cab, filas) -> str:
-    esc = lambda c: str(c).replace("|", "\\|").replace("\n", " ")
+    esc = lambda c: sin_corte(str(c)).replace("|", "\\|").replace("\n", " ")
     return ("| " + " | ".join(cab) + " |\n|" + "---|" * len(cab) + "\n"
             + "".join("| " + " | ".join(esc(c) for c in f) + " |\n" for f in filas))
 

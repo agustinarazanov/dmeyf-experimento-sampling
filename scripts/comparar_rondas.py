@@ -26,7 +26,8 @@ def _m(x) -> str:
 
 
 def _ic(media, inf, sup) -> str:
-    return "—" if pd.isna(media) else f"{_m(media)} [{_m(inf)}; {_m(sup)}]"
+    """Con espacio duro adentro del intervalo, para que el extremo de arriba no quede solo en otro renglón."""
+    return "—" if pd.isna(media) else f"{_m(media)} [{_m(inf)}; {_m(sup)}]"
 
 
 def _leer(ruta: Path) -> pd.DataFrame:
