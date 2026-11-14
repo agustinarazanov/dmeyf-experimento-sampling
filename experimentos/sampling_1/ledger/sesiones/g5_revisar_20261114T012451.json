@@ -1,0 +1,141 @@
+{
+ "duration_api_ms": 86768,
+ "stop_reason": "end_turn",
+ "session_id": "8e7ca6b6-41cf-4905-b91b-f148d15917d4",
+ "total_cost_usd": 0.7997286,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 51606,
+  "cache_read_input_tokens": 1072263,
+  "output_tokens": 8613,
+  "output_tokens_details": {
+   "thinking_tokens": 1720
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 51606,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 896,
+    "cache_read_input_tokens": 63350,
+    "cache_creation_input_tokens": 108,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 108
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 42,
+   "outputTokens": 8613,
+   "cacheReadInputTokens": 1072263,
+   "cacheCreationInputTokens": 51606,
+   "webSearchRequests": 0,
+   "costUSD": 0.7997286,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1720,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 51606,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DktPQDbBvPwURQuvfq7bPT",
+   "tool_input": {
+    "command": "python -m comun.consolidar --sanity > tmp_etapas/rev_g5_sanity.txt 2>&1; echo $?; grep -v \"OK\" tmp_etapas/rev_g5_sanity.txt | head -30; grep -c \"OK\" tmp_etapas/rev_g5_sanity.txt"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01V3schc5v97iWuBtxboTAc7",
+   "tool_input": {
+    "command": "gcloud compute disks list"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01TwSmF6fLto8mYNCJfxGqQk",
+   "tool_input": {
+    "command": "git push"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 27,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Revisé el grupo 5 (las corridas de la fase 8) contra la lista § 4 de `docs/revision.md` y pasan todos los ítems. Quedó commiteado como `c85bceae` en `tiempos-confiables`. El push no salió: el comando pide aprobación y esta sesión no la puede dar, así que queda para hacerlo a mano.\n\n**Qué verifiqué:**\n- **Máquina y commit:** los 67 estudios y los 2.560 finales nuevos son todos de `b99aa71` y corrieron en `n2-highmem-8`. Ninguna fila de la fase tiene otro commit.\n- **Ledgers limpios:** en `resultados.csv` no hay ninguna fila con `codigo_sucio` ni con etapa `exploracion`, y no hay ids repetidos.\n- **Filas de train:** coinciden con la tasa de cada variante. `--sanity` da OK en todos sus chequeos.\n- **Control:** se repite exacto, pero contra otra corrida en el mismo tipo de VM, no de otra persona; esa limitación ya estaba anotada.\n- **H2:** ningún estudio ni final optimizó `bagging_fraction`.\n- **Semillas:** cada variante tiene 20 semillas en cada una de sus 8 réplicas, y ningún estudio `U{r}@k` volvió a `h3`.\n- **Comparaciones:** los `apareado.csv` de h1 a h4 tienen media, desvío, IC 95 % y semillas ganadas sin huecos. `pares.csv` tiene sus 24 pares completos.\n- **Mediciones de tiempo:** `calibracion.csv` tiene 93 filas (31 de 34 mediciones; 3 se perdieron en la fase y ya estaba anotado) y `tiempos_hp_fijos.csv` tiene 216.\n- **VMs:** `gcloud compute instances list` devuelve 0 máquinas. No pude listar los discos porque el comando pide permiso; que no quedó ninguno lo dice la bitácora de la fase, pero esta revisión no lo confirmó. El gasto está anotado como estimado (~US$ 21); el real hay que mirarlo en la facturación.\n\n**Corrección:** en `tasks.md`, la tarea 5.3 decía \"17 pares\" y ahora dice 24, con una nota de que el 17 venía del diseño.\n\n**Cierre:** la entrada está en `experimentos/sampling_1/docs/bitacora.md` y la 5.4 quedó marcada como hecha. No hizo falta escribir `bloqueo.txt`.",
+ "ttft_ms": 1199,
+ "type": "result",
+ "duration_ms": 448222,
+ "uuid": "e070a80b-0e06-4fe4-aa29-8e68d1aa9bcd",
+ "ttft_stream_ms": 773,
+ "time_to_request_ms": 110,
+ "first_content_frame_ms": 773,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 42,
+   "outputTokens": 8613,
+   "cacheReadInputTokens": 1072263,
+   "cacheCreationInputTokens": 51606,
+   "webSearchRequests": 0,
+   "costUSD": 0.7997286,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1720,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 51606,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
