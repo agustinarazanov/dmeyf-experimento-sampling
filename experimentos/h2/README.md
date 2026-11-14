@@ -73,8 +73,8 @@ su resultado. El informe lo lista entre las limitaciones ("Ideas que vienen de m
   ([`control`](../control/README.md) § Medición de tiempos). El veredicto con réplicas reemplaza al de la réplica 0; el
   de la réplica 0 se sigue informando.
 - **Predicción.** Con réplicas, `B0.5` y `B0.25` *no pierden* con A < 2; `B0.1` y `B0.05` *pierden*. O sea, ninguna `B`
-  vale la pena (*no pierde* y A ≥ 2). Con la regla de A de una sola referencia, en la réplica 0 `B0.1` ya tiene A = 2,31
-  y `B0.25`, 1,54.
+  vale la pena (*no pierde* y A ≥ 2). Con la regla de A de una sola referencia, en la réplica 0 `B0.1` ya tenía A ≥ 2 y
+  `B0.25`, A < 2 (cuenta de la sesión de diseño, sin tabla generada; los A con réplicas están en § Veredicto).
 - **Se confirma** si se cumplen las cuatro partes. **Se refuta** si alguna `B` vale la pena, o si `B0.5` o `B0.25`
   *pierde*. **Ninguna de las dos** en otro caso (alguna *indeterminado*, o `B0.1` o `B0.05` *no pierde* con A < 2).
 - La regla de H2 de arriba (sobre `B0.1`) se vuelve a decidir con el Δ con réplicas y se informa al lado del veredicto de
@@ -166,13 +166,20 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
     Con f = 0,1 pierde. Con 0,5 y 0,25 no pierde, pero casi no acelera (A ≤ 1,23), porque el `Dataset` completo se arma
     igual. `GOSS` queda *indeterminado* (en la ronda anterior, *no pierde*) y es más lento que el control.
 
-    El AUC y la ganancia van en direcciones distintas en dos variantes. En `B0.25`, Δ de ganancia positivo (0,88 M$) con
-    ΔAUC negativo y distinguible de 0 (−0,0044); en `GOSS`, al revés: ΔAUC positivo y distinguible de 0 (+0,0005) con Δ
-    de ganancia negativo (−4,01 M$, IC debajo de 0). El AUC mide el orden de todos los clientes y G solo los 3.300 de
-    arriba; el veredicto es el de ganancia.
+    En la réplica 0, el AUC y la ganancia iban en direcciones distintas en `B0.25` (Δ de ganancia 0,88 M$) y en `GOSS`
+    (Δ de ganancia −4,01 M$). Con réplicas la discrepancia desaparece: `B0.25` tiene Δ −2,20 [−4,95; 0,55] y ΔAUC
+    −0,0026 [−0,0038; −0,0015]; `GOSS`, Δ −2,96 [−6,13; 0,21] y ΔAUC +0,0003 [−0,0008; +0,0014], indistinguible de 0.
+    El AUC mide el orden de todos los clientes y G solo los 3.300 de arriba; el veredicto es el de ganancia.
 
-    Muestrear dentro de LightGBM no ahorra tiempo: el `Dataset` completo se arma igual, así que A queda en 1,84 o menos
-    aun con f = 0,1, donde además pierde.
+!!! success "Con réplicas (fase 8): la regla de H2 sigue refutada y la del 13-nov se confirma"
+    Con 8 réplicas, `B0.1` *pierde* (−7,31 [−9,76; −4,86]), así que la regla de H2 sigue **refutada**. `B0.5` (0,35) y
+    `B0.25` (−2,20) *no pierden*, con A = 1,18 [0,86; 1,64] y 1,67 [1,23; 2,08]; `B0.1` y `B0.05` (−14,55) *pierden*,
+    con A = 2,96 [2,13; 3,57] y 3,09 [2,27; 3,86]. La predicción del 13-nov **se confirma**: ninguna `B` vale la pena.
+    `GOSS` queda *indeterminado*, con A = 1,27 [0,91; 1,53]. Las cifras salen del bloque A de
+    [Resultados](../sampling_1/README.md), con una sola referencia de T del control.
+
+    Muestrear dentro de LightGBM ahorra poco donde no pierde: el `Dataset` completo se arma igual, y A pasa de 2 solo en
+    las fracciones que pierden.
 
 ## Limitaciones
 
@@ -184,4 +191,9 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
     `uniforme` la siguen optimizando. Por eso `bagging` y `uniforme` no tienen la misma fracción efectiva por iteración y
     la comparación entre ellas es solo descriptiva.
 
-- **Una sola búsqueda por variante.** Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
+- **Una sola búsqueda por variante en la réplica 0.** La tabla de § Resultado usa una sola semilla de Optuna por variante:
+  su Δ incluye la suerte de la optimización y el IC no la mide. El Δ con réplicas sí la mide.
+
+- **Réplicas y `B0.05` agregadas después de mirar 201910.** Se decidieron después de ver el test en las celdas vecinas,
+  todas juntas y con regla previa. Sus veredictos se suman a los de la grilla común sin corrección por comparaciones
+  múltiples.
