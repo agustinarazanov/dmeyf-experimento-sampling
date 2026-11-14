@@ -1,0 +1,136 @@
+{
+ "duration_api_ms": 22570,
+ "stop_reason": "end_turn",
+ "session_id": "c70f9596-4e1e-4082-8d32-9bfd9cd48d52",
+ "total_cost_usd": 0.3132064,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 29404,
+  "cache_read_input_tokens": 208532,
+  "output_tokens": 1811,
+  "output_tokens_details": {
+   "thinking_tokens": 221
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29404,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 538,
+    "cache_read_input_tokens": 42405,
+    "cache_creation_input_tokens": 459,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 459
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 12,
+   "outputTokens": 1811,
+   "cacheReadInputTokens": 208532,
+   "cacheCreationInputTokens": 29404,
+   "webSearchRequests": 0,
+   "costUSD": 0.3132064,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 221,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 29404,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01VAfuvipAL8c2D8wKoTY1jg",
+   "tool_input": {
+    "command": "git merge origin/main --no-edit",
+    "description": "Merge origin/main into branch"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01WzgAwSVVYXJiuGwsv4oktj",
+   "tool_input": {
+    "command": "git merge origin/main",
+    "description": "Merge origin/main into branch"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 7,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "No hice ninguna tarea del grupo 2b: está bloqueado en 2b.1 y no hay ninguna marcada.\n\n- **Motivo:** 2b.1 pide unir `origin/main` en `tiempos-confiables`, pero la sesión no puede correr `git merge origin/main`. Lo probé con y sin `--no-edit` y las dos veces se denegó por falta de aprobación.\n- **Qué queda frenado:** sin la unión no puedo resolver el conflicto en `scripts/vm.sh` (la carpeta temporal por invocación de esta rama y las predicciones en `DATOS_DIR` de main), ni ubicar las secciones en `anexo.md`. Tampoco puedo correr las verificaciones de 2b.2 sobre la unión ni actualizar las rutas de 2b.3 a la estructura que dejó `sitio-legible`.\n- **Lo que dejé:** el motivo y cómo destrabarlo están en `experimentos/sampling_1/ledger/sesiones/bloqueo.txt`, commiteado en c74336dc sin push. Fuera de ese archivo no toqué nada del repo.\n\nPara seguir hace falta habilitar en las reglas de shell de `etapa.sh` (las de aplicar) `git merge origin/main`, `git merge --continue` y `git add` de los archivos en conflicto, y relanzar el grupo. La otra opción es hacer la unión a mano y relanzar desde 2b.2.",
+ "ttft_ms": 3353,
+ "type": "result",
+ "duration_ms": 254332,
+ "uuid": "70ef8310-d32c-4908-8174-65f127a02df0",
+ "ttft_stream_ms": 2625,
+ "time_to_request_ms": 174,
+ "first_content_frame_ms": 2625,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 12,
+   "outputTokens": 1811,
+   "cacheReadInputTokens": 208532,
+   "cacheCreationInputTokens": 29404,
+   "webSearchRequests": 0,
+   "costUSD": 0.3132064,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 221,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 29404,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
