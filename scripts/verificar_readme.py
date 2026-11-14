@@ -30,6 +30,8 @@ NO_RESULTADOS = {"2026", "2019", "208986", "3,14", "1", "4", "5", "07", "08", "5
 # Resultados (sampling_1/README.md): años y volumen de la bibliografía, mensajes de Zulip y los 40 trials. Además, dos razones
 # de ancho de IC (0,96 y 1,44) que el texto viejo calcula a mano; las reescribe la tarea 2.1 y se retiran de acá entonces.
 NO_RESULTADOS |= {"2002", "2011", "2017", "208135", "211718", "38", "40", "0,96", "1,44"}
+# Desde `tiempos-confiables-y-consistencia` 4.2: el mensaje de Zulip de la pregunta de § Diálogo entre H1 y H4.
+NO_RESULTADOS |= {"212124"}
 
 NUM_TABLA = re.compile(r"\d[\d,]*(?:\.\d+)?")
 NUM_TEXTO = re.compile(r"(?<![\w.,@−-])[−-]?\d+(?:\.\d{3})*(?:,\d+)?(?![\w@])")

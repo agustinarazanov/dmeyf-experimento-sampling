@@ -221,11 +221,17 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
   «VMs del mismo tipo» en `guion.md`; línea de δ en `h3/README.md` § Veredicto; H1 como «predecía que…» en
   `h1/README.md` y Resultados. `verificar_readme` en verde; `verificar_informe_h3` sin faltantes en h1, h3 y h4, y en
   Resultados solo los dos previos que no tocan estas frases (Zulip 208986 y 0,96 de § Entre rondas).
-- [ ] 4.2 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), con lo que ya se
+- [x] 4.2 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), con lo que ya se
   sabe: sale de los README vigentes de `h1` y `h4` y de las secciones del 13-nov de 1.1–1.3 (hoy en el README de cada
   experimento y en `sampling_1/corridas.md`). No afirma un contraste directo entre H1 y H4: da los dos Δ contra el control y
   dice qué se corrió. Va en voz impersonal y cita la pregunta por su id (Zulip 212124). No se escribe ningún borrador
   de mensaje.
+
+  Hecho (14-nov): sección antes de § Limitaciones comunes, con las dos lecturas de "mismos cortes", los Δ contra el
+  control de `U0.5`/`H4O-0.5` y `H4U-0.1`/`H3-0.1` tal como están en los README de `h1` y `h4` (ningún número de la
+  fase 8), y qué se corrió (grilla común, pares `H4O-{r}` − `U{r}`). `scripts/verificar_readme.py` suma 212124 a los
+  números que no son resultados, como los otros ids de Zulip. `verificar_readme`, `scripts/sitio.sh` y
+  `python -m scripts.medir_sitio` (0 problemas en 13 páginas) en verde.
 
 ## 5. Corridas (VMs a pedido, las lanza Agustina)
 

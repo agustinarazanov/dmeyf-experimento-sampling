@@ -265,6 +265,31 @@ y en `H4F-0.05` el ΔAUC es negativo mientras el Δ de ganancia es positivo: en 
 ganancia no. En GOSS va al revés. El AUC mide el orden de todos los clientes; G, solo los 3.300 de arriba. En H1, `B0.1`
 y la búsqueda informada de H4 las dos bajan juntas.
 
+## Diálogo entre H1 y H4
+
+La pregunta de Zulip 212124 (12-nov) pide que H1 y H4 dialoguen: ¿se usan los mismos cortes y se ve alguna diferencia?
+
+**¿Los mismos cortes?** Tiene dos lecturas.
+
+- *Como tasas de muestreo*: hasta la ronda 201903–201908, H4 no repite la grilla de H1. H1 corre r ∈ {0,5; 0,25; 0,1;
+  0,05} al azar en la búsqueda y en el final; H4 se cruza con esa muestra en solo dos puntos, r = 0,5 (`H4O-0.5`) y
+  r = 0,1 en la búsqueda (`H4U-0.1`, que se compara con `H3-0.1`).
+- *Como corte de envíos*: N\* = 3.300 es el mismo para todas las variantes, así que la ganancia se mide igual en H1 y
+  en H4.
+
+**¿Se ve alguna diferencia?** Todavía no hay un contraste directo entre H1 y H4: lo que hay son dos Δ contra el control.
+
+- En 0,5, `U0.5` (−1,38 M$ [−3,99; 1,24], una sola búsqueda) y `H4O-0.5` (−1,33 M$ con réplicas, IC que contiene a 0)
+  quedan casi iguales, con IC que se superponen.
+- En 0,1, solo en la búsqueda, `H4U-0.1` *pierde* (−8,02 M$ [−11,52; −4,53]) y `H3-0.1` no (1,71 M$ [−1,07; 4,49]), con
+  IC que no se tocan. Ahí la muestra de `H4U-0.1` tiene además un 9 % más de filas y no lleva peso.
+
+**Qué se corrió para contestarla.** La grilla común ([Corridas](corridas.md) § Grilla común, [H4](../h4/README.md)
+§ Grilla común) lleva H1, H3 y H4 a las mismas cuatro tasas con 8 réplicas, y declara antes de correr cuatro pares
+directos `H4O-{r}` − `U{r}`: conservar las bajas contra la muestra al azar, a igual tasa de CONTINUA, con las filas de
+cada lado a la vista. Las predicciones están en el README de cada hipótesis; la tabla de cobertura de § ¿Qué conviene
+achicar? dice qué celdas se corrieron, y la tabla de diferencias del [Anexo](anexo.md), cuánto da cada par.
+
 ## Limitaciones comunes
 
 Las propias de cada hipótesis están en su página.
