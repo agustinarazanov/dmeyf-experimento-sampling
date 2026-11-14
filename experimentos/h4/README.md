@@ -3,6 +3,9 @@
 H4 prueba si conviene que la muestra que acelera el pipeline conserve todas las bajas, en la búsqueda de Optuna o en el
 modelo final.
 
+Responde a **cómo muestrear**: qué filas se conservan al achicar la búsqueda o el final
+([Resultados § ¿Cómo muestrear?](../sampling_1/README.md#como-muestrear)).
+
 ## Idea
 
 [H1](../h1/README.md) y [H3](../h3/README.md) muestrean filas al azar, así que la muestra pierde bajas en la misma
@@ -14,8 +17,8 @@ solo CONTINUA, de dos maneras:
 - **En el final** (`H4F-*`, fast-retrain): Optuna corre sobre una muestra uniforme, como H3, y el final entrena con todas
   las bajas y la mitad de CONTINUA, con peso 2 en CONTINUA para restituir la proporción ponderada del train.
 
-`H4O-0.5` usa la receta del final también para optimizar, como pide la consigna de reoptimizar siempre que cambia el
-dataset (Zulip 211718).
+`H4O-0.5` usa la receta del final también para optimizar, como pide la regla del curso de reoptimizar siempre que cambia
+el dataset («siempre OP»).
 
 ```mermaid
 flowchart TB
@@ -260,9 +263,11 @@ suerte de la búsqueda; la réplica 0 es la búsqueda original.
 Las filas de las cinco van a `experimentos/h4/ledger/`; los hiperparámetros de `NH0.1`, `NU0.1`, `F0.5` y sus `@k`, a
 `experimentos/h4/ledger/hp/`. Los hiperparámetros del estudio se usan tal cual en el final, sin reescalar.
 
-### Muestras
+### Búsqueda informada (`H4H-0.1`, `H4U-0.1`)
 
-Positivo = BAJA+1 ∪ BAJA+2; negativo = CONTINUA. Las búsquedas son sobre el train 201903–201906.
+Positivo = BAJA+1 ∪ BAJA+2; negativo = CONTINUA. Las búsquedas son sobre el train 201903–201906 y el final es completo.
+Las dos variantes tienen 8 réplicas (k = 0…7) y 20 semillas finales por réplica, con 16 estudios propios (`NH0.1`,
+`NU0.1` y sus `@k`).
 
 - **Búsqueda difícil (`NH0.1`)**, en la réplica k:
   1. **Sonda**: LightGBM de 40 árboles, 31 hojas y `learning_rate` 0,08 (resto como el control), entrenado sobre el
@@ -273,40 +278,38 @@ Positivo = BAJA+1 ∪ BAJA+2; negativo = CONTINUA. Las búsquedas son sobre el t
   4. Optuna de 40 trials sobre esa muestra, TPE con semilla k, maximiza el AUC en 201908.
 - **Búsqueda uniforme (`NU0.1`)**: igual, sin sonda: los negativos se sortean entre todos con semilla k. Misma cantidad
   de positivos y de negativos que `NH0.1` en la misma réplica.
+La sonda y el sorteo dentro del pozo son una reconstrucción: el script del exploratorio define la sonda y el pozo, pero
+no el sorteo ni el estudio que produjo sus hiperparámetros.
+
+T es el del control (optimización + media del final). En `H4H-0.1` la optimización suma el tiempo de la sonda: es parte
+de la variante.
+
+**Fuera del diseño**: otras fracciones de CONTINUA, otros tamaños de pozo u otra sonda (no están en el exploratorio); las
+dos variantes de la propuesta original de H4 (20 % de CONTINUA elegido por un algoritmo; 10 % al azar con pesos), que
+quedaron sin definir; los ensambles de más de 10 semillas o el presupuesto de 900 s, que son del exploratorio.
+
+### Final con bajas (`H4F-0.05`, `H4F-0.25`, `H4O-0.5`)
+
+`H4F-*` y `H4O-0.5` entrenan el final sobre todas las bajas y la mitad de CONTINUA con peso 2, sobre los seis meses del
+final. Tienen 8 réplicas y 20 semillas finales por réplica; los estudios `U0.05`, `U0.25` y sus `@k` son de `h1`, y
+`F0.5` y `F0.5@1…7`, de `h4`. Cada estudio va antes de sus finales en las listas de la fase.
+
 - **Búsqueda sobre la receta del final (`F0.5@k`)**: todos los positivos + 50 % de los negativos, sorteados con semilla
   k, con peso 2 en los negativos en el `Dataset` de cada trial; AUC en 201908 completo y sin pesos.
 - **Final fast-retrain (`H4F-*`, `H4O-0.5`)**: todos los positivos + el 50 % de los negativos del final, sorteados con la
   semilla final, con peso 1/0,5 = 2 en los negativos (`weight` del `lgb.Dataset`). Se registra la cantidad de filas.
+- **Tiempo**: en `H4F-*` la optimización es la de su estudio `U{r}` / `U{r}@k`, de `h1`; en `H4O-0.5` es la de `F0.5`.
+- **Regla del curso «siempre OP»** (Zulip 211718): pide reoptimizar siempre que cambia el dataset. `H4F-0.05` busca sobre
+  una muestra uniforme del 5 % y entrena con otra receta, así que no la cumple; `H4O-0.5` usa la receta del final también
+  para optimizar y sí la cumple. La regla 5 de la Predicción compara las dos.
 
-La sonda y el sorteo dentro del pozo son una reconstrucción: el script del exploratorio define la sonda y el pozo, pero
-no el sorteo ni el estudio que produjo sus hiperparámetros.
-
-### Tiempo
-
-T es el del control (optimización + media del final). En `H4H-0.1` la optimización suma el tiempo de la sonda: es parte
-de la variante. En `H4F-*` la optimización es la de su estudio `U{r}` / `U{r}@k`, medida cuando lo corrió `h1` o `h3`.
-
-### Grilla
-
-- **Primera tanda** (fase 6, `corridas-v3`): `H4H-0.1`, `H4U-0.1`, `H4F-0.05` y `H4F-0.25` × 8 réplicas, con 16
-  estudios propios (`NH0.1`, `NU0.1` y sus `@k`). Estimado: ~2,6 h de VM.
-- **Ronda vigente** (fase 7, `corridas-v4`): las cinco variantes × 8 réplicas × 20 semillas = 40 celdas, 800 finales, y 8
-  estudios nuevos (`F0.5`, `F0.5@1…7`), que van primero en cada lista `fase7_r<k>` ([Corridas](../sampling_1/corridas.md)).
-  `NH0.1`, `NU0.1` y los `U{r}@k` se reusan; las sondas no se repiten.
-- **Fuera de la grilla**: otras fracciones de CONTINUA, otros tamaños de pozo u otra sonda (no están en el exploratorio);
-  las dos variantes de la propuesta original de H4 (20 % de CONTINUA elegido por un algoritmo; 10 % al azar con pesos),
-  que quedaron sin definir; los ensambles de más de 10 semillas o el presupuesto de 900 s, que son del exploratorio.
-
-### Rondas
-
-En la ronda 201903–201906 había 4 variantes con 10 semillas. La ronda vigente suma `H4O-0.5` y repite los finales con la
-ventana y las 20 semillas nuevas; las finales de `H4F-*` y `H4O-0.5` sortean la mitad de CONTINUA sobre los seis meses.
-
-### Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+### Grilla común (`H4O-{f}`, `H4P-{f}`)
 
 Predicciones y reglas (6 a 11): § Grilla común de la Predicción. `h4` aporta dos filas de la grilla común
 ([`sampling_1/corridas.md`](../sampling_1/corridas.md) § Fases): "con bajas y peso, búsqueda y final" (`H4O-{f}`) y
-"con bajas y peso, solo búsqueda" (`H4P-{f}`), con f ∈ {0,5; 0,25; 0,1; 0,05}.
+"con bajas y peso, solo búsqueda" (`H4P-{f}`), con f ∈ {0,5; 0,25; 0,1; 0,05}. `H4P-{f}` busca sobre la receta con
+bajas y entrena el final completo: es un apartamiento declarado de «siempre OP», porque es la hipótesis misma (como en
+H3 y `H4F`).
 
 | variante | método | tasa | estudio (k = 0 / k ≥ 1) | dueño del estudio | final |
 |---|---|---|---|---|---|
@@ -316,26 +319,26 @@ Predicciones y reglas (6 a 11): § Grilla común de la Predicción. `h4` aporta 
 - **Estudio `F{f}@k`**: como `F0.5@k` con la fracción f: todas las bajas + f de CONTINUA de train 201903–201906,
   sorteado con la semilla k, peso 1/f en CONTINUA en cada trial; validación 201908 completa y sin pesos. `F0.5` y
   `F0.5@k` ya existen y conservan su `hash_muestra`.
-- **`H4O-{f}`**: la fracción de CONTINUA del final pasa a ser la tasa de la variante (antes, fija en 0,5). `H4F-*` sigue
-  con la mitad de CONTINUA y peso 2 en el final. Hiperparámetros sin reescalar.
+- **`H4O-{f}`**: la fracción de CONTINUA del final es la tasa de la variante. `H4F-*` usa la mitad de CONTINUA y peso 2
+  en el final. Hiperparámetros sin reescalar.
 - **`H4P-{f}`**: optimiza con el método de `H4O-{f}` y comparte su estudio; el final es el de `opt-muestra` (train
   201903–201908 completo, sin peso). La muestra de búsqueda de `H4P-0.1` es la misma que la de `H4U-0.1` (misma función,
   misma semilla); solo cambia el peso.
-- **Estudios nuevos**: `F0.25`, `F0.1` y `F0.05` en k = 0…7: **24 estudios**.
-- **Finales nuevos**, con las 20 semillas de la ronda 201903–201908: las 7 variantes nuevas en k = 0…7:
-  7 × 8 × 20 = **1.120 finales**.
+- **Estudios**: `F0.25`, `F0.1` y `F0.05` en k = 0…7, además de `F0.5` (24 estudios nuevos).
+- **Finales**: las 7 variantes `H4O-{f}` (salvo 0,5) y `H4P-{f}` en k = 0…7, con las 20 semillas de la ronda
+  201903–201908.
 - **T y A**: T suma los 40 trials de `F{f}@k` y la media del final; el tiempo del estudio entra en T de `H4O-{f}` y de
   `H4P-{f}`. Mediana entre réplicas y A con una sola referencia ([`control`](../control/README.md) § Medición de
   tiempos).
 - **Pares directos** (`PARES_APAREADOS` y `PARES_WELCH`, con lo que aísla cada uno): § Grilla común de la Predicción.
   Los que cruzan experimentos se calculan en `sampling_1`.
-- **Lo que hay que tocar en `comun/`** (grupo 2 del cambio): `clase-peso` en `comun/metodos.py`, que
-  `metodo_optimizacion` manda a `fast-retrain-opt`; `pesos` recibe la tasa; `fast-retrain` y `fast-retrain-opt` dejan de
-  compartir la fracción fija; `validar` acepta las cuatro tasas en `fast-retrain-opt`.
-- Van en las listas `fase8_r0_a` … `fase8_r7_a` de la fase 8 ([`sampling_1/corridas.md`](../sampling_1/corridas.md)
-  § Fases), cada estudio antes de sus finales.
-- **Fuera de la grilla común**: `H4F-*`, `H4H-0.1` y `H4U-0.1` quedan como están (la tabla de cobertura los lista
-  aparte); `H4U-0.1` entra solo en el par del peso.
+- **Código**: `clase-peso` en `comun/metodos.py`, que `metodo_optimizacion` manda a `fast-retrain-opt`; `pesos` recibe la
+  tasa; `fast-retrain` y `fast-retrain-opt` no comparten la fracción fija; `validar` acepta las cuatro tasas en
+  `fast-retrain-opt`.
+- Los estudios van en las listas de la fase 8 ([`sampling_1/corridas.md`](../sampling_1/corridas.md) § Fases), cada uno
+  antes de sus finales.
+- **Fuera de la grilla común**: `H4F-*`, `H4H-0.1` y `H4U-0.1` (la tabla de cobertura los lista aparte); `H4U-0.1` entra
+  solo en el par del peso.
 
 ## Dependencias
 
@@ -343,9 +346,7 @@ Predicciones y reglas (6 a 11): § Grilla común de la Predicción. `h4` aporta 
 - `h1`: los estudios `U0.05` y `U0.25` y sus réplicas `U0.05@k` y `U0.25@k` (k = 1…7) (`ledger/hp/U0.05.json`,
   `ledger/hp/U0.25.json` y sus `@k`), que usan `H4F-0.05` y `H4F-0.25`.
 
-Actualizado el 13-nov-2026 (cambio `tiempos-confiables-y-consistencia`): las réplicas `U{r}@k` pasaron de h3 a h1, así
-que este experimento deja de depender de h3 (los nombres van sin comillas invertidas porque `--verificar` cuenta cada uno
-como dependencia declarada). Los estudios `F{f}` y `F{f}@k` de la grilla común son propios.
+Los estudios `F{f}` y `F{f}@k` de la grilla común son propios.
 
 ## Resultado
 
@@ -372,7 +373,7 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
 
 ## Veredicto
 
-!!! success "Conclusión"
+!!! success "Veredicto con réplicas"
     Conservar todas las bajas en la búsqueda no sirve: `H4H-0.1` y `H4U-0.1` pierden contra el control con réplicas, y
     elegir los negativos difíciles no cambia nada contra elegirlos al azar. Conservarlas en el final sí: `H4F-0.05`
     (búsqueda sobre el 5 % uniforme, final con todas las bajas y la mitad de CONTINUA con peso 2) no pierde, acelera
@@ -382,7 +383,10 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
     arquitectura de producción (fast-retrain) es la que se sostiene.
 
 Las reglas se aplican tal como quedaron escritas, con el δ de la ronda (5,65 M$; las reglas 1 a 3 se escribieron con el
-de la ronda anterior, y la regla de δ dice que su valor sale del control de cada ronda).
+de la ronda anterior, y la regla de δ dice que su valor sale del control de cada ronda). Cada línea dice si la
+predicción **se cumplió** o no.
+
+### Búsqueda informada
 
 - **1. Búsqueda informada: refutada.** Las dos variantes *pierden* con réplicas: la media de Δ con réplicas queda debajo de −5,65 M$ en `H4H-0.1`
     (−11,41 M$, IC [−15,80; −7,03]) y en `H4U-0.1` (−8,02 M$, IC [−11,52; −4,53]). Solo el IC de `H4H-0.1` queda
@@ -393,21 +397,30 @@ de la ronda anterior, y la regla de δ dice que su valor sale del control de cad
     completo. La regla 10 de la grilla común (abajo) deja esa explicación sin sostén: con la misma muestra, devolverle
     el peso a CONTINUA en la búsqueda (`H4P-0.1` − `H4U-0.1`) *no cambia*.
 
-- **2. Difícil contra uniforme: no cambia.** D_HU = −3,39 M$, IC de Welch [−8,06; 1,28]. La predicción (*ayuda*) no se cumple; si algo, la media va en contra.
-    Elegir negativos difíciles no rescata a la búsqueda informada.
+- **2. Difícil contra uniforme: no cambia.** D_HU = −3,39 M$, IC de Welch [−8,06; 1,28]. La predicción (*ayuda*) **no se
+    cumplió**; si algo, la media va en contra. Elegir negativos difíciles no rescata a la búsqueda informada.
+
+- **Lo que no decide.** Con réplicas, `H4H-0.1` y `H4U-0.1` bajan más que en la réplica 0 (−11,41 y −8,02 M$ contra −9,19
+  y −7,70 M$). `H4H-0.1` tiene mucha varianza entre réplicas (48 %, sd 4,91 M$): la sonda y el sorteo dentro del pozo
+  suman suerte a la de Optuna. `H4U-0.1` tiene la T mediana más alta de las cuatro primeras (293 s, A = 3,41). A tiempo
+  igual su IC contiene a 0 ([−1,40; 9,29] M$) aunque pierda con réplicas: el tiempo igual compara el ensamble de las
+  semillas de la variante que entran en el tiempo del control contra un modelo del control, y ensamblar suma ganancia
+  por sí solo. No cambia la regla 1, que no usa el tiempo igual.
+
+### Final con bajas
 
 - **3. Fast-retrain: confirmada en las dos tasas.**
 
     - **`H4F-0.05`**: (a) *no pierde*, cota inferior del IC de Welch −1,58 ≥ −5,65 M$; (b) A = 12,50 > 10,56 de
       `H3-0.05` (T mediana 80 s contra 95 s); (c) a tiempo igual *gana*, IC t entre réplicas [0,77; 8,50] M$.
     - **`H4F-0.25`**: (a) cota inferior −1,42 ≥ −5,65 M$; (b) A = 4,77 > 4,38 de `H3-0.25`; (c) IC t a tiempo igual
-      [2,09; 7,73] M$. En la ronda anterior (c) no se cumplía y quedaba *indeterminado*.
+      [2,09; 7,73] M$. La predicción **se cumplió** en las dos.
 
 - **4 y 5. `H4O-0.5`: no pierde y no cambia contra `H4F-0.05`.** *No pierde* contra `C`: cota inferior del IC de Welch de Δ con réplicas −4,27 ≥ −5,65 M$ (Δ = −1,33 M$). D_OF =
-    −2,74 M$, IC de Welch [−5,69; 0,21]: contiene a 0, como se predijo. Buscar sobre la receta del final, como pide el
-    «siempre OP» (211718), no mejora a buscar sobre el 5 % uniforme, y cuesta: A(`H4O-0.5`) = 2,31 contra
-    A(`H4F-0.05`) = 12,50 (T mediana 434 s contra 80 s). Es la respuesta a 211718 para `H4F`: con los hiperparámetros
-    elegidos sobre una muestra uniforme, el final con otra receta no pierde nada medible.
+    −2,74 M$, IC de Welch [−5,69; 0,21]: contiene a 0, como se predijo. Las dos predicciones **se cumplieron**. Buscar
+    sobre la receta del final, como pide la regla «siempre OP», no mejora a buscar sobre el 5 % uniforme, y cuesta:
+    A(`H4O-0.5`) = 2,31 contra A(`H4F-0.05`) = 12,50 (T mediana 434 s contra 80 s). Con los hiperparámetros elegidos sobre
+    una muestra uniforme, el final con otra receta no pierde nada medible.
 
 Con los contrastes principales fijados de antemano: `H4H-0.1` contra `C` *pierde*, y `H4F-0.05` contra `C` *no pierde*
 con réplicas y *gana* a tiempo igual. Las reglas 4 y 5 son secundarias.
@@ -416,21 +429,12 @@ con réplicas y *gana* a tiempo igual. Las reglas 4 y 5 son secundarias.
 −0,0019 con Δ de ganancia 1,41 M$; en `H4O-0.5`, al revés: ΔAUC +0,0004 con Δ de ganancia −1,33 M$. En los dos casos los
 IC contienen a 0. En `H4H-0.1` y `H4U-0.1` van juntas: las dos bajan (ΔAUC −0,0045 y −0,0037, IC debajo de 0).
 
-**Lo que no decide.**
+La diferencia de `H4F-0.05` con `H3-0.05` es solo el final (comparten estudios): Δ con réplicas parecido (1,41 y
+2,08 M$) con un final más barato. La ganancia a tiempo igual sale de ahí: más semillas en el mismo tiempo.
 
-- Δ réplica 0 ya anticipaba la búsqueda informada (−9,19 y −7,70 M$), pero con réplicas baja más: −11,41 y −8,02 M$.
-  `H4H-0.1` tiene mucha varianza entre réplicas (48 %, sd 4,91 M$): la sonda y el sorteo dentro del pozo suman suerte a
-  la de Optuna.
-- `H4U-0.1` tiene la T mediana más alta de las cuatro primeras (293 s, A = 3,41). A tiempo igual su IC contiene a 0
-  ([−1,40; 9,29] M$) aunque pierda con réplicas: el tiempo igual compara el ensamble de las semillas de la variante que
-  entran en el tiempo del control contra un modelo del control, y ensamblar suma ganancia por sí solo. No cambia la regla
-  1, que no usa el tiempo igual.
-- La diferencia de `H4F-0.05` con `H3-0.05` es solo el final (comparten estudios): Δ con réplicas parecido (1,41 y
-  2,08 M$) con un final más barato. La ganancia a tiempo igual sale de ahí: más semillas en el mismo tiempo.
+### Grilla común
 
-### Grilla común (fase 8)
-
-Reglas 6 a 11 de § Grilla común, aplicadas tal como quedaron escritas el 13-nov; los pares salen de la tabla
+Reglas 6 a 11 de § Grilla común de la Predicción, aplicadas tal como quedaron escritas; los pares salen de la tabla
 «Diferencias entre variantes» del [Anexo](../sampling_1/anexo.md) y los Δ y A contra `C`, del bloque A de
 [Resultados](../sampling_1/README.md), con una sola referencia de T del control.
 
