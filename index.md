@@ -15,7 +15,7 @@ al menos 2 veces más rápida.
 ## El mapa del tradeoff
 
 Un panel por hipótesis y un punto por variante, con su intervalo: a la derecha, más rápida que el control; abajo, pierde
-ganancia. Las que valen la pena quedan arriba y a la derecha del 2×, y casi todas achican solo la optimización.
+ganancia. Las que valen la pena quedan arriba y a la derecha del 2×, y la mayoría achica solo la optimización.
 
 <!-- generado:hallazgo-tradeoff -->
 ![15 de 30 variantes no pierden y aceleran 2× o más; la más rápida entre ellas es H4F-0.05 (12.5×)](experimentos/sampling_1/figuras/tradeoff.svg)

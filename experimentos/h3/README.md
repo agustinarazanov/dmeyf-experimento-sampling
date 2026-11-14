@@ -192,7 +192,7 @@ suerte de la búsqueda; la réplica 0 es la búsqueda original.
 #### Extensiones: reescalado de `min_data_in_leaf` y muestra por cliente
 
 `H3R` y `H3L` (reescalado) y `H3K` (muestra por cliente) son extensiones de H3: usan la misma búsqueda sobre una
-muestra y entrenan el final con todo, y cambian una sola cosa. Su regla está en la Predicción (reglas 5 a 8).
+muestra y entrenan el final con todo, y cambian una sola cosa. Su regla está en la Predicción (reglas 4 a 8).
 
 - **Reescalados**: el `min_data_in_leaf` del estudio se multiplica por el factor, se redondea y se recorta a [1; 8000];
   los demás hiperparámetros no cambian. Los efectivos quedan en la fila del ledger. `H3R-r` y `H3L-r` leen el mismo
@@ -226,6 +226,7 @@ muestra y entrenan el final con todo, y cambian una sola cosa. Su regla está en
   con 8 contra 8 el IC de Welch tiene una semiamplitud cercana a ±4,3 M$: alcanza para decidir *no pierde* si el Δ real
   está cerca de 0. Con 5 réplicas la semiamplitud sube a unos ±5,8 y *no pierde* deja de ser decidible; con 10 el costo
   crece un 30 % para ganar poco.
+
 ### Reoptimización y ventana del final
 
 La ventana vigente (201903–201908) reusa el diseño de los estudios (Optuna con 201903–201906 y AUC en 201908) y entrena

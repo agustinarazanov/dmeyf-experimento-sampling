@@ -115,7 +115,7 @@ flowchart TD
 ### Grilla
 
 - **Optimización**: el estudio `C`, 40 trials, 100 iteraciones cada uno, sin early stopping. Además, siete réplicas de
-  optimización `C@1…7` (cambio `h3-semillas-optuna`, 8-nov): un estudio más por réplica k, con la semilla del sampler
+  optimización `C@1…7`: un estudio más por réplica k, con la semilla del sampler
   TPE = k. Los estudios `C@k` son de `control`, sus hiperparámetros van a `ledger/hp/C@k.json` y sus filas llevan
   `replica_opt = k` y el `id` con `@k`. El estudio `C`, sus finales y `C-rep` son la réplica 0, y N\* y δ salen de ella.
   Para qué sirven las réplicas: [H3](../h3/README.md).
@@ -141,7 +141,7 @@ flowchart TD
 
 - **Ronda 201903–201906** (anterior): final con train 201903–201906, 10 semillas, N\* calculado en validación (201908)
   con esos finales. Se conserva y se sigue pudiendo consolidar.
-- **Ronda 201903–201908** (vigente, cambio `final-con-julio-agosto`, 12-nov): cambia solo lo siguiente; Optuna, el
+- **Ronda 201903–201908** (vigente): cambia solo lo siguiente; Optuna, el
   espacio, G, Δ, la regla de δ, los veredictos, T y A quedan iguales.
   - **Ventana del final 201903–201908.** La consigna pide reentrenar incluyendo 201907 y 201908 para predecir 201910
     (Zulip 211210). Optuna no cambia: sigue entrenando con 201903–201906 y eligiendo por AUC en 201908, y los estudios

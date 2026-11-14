@@ -70,7 +70,7 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 7. Cierre
 
-- [ ] 7.1 Revisión en sesión limpia (subagente `general-purpose`) con la lista de la compuerta de informe de
+- [x] 7.1 Revisión en sesión limpia (subagente `general-purpose`) con la lista de la compuerta de informe de
   `docs/revision.md` y las specs del cambio; corregir lo que encuentre. Verificación: entrada en la bitácora con los
   ítems revisados.
 - [ ] 7.2 `openspec validate informe-por-ejes` en verde y tokens de la sesión con `comun/tokens.py`. Verificación:

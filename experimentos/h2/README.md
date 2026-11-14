@@ -100,8 +100,7 @@ Lo que no se dice acá (máquina, parámetros fijos de LightGBM, semillas finale
 
 Todas optimizan y entrenan con train completo (r = 1). «4 hp» son los rangos del espacio del control sin
 `bagging_fraction`. En `GOSS` sale porque LightGBM no admite bagging con GOSS; es la misma adaptación que en `B*` y se
-declara igual. Si la devolución del curso pide mantener `bagging_fraction` optimizado, salen las `B` y H2 queda solo con
-`GOSS`; H1 y H3 no cambian.
+declara igual.
 
 ### Grilla
 

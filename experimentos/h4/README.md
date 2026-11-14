@@ -380,7 +380,10 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
     12,50 veces y gana a tiempo igual; con el final de seis meses `H4F-0.25` también cumple las tres condiciones.
     Reoptimizar sobre la receta del final (`H4O-0.5`) no pierde contra el control, pero no mejora a `H4F-0.05` y es más
     de 5 veces más lento. Lo que el exploratorio reportaba como ganador (la búsqueda difícil) es lo que pierde; su
-    arquitectura de producción (fast-retrain) es la que se sostiene.
+    arquitectura de producción (fast-retrain) es la que se sostiene. En la grilla común, conservar las bajas con peso en
+    la búsqueda y el final (`H4O-{r}`) rinde más que el azar (`U{r}`) salvo en la tasa más grande, donde no cambia, y no pierde contra el control salvo
+    en la más chica; hacerlo
+    solo en la búsqueda (`H4P-{r}`) no le gana a `H3-{r}`.
 
 Las reglas se aplican tal como quedaron escritas, con el δ de la ronda (5,65 M$; las reglas 1 a 3 se escribieron con el
 de la ronda anterior, y la regla de δ dice que su valor sale del control de cada ronda). Cada línea dice si la

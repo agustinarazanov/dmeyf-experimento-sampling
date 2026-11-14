@@ -3157,3 +3157,46 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   introducción); Corridas lo enlaza en GitHub. `fases.md` no está en `site/`.
 - Verificadores: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar`, `verificar_predicciones` y
   `scripts/sitio.sh` en verde; `pytest` completo: 342 passed, 2 skipped.
+
+### 14-nov-2026 — revisión en sesión limpia de `informe-por-ejes` (tarea 7.1, cierre)
+
+- Sesión: subagente de la sesión que orquestó los grupos · modelo: Opus · etapa: **revision**.
+- Revisor: subagente `general-purpose`, sin contexto de las sesiones headless que aplicaron los grupos 1 a 6. Revisado
+  el diff `30bf31a9..812bb081` contra `proposal.md`, `design.md` (D1–D9) y las tres specs del cambio.
+- Lista: docs/revision.md § 5 y las specs:
+  - ✓ Predicción intacta: `verificar_predicciones`, 5 secciones iguales a las de `1a5c0da1`.
+  - ✓ Reglas escritas: cada hipótesis se decide con las reglas de su Predicción; un solo recuadro de veredicto por
+    hipótesis, el de réplicas, con una línea por predicción.
+  - ✓ Mismo veredicto en todas las páginas: tablas de H1 a H4 (agregado con réplicas), bloque A de Resultados y del
+    Anexo, tarjetas de la portada (H2: 2/2/1; H4: 6/4/2) y texto a mano de Resultados (`U0.5` *indeterminado*, `B0.25`
+    y `B0.5` *no pierden*, `H4P-{r}`, `H4O-{r}`, `H4H-0.1`, `H4U-0.1`). Los 15 que valen la pena suman igual en la
+    Respuesta, el mapa de ejes (9 + 5 + 1) y el título del mapa.
+  - ✓ Números con fuente: `verificar_readme` (85 números, 37 enlaces) y `verificar_informe_h3` (909 números, 0 sin
+    fuente). `comun.reporte --todos` no deja diff: ningún bloque generado está editado a mano. El Δ −1,38 de `U0.5` en
+    la réplica 0 está solo en el Anexo construido.
+  - ✓ Resultados sigue D3; las conclusiones por eje citan veredictos y los pares `U{r}` − `H3-{r}`, `H4O-{r}` − `U{r}` y
+    `H4P-{r}` − `H3-{r}`, sin presentar un eje como hipótesis (grep de «confirma el eje» vacío fuera de la bitácora).
+  - ✓ Portada: el recuadro Respuesta es igual al de Resultados (`verificar_readme`) y hay una sola figura.
+  - ✓ Ejes del registro iguales a la spec `lectura-por-ejes`; `comun.variantes --verificar` en verde.
+  - ✓ `fases.md`: igual a la § Fases vieja salvo los `../` de los enlaces, la línea de introducción y los dos títulos que
+    la tarea 4.4 ya había limpiado; Corridas conserva § Fases con el enlace, así que los «§ Fases» de las páginas siguen
+    llegando.
+  - ✓ Refutaciones con el mismo peso y limitaciones (semillas y réplicas, un mes de test, adaptación de H2) sin cambios.
+  - Guion y bibliografía fuera del alcance de este cambio.
+- Hallazgos:
+  1. `index.md`: «las que valen la pena … casi todas achican solo la optimización»; son 10 de 15 (5 achican el final).
+  2. `h2/README.md` § Diseño: «Si la devolución del curso pide mantener `bagging_fraction` optimizado…», texto de
+     proceso en una página en estado final.
+  3. `h3/README.md` § Diseño remitía a las «reglas 5 a 8» para las extensiones; `H3R-0.1` es la regla 4, como dice el
+     Veredicto. Faltaba una línea en blanco antes de § Reoptimización.
+  4. `control/README.md` § Diseño: «(cambio `h3-semillas-optuna`, 8-nov)» y «cambio `final-con-julio-agosto`, 12-nov»
+     fuera de § Predicción.
+  5. `h4/README.md`: el recuadro del veredicto resumía la búsqueda informada y el final con bajas, no la grilla común.
+- Correcciones: (1) «la mayoría». (2) Frase quitada. (3) «reglas 4 a 8» y la línea en blanco. (4) Paréntesis de cambio
+  y fecha quitados. (5) Una frase sobre `H4O-{r}` y `H4P-{r}`, sin números nuevos. Verificadores, `scripts/sitio.sh` y
+  los tests tocados por el cambio (`test_nombres_sitio`, `test_reporte`, `test_tablas_d9`, `test_variantes`,
+  `test_verificadores`, `test_verificar_predicciones`: 127 passed) en verde.
+- Sin resolver, sin ✗: los recuadros de veredicto mantienen el tipo de antes (H2 *refutada* va en `success`, H1 en
+  `warning`); el texto del cuerpo de `control` § Rondas y § Apartamientos sigue contando la historia de las rondas, que es
+  su contenido.
+- 7.1 hecha.
