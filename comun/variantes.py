@@ -144,6 +144,53 @@ FUERA_DE_GRILLA: dict[str, str] = {
 }
 
 
+#: Valores de los dos ejes de lectura (`lectura-por-ejes`): dónde del pipeline se achica y cómo se eligen las filas. En
+#: `final` entran las familias que achican el modelo final, con o sin la búsqueda.
+DONDE = ("todo", "lightgbm", "busqueda", "final")
+COMO = ("azar", "bajas", "bajas-peso", "dificiles", "interno")
+
+#: `Variante.metodo` -> (dónde, cómo). El control no tiene ejes. Una familia nueva declara los suyos acá y aparece en el mapa
+#: de ejes de Resultados sin tocar el generador (`verificar` falla si falta alguno).
+EJES: dict[str, tuple[str, str]] = {
+    "uniforme": ("todo", "azar"),
+    "bagging": ("lightgbm", "interno"),
+    "goss": ("lightgbm", "interno"),
+    "opt-muestra": ("busqueda", "azar"),
+    "opt-muestra-reescalado": ("busqueda", "azar"),
+    "opt-muestra-lineal": ("busqueda", "azar"),
+    "opt-muestra-cliente": ("busqueda", "azar"),
+    "clase-uniforme": ("busqueda", "bajas"),
+    "clase-dificil": ("busqueda", "dificiles"),
+    "clase-peso": ("busqueda", "bajas-peso"),
+    "fast-retrain": ("final", "bajas-peso"),
+    "fast-retrain-opt": ("final", "bajas-peso"),
+}
+
+
+def familia(nombre_variante: str) -> str:
+    """Familia de una variante por su nombre: `H3-0.5` -> `H3`, `H3K-0.1` -> `H3K`, `U0.5` -> `U`, `GOSS` -> `GOSS`."""
+    if "-" in nombre_variante:
+        return nombre_variante.split("-")[0]
+    return re.match(r"[A-Za-z]+", nombre_variante).group(0)
+
+
+def problemas_ejes(variantes: dict[str, Variante] | None = None, ejes: dict[str, tuple[str, str]] | None = None) -> list[str]:
+    """Una línea por familia (de una variante que no es del control) que no declara alguno de los dos ejes."""
+    variantes = VARIANTES if variantes is None else variantes
+    ejes = EJES if ejes is None else ejes
+    out, vistas = [], set()
+    for v in variantes.values():
+        if v.dueno == CONTROL or (v.metodo, familia(v.nombre)) in vistas:
+            continue
+        vistas.add((v.metodo, familia(v.nombre)))
+        par = ejes.get(v.metodo, (None, None))
+        for eje, valor, validos in (("dónde", par[0], DONDE), ("cómo", par[1], COMO)):
+            if valor not in validos:
+                out.append(f"la familia {familia(v.nombre)} (método {v.metodo}) no declara el eje «{eje}» en `EJES` "
+                           f"(valores: {', '.join(validos)})")
+    return out
+
+
 def nombre(metodo: str, tasa: float) -> str:
     """Nombre de la variante de la grilla para `(método, tasa)`; no dice si está en el registro."""
     if metodo == "opt-muestra":
@@ -358,6 +405,7 @@ def verificar(raiz: Path = rutas.RAIZ, variantes: dict[str, Variante] | None = N
         grafo.setdefault(e, set())
     for ciclo in ciclos(grafo):
         problemas.append("ciclo de dependencias: " + " -> ".join(ciclo))
+    problemas += problemas_ejes(variantes)
     problemas += problemas_exploratorios(raiz)
     informe = []
     for exp in sorted(set(grafo) | set(implicito)):

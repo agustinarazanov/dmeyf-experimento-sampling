@@ -203,3 +203,21 @@ def test_figura_generada_desde_un_csv_no_necesita_archivo(tmp_path):
         autor="A", fecha="d", pregunta="p", protocolo="p", advertencia="a", tablas=[dict(csv="r.csv", columnas=["x"])],
         figuras=_exploratorio_sin_leyenda)))
     assert any("leyenda" in p for p in variantes.verificar(tmp_path)[0])
+
+
+def test_familia_sin_ejes_falla_nombrando_la_familia_y_el_eje_y_el_registro_real_pasa():
+    juguete = {**variantes.VARIANTES, "X-0.5": variantes.Variante("X-0.5", "h1", "metodo-nuevo", 0.5, "U0.5")}
+    problemas = variantes.problemas_ejes(juguete)
+    assert any("familia X" in p and "«dónde»" in p for p in problemas) and any("familia X" in p and "«cómo»" in p for p in problemas)
+    parcial = {**variantes.EJES, "metodo-nuevo": ("busqueda", None)}
+    assert [p for p in variantes.problemas_ejes(juguete, parcial) if "familia X" in p] == [
+        p for p in variantes.problemas_ejes(juguete, parcial) if "«cómo»" in p]
+    assert variantes.problemas_ejes() == []
+
+
+def test_ejes_de_las_familias_actuales():
+    por_familia = {variantes.familia(v.nombre): variantes.EJES[v.metodo] for v in variantes.VARIANTES.values() if v.dueno != variantes.CONTROL}
+    assert por_familia == {"U": ("todo", "azar"), "B": ("lightgbm", "interno"), "GOSS": ("lightgbm", "interno"),
+                           "H3": ("busqueda", "azar"), "H3K": ("busqueda", "azar"), "H3R": ("busqueda", "azar"),
+                           "H3L": ("busqueda", "azar"), "H4U": ("busqueda", "bajas"), "H4H": ("busqueda", "dificiles"),
+                           "H4P": ("busqueda", "bajas-peso"), "H4O": ("final", "bajas-peso"), "H4F": ("final", "bajas-peso")}

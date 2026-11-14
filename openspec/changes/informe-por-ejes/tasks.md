@@ -14,7 +14,7 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 2. Ejes en el registro y mapa de ejes
 
-- [ ] 2.1 `EJES` en `comun/variantes.py` (metodo → (dónde, cómo)), con los valores de la spec `lectura-por-ejes`.
+- [x] 2.1 `EJES` en `comun/variantes.py` (metodo → (dónde, cómo)), con los valores de la spec `lectura-por-ejes`.
   `verificar` falla nombrando un `metodo` sin ejes. Verificación: test que registra una variante de juguete sin ejes y
   ve el error; `--verificar` pasa con el registro real.
 - [ ] 2.2 Bloque `ejes` en `comun/reporte.py` (tabla HTML dónde × cómo, «familia (HN): k de n valen la pena», celdas
