@@ -697,16 +697,14 @@ def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot
             "t_c0": float(ap["tiempo_total_control_s"].iloc[0]), "g_rep": g_rep}
 
 
-AVISO_A = ("Ḡ, T y la aceleración salen de la réplica 0 en las variantes sin réplicas; en las marcadas (R=n), Ḡ es la media entre "
-           "réplicas y T la mediana entre réplicas, así que se comparan con Ḡ_C con réplicas y no con Ḡ_C de la réplica 0. "
+AVISO_A = ("Ḡ es la media entre réplicas y T la mediana entre réplicas (columna R), así que se comparan con Ḡ_C con réplicas. "
            "La aceleración es la misma referencia en todas las filas: A = T_C / T, con T_C la mediana de T de todas las réplicas "
-           "del control. El tiempo igual de las variantes sin réplicas sigue con T_C de la réplica 0, porque se aparea con su Δ. "
-           "El intervalo de A es un bootstrap por percentiles (95 %) del cociente de medianas: se remuestrean las réplicas del "
-           "control y, por separado, las de la variante. Mide la variación entre réplicas, que junta la de Optuna y la de la VM "
-           "(la calibración dice cuánto es de la VM); con 8 réplicas la mediana remuestreada toma pocos valores y una réplica "
-           "rara lo mueve. En las variantes sin réplicas solo se remuestrea el control, así que el intervalo es un piso de la "
-           "incertidumbre. El tiempo igual con réplicas sigue apareado por réplica k porque ahí el ensamble de la réplica k se "
-           "compara con la ganancia del control de esa misma réplica.")
+           "del control. El intervalo de A es un bootstrap por percentiles (95 %) del cociente de medianas: se remuestrean las "
+           "réplicas del control y, por separado, las de la variante. Mide la variación entre réplicas, que junta la de Optuna y "
+           "la de la VM (la calibración dice cuánto es de la VM); con 8 réplicas la mediana remuestreada toma pocos valores y una "
+           "réplica rara lo mueve. El tiempo igual sigue apareado por réplica k porque ahí el ensamble de la réplica k se "
+           "compara con la ganancia del control de esa misma réplica. Una variante sin réplicas, si la hubiera, lleva una nota "
+           "al pie en las celdas que salen de la réplica 0.")
 
 
 def referencia_control(a: dict) -> str:
@@ -1603,7 +1601,7 @@ NOTAS = {"a": "sin réplicas de optimización: Δ, T y el veredicto salen de la 
 CAB_RESUMEN = ("variante", "hipótesis", "R", "Δ [IC 95%] (M$)", "aceleración (×)", "ganancia contra el control")
 CAB_DETALLE = ("variante", "Ḡ (M$)", "Δ réplica 0 [IC] (M$)", "Δ con réplicas [IC] (M$)", "ΔAUC en 201910 [IC]",
                "T mediana (s)", "tiempo igual, réplicas [IC t] (M$)", "tiempo igual, bootstrap de clientes [IC] (M$)")
-AVISO_A_HTML = AVISO_A.replace("en las marcadas (R=n)", "en las que tienen réplicas (columna R)")
+AVISO_A_HTML = AVISO_A
 
 
 def celdas_resumen(f: dict) -> list:
