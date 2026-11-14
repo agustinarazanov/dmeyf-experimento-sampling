@@ -51,11 +51,11 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 5. Resultados por ejes
 
-- [ ] 5.1 Reordenar `experimentos/sampling_1/README.md` según design D3: Respuesta con «valen la pena» primero,
+- [x] 5.1 Reordenar `experimentos/sampling_1/README.md` según design D3: Respuesta con «valen la pena» primero,
   § Cómo leer las hipótesis (bloque `ejes`), § ¿Dónde achicar?, § ¿Cómo muestrear? (con la tabla H4O−U y la grilla de
   veredictos), y los bullets por hipótesis repartidos sin repetir un veredicto. Verificación: `verificar_readme` en
   verde; cada variante citada una sola vez con su veredicto (grep).
-- [ ] 5.2 Conclusiones por eje que citan veredictos y pares registrados, sin «se confirma el eje». Verificación:
+- [x] 5.2 Conclusiones por eje que citan veredictos y pares registrados, sin «se confirma el eje». Verificación:
   revisión contra la spec `lectura-por-ejes` § Los ejes no reemplazan a las hipótesis.
 
 ## 6. Portada y Corridas

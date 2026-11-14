@@ -52,6 +52,12 @@ cómo se corrió, en [Corridas](corridas.md#protocolo).
     todas las bajas y la mitad de CONTINUA con peso 2 tampoco pierde. Ninguna de las dos es una mejora de ganancia por
     modelo: es lo mismo, más rápido, y el tiempo que sobra se puede gastar en ensamblar.
 
+**Valen la pena** (no pierden y aceleran 2× o más): 15 de las 30 variantes. Las nueve de H3, las de fast-retrain
+(`H4F-0.05`, `H4F-0.25` y `H4O-0.5`) y, de la grilla común, `H4O-0.25`, `H4O-0.1` y `H4P-0.25` (A de 3,65; 5,29 y 3,35).
+`U0.5` queda fuera: con réplicas es *indeterminado*, aunque acelere 2,37 veces. Ninguna de H2 (las que no pierden,
+`B0.25` y `B0.5`, aceleran menos de 2 veces) ni de la búsqueda informada de H4, que pierde. Los veredictos de cada
+variante y el eje que los explica están en § ¿Dónde achicar? y § ¿Cómo muestrear?.
+
 <!-- generado:mapa -->
 ![15 de 30 variantes no pierden y aceleran 2× o más; la más rápida entre ellas es H4F-0.05 (12.5×)](figuras/tradeoff.svg)
 
@@ -100,15 +106,13 @@ hipótesis nueva ni tiene veredicto propio.
 
 <!-- /generado:ejes -->
 
-## ¿Qué conviene achicar?
+Las dos secciones que siguen responden una pregunta cada una: **¿dónde achicar?** (las filas de la tabla) y **¿cómo
+muestrear?** (las columnas). Cada variante se cita una vez, con su veredicto, en la sección donde se la compara.
 
-La optimización domina el tiempo del control, así que achicarla es lo que más acelera. La grilla dice qué variantes
-pierden en cada forma de muestrear y cada tasa; el desglose, dónde se va el tiempo.
+## ¿Dónde achicar?
 
-<!-- generado:grilla -->
-![De 30 variantes: no pierden 17, pierden 9, indeterminadas 4, pendientes 0](figuras/grilla_veredictos.svg)
-
-<!-- /generado:grilla -->
+La optimización domina el tiempo del control, así que achicarla es lo que más acelera; el desglose muestra dónde se va
+el tiempo.
 
 <!-- generado:desglose -->
 ![En el control la optimización es el 94 % de T (748 s de 797 s); la variante con la optimización más corta, U0.05, la baja a 67 s](figuras/desglose_tiempo.svg)
@@ -116,51 +120,42 @@ pierden en cada forma de muestrear y cada tasa; el desglose, dónde se va el tie
 <!-- /generado:desglose -->
 
 Desde la grilla común las 30 variantes y `C` tienen 8 réplicas de la optimización: el veredicto sale de Δ con réplicas, y
-A, de la mediana de T contra la del control, con su intervalo (los números, plegados debajo del mapa). La mejor
-variante de cada hipótesis, valga la pena o no: la de H1, `U0.5`, queda *indeterminada*, y la de H2, `B0.5`, no pierde pero acelera 1,18
-veces. La más rápida de H2 que no pierde, `B0.25`, acelera 1,67 veces [1,23; 2,08]: tampoco llega a 2.
+A, de la mediana de T contra la del control, con su intervalo (los números, plegados debajo del mapa).
 
-- **H1, ninguna de las dos** ([H1](../h1/README.md)). Predecía que r = 0,5 y 0,25 no pierden y que r = 0,05
-  pierde: con réplicas `U0.5` queda *indeterminado* (−3,64 M$ [−6,58; −0,71]) y `U0.25` ya *pierde*, así que no queda
-  frontera observada (con la réplica 0 sola, `U0.5` no perdía). La pérdida crece a medida que baja r.
-- **H2, refutada** ([H2](../h2/README.md)): con f = 0,1 y 0,05 pierde, y con 0,5 y 0,25 no pierde pero acelera menos de 2
-  veces (1,18 y 1,67; el intervalo de `B0.25` llega a 2,08). GOSS es descriptiva y queda *indeterminado*.
-- **H3, confirmada también con réplicas** ([H3](../h3/README.md)): `H3-0.1` y `H3-0.25` no pierden con réplicas (cotas
-  inferiores −1,07 y −2,82 M$, contra −δ = −5,65 M$) y aceleran 7,76 y 4,38 veces. La réplica 0 sola movía Δ en los dos
-  sentidos: de 4,73 a 1,42 M$ con réplicas en `H3-0.25`, de 1,26 a 1,71 M$ en `H3-0.1`. El mecanismo (la muestra
-  regulariza o el control tuvo mala suerte) queda sin resolver. `H3-0.05` también se confirma (aceleración 10,56), y
-  `H3-0.5`, de la grilla común, no pierde y acelera 2,28 veces.
-- **Extensiones de H3** (secundarias): las cinco no pierden contra el control. La raíz no mejora a no reescalar; le
-  gana a la lineal en r = 0,1 y no en r = 0,25; buscar sobre el 10 % de los clientes no cambia contra el 10 % de las
-  filas.
-- **H4, búsqueda informada: refutada** ([H4](../h4/README.md)). `H4H-0.1` y `H4U-0.1` *pierden* con réplicas (−11,41 y
-  −8,02 M$): el IC de `H4H-0.1` queda entero debajo de −δ y `H4U-0.1` pierde por la media. Elegir negativos difíciles en vez de uniformes no cambia.
-- **H4, fast-retrain: confirmada en las dos tasas.** `H4F-0.05` no pierde, acelera 12,50 veces (más que `H3-0.05`,
-  10,56) y a tiempo igual *gana*. `H4F-0.25` también cumple las tres condiciones.
-- **`H4O-0.5`, reoptimizar sobre el set del final**: no pierde contra el control y no cambia contra `H4F-0.05`, con
-  aceleración 2,31 contra 12,50. Reoptimizar sobre la receta del final cuesta más de 5 veces el tiempo y no suma
-  ganancia medible.
-- **H4, grilla común** ([H4](../h4/README.md) § Grilla común). Conservar las bajas con peso en la búsqueda y el final
-  (`H4O-{r}`) no pierde en 0,5, 0,25 y 0,1 y pierde en 0,05 (−6,14 M$). Solo en la búsqueda (`H4P-{r}`), no pierde en
-  0,25, queda *indeterminado* en 0,5 y 0,1 y pierde en 0,05.
-- `U{r}` y `H3-{r}` comparten los estudios de Optuna en las cuatro tasas y las 8 réplicas, o sea los mismos
-  hiperparámetros. `U{r}` pierde contra `H3-{r}` en las cuatro (tabla de diferencias del [Anexo](anexo.md)), así que en
-  H1 lo que se pierde es por entrenar el final con menos filas, no por optimizar sobre una muestra.
-- **Vale la pena** (no pierde y aceleración ≥ 2): 15 de las 30 variantes. Las nueve de H3, las de fast-retrain
-  (`H4F-0.05`, `H4F-0.25` y `H4O-0.5`) y, de la grilla común, `H4O-0.25`, `H4O-0.1` y `H4P-0.25` (A de 3,65; 5,29 y
-  3,35). `U0.5` sale de la lista: con réplicas queda *indeterminado*, aunque acelere 2,37 veces. Ninguna de H2 (las que
-  no pierden, `B0.25` y `B0.5`, aceleran menos de 2 veces) ni de la búsqueda informada de H4, que pierde.
+- **Solo la búsqueda, al azar (H3, confirmada también con réplicas)** ([H3](../h3/README.md)): `H3-0.1` y `H3-0.25` no
+  pierden con réplicas (cotas inferiores −1,07 y −2,82 M$, contra −δ = −5,65 M$) y aceleran 7,76 y 4,38 veces.
+  `H3-0.05` también se confirma (aceleración 10,56), y `H3-0.5`, de la grilla común, no pierde y acelera 2,28 veces. La
+  réplica 0 sola movía Δ en los dos sentidos: de 4,73 a 1,42 M$ con réplicas en `H3-0.25`, de 1,26 a 1,71 M$ en
+  `H3-0.1`. El mecanismo (la muestra regulariza o el control tuvo mala suerte) queda sin resolver.
+- **También el final, al azar (H1, ninguna de las dos)** ([H1](../h1/README.md)). Predecía que r = 0,5 y 0,25 no
+  pierden y que r = 0,05 pierde: con réplicas `U0.5` queda *indeterminado* (−3,64 M$ [−6,58; −0,71]) y `U0.25` ya
+  *pierde*, así que no queda frontera observada (con la réplica 0 sola, `U0.5` no perdía). La pérdida crece a medida que
+  baja r. `U{r}` y `H3-{r}` comparten los estudios de Optuna en las cuatro tasas y las 8 réplicas, o sea los mismos
+  hiperparámetros, y `U{r}` pierde contra `H3-{r}` en las cuatro (tabla de diferencias del [Anexo](anexo.md)): lo que se
+  pierde es por entrenar el final con menos filas, no por optimizar sobre una muestra.
+- **Dentro de LightGBM (H2, refutada)** ([H2](../h2/README.md)): con f = 0,1 y 0,05 pierde, y con 0,5 y 0,25 no
+  pierde pero acelera menos de 2 veces (1,18 y 1,67; el intervalo de `B0.25` llega a 2,08). GOSS es descriptiva y queda
+  *indeterminado*.
+- **El final con bajas (H4, fast-retrain: confirmada en las dos tasas)** ([H4](../h4/README.md)). `H4F-0.05` no pierde,
+  acelera 12,50 veces (más que `H3-0.05`, 10,56) y a tiempo igual *gana*; `H4F-0.25` también cumple las tres
+  condiciones. `H4O-0.5`, que reoptimiza sobre el set del final, no pierde contra el control y no cambia contra
+  `H4F-0.05`, con aceleración 2,31 contra 12,50: reoptimizar sobre la receta del final cuesta más de 5 veces el tiempo y
+  no suma ganancia medible.
 
-## ¿Cuánto se puede achicar?
+**Lo que se concluye sobre el eje.** Achicar la búsqueda no pierde (`H3-{r}` en las cuatro tasas, A de 2,28 a 10,56) y
+achicar también el final al azar sí pierde desde r = 0,25 (`U0.25`, `U0.1`, `U0.05`; `U0.5` *indeterminado*): el par
+`U{r}` − `H3-{r}` del Anexo lo ubica en el final. Si el final se achica, solo aguanta conservando las bajas con peso
+(`H4F-0.05`, `H4F-0.25`, `H4O-0.5`). Achicar dentro de LightGBM no llega a 2× sin perder (`B0.25`, `B0.5`).
 
-Depende de qué se achique. Si es solo la búsqueda (H3), hasta el 5 % de las filas no pierde. Si es también el final al
-azar (H1), la pérdida crece a medida que baja la fracción y ninguna tasa queda en *no pierde* (r = 0,5 es
-*indeterminado*). Si el final conserva todas las bajas y recorta solo CONTINUA con peso (`H4O`), no pierde hasta el 10 %.
+## ¿Cómo muestrear?
 
-<!-- generado:fraccion -->
-![Δ contra la fracción de muestra: el punto más bajo es U0.05 (-27.7 M$), por debajo de −δ (punteada)](figuras/fraccion.svg)
+Dentro de cada lugar, la forma de elegir las filas decide. La grilla dice qué variantes pierden en cada forma de
+muestrear y cada tasa.
 
-<!-- /generado:fraccion -->
+<!-- generado:grilla -->
+![De 30 variantes: no pierden 17, pierden 9, indeterminadas 4, pendientes 0](figuras/grilla_veredictos.svg)
+
+<!-- /generado:grilla -->
 
 ### ¿Importa qué filas se conservan?
 
@@ -177,9 +172,35 @@ otra al azar.
 
 Δ con réplicas en M$; la magnitud y el IC de cada par están en el [Anexo](anexo.md#diferencias-entre-variantes). Los
 pares no aíslan una sola cosa: `H4O-{r}` tiene más filas (las bajas que la muestra al azar no tendría), otra proporción de
-clases y peso en CONTINUA. Conservar las bajas con peso rinde más que muestrear al azar desde r = 0,25. Lo que separa a
-H4 de H1 es el final: si se achica solo la búsqueda, `H4P-{r}` no le gana a `H3-{r}` (no cambia en 0,5 y 0,25, empeora en
-0,1 y 0,05), y el peso en la búsqueda (`H4P-0.1` − `H4U-0.1`) no cambia.
+clases y peso en CONTINUA. Conservar las bajas con peso rinde más que muestrear al azar desde r = 0,25.
+
+- **Solo en la búsqueda, con peso (`H4P-{r}`)** ([H4](../h4/README.md) § Grilla común): no pierde en 0,25, queda
+  *indeterminado* en 0,5 y 0,1 y pierde en 0,05. No le gana a `H3-{r}` (no cambia en 0,5 y 0,25, empeora en 0,1 y 0,05),
+  y el peso en la búsqueda (`H4P-0.1` − `H4U-0.1`) no cambia: lo que separa a H4 de H1 es el final.
+- **Búsqueda informada (H4, refutada)**: `H4H-0.1` y `H4U-0.1` *pierden* con réplicas (−11,41 y −8,02 M$): el IC de
+  `H4H-0.1` queda entero debajo de −δ y `H4U-0.1` pierde por la media. Elegir negativos difíciles en vez de uniformes no
+  cambia.
+- **Bajas con peso en la búsqueda y el final (`H4O-{r}`)**: no pierde en 0,5, 0,25 y 0,1 y pierde en 0,05 (−6,14 M$); es
+  la columna de la tabla de arriba.
+- **Extensiones de H3** (secundarias): las cinco no pierden contra el control. La raíz no mejora a no reescalar; le gana
+  a la lineal en r = 0,1 y no en r = 0,25; buscar sobre el 10 % de los clientes no cambia contra el 10 % de las filas.
+
+**Lo que se concluye sobre el eje.** Conservar las bajas con peso rinde más que el azar cuando el final también se achica
+(par `H4O-{r}` − `U{r}`, desde r = 0,25) y no suma cuando solo se achica la búsqueda (`H4P-{r}` contra `H3-{r}`); elegir
+los negativos difíciles (`H4H-0.1`) o uniformes (`H4U-0.1`) no rescata la búsqueda informada, que pierde. Las extensiones
+de H3 no cambian el panorama de la búsqueda al azar.
+
+## ¿Cuánto se puede achicar?
+
+Depende de qué se achique. Si es solo la búsqueda (H3), hasta el 5 % de las filas no pierde. Si es también el final al
+azar (H1), la pérdida crece a medida que baja la fracción y ninguna tasa queda en *no pierde* (r = 0,5 es
+*indeterminado*). Si el final conserva todas las bajas y recorta solo CONTINUA con peso (`H4O`), no pierde hasta el 10 %.
+
+<!-- generado:fraccion -->
+![Δ contra la fracción de muestra: el punto más bajo es U0.05 (-27.7 M$), por debajo de −δ (punteada)](figuras/fraccion.svg)
+
+<!-- /generado:fraccion -->
+
 
 ## ¿Qué se hace con el tiempo ahorrado?
 

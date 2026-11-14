@@ -4,7 +4,7 @@ H1 prueba si entrenar con una fracción de las filas de train, tomadas al azar s
 ganancia.
 
 Responde a **dónde achicar**: en todo el pipeline, con filas al azar
-([Resultados](../sampling_1/README.md) § ¿Dónde achicar?).
+([Resultados](../sampling_1/README.md#donde-achicar) § ¿Dónde achicar?).
 
 ## Idea
 

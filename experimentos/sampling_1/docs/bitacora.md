@@ -3131,3 +3131,15 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   falla).
 - Verificadores: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar`, `verificar_predicciones` y
   `scripts/sitio.sh` en verde; `pytest` completo con código 0 (tarda más de 10 minutos; corrió en segundo plano).
+
+### informe-por-ejes, grupo 5 (14-nov-2026)
+
+- Tarea 5.1: Resultados reordenado según D3: Respuesta con el recuadro, «valen la pena» (15 de 30), mapa y bloque A
+  plegado; § Cómo leer las hipótesis (bloque `ejes`); § ¿Dónde achicar? (desglose; H3, H1 con el par `U{r}` − `H3-{r}`,
+  H2, final con bajas); § ¿Cómo muestrear? (grilla, tabla `H4O-{r}` − `U{r}`, `H4P`, búsqueda informada, extensiones de
+  H3); luego § ¿Cuánto se puede achicar? y el resto sin cambios. Los bullets de § ¿Qué conviene achicar? se repartieron
+  sin repetir veredictos. Las páginas H1 a H4 enlazan ahora con anclaje (`#donde-achicar`, `#como-muestrear`).
+- Tarea 5.2 (revisión propia contra `lectura-por-ejes` § Los ejes no reemplazan a las hipótesis): cada sección de eje
+  cierra con «Lo que se concluye sobre el eje», que cita veredictos (`H3-{r}`, `U{r}`, `B0.25`, `H4F-*`, `H4P-{r}`,
+  `H4H-0.1`) y los pares `U{r}` − `H3-{r}`, `H4O-{r}` − `U{r}` y `H4P-0.1` − `H4U-0.1`; ninguna presenta el eje como
+  hipótesis nueva ni dice «se confirma el eje» (grep vacío).
