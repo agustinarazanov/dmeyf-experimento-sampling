@@ -3052,3 +3052,13 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   existe; es texto de `comun/reporte.py` y queda para un cambio de código.
 - 6.6 hecha.
 - Tokens (`comun/tokens.py`, sesión `c1666823`): ≈ 38 turnos, ≈ 64.000 de contexto por turno, debajo del objetivo.
+
+## 14-nov-2026 — tiempos-confiables-y-consistencia archivado
+
+- La observación del párrafo del bloque A quedó resuelta en `30be875` (el aviso remite a la nota al pie si vuelve a haber
+  una variante sin réplicas).
+- Cambio archivado en `openspec/changes/archive/2026-11-14-tiempos-confiables-y-consistencia/` con 42/42 tareas. Deltas
+  sincronizados en `openspec/specs`: `grilla-comun` y `medicion-tiempos` nuevas (Purpose escrito a mano), y
+  `corrida-reproducible`, `dependencias-entre-experimentos`, `ledger-resultados` y `reporte-visual` actualizadas
+  (+14 requisitos, ~3 modificados). `openspec validate --specs`: 9 de 9.
+- Respaldo `$BUCKET/respaldo/2026-11-mover-U/` (8.157 archivos, 3,76 GiB) borrado, como estaba previsto.
