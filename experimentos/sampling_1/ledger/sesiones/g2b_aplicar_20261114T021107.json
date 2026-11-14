@@ -1,0 +1,119 @@
+{
+ "duration_api_ms": 197377,
+ "stop_reason": "end_turn",
+ "session_id": "6debc836-6f60-41f9-8df7-cf25f265204d",
+ "total_cost_usd": 1.8065892000000001,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 97368,
+  "cache_read_input_tokens": 2807366,
+  "output_tokens": 23295,
+  "output_tokens_details": {
+   "thinking_tokens": 3733
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 97368,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1203,
+    "cache_read_input_tokens": 110384,
+    "cache_creation_input_tokens": 444,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 444
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 68,
+   "outputTokens": 23295,
+   "cacheReadInputTokens": 2807366,
+   "cacheCreationInputTokens": 97368,
+   "webSearchRequests": 0,
+   "costUSD": 1.8065892000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3733,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 97368,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 48,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "La tarea 2b.3 está hecha y commiteada en `tiempos-confiables`, sin push. No toqué código, y `openspec validate` da el cambio como válido. Queda un solo aviso, de un requisito largo en `medicion-tiempos`; ya estaba antes y yo lo alargué un poco.\n\n**Rutas en `tasks.md` (grupos 3, 4 y 6):**\n- **Tablas:** donde las tareas decían `tabla_resultados.md`, ahora apuntan a los bloques `bloque-a-completo`, `varianza` y `diferencias` de `sampling_1/anexo.md`.\n- **Resumen y gráfico:** donde decían «el HTML», ahora apuntan al resumen `bloque-a` de Resultados; el gráfico de tradeoff pasa a ser el bloque `mapa`.\n- **Informes:** el informe conjunto pasa a ser Resultados (`sampling_1/README.md`), y el informe de cada hipótesis, su `README.md`.\n- **Otros archivos:** `guion.md` está ahora en `sampling_1/docs/`, y lo de `comparacion_rondas.md` en § Rondas del Anexo.\n- **Archivos que ya no existen:** `decisiones.md` y la lista de figuras del informe conjunto. 4.1 lo dice e indica cómo cerrar una corrección si la frase ya no está.\n- **Predicciones:** 3.3 aclara que se siguen leyendo de `DATOS_DIR`, así que no hace falta copiarlas.\n\n**Pendientes de la revisión de 2b, sumados a las tareas:**\n- **3.7b (nueva):** la figura `grilla_veredictos.svg` de Resultados mide 833 px de alto y `medir_sitio` pide como máximo 800. Puse como opción partir la figura; el arreglo concreto lo decide el grupo 3.\n- **6.2:** los cuatro números de `h2/README.md` que no tienen fuente: 1,54, −0,0044, 0,0005 y 1,84.\n- **6.3:** el 1,23 de `B0.25`, que aparece dos veces en Resultados. También suma las verificaciones de `sitio.sh` y `medir_sitio`.\n\n**Specs:**\n- **`reporte-visual`:** reescribí el cambio sobre la versión archivada de «Comparación limpia en dos bloques» (Resultados, Anexo y exploratorios), con la A calculada contra una sola referencia del control y su intervalo.\n- **`dependencias-entre-experimentos` (nuevo):** con los estudios `U{r}@k` en `h1`, `h3` depende de todos los `U{r}` de `h1` y `h4` ya no depende de `h3`. También pide que `sampling_1` nombre cada experimento del que lee `pares.csv`.\n- **`medicion-tiempos` y `grilla-comun`:** dejan de nombrar `tabla_resultados.md` y `docs/hipotesis.md`.\n- **`proposal.md`:** suma esa capacidad modificada y una nota con las rutas nuevas.\n\nLa «revisión corta en sesión limpia» de 2b.3 quedó como sub-ítem sin marcar, como en 2b.1; la hace la sesión de revisión.\n\nEn el primer commit puse por error una línea `Co-Authored-By`. Lo corregí con `--amend` antes de cualquier push. La entrada nueva de la bitácora de `sampling_1` resume todo esto.",
+ "ttft_ms": 1301,
+ "type": "result",
+ "duration_ms": 203972,
+ "uuid": "82f35095-f46c-4151-ae31-6b8263f0dbf2",
+ "ttft_stream_ms": 757,
+ "time_to_request_ms": 174,
+ "first_content_frame_ms": 757,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 68,
+   "outputTokens": 23295,
+   "cacheReadInputTokens": 2807366,
+   "cacheCreationInputTokens": 97368,
+   "webSearchRequests": 0,
+   "costUSD": 1.8065892000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3733,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 97368,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

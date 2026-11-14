@@ -101,3 +101,5 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-13T15:25,4,revisar,claude-opus-5-5,13,1.2883,2a98183e-4192-44a2-aee1-ae5872024ea2,success,0,sitio-legible
 2026-11-14T01:55,2b,aplicar,claude-opus-5-5,5,2.6585,f37fcb56-ef7a-450e-8e7a-cf77c996a058,success,0,tiempos-confiables-y-consistencia
 2026-11-14T02:09,2b,revisar,claude-opus-5-5,52,1.1057,13bfcead-f7b8-4e79-bf8e-b9412079dafb,success,0,tiempos-confiables-y-consistencia
+2026-11-14T02:14,2b,aplicar,claude-opus-5-5,48,1.8066,6debc836-6f60-41f9-8df7-cf25f265204d,success,0,tiempos-confiables-y-consistencia
+2026-11-14T02:15,2b,revisar,claude-opus-5-5,28,0.7898,ef354b70-03eb-401e-a3a8-3bfaf48ee2a7,success,0,tiempos-confiables-y-consistencia
