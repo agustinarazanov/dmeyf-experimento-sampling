@@ -1,0 +1,135 @@
+{
+ "duration_api_ms": 400537,
+ "stop_reason": "end_turn",
+ "session_id": "9327976e-00c2-490f-9aa0-51a608e7c4ba",
+ "total_cost_usd": 2.1978409000000005,
+ "usage": {
+  "input_tokens": 150,
+  "cache_creation_input_tokens": 172873,
+  "cache_read_input_tokens": 9458089,
+  "output_tokens": 56024,
+  "output_tokens_details": {
+   "thinking_tokens": 16560
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 172873,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1169,
+    "cache_read_input_tokens": 184143,
+    "cache_creation_input_tokens": 582,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 582
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 150,
+   "outputTokens": 56024,
+   "cacheReadInputTokens": 9458089,
+   "cacheCreationInputTokens": 172873,
+   "webSearchRequests": 0,
+   "costUSD": 2.1978409000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 16560,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 172873,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01A7Gv3aEnt2MvM9UFtqGyqn",
+   "tool_input": {
+    "command": "sed -n 104,146p comun/variantes.py | cut -c1-220; python - <<'X' 2>&1 | head -0\nX\n"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019JYGt4EcbidASWkKFRpdGH",
+   "tool_input": {
+    "command": "scripts/sitio.sh > tmp_etapas/sitio.txt 2>&1; echo rc=$?; tail -5 tmp_etapas/sitio.txt | cut -c1-250",
+    "timeout": 600000
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 132,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Hice las tareas 3.1 a 3.7b y las dejé marcadas en `tasks.md`. Falta una cosa: `python -m scripts.verificar_informe_h3` sigue marcando 4 números del README de h2, así que ese verificador no quedó en verde.\n\nLa tarea 3.8 (revisión en sesión limpia) no la hice, como pediste. Quedó en dos commits (`405aa11c` y `e406a52d`), sin push; el cambio en `comun/reporte.py` va anunciado en ambos mensajes.\n\n- **A (3.1):** la mediana de T_C ahora sale de todas las réplicas del control y es la misma en todas las filas. Un test comprueba que A × T da lo mismo, también con réplicas incompletas.\n- **Intervalo de A (3.2):** es un bootstrap de 10.000 remuestreos con semilla fija. Está en una columna nueva de `bloque-a-completo`, en letra chica debajo de A en `bloque-a`, y como barra horizontal en el mapa.\n- **Verificación de la tabla intacta (3.3):** la hice con el ledger anterior a la fase 8, comparando el reporte viejo con el nuevo. Solo cambian A y su intervalo, en las 8 filas que entonces no tenían réplicas (`U0.5` pasa de 2,25 a 2,83, `B0.25` de 1,23 a 1,54, y así las demás). El diff quedó en la bitácora. Como base usé el reporte viejo y no el Anexo vigente, porque el vigente ya incluye la fase 8.\n- **Rondas (3.4):** `comparar_rondas.py` ya no tiene la fila del control y agrega una nota con las variantes que solo existen en la ronda nueva.\n- **Cobertura, diferencias y tiempos (3.5 a 3.7):** son bloques generados nuevos. Agregué los marcadores correspondientes en `sampling_1/README.md` y en `anexo.md`. El de cobertura va en los dos archivos, el de tiempos va en el README y sus tablas completas en el Anexo. Si falta un CSV, esa parte sale como pendiente.\n- **Grilla (3.7b):** `grilla_veredictos.svg` tiene un alto tope de 8,5 in, y `medir_sitio` ya no marca el problema de los 833 px. Hubo que partir en pestañas por hipótesis la tabla de búsqueda y final, que medía 1.451 px.\n\nVerificadores al cierre:\n- `pytest`: 326 pasaron, 2 saltados.\n- `scripts/sitio.sh`, `python -m scripts.medir_sitio` (0 problemas en 13 páginas) y `python -m scripts.verificar_readme`: sin errores.\n- `python -m comun.variantes --verificar`: sin errores en lo que se vio de la salida.\n- `python -m scripts.verificar_informe_h3`: marca 4 números de `experimentos/h2/README.md` que no salen de ninguna fuente (1,54, −0,0044, 0,0005 y 1,84). Son los \"4 números de h2\" que `tasks.md` deja para 6.2, que es texto a mano. No los toqué.\n\n`mkdocs` sigue mostrando avisos de ancho de tabla (\"se desplaza en su recuadro\"). Ya estaban antes y `medir_sitio` no los cuenta como problema.",
+ "ttft_ms": 2259,
+ "type": "result",
+ "duration_ms": 2709297,
+ "uuid": "787f8b2e-b0b3-44e1-b496-22bfa7cc1ff5",
+ "ttft_stream_ms": 1357,
+ "time_to_request_ms": 169,
+ "first_content_frame_ms": 1357,
+ "queued_turn_count": 0,
+ "result_index": 0,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 150,
+   "outputTokens": 56024,
+   "cacheReadInputTokens": 9458089,
+   "cacheCreationInputTokens": 172873,
+   "webSearchRequests": 0,
+   "costUSD": 2.1978409000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 16560,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 172873,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

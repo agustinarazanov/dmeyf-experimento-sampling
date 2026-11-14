@@ -1,0 +1,132 @@
+{
+ "duration_api_ms": 64856,
+ "stop_reason": "end_turn",
+ "session_id": "72254194-5f87-4d3c-8f75-bcd3c89fbd3a",
+ "total_cost_usd": 0.7080310000000001,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 2874,
+  "cache_read_input_tokens": 242187,
+  "output_tokens": 2736,
+  "output_tokens_details": {
+   "thinking_tokens": 75
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 2874,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 781,
+    "cache_read_input_tokens": 62071,
+    "cache_creation_input_tokens": 447,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 447
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-opus-5-5": {
+   "inputTokens": 36,
+   "outputTokens": 6202,
+   "cacheReadInputTokens": 892595,
+   "cacheCreationInputTokens": 50666,
+   "webSearchRequests": 0,
+   "costUSD": 0.7080310000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1012,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 50666,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Y8DG4tmaQzisigRmUVqmkP",
+   "tool_input": {
+    "command": "git push -q"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "origin": {
+  "kind": "task-notification",
+  "producer": "session-task",
+  "runId": "0mwgfbu87-07ba5aad"
+ },
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 6,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "La revisión del grupo 3 (tarea 3.8) quedó cerrada sin correcciones. El commit está hecho, pero el push no se hizo: lo pidió aprobación y lo dejé para quien orquesta, como dice CLAUDE.md para las sesiones headless.\n\nDe la lista de `docs/revision.md` § 3, solo aplica a este grupo el ítem de que no haya datos del dataset en el repo, y pasa. Los otros ocho son del código de corridas, que este grupo no toca, y ya se revisaron en 2.8. Para el código del reporte corrí esto:\n\n- **pytest:** 326 pasan y 2 se saltean. Hay un test para cada tarea de 3.1 a 3.7.\n- **`python -m comun.reporte --todos`:** no cambia nada; `git status` no muestra ningún README modificado.\n- **Sitio:** `mkdocs build` y `python -m scripts.medir_sitio` dan 0 problemas en 13 páginas. Solo hay avisos de tablas anchas que se desplazan en su recuadro; la grilla ya no pasa de 800 px de alto.\n- **Verificadores:** `python -m comun.variantes --verificar` y `python -m scripts.verificar_readme` pasan.\n- **`AVISO_A`:** dice que el tiempo igual de las variantes sin réplicas sigue usando T_C de la réplica 0, como pide 3.1.\n- **3.3:** el diff está en la bitácora, y solo cambian A y su intervalo.\n\nHay un único hallazgo, que no es de este grupo. `verificar_informe_h3` marca 4 números de `h2/README.md` que no salen de ninguna fuente. Uno de ellos, 1,84, es el A viejo de `B0.1`, que ahora vale 2,31. Es texto escrito a mano y ya está asignado a la tarea 6.2.\n\nEn el commit van solo la entrada de cierre en `experimentos/sampling_1/docs/bitacora.md` y la 3.8 marcada en `tasks.md`. `costos.csv` y el json de la sesión anterior siguen sin commitear, porque eran de la orquestación.",
+ "ttft_ms": 1320,
+ "type": "result",
+ "duration_ms": 139306,
+ "uuid": "99a576f2-6b2c-43b7-8770-05c82aa9c2e6",
+ "ttft_stream_ms": 876,
+ "time_to_request_ms": 138,
+ "first_content_frame_ms": 876,
+ "queued_turn_count": 0,
+ "result_index": 1,
+ "model_usage_since_last_result": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 2736,
+   "cacheReadInputTokens": 242187,
+   "cacheCreationInputTokens": 2874,
+   "webSearchRequests": 0,
+   "costUSD": 0.1261814,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 75,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 2874,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}
