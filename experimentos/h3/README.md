@@ -295,7 +295,8 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
     le gana a la lineal solo en r = 0,1, y buscar sobre el 10 % de los clientes no cambia contra buscar sobre el 10 % de
     las filas.
 
-- **H3 (réplica 0): confirmada.** Las dos tasas no pierden y aceleran 4,37 y 8,04 veces; `H3-0.25` además *gana*. Ese IC solo ve la semilla final:
+- **H3 (réplica 0): confirmada.** Las dos tasas no pierden y aceleran 4,37 y 8,04 veces (A contra el T_C de la réplica 0,
+    con la regla vieja; con una sola referencia, los A con réplicas son los de la conclusión); `H3-0.25` además *gana*. Ese IC solo ve la semilla final:
     el estudio de Optuna es uno por variante, así que la suerte de la optimización queda adentro de Δ sin medir.
 
 - **Reglas 1 a 4, con réplicas y el δ de la ronda (5,65 M$).** El δ = 5,52 M$ de § Predicción es el de la ronda
@@ -332,6 +333,11 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
     La única diferencia que sale distinta de 0 (raíz contra lineal en r = 0,1) es una de las más de diez sin corrección
     por comparaciones múltiples.
 
+- **Regla 9, `H3-0.5` (fase 8): confirmada.** *No pierde* con réplicas: Δ −0,08 M$, IC de Welch [−3,17; 3,00], cota
+    inferior ≥ −5,65 M$; y A = 2,28 ≥ 2, con intervalo [1,55; 2,85] que baja de 2 (la regla decide con A puntual). No
+    cambia el veredicto de H3. Muestrear también el final (`U{r}` − `H3-{r}`) *empeora* en las cuatro tasas (tabla
+    «Diferencias entre variantes» del [Anexo](../sampling_1/anexo.md)).
+
 **AUC y ganancia.** El veredicto es el de ganancia (Zulip 208135). Las cuatro variantes de la primera tanda tienen ΔAUC
 negativo con Δ de ganancia positivo. En `H3-0.1` la diferencia de AUC es distinguible de 0 (−0,0017, IC [−0,0030;
 −0,0003]) mientras Δ de ganancia es 1,71 M$ con IC que contiene a 0. `H3K-0.1` es la única extensión con ΔAUC
@@ -348,7 +354,10 @@ réplicas. Para medir Δ hace falta repetir la optimización, no solo el final.
 
 ## Limitaciones
 
-- **Depende de `h1`.** La réplica 0 de H3 usa los estudios `U0.25`, `U0.1` y `U0.05` de `h1`; las réplicas `@k` son de `h3`. Δ(`H3-0.25`) y
+- **`H3-0.5` agregada después de mirar 201910.** Se decidió después de ver el test en las celdas vecinas, con regla
+    previa; su veredicto se suma a los de la grilla común sin corrección por comparaciones múltiples.
+
+- **Depende de `h1`.** H3 usa los estudios `U0.5`, `U0.25`, `U0.1` y `U0.05` de `h1`, también sus réplicas `@k`, que desde la fase 8 son de `h1`. Δ(`H3-0.25`) y
     Δ(`U0.25`) de la réplica 0 tienen la misma suerte de optimización y no son evidencia independiente entre sí. Sin
     `h1`, H3 no se puede correr ni consolidar.
 
