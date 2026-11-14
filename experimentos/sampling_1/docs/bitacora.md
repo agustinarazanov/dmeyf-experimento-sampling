@@ -2920,3 +2920,25 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   `B0.1`, hoy 2,31). Es texto a mano y ya está asignado a 6.2; no es del grupo 3.
 - Corregido: nada.
 - Tokens: ≈ 20 turnos · ≈ US$ 0,65 (presupuesto de la sesión US$ 2).
+
+### 2026-11-14 — cierre revisión del grupo 4 de `tiempos-confiables-y-consistencia` (texto, tareas 4.1–4.2)
+- Sesión: headless de `scripts/etapas.sh` · modelo: Opus · etapa: **revision** (grupo 4). El grupo no tenía tarea de
+  revisión en `tasks.md`; se agregó como 4.3.
+- Revisor: sesión limpia, sin contexto de la sesión que aplicó. Revisado el diff `e406a52d..f853fd5b`.
+- Lista: docs/revision.md § 5, aplicada a las frases que cambió el grupo:
+  - ✓ Reglas sin cambios: H4 aplica δ = 5,65 M$ de la ronda; `H4U-0.1` pierde por la media (−8,02 < −5,65) con la cota
+    superior −4,53 arriba de −δ, y solo el IC de `H4H-0.1` queda entero debajo. La línea de δ 5,52 → 5,65 en `h3`
+    repite la regla escrita.
+  - ✓ Números con fuente: rango 17 % (`H4F-0.25`) – 58 % (`H3K-0.1`) y 25 % de `C` en el bloque `varianza` del Anexo;
+    frase de AUC contra las 4 de la primera tanda de `h3` (`H3-0.25`, `H3-0.1`, `H3-0.05`, `H3R-0.1`: ΔAUC < 0 y Δ > 0)
+    y `H4F-0.05` (−0,0022; 4,18); en § Diálogo, `U0.5` −1,38 [−3,99; 1,24] de la tabla de `h1`, `H4O-0.5` −1,33 de
+    `h4` § Veredicto y 9 % más de filas (83.839 / 76.850 del bloque `diferencias`).
+  - ✓ Refutaciones con el mismo peso: § Diálogo da los dos Δ sin afirmar un contraste directo; la refutación de la
+    búsqueda informada no se suavizó.
+  - ✓ Limitaciones, tiempo del guion y baseline: el grupo no los toca.
+  - ✓ `python -m scripts.verificar_readme` en verde.
+- Hallazgos: `guion.md` (7:50–8:30) decía «En H3 y H4, entre el 17 % y el 58 %», pero el bloque `varianza` ya trae la
+  fase 8 (`H4O-0.1` 11 %, `H4O-0.25` 14 %): el rango vale solo para las H4 con réplicas previas, como en Resultados.
+- Corregido: `guion.md`, «En H3 y en las H4 que ya tenían réplicas antes de la grilla común». El número se reescribe
+  con la fase 8 en 6.3.
+- Tokens: ≈ 14 turnos · ≈ US$ 0,70 (presupuesto de la sesión US$ 2).

@@ -232,6 +232,8 @@ conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo 
   fase 8), y qué se corrió (grilla común, pares `H4O-{r}` − `U{r}`). `scripts/verificar_readme.py` suma 212124 a los
   números que no son resultados, como los otros ids de Zulip. `verificar_readme`, `scripts/sitio.sh` y
   `python -m scripts.medir_sitio` (0 problemas en 13 páginas) en verde.
+- [x] 4.3 Revisión en sesión limpia de 4.1–4.2 con `docs/revision.md` § 5 y cierre en la bitácora de `sampling_1`
+  (14-nov): una corrección en `guion.md` (rango de varianza acotado a las H4 que ya tenían réplicas).
 
 ## 5. Corridas (VMs a pedido, las lanza Agustina)
 
