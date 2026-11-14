@@ -1921,3 +1921,38 @@ Sesión de código (Sonnet). Cambios en `comun/`: `variantes.py`, `metodos.py`, 
   `fbbfbd6f`, `7888c003`) que no son de esta revisión.
 - Tokens: ~45 turnos · contexto ~60.000 por turno · ≈ US$ 2.
 - Tutor: —
+
+## tiempos-confiables-y-consistencia, fase 8: corridas y consolidación, tareas 5.1 a 5.3 (13/14-nov-2026)
+
+Orquestada desde la sesión interactiva (Opus), sin sesión headless: `scripts/lanzar_carriles.sh` desde el worktree de la
+rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `northamerica-northeast2-b`.
+
+- 5.1: los `U{r}@k` en `h1` (2.1); cuota `CPUS_ALL_REGIONS` = 32 y ninguna otra VM; `--en-seco` con 17 listas, 67
+  estudios y 128 líneas de final (2.560 finales). El crédito no se verificó: Agustina dijo que no es restricción
+  (~US$ 270 disponibles, «gastá lo que haga falta»).
+- 5.2, horarios (hora de Buenos Aires):
+
+  | Carril | Listas, en orden (fin de cada una) |
+  |---|---|
+  | 1 | medicion (16:44) · r0_a (18:52) · r1_a (21:43) · r0_b (22:12) · r1_b (00:12) |
+  | 2 | r2_a (18:22) · r3_a (21:01) · r2_b (23:03) · r3_b (01:12) |
+  | 3 | r4_a (18:17) · r5_a (21:00) · r4_b (22:54) · r5_b (00:52) |
+  | 4 | r6_a (18:10) · r7_a (20:56) · r6_b (23:00) · r7_b (00:49) |
+
+  Todos empezaron el 13-nov a las 15:44. Sin fallos ni relanzamientos; al terminar, ninguna VM ni disco en el proyecto.
+  ~36 horas de VM (9,5 h de pared), costo estimado ~US$ 21 a precio de lista; el real se mira en la facturación.
+- Carrera en `vm.sh`: los cuatro carriles lanzaron en el mismo segundo con el mismo commit y compartían
+  `/tmp/remoto-<commit>.sh`, así que las VMs de la primera tanda (medicion, r2_a, r4_a, r6_a) calibraron todas como
+  `fase8_medicion` y se pisaron en el bucket. Las corridas no se afectan (cada VM copia su lista). Corregido en
+  `ea66537` (carpeta temporal por invocación), fuera de la fase: el commit de las corridas sigue siendo `b99aa71`. Un
+  vigía guardó cada calibración por instancia; las de r2_a, r4_a y r6_a se repusieron con la lista corregida. Se
+  perdieron tres de 34: inicio de medicion, fin de r2_a y fin de r4_a (las VMs de la segunda tanda bajaron el archivo
+  viejo del bucket y lo volvieron a subir antes de que el vigía las guardara). `calibracion.csv` tiene 93 filas (31 × 3).
+- Descarga incompleta: el worktree tenía `ledger/predicciones` como enlaces a las carpetas de main, y main las movió a
+  `DATOS_DIR` (D18 de `inicio-y-resultados`) durante la fase. El `gsutil rsync` final de 12 de las 17 listas abortó por
+  el enlace roto y los finales impares no llegaron. Todo estaba en el bucket: se repuntaron los enlaces a
+  `~/datos/experimentos-dmeyf/ledger/<exp>/predicciones` y se bajó de nuevo.
+- 5.3: `comun.consolidar`, `--sanity` (todo OK, incluidas las 249 celdas de 8 réplicas × 20 semillas y ningún `U{r}@k`
+  en `h3`) y `tiempos_hp_fijos.py --consolidar` (216 mediciones). Archivos con `b99aa71`: 67 estudios (h1 7, h2 36,
+  h4 24) y 2.560 finales, todos `n2-highmem-8`, `codigo_sucio = False`. `pares.csv` tiene 24 pares, todos completos con
+  8 réplicas y 160 semillas; la tarea dice 17, cifra vieja del diseño (el archivo ya tenía 24 filas antes de la fase).

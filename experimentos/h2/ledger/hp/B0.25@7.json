@@ -1,0 +1,24 @@
+{
+  "estudio": "B0.25@7",
+  "replica_opt": 7,
+  "variante": "B0.25",
+  "metodo": "bagging",
+  "tasa": 0.25,
+  "hp": {
+    "num_leaves": 48,
+    "learning_rate": 0.033445066360987166,
+    "min_data_in_leaf": 785,
+    "feature_fraction": 0.8878944484883438
+  },
+  "auc_val": 0.9294743234202074,
+  "n_trials": 40,
+  "tiempo_trials_s": 590.7803216590005,
+  "tiempo_dataset_s": 7.192431745000022,
+  "tiempo_sonda_s": 0.0,
+  "tiempo_optimizacion_s": 597.9727534040005,
+  "filas_train": 506871,
+  "hash_muestra": "59400a0c32f9b4a7",
+  "commit": "b99aa71",
+  "codigo_sucio": false,
+  "fecha": "2026-11-14T02:32:04"
+}

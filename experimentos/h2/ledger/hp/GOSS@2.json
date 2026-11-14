@@ -1,0 +1,24 @@
+{
+  "estudio": "GOSS@2",
+  "replica_opt": 2,
+  "variante": "GOSS",
+  "metodo": "goss",
+  "tasa": 1.0,
+  "hp": {
+    "num_leaves": 244,
+    "learning_rate": 0.04482934439050869,
+    "min_data_in_leaf": 644,
+    "feature_fraction": 0.456528150825639
+  },
+  "auc_val": 0.9315430210573329,
+  "n_trials": 40,
+  "tiempo_trials_s": 819.0980137820002,
+  "tiempo_dataset_s": 7.221529847000056,
+  "tiempo_sonda_s": 0.0,
+  "tiempo_optimizacion_s": 826.3195436290002,
+  "filas_train": 506871,
+  "hash_muestra": "59400a0c32f9b4a7",
+  "commit": "b99aa71",
+  "codigo_sucio": false,
+  "fecha": "2026-11-14T01:04:09"
+}

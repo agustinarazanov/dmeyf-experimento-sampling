@@ -200,16 +200,16 @@ Qué puede ir en paralelo:
 
 ## 5. Corridas (VMs a pedido, las lanza Agustina)
 
-- [ ] 5.1 Antes de lanzar:
+- [x] 5.1 Antes de lanzar:
   - los estudios `U{r}@k` están en `h1` en el repo y en el bucket (2.1), y el commit de la rama que va a correr tiene su
     tag (el push y el tag los decide Agustina);
   - verificar el crédito, la cuota (`CPUS_ALL_REGIONS` = 32) y que no hay ninguna otra VM encendida en el proyecto;
   - `scripts/lanzar_carriles.sh --en-seco` con las 17 listas en cuatro carriles.
-- [ ] 5.2 Lanzar los cuatro carriles desde el worktree de la rama (D15): en cada uno, primero `fase8_medicion` y las
+- [x] 5.2 Lanzar los cuatro carriles desde el worktree de la rama (D15): en cada uno, primero `fase8_medicion` y las
   `_a`, después las `_b`. Al terminar, verificar que no queda ninguna VM encendida. Anotar en la bitácora qué lista
   corrió a qué hora, los relanzamientos, las horas y el costo. Toda la fase con un solo commit; si hay que corregir algo
   en el medio, se anota y las listas que faltan se relanzan con el commit nuevo.
-- [ ] 5.3 `python -m comun.consolidar`, `--sanity` y `tiempos_hp_fijos.py --consolidar`. Verificar:
+- [x] 5.3 `python -m comun.consolidar`, `--sanity` y `tiempos_hp_fijos.py --consolidar`. Verificar:
   - 67 estudios nuevos y 2.560 finales nuevos, con 20 semillas en cada celda de variante y réplica;
   - 216 filas en `tiempos_hp_fijos.csv` y, en `calibracion.csv`, las de inicio y de fin de las 17 listas;
   - las filas nuevas de la fase 8, todas en `n2-highmem-8`, con `codigo_sucio = False` y un solo commit;
