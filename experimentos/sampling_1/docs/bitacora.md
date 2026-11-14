@@ -3010,3 +3010,6 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
 - Verificaciones: `verificar_readme` y `verificar_informe_h3` (0 sin fuente), `comun.variantes --verificar`,
   `scripts/sitio.sh` y `medir_sitio` (0 problemas en 13 páginas; el aviso de 1005 px es el detalle del bloque A, de antes).
 - Queda 6.6 para la sesión de revisión.
+- Tokens (`comun/tokens.py`, sesión `58b66dd6`): ≈ 42 turnos, ≈ 110.000 de contexto por turno, arriba del objetivo.
+  Lo infló leer Resultados entero (≈ 35.000 tokens, casi todo HTML de los bloques generados); la próxima vez, leer el
+  texto a mano con un extractor en `tmp_etapas/`, como se hizo con el Anexo.
