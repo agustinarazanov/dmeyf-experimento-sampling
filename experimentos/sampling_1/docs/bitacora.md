@@ -3098,3 +3098,18 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
 - Tarea 2.3: `tradeoff.svg` regenerado (PNG revisado): un solo rótulo del eje x, sin pisarse con la leyenda.
 - Verificadores: `pytest` (333 passed, 2 skipped), `verificar_readme`, `verificar_informe_h3`, `comun.variantes
   --verificar` y `scripts/sitio.sh` (incluye `verificar_predicciones`) en verde.
+
+## 14-nov-2026 — informe-por-ejes, grupo 3 (tabla de hipótesis con réplicas)
+
+- Cambio en `comun/`: `tabla_variantes` pasa a llamarse `tabla_replica0` (sin cambios de contenido) y `tabla_hipotesis`
+  arma la tabla del bloque `resultado` de h1–h4 desde el agregado: R, G media, Δ con réplicas [IC], ΔAUC, T mediana,
+  aceleración con su IC, veredicto con réplicas y «vale la pena»; una variante sin réplicas lleva la nota al pie. Sin
+  bloque A cae a la tabla de réplica 0. `BLOQUES_ANEXO` gana `replica0-h1` … `replica0-h4`.
+- Tarea 3.1: `U0.5` sale *indeterminado* con Δ −3.64 en la página de h1 y el veredicto de cada variante coincide con el
+  del bloque A (`tests/test_tablas_d9.py`).
+- Tarea 3.2: sección «Réplica 0 por hipótesis» en `anexo.md` con los cuatro bloques; el Δ −1.38 de `U0.5` está solo en
+  el Anexo del sitio (grep sobre `site/`).
+- Tarea 3.3: regenerado (`comun.reporte --todos`, `comparar_rondas`); el diff de `anexo.md` solo agrega la sección
+  nueva, `bloque-a-completo` no cambia.
+- Verificadores: `pytest` de `test_reporte` y `test_tablas_d9` (51 passed), `verificar_readme`, `verificar_informe_h3`,
+  `comun.variantes --verificar` y `scripts/sitio.sh` (con `verificar_predicciones`) en verde.

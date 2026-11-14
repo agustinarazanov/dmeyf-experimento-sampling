@@ -251,9 +251,10 @@ def _auc(r) -> tuple[float, float, float] | None:
     return float(r["delta_auc_media"]), float(r["delta_auc_ic_inf"]), float(r["delta_auc_ic_sup"])
 
 
-def tabla_variantes(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
-    """Tabla del bloque `resultado` de una hipótesis (D9): sin columna «hipótesis»; la de «semillas» solo si alguna fila
-    difiere (si no, una línea debajo lo dice); las semillas ganadas, con una barrita de proporción."""
+def tabla_replica0(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
+    """Tabla de la réplica 0 de una hipótesis (bloques `replica0-hN` del Anexo; D9): sin columna «hipótesis»; la de
+    «semillas» solo si alguna fila difiere (si no, una línea debajo lo dice); las semillas ganadas, con una barrita de
+    proporción."""
     filas, veredictos, deltas, aes, semillas = [], [], [], [], []
     if not ap.empty:
         filas.append(["C", _m(ap["g_control"].iloc[0]), "—", "—", "—", f"{ap['tiempo_total_control_s'].iloc[0]:,.0f}", "1.00",
@@ -289,6 +290,38 @@ def tabla_variantes(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
     else:
         pie = f"<p class='nota'>Todas las variantes con {distintas[0]} semillas.</p>" if distintas else ""
     return html_tabla(cab, filas) + pie
+
+
+def tabla_hipotesis(ctx: Contexto, a: dict, fin: pd.DataFrame, ap: pd.DataFrame) -> str:
+    """Tabla del bloque `resultado` de una hipótesis, con la misma regla que Resultados (D5): Δ con réplicas y su IC,
+    aceleración con su IC, R y veredicto con réplicas (las filas del bloque A), más G media, ΔAUC, T mediana y «vale la
+    pena». Una variante sin réplicas muestra la réplica 0 con la nota al pie de siempre. Sin bloque A, la de réplica 0."""
+    por_nombre = {f["variante"]: f for f in a["filas"]}
+    if not por_nombre:
+        return tabla_replica0(ctx, fin, ap)
+    g_c = a["g_cR"] if a.get("g_cR") is not None else a["g_c0"]
+    t_c = a["t_cR"] if a.get("t_cR") is not None else a["t_c0"]
+    filas = [["C", "—", _m(g_c), "—", "—", f"{t_c:,.0f}", "1.00", "—", "—"]]
+    filas_a = [{"veredicto": "", "A": None, "dR": None, "d0": None}]
+    for b in ctx.variantes:
+        f = por_nombre.get(b)
+        if f is None or f["G"] is None:
+            filas.append([b] + ["pendiente"] * 8)
+            filas_a.append({"veredicto": "pendiente", "A": None, "dR": None, "d0": None})
+            continue
+        ic_a = f"[{f['A_ic'][0]:.2f}; {f['A_ic'][1]:.2f}]" if f["A_ic"] else None
+        vale = "sí" if clase_veredicto(f["veredicto"]) == "ok" and f["A"] is not None and f["A"] >= A_VALE else "no"
+        filas.append([b, celda(str(f["dR"][3])) if f["dR"] else celda("—", nota="a"),
+                      _m(f["G"]), celda_ic(delta(f)), celda_ic(f["auc"], _a),
+                      f"{f['T']:,.0f}" if f["T"] is not None else "pendiente",
+                      celda(f"{f['A']:.2f}", ic=ic_a, nota="d" if f["A_piso"] and ic_a else None) if f["A"] is not None else "pendiente",
+                      celda_veredicto(f["veredicto"]), vale])
+        filas_a.append(f)
+    cab = ["variante", "R", "G media (M$)", "Δ [IC 95%] (M$)", "ΔAUC [IC 95%]", "T mediana (s)", "aceleración (×)",
+           "ganancia contra el control", "vale la pena (no pierde y ≥ 2×)"]
+    marcar_mejores(filas, [x["veredicto"] for x in filas_a],
+                   {3: [delta(x)[0] if delta(x) else None for x in filas_a], 6: [x["A"] for x in filas_a]})
+    return html_tabla(cab, filas, NOTAS)
 
 
 # --- celdas de las tablas del HTML (D5, D8): las reglas acá, los colores en `_sass/custom/custom.scss` ---
@@ -1943,7 +1976,7 @@ def bloques_hipotesis(exp: str, figuras: Path | None, memo: dict) -> dict[str, s
     if ctx.variantes:
         a = _agregador(memo)[3]
         partes.append(fig_tradeoff(ctx, a, figuras, f"tradeoff_{exp}"))
-    partes.append(tabla_variantes(ctx, fin, ap))
+    partes.append(tabla_hipotesis(ctx, _agregador(memo)[3], fin, ap) if ctx.variantes else tabla_replica0(ctx, fin, ap))
     partes += [fig_curvas_ganancia(ctx, h, fin, ap, figuras) for h in ctx.hipotesis]
     partes += [fig_curva_diferencia(ctx, h, fin, ap, figuras) for h in ctx.hipotesis]
     return {"resultado": "\n\n".join(partes)}
@@ -1958,7 +1991,7 @@ def _sin_datos(nombres: tuple[str, ...]) -> dict[str, str]:
 # tablas de tiempo igual y de búsqueda y final van al Anexo; el resumen del bloque A queda plegado bajo el mapa.
 BLOQUES_SAMPLING = ("mapa", "ejes", "grilla", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
 BLOQUES_ANEXO = ("bloque-a-completo", "cobertura", "varianza", "diferencias", "tiempo-igual-tablas", "tiempos-completos",
-                 "ic-rondas")
+                 "ic-rondas", "replica0-h1", "replica0-h2", "replica0-h3", "replica0-h4")
 BLOQUES_INICIO = ("hallazgo-tradeoff", "hallazgo-tiempo", "hallazgo-ensamble")
 
 
@@ -1996,7 +2029,12 @@ def bloques_anexo(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
             completo += ["#### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares_replicas(a["rep"]))]
     ruta_pares = rutas.ledger(reg.AGREGADOR) / "pares.csv"
     pares = pd.read_csv(ruta_pares) if ruta_pares.exists() else None
+    replica0 = {}
+    for e in ctx.exps:  # la tabla de la réplica 0 de cada hipótesis, tal como estaba en su página
+        fin_e, ap_e = cargar([reg.CONTROL, e])
+        replica0[f"replica0-{e}"] = tabla_replica0(Contexto(e), fin_e, ap_e)
     return {
+        **replica0,
         "bloque-a-completo": _plegable("Tablas completas del bloque A", "\n".join(completo)),
         "cobertura": tabla_cobertura(a["filas"]),
         "varianza": html_tabla(CAB_VAR, varianza(a["rep"], ctx)) if len(a["rep"]) else pendiente("ninguna variante tiene réplicas"),

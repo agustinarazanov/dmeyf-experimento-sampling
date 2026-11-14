@@ -25,13 +25,13 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 3. Tabla de hipótesis con réplicas
 
-- [ ] 3.1 `bloques_hipotesis` arma la tabla desde el agregado: Δ con réplicas, A con IC, R, veredicto con réplicas,
+- [x] 3.1 `bloques_hipotesis` arma la tabla desde el agregado: Δ con réplicas, A con IC, R, veredicto con réplicas,
   G media, ΔAUC, T mediana, vale la pena; nota al pie para una variante sin réplicas. Verificación: test de que
   `U0.5` sale *indeterminado* con −3.64 en el bloque de `h1`, y de que cada veredicto coincide con el del bloque A.
-- [ ] 3.2 Bloques `replica0-h1` … `replica0-h4` en el Anexo, en la sección nueva «Réplica 0 por hipótesis», con la tabla
+- [x] 3.2 Bloques `replica0-h1` … `replica0-h4` en el Anexo, en la sección nueva «Réplica 0 por hipótesis», con la tabla
   de hoy (semillas ganadas incluidas). Verificación: `test_reporte` lista los bloques nuevos en `BLOQUES_ANEXO`; el
   Δ −1.38 de `U0.5` aparece solo en el Anexo (grep sobre `site/`).
-- [ ] 3.3 Regenerar (`python -m comun.reporte --todos`, `python -m scripts.comparar_rondas`) y revisar el diff: ningún
+- [x] 3.3 Regenerar (`python -m comun.reporte --todos`, `python -m scripts.comparar_rondas`) y revisar el diff: ningún
   número del bloque A cambia. Verificación: `git diff` de `anexo.md` en `bloque-a-completo` vacío.
 
 ## 4. Páginas de hipótesis en estado final
