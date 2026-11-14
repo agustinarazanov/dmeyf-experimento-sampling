@@ -50,12 +50,13 @@ COMMIT=$(git rev-parse --short HEAD)
 LISTA_NOMBRE=$(basename "$LISTA" .txt)   # nombre de la lista en los archivos de calibración
 CALIBRAR=1; { [ -n "$EXTRA" ] || [ -n "${SIN_CALIBRACION:-}" ]; } && CALIBRAR=""
 G="gcloud compute --project=$PROYECTO"
+TMPV=$(mktemp -d /tmp/vm-XXXXXX)   # una carpeta por invocación: varios carriles lanzan a la vez con el mismo commit
 EXPERIMENTOS=$(find experimentos -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | grep -v ' ' | sort)   # carpetas de experimentos del repo (sin las de aportes, que tienen espacios y no tienen ledger)
 
 [ -z "$(git status --porcelain | grep -v '/ledger/' || true)" ] || echo "AVISO: árbol sucio; a la VM va HEAD ($COMMIT), sin los cambios sin commitear" >&2
 
 # Script que corre en la VM. Sale con DONE (o FALLO) en ~/estado para que esta máquina sepa cuándo traer los ledgers.
-cat > /tmp/remoto-$COMMIT.sh <<REMOTO
+cat > $TMPV/remoto-$COMMIT.sh <<REMOTO
 #!/usr/bin/env bash
 set -uo pipefail
 cd ~ && rm -rf repo && mkdir repo && tar xzf repo-$COMMIT.tgz -C repo && cd repo
@@ -102,7 +103,7 @@ REMOTO
 if [ -n "$EN_SECO" ]; then
   echo "== en seco: no se ejecuta gcloud ni gsutil"
   echo "VM: $NOMBRE (n2-highmem-8, Ice Lake, ${PROVISIONING:-STANDARD}) en $ZONA, proyecto $PROYECTO, template $TEMPLATE"
-  echo "repo: git archive HEAD ($COMMIT) -> /tmp/repo-$COMMIT.tgz -> ~/ en la VM; historia: git bundle -> ~/repo_git"
+  echo "repo: git archive HEAD ($COMMIT) -> $TMPV/repo-$COMMIT.tgz -> ~/ en la VM; historia: git bundle -> ~/repo_git"
   echo "lista: $LISTA -> ~/configuraciones.txt (flags extra:${EXTRA:- ninguno})"
   if [ -n "$CALIBRAR" ]; then
     echo "calibración: al empezar y al terminar (experimentos/sampling_1/ledger/tiempos/calibracion_${LISTA_NOMBRE}_inicio.csv y _fin.csv)"
@@ -120,8 +121,8 @@ if [ -n "$EN_SECO" ]; then
     echo "  experimentos/$e/ledger/  ->  $BUCKET/experimentos/$e/ledger/  ->  experimentos/$e/ledger/"
   done
   echo "otros destinos: panel $BUCKET/panel_2019.parquet, Optuna $BUCKET/optuna/ (el $BUCKET/ledger/ viejo no se toca)"
-  echo "-- script remoto (/tmp/remoto-$COMMIT.sh) --"
-  cat /tmp/remoto-$COMMIT.sh
+  echo "-- script remoto ($TMPV/remoto-$COMMIT.sh) --"
+  cat $TMPV/remoto-$COMMIT.sh
   exit 0
 fi
 
@@ -168,11 +169,11 @@ fi
 for i in $(seq 30); do $G ssh "$NOMBRE" --zone="$ZONA" "${SSHF[@]}" --command=true >/dev/null 2>&1 && break; sleep 10; done
 
 echo "== copiando el repo @ $COMMIT"
-git archive --format=tar.gz -o /tmp/repo-$COMMIT.tgz HEAD
-git bundle create /tmp/repo-$COMMIT.bundle HEAD 2>/dev/null
-$G scp /tmp/repo-$COMMIT.tgz /tmp/repo-$COMMIT.bundle "$NOMBRE":~/ --zone="$ZONA" "${SCPF[@]}"
+git archive --format=tar.gz -o $TMPV/repo-$COMMIT.tgz HEAD
+git bundle create $TMPV/repo-$COMMIT.bundle HEAD 2>/dev/null
+$G scp $TMPV/repo-$COMMIT.tgz $TMPV/repo-$COMMIT.bundle "$NOMBRE":~/ --zone="$ZONA" "${SCPF[@]}"
 $G scp "$LISTA" "$NOMBRE":~/configuraciones.txt --zone="$ZONA" "${SCPF[@]}"
-$G scp /tmp/remoto-$COMMIT.sh "$NOMBRE":~/remoto.sh --zone="$ZONA" "${SCPF[@]}"
+$G scp $TMPV/remoto-$COMMIT.sh "$NOMBRE":~/remoto.sh --zone="$ZONA" "${SCPF[@]}"
 # La corrida va en una unidad transitoria de systemd, no en la sesión ssh: el 1-nov una actualización automática
 # (unattended-upgrades reinició el agente de Google) mató el nohup de la fase 3 sin dejar traza. Por eso además se
 # apagan los timers de apt mientras dura la VM.
