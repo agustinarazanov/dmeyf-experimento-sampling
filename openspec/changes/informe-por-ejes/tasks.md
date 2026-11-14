@@ -7,7 +7,7 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 1. Resguardo de las predicciones
 
-- [ ] 1.1 `scripts/verificar_predicciones.py`: extrae `## Predicción` (hasta el siguiente `## `) de cada README de
+- [x] 1.1 `scripts/verificar_predicciones.py`: extrae `## Predicción` (hasta el siguiente `## `) de cada README de
   `control` y `h1`–`h4`, y la compara con la del commit base guardado en el script (`1a5c0da1`). Falla nombrando el
   archivo. Se llama desde `scripts/sitio.sh`. Verificación: pasa en el estado actual, y un test en
   `tests/test_verificar_predicciones.py` cambia una línea de una copia y ve el fallo.

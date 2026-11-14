@@ -3076,3 +3076,11 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
 - Sitio: el encabezado de las tablas HTML pasa a `<thead>` (no se ordena con las filas); sin filtro en pestañas ni en
   las páginas de hipótesis; `## Dependencias` se saca al publicar (hook); «Cómo trabajamos» sale del sitio y Método
   enlaza el repositorio. Specs `sitio-informes`, `reporte-visual` y `grilla-comun` actualizadas a mano.
+
+## 14-nov-2026 — informe-por-ejes, grupo 1 (resguardo de las predicciones)
+
+- Tarea 1.1: `scripts/verificar_predicciones.py` compara la sección `## Predicción` de `control` y `h1` a `h4` con la del
+  commit `1a5c0da1` (`git show`); falla nombrando el archivo. Se llama desde `scripts/sitio.sh`. Pasa en el estado actual
+  (5 secciones iguales); `tests/test_verificar_predicciones.py` cambia una línea de una copia y ve el fallo.
+- Verificadores del grupo: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar` y `scripts/sitio.sh`
+  en verde.

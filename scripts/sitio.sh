@@ -20,6 +20,7 @@ done
 export DISABLE_MKDOCS_2_WARNING=true NO_MKDOCS_2_WARNING=1
 
 python scripts/nombres_sitio.py
+python -m scripts.verificar_predicciones
 mkdocs build --strict
 
 if [ "$SERVE" = 1 ]; then
