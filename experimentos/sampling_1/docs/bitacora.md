@@ -2470,3 +2470,9 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   § Tokens y paso 5); se separaron con una línea en blanco.
 - Spec `sitio-informes` actualizada (navegación, tarjetas, barras, diagramas). `scripts/sitio.sh` y `medir_sitio`
   (13 páginas, 0 problemas) en verde; capturas en claro y oscuro de H1, H4, control, corridas, método y cómo trabajamos.
+- Corrección (mismo día): los renglones seguían sin llegar al ancho del separador y los grupos quedaban más separados.
+  Causas, medidas en Chrome: Material pone `[dir=ltr] .md-nav--primary .md-nav__list { padding-left: .6rem;
+  padding-bottom: .4rem }` y `margin-right: .4rem` en cada enlace, con más especificidad que `estilos.css`, y el
+  `padding-bottom` queda también en un grupo cerrado. Ahora las reglas llevan `[dir]`, el grupo cerrado no ocupa lugar
+  y la separación es un `gap` de 2 px en la lista y en el ítem con sublista: todos los renglones de las dos barras van de
+  borde a borde del separador, con la misma separación dentro, al entrar y al salir de un grupo.

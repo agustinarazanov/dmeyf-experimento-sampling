@@ -29,7 +29,14 @@
   }
   /* Página sin índice: no queda un recuadro vacío a la derecha. */
   .md-sidebar .md-sidebar__inner > .md-nav:not(:has(.md-nav__item)) { display: none; }
+  /* Material deja sangría y 8 px abajo en cada lista (también en un grupo cerrado, que queda más separado del
+     siguiente) y 8 px a la derecha de cada enlace: sin eso, todos los renglones van de borde a borde del separador.
+     La separación entre renglones es un gap de la lista, así que es la misma dentro, al entrar y al salir de un grupo. */
+  [dir] .md-sidebar .md-nav .md-nav__list { display: flex; flex-direction: column; gap: 0.1rem; padding: 0; }
   .md-sidebar .md-nav__item { padding: 0; }
+  [dir] .md-sidebar .md-nav .md-nav__item > .md-nav__link { margin: 0; }
+  .md-sidebar .md-nav__item:has(> .md-nav) { display: flex; flex-direction: column; gap: 0.1rem; }
+  .md-sidebar .md-nav__toggle:not(:checked) ~ .md-nav { display: none; }
   .md-sidebar .md-nav--primary > .md-nav__title,
   .md-sidebar .md-nav--secondary > .md-nav__title {
     display: block;
@@ -49,7 +56,6 @@
   }
   .md-sidebar .md-nav--primary > .md-nav__title .md-nav__button { display: none; }
   .md-sidebar .md-nav__link {
-    margin: 0.1rem 0;
     padding: 0.25rem 0.6rem;
     border-radius: 0.35rem;
     transition: background-color 125ms, color 125ms;
