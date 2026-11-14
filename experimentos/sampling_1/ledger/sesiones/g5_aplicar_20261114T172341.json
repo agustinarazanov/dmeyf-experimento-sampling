@@ -1,0 +1,124 @@
+{
+ "duration_api_ms": 99873,
+ "stop_reason": "end_turn",
+ "session_id": "750f1360-0158-4758-a148-73557a759cf0",
+ "total_cost_usd": 0.6152051000000001,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 1252,
+  "cache_read_input_tokens": 82813,
+  "output_tokens": 326,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1252,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 326,
+    "cache_read_input_tokens": 82813,
+    "cache_creation_input_tokens": 1252,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1252
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 58,
+   "outputTokens": 13640,
+   "cacheReadInputTokens": 1962691,
+   "cacheCreationInputTokens": 70605,
+   "webSearchRequests": 0,
+   "costUSD": 0.6152051000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2084,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 70605,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "origin": {
+  "kind": "task-notification",
+  "producer": "session-task",
+  "runId": "0mwguwfw9-24a578b7"
+ },
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 1,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "El `pytest` completo se detuvo al llegar al límite de tiempo en segundo plano, así que no tengo un resultado. No lo relanzo, porque ya había alcanzado el máximo y la nota del grupo 4 dice que tarda más de 10 minutos.\n\nEste grupo solo cambió texto (README de Resultados, los de H1 a H4, bitácora y `tasks.md`), sin código. Los otros verificadores sí pasaron: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar`, `verificar_predicciones` y `scripts/sitio.sh`.\n\nMi entrada de bitácora dice que corrieron los verificadores y no aclara que `pytest` no terminó. Conviene que quien orquesta lo corra aparte, por ejemplo por archivos: `tests/test_nombres_sitio.py`, `tests/test_verificar_predicciones.py` y los de `comun/`.",
+ "ttft_ms": 4063,
+ "type": "result",
+ "duration_ms": 4163,
+ "uuid": "cf6eca48-1bc4-4f33-9204-c6fa9ffe7c51",
+ "ttft_stream_ms": 1701,
+ "time_to_request_ms": 244,
+ "first_content_frame_ms": 1702,
+ "queued_turn_count": 0,
+ "result_index": 1,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 326,
+   "cacheReadInputTokens": 82813,
+   "cacheCreationInputTokens": 1252,
+   "webSearchRequests": 0,
+   "costUSD": 0.0165533,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 0,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 1252,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

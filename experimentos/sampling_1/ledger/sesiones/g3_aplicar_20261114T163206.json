@@ -1,0 +1,133 @@
+{
+ "duration_api_ms": 124931,
+ "stop_reason": "end_turn",
+ "session_id": "54e0309a-3a30-4fde-a5b5-202d0772aa7c",
+ "total_cost_usd": 0.9799934,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 6865,
+  "cache_read_input_tokens": 1602142,
+  "output_tokens": 3773,
+  "output_tokens_details": {
+   "thinking_tokens": 142
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 6865,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 718,
+    "cache_read_input_tokens": 117869,
+    "cache_creation_input_tokens": 211,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 211
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 84,
+   "outputTokens": 15930,
+   "cacheReadInputTokens": 4020454,
+   "cacheCreationInputTokens": 104620,
+   "webSearchRequests": 0,
+   "costUSD": 0.9799934,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1973,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 104620,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01BfLCcg8xa2jgHq96e4R3ds",
+   "tool_input": {
+    "command": "scripts/sitio.sh > tmp_etapas/v4.log 2>&1; echo $?; tail -8 tmp_etapas/v4.log",
+    "timeout": 600000
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "origin": {
+  "kind": "task-notification",
+  "producer": "session-task",
+  "runId": "0mwgt3iqw-6cbaea4f"
+ },
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 20,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Apliqué el grupo 3 de `informe-por-ejes`: las tareas 3.1, 3.2 y 3.3 están hechas y marcadas, y quedó en un commit. No hice push, como pediste.\n\nCorrí `pytest` solo sobre `tests/test_reporte.py` y `tests/test_tablas_d9.py` (51 passed). Tarda unos 11 minutos, así que no corrí la suite completa. Los otros cuatro verificadores del encabezado de `tasks.md` (`verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar` y `scripts/sitio.sh`) pasaron. `scripts/sitio.sh` incluye `verificar_predicciones`, que dio las 5 secciones Predicción iguales a las del commit `1a5c0da1`.\n\n- **3.1:** `tabla_hipotesis` en `comun/reporte.py` arma la tabla de h1 a h4 desde el agregado, con réplicas. La tabla anterior de réplica 0 pasó a llamarse `tabla_replica0`, sin cambios de contenido.\n- **3.2:** `anexo.md` tiene una sección nueva «Réplica 0 por hipótesis», con los bloques `replica0-h1` a `replica0-h4`.\n- **3.3:** Regeneré con `comun.reporte --todos` y `comparar_rondas`. El diff de `anexo.md` solo agrega esa sección, así que el bloque `bloque-a-completo` no cambió.\n\nDos comprobaciones que pide el texto de las tareas:\n- `U0.5` sale *indeterminado* con −3.64 en la página de h1, y el veredicto de cada variante coincide con el del bloque A (tests nuevos en `tests/test_tablas_d9.py`).\n- El Δ −1.38 de `U0.5` aparece solo en el Anexo del sitio construido.\n\nEl commit lleva «cambio en comun/» en el mensaje y la entrada de la bitácora está escrita. No toqué las tareas «Revisar» ni el grupo 7.",
+ "ttft_ms": 2012,
+ "type": "result",
+ "duration_ms": 153027,
+ "uuid": "6ffe4af7-4036-4baa-8212-f76049da0f39",
+ "ttft_stream_ms": 1355,
+ "time_to_request_ms": 155,
+ "first_content_frame_ms": 1355,
+ "queued_turn_count": 0,
+ "result_index": 1,
+ "model_usage_since_last_result": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 28,
+   "outputTokens": 3773,
+   "cacheReadInputTokens": 1602142,
+   "cacheCreationInputTokens": 6865,
+   "webSearchRequests": 0,
+   "costUSD": 0.22546020000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 142,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 6865,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ }
+}

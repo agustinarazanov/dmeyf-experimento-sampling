@@ -39,6 +39,8 @@ ETAPA_DE_GRUPO_POR_CAMBIO = {
     "incorporar-aportes": {"1": "hipotesis", "2": "codigo", "3": "codigo", "4": "corridas", "5": "corridas",
                            "6": "informe"},
     "sitio-github-pages": {"1": "codigo", "2": "codigo", "3": "codigo", "4": "codigo", "5": "informe"},
+    "informe-por-ejes": {"1": "codigo", "2": "codigo", "3": "codigo", "4": "informe", "5": "informe", "6": "informe",
+                         "7": "revision"},
 }
 DUENO_SIN_DECLARAR = "sampling_1"
 COLUMNAS = [

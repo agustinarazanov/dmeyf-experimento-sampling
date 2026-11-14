@@ -124,3 +124,8 @@ fecha,grupo,rol,modelo,turnos,costo_usd,sesion,resultado,codigo,cambio
 2026-11-14T11:13,6,aplicar,claude-opus-5-5,76,2.7103,58b66dd6-bf11-4afd-b833-47e913869e8e,success,0,tiempos-confiables-y-consistencia
 2026-11-14T11:17,6,revisar,claude-opus-5-5,66,1.4898,c1666823-22f0-4f5a-8e69-6ab7b9e6035c,success,0,tiempos-confiables-y-consistencia
 2026-11-14T16:07,1,aplicar,claude-sonnet-5-5,1,0.5225,2f99c13c-aac2-4985-a9df-1e636a2f511c,success,0,informe-por-ejes
+2026-11-14T16:32,2,aplicar,claude-sonnet-5-5,13,1.0067,276182c9-cce5-44d3-b2c0-64993f9bf327,success,0,informe-por-ejes
+2026-11-14T16:50,3,aplicar,claude-sonnet-5-5,20,0.98,54e0309a-3a30-4fde-a5b5-202d0772aa7c,success,0,informe-por-ejes
+2026-11-14T17:23,4,aplicar,claude-sonnet-5-5,7,2.2667,fa096363-5f76-4839-957a-95ea090927ff,success,0,informe-por-ejes
+2026-11-14T17:38,5,aplicar,claude-sonnet-5-5,1,0.6152,750f1360-0158-4758-a148-73557a759cf0,success,0,informe-por-ejes
+2026-11-14T18:03,6,aplicar,claude-sonnet-5-5,60,0.7366,3b171962-94bc-4c3d-be37-e44c0f9f76d5,success,0,informe-por-ejes

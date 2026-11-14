@@ -3200,3 +3200,17 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   `warning`); el texto del cuerpo de `control` § Rondas y § Apartamientos sigue contando la historia de las rondas, que es
   su contenido.
 - 7.1 hecha.
+
+### 14-nov-2026 — cierre de `informe-por-ejes` (tarea 7.2)
+- Sesión: `74af321d-03bb-4a2a-b3c0-e2d80cd77a4b` (interactiva, orquestó los grupos 1 a 6 con `scripts/etapas.sh`
+  sin revisión por grupo, `REVISAR=0 HASTA=6`, y lanzó la revisión 7.1) · modelo: Opus · etapa: **revision**.
+- `openspec validate informe-por-ejes`: «Change 'informe-por-ejes' is valid», con dos avisos de requisitos largos
+  (`lectura-por-ejes` «Ejes declarados en el registro» y `sitio-informes` «Páginas en estado final»), sin errores.
+- Suite completa: `python -m pytest -q` 342 passed, 2 skipped (13 min); `verificar_readme`, `verificar_informe_h3`,
+  `comun.variantes --verificar`, `verificar_predicciones` y `scripts/sitio.sh` en verde.
+- `comun/tokens.py` gana la tabla de grupos de `informe-por-ejes` (1–3 código, 4–6 informe). Tokens
+  (`python -m comun.tokens --experimento sampling_1`): grupos 1–6 con Sonnet, US$ 6,13 en total; contexto por turno
+  entre 70.000 y 99.000, salvo el grupo 4 (`fa096363`, 73 turnos, ≈ 142.000, arriba del objetivo: leyó las cinco
+  páginas de hipótesis enteras con sus bloques generados para reescribir Diseño y Veredicto). Esta sesión: 24 turnos,
+  ≈ 87.000 de contexto por turno.
+- 7.2 hecha.
