@@ -161,9 +161,21 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
 
     Entrenar con menos filas al azar pierde desde r = 0,25; solo r = 0,5 *no pierde*, con A = 2,25.
 
+!!! warning "Con réplicas (fase 8): ninguna de las dos, y `U0.5` sale de \"vale la pena\""
+    Con 8 réplicas de optimización (§ Réplicas de H1), `U0.5` queda *indeterminado*: Δ con réplicas −3,64
+    [−6,58; −0,71], con A = 2,37 [1,60; 2,98] (una sola referencia de T del control). `U0.25` (−8,09), `U0.1` (−17,47)
+    y `U0.05` (−27,74) *pierden*, con A de 4,99; 10,13 y 15,94. Por la regla escrita el 13-nov, `U0.5` deja la lista de
+    variantes que valen la pena. La tabla de arriba es la réplica 0; el veredicto con réplicas la reemplaza, y las cifras
+    salen del bloque A de [Resultados](../sampling_1/README.md).
+
 ## Limitaciones
 
-- **Una sola búsqueda por variante.** Una sola semilla de Optuna por variante: Δ incluye la suerte de la optimización y el IC no la mide.
+- **Réplicas agregadas después de mirar 201910.** Las 8 réplicas de `U*` se decidieron después de ver el test en las
+  celdas vecinas; entraron las cuatro tasas juntas con regla previa. Los veredictos con réplicas se suman a los de la
+  grilla común sin corrección por comparaciones múltiples.
+
+- **Una sola búsqueda por variante en la réplica 0.** La tabla de § Resultado usa una sola semilla de Optuna por variante:
+  su Δ incluye la suerte de la optimización y el IC no la mide. El Δ con réplicas sí la mide.
 
 - **Estudios compartidos con H3.** Los estudios de `U0.25` y `U0.1` los usa también H3: Δ(`U0.25`) y Δ(`H3-0.25`) no son evidencia independiente entre
     sí.
