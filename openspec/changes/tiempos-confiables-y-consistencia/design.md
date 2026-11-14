@@ -79,7 +79,9 @@ Restricciones:
   - **Conflictos esperados al unir:** `comun/variantes.py` y `tests/test_variantes.py` (los dos cambios los tocan),
     `cargar_replicas` en `comun/reporte.py`, y las secciones nuevas de `docs/hipotesis.md` y `docs/diseno.md`, que pasan
     al README de cada experimento. Las rutas que nombra este cambio (`informe.md`, `tabla_resultados.md`, `guion.md`,
-    `docs/hipotesis.md`, las figuras) son las de hoy y se actualizan al unir.
+    `docs/hipotesis.md`, las figuras) son las de hoy y se actualizan al unir. Desde 2b.3 este documento las conserva
+    como estaban; la equivalencia con las rutas nuevas está en `proposal.md` (último párrafo) y en
+    `sampling_1/docs/rutas.md`, y las tareas de los grupos 3, 4 y 6 ya usan las nuevas.
   - **El bucket es uno solo.** La mudanza de D10 lo cambia para las dos ramas; `sitio-legible` no lanza VMs ni
     sincroniza ledgers, así que no la deshace. Si alguien lanza una VM desde `main` antes de unir, los estudios vuelven
     a `h3`: no se lanza nada desde `main` hasta la unión.

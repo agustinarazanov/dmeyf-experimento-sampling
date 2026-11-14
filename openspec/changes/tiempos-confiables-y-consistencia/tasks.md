@@ -137,7 +137,7 @@ Qué puede ir en paralelo:
   `sitio-legible`, y los deltas de `reporte-visual` y `dependencias-entre-experimentos` contra las specs ya archivadas
   de aquel. Sumados a 3.7b, 6.2 y 6.3 los pendientes de la revisión de 2b. `openspec validate` en verde (14-nov,
   bitácora de `sampling_1`).
-  - [ ] Revisión corta del resultado en sesión limpia.
+  - [x] Revisión corta del resultado en sesión limpia (14-nov, bitácora de `sampling_1`).
 
 ## 3. Código del reporte (sesión: Sonnet)
 

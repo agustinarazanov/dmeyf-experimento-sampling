@@ -2850,3 +2850,24 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
   la capacidad modificada y la nota de rutas.
 - `openspec validate tiempos-confiables-y-consistencia`: válido (un aviso de requisito largo en `medicion-tiempos`, que
   ya estaba). Falta la revisión corta en sesión limpia (sub-ítem de 2b.3).
+
+### 2026-11-14 — cierre revisión corta de 2b.3 de `tiempos-confiables-y-consistencia` (`/opsx:update`)
+
+- Sesión headless, sin contexto de la que hizo 2b.3 · modelo: Opus · etapa: **revision**. Revisor: Claude (Opus).
+  Lista: `docs/revision.md` § 2 (diseño), en lo que aplica a un cambio de rutas y deltas sin variantes nuevas.
+- Comandos: `openspec validate tiempos-confiables-y-consistencia` válido (con y sin `--strict`; solo el aviso de
+  requisito largo en `medicion-tiempos`); un script en `tmp_etapas/` que busca en `tasks.md`, `proposal.md` y los
+  deltas las rutas entre comillas invertidas que no existen en el repo.
+- Ítems: las rutas que faltan en `tasks.md` son de los grupos 1 y 2 (hechos, historia) o nombres de CSV de `ledger/` y
+  `DATOS_DIR`; en los grupos 3, 4 y 6 todas existen (`sampling_1/docs/guion.md`, `anexo.md`, `figuras/tradeoff.svg`, los
+  README). Los encabezados MODIFIED coinciden con las specs archivadas («Comparación limpia en dos bloques» y
+  «Dependencias declaradas») y no se pierden escenarios (7 de 7 en `reporte-visual`; en `dependencias` quedan los 3
+  y se suman 2). Los deltas ya no nombran `tabla_resultados.md`, `informe/informe.md` ni `docs/hipotesis.md` (salvo
+  el escenario «Sección en el archivo viejo», que viene de la spec archivada). Los pendientes de la revisión de 2b.1
+  están en 3.7b (833 px), 6.2 (4 números de h2) y 6.3 (el 1,23). Grilla, apareo, trials y costo no cambian con 2b.3.
+- Hallazgos: 1. Menor, ✗→✓: `design.md` seguía diciendo que sus rutas «se actualizan al unir», y conserva
+  `tabla_resultados.md`, `decisiones.md` y `docs/hipotesis.md` (§ Restricciones, predicciones, informe).
+- Correcciones: nota en `design.md` § Restricciones: el documento conserva las rutas viejas y la equivalencia está en
+  `proposal.md` y `sampling_1/docs/rutas.md`. No se reescribió el diseño.
+- 2b.2 sigue abierta (verdes de los verificadores y unir a `main`).
+- Tokens: los cuenta `comun/tokens.py` al cerrar el grupo (esta sesión no lo corre).
