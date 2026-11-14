@@ -56,11 +56,64 @@ def buscar() -> list[str]:
     return hallazgos
 
 
+# Títulos de proceso (informe-por-ejes D7): cuentan cómo se llegó al informe en lugar de qué dice. Se aceptan solo en
+# `## Predicción`, que es pre-registro y no se reescribe.
+TITULO = re.compile(r"^#{1,4} (.*)$")
+PROCESO = re.compile(r"cambio|\b\d{1,2}-[a-z]{3}\b|\d{4}-\d{2}-\d{2}|zulip", re.IGNORECASE)
+
+
+def cambios_archivados() -> list[str]:
+    """Nombres de los cambios de openspec/changes/archive, sin el prefijo de fecha."""
+    carpeta = RAIZ / "openspec" / "changes" / "archive"
+    return sorted(re.sub(r"^\d{4}-\d{2}-\d{2}-", "", p.name) for p in carpeta.iterdir() if p.is_dir()) if carpeta.is_dir() else []
+
+
+def titulos_de_proceso(texto: str, archivados: list[str] | None = None) -> list[tuple[int, str, str]]:
+    """(línea, título, motivo) de los títulos `#`–`####` de proceso fuera de `## Predicción` (hasta el siguiente `## `)."""
+    archivados = cambios_archivados() if archivados is None else archivados
+    hallazgos = []
+    en_prediccion = False
+    en_codigo = False
+    for n, linea in enumerate(texto.splitlines(), start=1):
+        if linea.lstrip().startswith("```"):
+            en_codigo = not en_codigo
+        m = None if en_codigo else TITULO.match(linea)
+        if not m:
+            continue
+        titulo = m.group(1)
+        if linea.startswith("## "):
+            en_prediccion = titulo.strip().lower() == "predicción"
+        if en_prediccion:
+            continue
+        p = PROCESO.search(titulo)
+        if p:
+            hallazgos.append((n, titulo, f"«{p.group(0)}»"))
+            continue
+        nombre = next((a for a in archivados if a in titulo), None)
+        if nombre:
+            hallazgos.append((n, titulo, f"cambio archivado «{nombre}»"))
+    return hallazgos
+
+
+def buscar_titulos() -> list[str]:
+    archivados = cambios_archivados()
+    return [
+        f"{ruta}:{n}: título de proceso {motivo}: {titulo[:100]}"
+        for ruta in paginas_publicadas()
+        for n, titulo, motivo in titulos_de_proceso((RAIZ / ruta).read_text(encoding="utf-8"), archivados)
+    ]
+
+
 def main() -> int:
     hallazgos = buscar()
     if hallazgos:
         print("Nombres de personas en páginas publicadas (redacción impersonal, sitio-legible D8):", file=sys.stderr)
         print("\n".join(hallazgos), file=sys.stderr)
+        return 1
+    titulos = buscar_titulos()
+    if titulos:
+        print("Títulos de proceso fuera de ## Predicción (informe-por-ejes D7): el título dice qué hay, no cómo se llegó:", file=sys.stderr)
+        print("\n".join(titulos), file=sys.stderr)
         return 1
     return 0
 

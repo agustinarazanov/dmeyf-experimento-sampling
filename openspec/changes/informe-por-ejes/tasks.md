@@ -43,9 +43,9 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
   Verificación: ídem.
 - [x] 4.3 H4: Diseño y Veredicto en tres partes (búsqueda informada, final con bajas, grilla común); las menciones a
   211718 y 212124 pasan a la regla del curso que aplican. Verificación: ídem.
-- [ ] 4.4 Control y reglas: títulos de proceso fuera de § Predicción reescritos (p. ej. § Medición de tiempos).
+- [x] 4.4 Control y reglas: títulos de proceso fuera de § Predicción reescritos (p. ej. § Medición de tiempos).
   Verificación: ídem.
-- [ ] 4.5 Regla de títulos de proceso en `scripts/nombres_sitio.py` (fuera de § Predicción: «cambio», fechas, «Zulip»,
+- [x] 4.5 Regla de títulos de proceso en `scripts/nombres_sitio.py` (fuera de § Predicción: «cambio», fechas, «Zulip»,
   nombres de cambios archivados). Verificación: `scripts/sitio.sh` pasa; un test con un título «### X (cambio `y`,
   13-nov-2026)» ve el fallo.
 

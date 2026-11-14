@@ -4,7 +4,7 @@ H2 prueba si dejar que LightGBM muestree filas en cada árbol (`bagging_fraction
 train antes, acelera sin perder ganancia.
 
 Responde a **dónde achicar**: dentro de LightGBM, sin tocar el train
-([Resultados § ¿Dónde achicar?](../sampling_1/README.md#donde-achicar)).
+([Resultados](../sampling_1/README.md) § ¿Dónde achicar?).
 
 ## Idea
 

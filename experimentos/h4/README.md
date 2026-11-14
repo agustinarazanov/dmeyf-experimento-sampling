@@ -4,7 +4,7 @@ H4 prueba si conviene que la muestra que acelera el pipeline conserve todas las 
 modelo final.
 
 Responde a **cómo muestrear**: qué filas se conservan al achicar la búsqueda o el final
-([Resultados § ¿Cómo muestrear?](../sampling_1/README.md#como-muestrear)).
+([Resultados](../sampling_1/README.md) § ¿Cómo muestrear?).
 
 ## Idea
 

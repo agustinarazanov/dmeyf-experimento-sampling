@@ -3113,3 +3113,21 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   nueva, `bloque-a-completo` no cambia.
 - Verificadores: `pytest` de `test_reporte` y `test_tablas_d9` (51 passed), `verificar_readme`, `verificar_informe_h3`,
   `comun.variantes --verificar` y `scripts/sitio.sh` (con `verificar_predicciones`) en verde.
+
+## 14-nov-2026 — informe-por-ejes, grupo 4 (páginas de hipótesis en estado final)
+
+- Tareas 4.1 a 4.3: H1, H2, H3 y H4 con la línea del eje que responden, Diseño sin subtítulos de proceso (grilla,
+  réplicas y dueño de los estudios en estado final, sin «antes/ahora» ni fechas), un solo recuadro de Veredicto con
+  réplicas y una línea por predicción (se cumplió o no). H3 lleva las extensiones K, R y L como subsección de Diseño y de
+  Veredicto; H4 tiene Diseño y Veredicto en tres partes (búsqueda informada, final con bajas, grilla común) y el 211718
+  pasa a la regla del curso «siempre OP». La tabla de la réplica 0 queda solo en el Anexo. Las secciones Predicción no
+  se tocaron (`verificar_predicciones` en verde). Los enlaces a Resultados citan la sección sin anclaje: los anclajes
+  llegan con la tarea 5.1.
+- Tarea 4.4: fuera de § Predicción, `control` no tiene títulos de proceso; el único (§ Medición de tiempos) está dentro de
+  Predicción, que es pre-registro y no se reescribe. Sí se renombraron dos títulos de `corridas.md` («Grilla común» y
+  «Fase 8: grilla común y medición de tiempos»), que la regla nueva marcaba.
+- Tarea 4.5: `scripts/nombres_sitio.py` rechaza títulos `#`–`####` con «cambio», fecha, «Zulip» o el nombre de un cambio
+  archivado, salvo dentro de `## Predicción`; `tests/test_nombres_sitio.py` (el caso «### X (cambio `y`, 13-nov-2026)»
+  falla).
+- Verificadores: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar`, `verificar_predicciones` y
+  `scripts/sitio.sh` en verde; `pytest` completo con código 0 (tarda más de 10 minutos; corrió en segundo plano).

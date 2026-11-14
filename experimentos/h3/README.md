@@ -3,7 +3,7 @@
 H3 prueba si alcanza con correr Optuna sobre una muestra chica del train y entrenar el modelo final con todas las filas.
 
 Responde a **dónde achicar**: solo la búsqueda de hiperparámetros, con filas al azar
-([Resultados § ¿Dónde achicar?](../sampling_1/README.md#donde-achicar)).
+([Resultados](../sampling_1/README.md) § ¿Dónde achicar?).
 
 ## Idea
 

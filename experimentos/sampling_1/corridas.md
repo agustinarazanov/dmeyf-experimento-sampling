@@ -192,7 +192,7 @@ del control, así que los veredictos esperan a que esté su fase completa, pero 
 las finales con la lista de configuraciones. El corredor saltea las que ya tienen fila en `ledger/corridas/`. Si una
 variante termina con menos semillas, el apareo usa las que tiene y se anota en la bitácora.
 
-### Grilla común (cambio `tiempos-confiables-y-consistencia`, 13-nov-2026)
+### Grilla común
 
 Hasta la ronda 201903–201908 las hipótesis no comparten grilla, y entre H1 y H4 hay solo dos cruces, ninguno directo (dos
 Δ contra el control). Por eso se agrega una **grilla común**: las mismas cuatro tasas {0,5; 0,25; 0,1; 0,05} y 8 réplicas
@@ -219,7 +219,7 @@ cada hipótesis (§ Réplicas de H1, § Réplicas de H2 y `B0.05`, § `H3-0.5`, 
 - H2 no entra en los pares directos: `bagging_fraction` sale del espacio de Optuna en `B*`, así que la comparación con
   `U*` es descriptiva.
 
-### Fase 8: grilla común y medición de tiempos (13-nov-2026, D15)
+### Fase 8: grilla común y medición de tiempos
 
 Completa la grilla común con 8 réplicas en todo el bloque A, y mide los tiempos a hiperparámetros fijos y la calibración
 por máquina ([`control`](../control/README.md) § Medición de tiempos). Por hipótesis: § Réplicas y grilla común de
