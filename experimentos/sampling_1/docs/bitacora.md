@@ -2942,3 +2942,23 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
 - Corregido: `guion.md`, «En H3 y en las H4 que ya tenían réplicas antes de la grilla común». El número se reescribe
   con la fase 8 en 6.3.
 - Tokens: ≈ 14 turnos · ≈ US$ 0,70 (presupuesto de la sesión US$ 2).
+
+### 2026-11-14 — grupo 6 de `tiempos-confiables-y-consistencia`, tareas 6.1, 6.2 y 6.4
+
+- Sesión: `7fbe3b55` · modelo: Opus · etapa: **informe** (grupo 6), headless, rama `tiempos-confiables`.
+- 6.1: `reporte --todos` sin cambios; `comparar_rondas` suma el Δ con réplicas de `U*`, `B*` y `GOSS` a § Rondas del
+  Anexo. Reglas de 1.1 y 1.2 aplicadas y anotadas en las bitácoras de `control` y `h1`–`h4`: `U0.5` *indeterminado*
+  con réplicas (sale de "vale la pena"); H2 del 13-nov confirmada; `H3-0.5` confirmada; H4 reglas 6 y 7 confirmadas,
+  8, 9 y 10 refutadas; en `control`, A_fijo(0,05) = 20,70 refuta la primera parte y las anclas de calibración quedan
+  fuera de [0,9; 1,1] (final contra la fase 7 en 15 de 17 VMs; contra `C-rep`, ninguna).
+- 6.2: README de `h1`–`h4` con veredictos con réplicas, A con intervalo y limitaciones; los cuatro números de `h2` sin
+  fuente reemplazados (con réplicas desaparece la discrepancia AUC/ganancia de `B0.25` y `GOSS`). El 69 % de
+  `h3/sensibilidad_muestra` ya se citaba como ahorro solo de búsqueda.
+- 6.4: regla de D14 en `docs/metodo.md` y `docs/revision.md` § 2.
+- **Pendientes para la próxima sesión: 6.3 y 6.5** (Resultados, guion y README raíz: el 1,23 de `B0.25`, ahora 1,67
+  con réplicas; "vale la pena" sin `U0.5`; el piso de varianza entre réplicas; la frase de `U*`/`B*`/`GOSS` sin
+  réplicas; el párrafo de lo medido; Diálogo entre H1 y H4). Sin hacer por presupuesto de la sesión, no por bloqueo.
+- Pendiente de código (no de este grupo): la regla de calibración pide que el informe marque las filas de las VMs
+  fuera de rango; hoy el reporte solo da el resumen.
+- Verificaciones: `verificar_informe_h3` 0 sin fuente; `verificar_readme`, `comun.variantes --verificar`,
+  `scripts/sitio.sh` y `medir_sitio` en verde.
