@@ -23,8 +23,8 @@ flowchart TB
   HP --> E[modelo final]
   M2 --> E
   E --> T["G en 201910 al corte N*"]
-  style M1 fill:#fdebd0,stroke:#b8860b
-  style M2 fill:#fdebd0,stroke:#b8860b
+  style M1 fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
+  style M2 fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
 ```
 
 ## Predicción

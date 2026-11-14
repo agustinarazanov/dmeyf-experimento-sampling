@@ -75,7 +75,7 @@ exclude_docs: |
   !/sitio/estilos.css
   !/sitio/tablas.js
   !/sitio/hipotesis/README.md
-  !/sitio/como-medimos/README.md
+  !/sitio/metodo/README.md
   !/experimentos/sampling_1/README.md
   !/experimentos/sampling_1/anexo.md
   !/experimentos/sampling_1/figuras/**
@@ -95,21 +95,20 @@ exclude_docs: |
 
 nav:
   - Inicio: index.md
-  - Resultados:
-    - experimentos/sampling_1/README.md
-    - experimentos/sampling_1/anexo.md
+  - experimentos/sampling_1/README.md
+  - experimentos/sampling_1/anexo.md
   - Hipótesis:
     - sitio/hipotesis/README.md
     - experimentos/h1/README.md
     - experimentos/h2/README.md
     - experimentos/h3/README.md
     - experimentos/h4/README.md
-  - Cómo medimos:
-    - sitio/como-medimos/README.md
+  - Método:
+    - sitio/metodo/README.md
     - experimentos/control/README.md
     - experimentos/sampling_1/corridas.md
     - experimentos/sampling_1/exploratorios/README.md
-  - Cómo trabajamos: docs/metodo.md
+    - docs/metodo.md
 
 validation:
   links:

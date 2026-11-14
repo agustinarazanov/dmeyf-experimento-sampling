@@ -31,6 +31,7 @@ muestra). Las fases, el reparto por máquina y el costo están abajo; los aparta
 
   e2 queda descartada porque no deja fijar la plataforma de CPU. Región `northamerica-northeast2`, donde están los
   templates del curso; si no hay capacidad en la zona `-b`, se usa `-a` o `-c` (las tres tienen Ice Lake).
+
 - Las fases 1 a 7 corrieron en VMs spot. Hoy `scripts/vm.sh` crea las VMs **a pedido** por defecto, porque las spot se
   reclaman a los minutos cuando falta capacidad; `PROVISIONING=SPOT` usa el template tal cual.
 - La cuota del trial es de 32 vCPU por proyecto (`CPUS_ALL_REGIONS`): 4 VMs de 8 vCPU a la vez. Las fases grandes van en
@@ -127,26 +128,28 @@ cada experimento y los SQLite al bucket, trae los ledgers y **borra la VM** al t
 
 Las corridas se lanzaron todas desde una sola cuenta.
 
-```mermaid
-timeline
-    1-nov : Fases 1 a 3 : H1, H2, H3 y el control
-    2-nov : Fase 4 : finales con predicciones
-    8-nov : Fase 5 : réplicas de la optimización
-    9-nov : Fase 6 : H4, extensiones de H3 y exploratorios
-    12-nov : Fase 7 : ronda 201903–201908
-```
+<div class="pasos fechas" markdown>
+
+1. **1-nov · fases 1 a 3**: H1, H2, H3 y el control.
+2. **2-nov · fase 4**: finales con predicciones.
+3. **8-nov · fase 5**: réplicas de la optimización.
+4. **9-nov · fase 6**: H4, extensiones de H3 y exploratorios.
+5. **12-nov · fase 7**: ronda 201903–201908.
+
+</div>
 
 Recorrido de una corrida, de la lista a las páginas:
 
-```mermaid
-flowchart TB
-    L["scripts/lanzar_fase.sh lista"] --> V["VM n2-highmem-8"]
-    V --> B["bucket"]
-    B --> G["gsutil rsync"]
-    G --> D["ledger de cada experimento"]
-    D --> R["comun/reporte.py"]
-    R --> P["páginas del sitio"]
-```
+<div class="pasos" markdown>
+
+1. `scripts/lanzar_fase.sh <lista>` crea la VM.
+2. La VM `n2-highmem-8` corre la lista.
+3. Sube los ledgers y los SQLite al bucket.
+4. `gsutil rsync` los trae al `ledger/` de cada experimento.
+5. `comun/reporte.py` regenera tablas y figuras.
+6. Las páginas del sitio las muestran.
+
+</div>
 
 | fase | fecha | tag | VMs | carga |
 |---|---|---|---|---|

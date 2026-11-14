@@ -2449,3 +2449,24 @@ declara acá es la que usa `comun/tokens.py` para clasificar la sesión.
   verificadores leen y escriben ahí. Las predicciones de `main` están en `DATOS_DIR/ledger/<exp>/predicciones/` (D18):
   `comun/rutas.prediccion()` también acepta la ruta vieja del repo. Después de unir, hay que regenerar. Se le avisó a
   la sesión «consistencia», que espera conflicto en `scripts/vm.sh`.
+
+### 13-nov-2026 · sitio: barras, navegación y diagramas (pedido de ajustes)
+
+- Barras laterales: cada renglón ocupa el ancho de la línea bajo el título; la página activa se marca solo con fondo
+  (sin borde izquierdo); los subniveles se sangran sin guía vertical; en oscuro el renglón bajo el mouse va en blanco; una
+  página sin índice ya no muestra un recuadro vacío a la derecha.
+- Navegación: Inicio, Resultados y Anexo de resultados al mismo nivel; «Cómo medimos» pasa a **Método**
+  (`sitio/como-medimos/` → `sitio/metodo/`) y suma Cómo trabajamos como cuarta hija y cuarta tarjeta.
+- Tarjetas: al pasar el mouse, borde y fondo del color de acento (la sombra del tema no se veía en oscuro).
+- Diagramas Mermaid de H1–H4 y del control: `style` no acepta `var(--…)` (Mermaid falla al parsear), así que los
+  cuadros destacados van con tinte semitransparente (hex de 8 dígitos) y borde de color; el texto queda del tema y se
+  lee en claro y en oscuro.
+- Secuencias sin ramas: la línea de tiempo de fases (Mermaid `timeline`, chica y con colores fijos) y el recorrido de
+  una corrida en Corridas, y las etapas en Cómo trabajamos, pasan a `.pasos` (lista numerada con círculos y línea;
+  `.fechas` para la línea de tiempo y `.compuertas` para la revisión entre etapas). El diagrama de los pasos para
+  agregar una hipótesis se saca: la lista detallada misma va como `.pasos`. Los meses del control pasan a una grilla
+  etapa × mes (Optuna y final, con historia, train, AUC y test).
+- De paso: cuatro listas se publicaban pegadas a un párrafo (Corridas § Máquina, Control § Diseño, Cómo trabajamos
+  § Tokens y paso 5); se separaron con una línea en blanco.
+- Spec `sitio-informes` actualizada (navegación, tarjetas, barras, diagramas). `scripts/sitio.sh` y `medir_sitio`
+  (13 páginas, 0 problemas) en verde; capturas en claro y oscuro de H1, H4, control, corridas, método y cómo trabajamos.

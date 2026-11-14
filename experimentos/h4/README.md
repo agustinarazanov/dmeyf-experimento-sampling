@@ -34,9 +34,9 @@ flowchart TB
   FC --> E
   FF --> E
   E --> T["G en 201910 al corte N*"]
-  style MB fill:#fdebd0,stroke:#b8860b
-  style MF fill:#fdebd0,stroke:#b8860b
-  style FF fill:#fdebd0,stroke:#b8860b
+  style MB fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
+  style MF fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
+  style FF fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
 ```
 
 ## Predicción

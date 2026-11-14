@@ -45,8 +45,8 @@ la configuración de Claude ni los cambios de OpenSpec. Lo que queda fuera se en
 - **THEN** el sitio responde que la página no existe
 
 ### Requirement: Navegación por secciones
-El sitio SHALL tener una barra lateral con estas secciones en este orden: Inicio, Resultados (con el Anexo como hija),
-Hipótesis (H1 a H4), Cómo medimos (control y reglas, corridas, exploratorios) y Cómo trabajamos. Cada entrada de la
+El sitio SHALL tener una barra lateral con estas entradas en este orden: Inicio, Resultados, Anexo de resultados (las
+tres al mismo nivel), Hipótesis (H1 a H4) y Método (control y reglas, corridas, exploratorios y cómo trabajamos). Cada entrada de la
 barra SHALL llevar el título de su página (por ejemplo «H4 · Muestras informadas por clase»). Cada resultado SHALL tener
 una sola página donde buscarlo. El sitio SHALL tener búsqueda de texto completo sobre todas las páginas publicadas.
 
@@ -169,9 +169,9 @@ contenido.
 - **THEN** el índice de la derecha muestra todos los títulos y marca Limitaciones
 
 ### Requirement: Páginas de sección como índice
-Una entrada de la barra lateral que tiene hijas y no tiene contenido propio (Hipótesis, Cómo medimos) SHALL ser una
-página corta con una tarjeta por hija (título y una línea). El contenido SHALL estar en las hijas. Resultados es la
-excepción: tiene contenido propio y el Anexo como hija.
+Una entrada de la barra lateral que tiene hijas y no tiene contenido propio (Hipótesis, Método) SHALL ser una página
+corta con una tarjeta por hija (título y una línea). El contenido SHALL estar en las hijas. Al pasar el mouse por una
+tarjeta, su borde SHALL cambiar de color con contraste suficiente en claro y en oscuro.
 
 #### Scenario: Abrir Hipótesis
 - **WHEN** se abre la sección Hipótesis
@@ -179,7 +179,7 @@ excepción: tiene contenido propio y el Anexo como hija.
 
 #### Scenario: Abrir Resultados
 - **WHEN** se hace clic en Resultados en la barra lateral
-- **THEN** se abre la página de Resultados, y el Anexo aparece debajo como hija
+- **THEN** se abre la página de Resultados, y el Anexo de resultados es la entrada siguiente, al mismo nivel
 
 ### Requirement: Encabezado que entra
 El encabezado SHALL decir «Sampling_1 · DMEyF 2026» y SHALL leerse completo en todos los anchos, del teléfono al
@@ -193,7 +193,10 @@ escritorio: en una línea en escritorio y, en pantallas angostas, en un encabeza
 #### Scenario: Barras laterales parejas
 - **WHEN** se abre una página con índice a 1440 px, en claro y en oscuro
 - **THEN** las dos barras muestran su título, arrancan a la misma altura, van en un recuadro, y la página activa y la
-  sección que se lee están marcadas
+  sección que se lee están marcadas con un fondo, sin borde lateral
+- **AND** cada renglón ocupa el ancho de la línea bajo el título, los subniveles se sangran sin guía vertical, y en
+  oscuro el renglón bajo el mouse va en blanco
+- **AND** en una página sin índice no hay recuadro a la derecha
 
 #### Scenario: Veredicto y limitaciones legibles
 - **WHEN** se abre la página de H3
@@ -209,14 +212,17 @@ escritorio: en una línea en escritorio y, en pantallas angostas, en un encabeza
 Cada página publicada SHALL ayudar a leer con elementos visuales y no solo con texto:
 - los veredictos y las limitaciones van en recuadros destacados;
 - cada hipótesis tiene un diagrama del pipeline que marca dónde corta;
-- Cómo medimos tiene la línea de tiempo de meses y la regla de veredicto como diagrama;
-- Corridas tiene la línea de tiempo de las fases y un diagrama del recorrido de una corrida, de la VM al ledger y a las
+- Control y reglas tiene los meses que usa cada etapa (una fila por etapa, una columna por mes) y la regla de
+  veredicto como diagrama;
+- Corridas tiene la línea de tiempo de las fases y los pasos del recorrido de una corrida, de la VM al ledger y a las
   páginas;
 - Cómo trabajamos tiene un diagrama de las etapas con sus compuertas de revisión y uno de los pasos para agregar una
   hipótesis;
 - Exploratorios tiene un diagrama de qué motivó cada estudio en el experimento.
 
-Un texto largo SHALL NOT ir dentro de una celda de tabla.
+Una secuencia sin ramas (una caja por paso) SHALL ir como lista de pasos numerados unidos por una línea, no como
+diagrama de flujo. Los colores de los diagramas SHALL leerse en claro y en oscuro: tintes semitransparentes con borde
+de color, nunca un fondo claro fijo. Un texto largo SHALL NOT ir dentro de una celda de tabla.
 
 #### Scenario: Página de H3
 - **WHEN** se abre la página de H3

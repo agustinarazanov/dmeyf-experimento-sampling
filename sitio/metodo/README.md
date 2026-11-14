@@ -1,4 +1,6 @@
-# Cómo medimos
+# Método
+
+Cómo se mide y decide cada variante, cómo se corrió y cómo trabajamos.
 
 <div class="grid cards" markdown>
 
@@ -19,5 +21,11 @@
     ---
 
     Tres estudios con su propio protocolo que motivaron las réplicas, H4 y las extensiones de H3.
+
+-   **[Cómo trabajamos](../../docs/metodo.md)**
+
+    ---
+
+    Etapas con revisión en sesión limpia, modelo por etapa, tokens, registros y cómo agregar una hipótesis.
 
 </div>

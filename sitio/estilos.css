@@ -17,7 +17,8 @@
 .md-typeset img { max-width: 100%; }
 
 /* Barras laterales (navegación a la izquierda, índice de la página a la derecha), D13: las dos con su título, el mismo
-   espacio arriba y un recuadro; la página activa y la sección que se lee llevan una barrita del color de acento. Los
+   espacio arriba y un recuadro; la página activa y la sección que se lee llevan el fondo del color de acento. Cada
+   renglón ocupa el ancho de la línea bajo el título; los subniveles se sangran por dentro, sin guía vertical. Los
    colores salen de las variables del tema, así que valen en claro y en oscuro. */
 @media screen and (min-width: 76.25em) {
   .md-sidebar { padding-top: 0.6rem; }
@@ -26,6 +27,9 @@
     border-radius: 0.6rem;
     padding: 0.5rem 0.4rem 0.6rem;
   }
+  /* Página sin índice: no queda un recuadro vacío a la derecha. */
+  .md-sidebar .md-sidebar__inner > .md-nav:not(:has(.md-nav__item)) { display: none; }
+  .md-sidebar .md-nav__item { padding: 0; }
   .md-sidebar .md-nav--primary > .md-nav__title,
   .md-sidebar .md-nav--secondary > .md-nav__title {
     display: block;
@@ -48,29 +52,116 @@
     margin: 0.1rem 0;
     padding: 0.25rem 0.6rem;
     border-radius: 0.35rem;
-    border-left: 0.15rem solid transparent;
     transition: background-color 125ms, color 125ms;
   }
+  .md-sidebar .md-nav .md-nav .md-nav__link { padding-left: 1.4rem; }
+  .md-sidebar .md-nav .md-nav .md-nav .md-nav__link { padding-left: 2.2rem; }
   .md-sidebar .md-nav__link:hover { background: var(--md-default-fg-color--lightest); }
+  /* En oscuro, el acento del tema sobre el fondo del recuadro se lee poco: el renglón bajo el mouse va en blanco. */
+  [data-md-color-scheme="slate"] .md-sidebar .md-nav__link:hover,
+  [data-md-color-scheme="slate"] .md-sidebar .md-nav__container:hover > .md-nav__link { color: #ffffff; }
   /* Sección con página índice: el contenedor es el renglón; el enlace y la flecha de adentro no suman sangría. */
-  .md-sidebar .md-nav__container > .md-nav__link {
+  .md-sidebar .md-nav__item .md-nav__container > .md-nav__link {
     margin: 0;
     padding: 0;
-    border: 0;
     background: none;
   }
   .md-sidebar .md-nav__link--active,
   .md-sidebar .md-nav__item--active > .md-nav__link {
-    border-left-color: var(--md-accent-fg-color);
     background: var(--md-accent-fg-color--transparent);
     font-weight: 600;
   }
-  /* Subniveles (secciones del índice, páginas hijas): sangría con una guía vertical tenue. */
-  .md-sidebar .md-nav .md-nav {
-    margin-left: 0.7rem;
-    border-left: 0.05rem solid var(--md-default-fg-color--lighter);
-  }
+  .md-sidebar .md-nav .md-nav { margin: 0; border: 0; }
 }
+
+/* Tarjetas (páginas de sección): al pasar el mouse, el borde toma el color de acento, que se ve en claro y en oscuro
+   (la sombra del tema casi no se ve sobre el fondo oscuro). */
+.md-typeset .grid.cards > ul > li { transition: border-color 125ms, background-color 125ms; }
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--md-accent-fg-color);
+  background: var(--md-accent-fg-color--transparent);
+}
+
+/* Pasos (`<div class="pasos" markdown>` alrededor de una lista numerada): una secuencia sin ramas, con un círculo
+   numerado por paso y una línea que los une. `.fechas` cambia el número por un punto (línea de tiempo) y `.compuertas`
+   escribe entre un paso y el siguiente la revisión que hay que pasar. */
+.md-typeset .pasos > ol { list-style: none; counter-reset: paso; margin-left: 0; padding-left: 0; }
+.md-typeset .pasos > ol > li {
+  position: relative;
+  counter-increment: paso;
+  margin: 0;
+  padding: 0 0 0.9em 2.1rem;
+  background: linear-gradient(var(--md-default-fg-color--lighter), var(--md-default-fg-color--lighter)) no-repeat;
+  background-size: 0.1rem calc(100% - 1.3rem);
+  background-position: 0.6rem 1.3rem;
+}
+.md-typeset .pasos > ol > li:last-child { background: none; padding-bottom: 0; }
+.md-typeset .pasos > ol > li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0;
+  top: 0.05rem;
+  box-sizing: border-box;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  border: 0.1rem solid var(--md-accent-fg-color);
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.1rem;
+  text-align: center;
+}
+.md-typeset .pasos > ol > li > p { margin: 0 0 0.4em; }
+/* En la línea de tiempo la línea es continua: pasa por debajo de los puntos, del primero al último. */
+.md-typeset .pasos.fechas > ol > li { background-size: 0.1rem 100%; background-position: 0.6rem 0; }
+.md-typeset .pasos.fechas > ol > li:first-child { background-position: 0.6rem 0.7rem; }
+.md-typeset .pasos.fechas > ol > li:last-child {
+  background: linear-gradient(var(--md-default-fg-color--lighter), var(--md-default-fg-color--lighter)) no-repeat;
+  background-size: 0.1rem 0.7rem;
+  background-position: 0.6rem 0;
+}
+.md-typeset .pasos.fechas > ol > li::before {
+  content: "";
+  left: 0.35rem;
+  top: 0.4rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: var(--md-accent-fg-color);
+}
+.md-typeset .pasos.compuertas > ol > li { padding-bottom: 0.6em; }
+.md-typeset .pasos.compuertas > ol > li:not(:last-child)::after {
+  content: "revisión en sesión limpia";
+  display: block;
+  width: fit-content;
+  margin-top: 0.5em;
+  padding: 0 0.6em;
+  border: 0.05rem dashed var(--md-default-fg-color--light);
+  border-radius: 1em;
+  font-size: 0.65rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* Meses (Control y reglas): una fila por etapa y una columna por mes de 2019; cada barra cubre los meses que usa. */
+.md-typeset .meses-scroll { overflow-x: auto; margin: 1em 0; }
+.md-typeset .meses {
+  display: grid;
+  grid-template-columns: 3.6rem repeat(10, minmax(2.2rem, 1fr));
+  gap: 0.25rem;
+  min-width: 28rem;
+  font-size: 0.65rem;
+  line-height: 1.3;
+}
+.md-typeset .meses > span { padding: 0.35rem 0.3rem; border-radius: 0.3rem; text-align: center; }
+.md-typeset .meses .mes { color: var(--md-default-fg-color--light); font-variant-numeric: tabular-nums; padding: 0; }
+.md-typeset .meses .mes.sin-uso { text-decoration: line-through; opacity: 0.6; }
+.md-typeset .meses .etapa { text-align: left; font-weight: 700; padding-left: 0; }
+.md-typeset .meses .hi { background: var(--c-pill-bg); color: var(--c-muted); }
+.md-typeset .meses .tr { background: var(--md-accent-fg-color--transparent); color: var(--md-default-fg-color);
+  box-shadow: inset 0 0 0 0.05rem var(--md-accent-fg-color); }
+.md-typeset .meses .va { background: var(--c-ok-bg); color: var(--c-ok-fg); }
+.md-typeset .meses .te { background: var(--c-ind-bg); color: var(--c-ind-fg); font-weight: 700; }
 
 /* Figuras (una imagen sola en su párrafo): al 100 % de la columna; en pantallas angostas no bajan de 40rem, para que
    el texto se lea, y se desplazan dentro de su recuadro, como las tablas. Fondo blanco, borde redondeado y margen

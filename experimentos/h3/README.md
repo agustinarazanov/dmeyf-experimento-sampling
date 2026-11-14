@@ -21,7 +21,7 @@ flowchart TB
   F[final 201903–201908 completo] --> E[modelo final]
   HP --> E
   E --> T["G en 201910 al corte N*"]
-  style M fill:#fdebd0,stroke:#b8860b
+  style M fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
 ```
 
 H3 achica solo la optimización: el final entrena con todas las filas.

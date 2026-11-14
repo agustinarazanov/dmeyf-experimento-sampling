@@ -23,6 +23,7 @@ El baseline del curso (Zulip 208135), con train completo (r = 1):
   | `bagging_fraction` | 0,1 – 1,0, con `bagging_freq = 1` | lineal |
 
   Los 40 trials y la semilla única de Optuna son una elección nuestra, porque 208135 no los fija.
+
 - **Final**: el modelo final entrena con 201903–201908 (ronda vigente, ver § Rondas) con los hiperparámetros que eligió
   Optuna, y se evalúa en test (201910).
 - **Semillas finales**: 20 semillas fijas, las mismas en todas las variantes (§ Diseño). Cada una fija el `seed` de
@@ -31,16 +32,11 @@ El baseline del curso (Zulip 208135), con train completo (r = 1):
 
 ### Meses
 
-```mermaid
-flowchart TB
-  H["201901–201902<br/>solo historia<br/>(lags y deltas)"] --> T["201903–201906<br/>train de Optuna"]
-  T --> J["201907<br/>solo en el final"]
-  J --> V["201908<br/>validación: AUC de Optuna y N*<br/>(también en el final)"]
-  V --> S["201909<br/>no se usa"]
-  S --> X["201910<br/>test: G y veredicto"]
-  style X fill:#fdebd0,stroke:#b8860b
-  style S fill:#eeeeee,stroke:#999999
-```
+<div class="meses-scroll"><div class="meses" role="img" aria-label="Meses de 2019 que usa cada etapa: historia en 201901 y 201902; Optuna entrena con 201903 a 201906 y valida en 201908; el final entrena con 201903 a 201908 y se evalúa en 201910; 201909 no se usa.">
+<span class="etapa">2019</span><span class="mes">01</span><span class="mes">02</span><span class="mes">03</span><span class="mes">04</span><span class="mes">05</span><span class="mes">06</span><span class="mes">07</span><span class="mes">08</span><span class="mes sin-uso" title="no se usa">09</span><span class="mes">10</span>
+<span class="etapa" style="grid-row:2">Optuna</span><span class="hi" style="grid-row:2;grid-column:2/4">historia</span><span class="tr" style="grid-row:2;grid-column:4/8">train</span><span class="va" style="grid-row:2;grid-column:9/10">AUC</span>
+<span class="etapa" style="grid-row:3">Final</span><span class="hi" style="grid-row:3;grid-column:2/4">historia</span><span class="tr" style="grid-row:3;grid-column:4/10">train (N* en 201908)</span><span class="te" style="grid-row:3;grid-column:11/12">test</span>
+</div></div>
 
 Optuna entrena con 201903–201906 y elige por AUC en 201908. El final entrena con 201903–201908 y predice 201910. 201909
 solo aporta la clase de 201907.
@@ -100,10 +96,10 @@ flowchart TD
   C -- no --> D{"media < −δ"}
   D -- sí --> P["pierde"]
   D -- no --> I["indeterminado<br/>(faltan semillas)"]
-  style G fill:#d5f0e0,stroke:#2e8b57
-  style N fill:#d5f0e0,stroke:#2e8b57
-  style P fill:#f6d5d1,stroke:#c0392b
-  style I fill:#f7ebc8,stroke:#b8860b
+  style G fill:#2e8b5733,stroke:#2e8b57,stroke-width:2px
+  style N fill:#2e8b5733,stroke:#2e8b57,stroke-width:2px
+  style P fill:#c0392b33,stroke:#c0392b,stroke-width:2px
+  style I fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
 ```
 
 ## Diseño

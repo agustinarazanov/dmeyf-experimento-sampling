@@ -22,7 +22,7 @@ flowchart TB
   HP --> E["cada árbol ve una fracción f<br/>(bagging_fraction = f)"]
   DS --> E
   E --> T["G en 201910 al corte N*"]
-  style E fill:#fdebd0,stroke:#b8860b
+  style E fill:#e0a8002e,stroke:#c48a00,stroke-width:2px
 ```
 
 GOSS es otra forma de muestrear dentro de LightGBM: se queda con las filas de gradiente alto y una parte al azar del

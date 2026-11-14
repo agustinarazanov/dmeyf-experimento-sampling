@@ -6,15 +6,17 @@ commit lo dice y cada experimento activo anota en su bitácora si lo afecta.
 
 ## Etapas
 
-```mermaid
-flowchart TB
-    H["hipótesis · Opus"] -- revisión en sesión limpia --> D["diseño · Opus"]
-    D -- revisión en sesión limpia --> C["código · Sonnet"]
-    C -- revisión en sesión limpia --> K["corridas · VM"]
-    K -- revisión en sesión limpia --> A["análisis · Sonnet"]
-    A -- revisión en sesión limpia --> I["informe · Opus"]
-    I -- revisión en sesión limpia --> F["cierre en la bitácora"]
-```
+<div class="pasos compuertas" markdown>
+
+1. **hipótesis** · Opus
+2. **diseño** · Opus
+3. **código** · Sonnet
+4. **corridas** · VM
+5. **análisis** · Sonnet
+6. **informe** · Opus
+7. **cierre en la bitácora**
+
+</div>
 
 Hipótesis, diseño, código, corridas, análisis, informe. Cada etapa:
 
@@ -58,6 +60,7 @@ propuesta, diseño, specs y tareas, y se archivan al cerrar.
       AP -. corridas .-> EC["en_curso.txt: espera las VMs"]
       EC --> G
   ```
+
 - `comun/tokens.py` escribe el `ledger/tokens.csv` de cada experimento. Clasifica cada sesión según la etapa que declara
   la bitácora de algún experimento (o su `ledger/sesiones/costos.csv`); la que nadie declara va a `sampling_1` y si dos
   la declaran falla.
@@ -123,16 +126,7 @@ plantilla/      la estructura vacía de un experimento: README.md,
 
 ### 2. Pasos, en orden
 
-```mermaid
-flowchart TB
-    P1["1–2. carpeta, idea y predicción"] --> P3["3. diseño y dependencias"]
-    P3 --> P4["4. registro en comun/variantes.py"]
-    P4 --> P5["5. variantes --verificar"]
-    P5 --> P6["6. correr"]
-    P6 --> P7["7. consolidar y reporte"]
-    P7 --> P8["8. veredicto y limitaciones"]
-    P8 --> P9["9. página en el sitio"]
-```
+<div class="pasos" markdown>
 
 1. Tomar el siguiente `hN` libre (`ls experimentos/`). El nombre tiene que ser un identificador válido: letras
    minúsculas, dígitos y `_`, sin guiones ni espacios (`h5`, no `h-5`).
@@ -153,6 +147,7 @@ flowchart TB
    `VARIANTES` y `"U0.02": "h9"` en `ESTUDIOS` (`nombre("uniforme", 0.02)` ya devuelve `U0.02`). Los nombres de variante
    y de estudio no se repiten entre hipótesis. Si la variante es de un `(método, tasa)` nuevo, `nombre()` tiene que saber
    nombrarlo, y un método nuevo además va en `comun/metodos.py` (`METODOS`, `FUNCIONES`, `validar`).
+
 5. `python -m comun.variantes --verificar`: pasa si sale con código 0 y no imprime ninguna línea `PROBLEMA` (las líneas
    «si falta experimentos/X/ se rompen: …» salen siempre). Falla si falta la sección `## Dependencias` del README, si no
    coincide con lo que implica el registro, si hay un ciclo, si falta una carpeta o si queda un `docs/diseno.md` viejo
@@ -172,6 +167,8 @@ flowchart TB
    `!/experimentos/hN/README.md` y `!/experimentos/hN/figuras/**` en `exclude_docs`. Después `scripts/sitio.sh` (busca
    nombres de personas y construye con `mkdocs build --strict`, que falla con un enlace roto o con un enlace relativo a un
    archivo que no se publica; con `serve` lo deja en `localhost:8000`).
+
+</div>
 
 ### 3. Usar un estudio de otra hipótesis
 
