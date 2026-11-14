@@ -155,6 +155,38 @@ def test_celdas_del_intervalo_de_a_nota_de_piso_y_guion_del_control():
     assert reporte._ic_a_txt({"variante": reporte.lg.CONTROL, "A_ic": None, "A_piso": False}) == "—"
 
 
+def test_cobertura_con_registro_de_juguete_marca_la_celda_sin_correr_y_la_pendiente():
+    V = reg.Variante
+    variantes = {"U0.5": V("U0.5", "h1", "uniforme", 0.5, "U0.5", grilla="U"), "U0.1": V("U0.1", "h1", "uniforme", 0.1, "U0.1", grilla="U"),
+                 "H3-0.5": V("H3-0.5", "h3", "opt-muestra", 0.5, "U0.5", grilla="H3")}
+    filas = [{"variante": "U0.5", "veredicto": "no pierde"}]
+    html = reporte.tabla_cobertura(filas, variantes, {"U": "al azar", "H3": "solo búsqueda"}, (0.5, 0.1),
+                                   {("H3", 0.1): "motivo de prueba"}, {"GOSS": "sin tasa"})
+    assert "no se corre: motivo de prueba" in html and "pendiente" in html and "no pierde" in html
+    assert "`GOSS`: sin tasa" in html
+
+
+def test_diferencias_con_par_sin_corridas_sale_pendiente_y_los_principales_van_primero():
+    import pandas as pd
+    rep = pd.DataFrame(dict(delta_g_media=[1e6], delta_g_ic_inf=[0.0], delta_g_ic_sup=[2e6], n_replicas=[8], veredicto=["no cambia"]),
+                       index=["A1 - B1"])
+    info = {("A1", "B1"): ("lo que aísla", False), ("A2", "B2"): ("otra cosa", True)}
+    html = reporte.tabla_diferencias(rep, None, [("A1", "B1"), ("A2", "B2")], info)
+    assert html.index("A2 - B2") < html.index("A1 - B1")
+    assert html.count("pendiente") >= 5 and "lo que aísla" in html
+
+
+def test_tiempos_a_fijo_calcula_a_por_juego_y_sin_csv_sale_pendiente():
+    import pandas as pd
+    filas = [dict(receta=r, tasa=t, juego=j, repeticion=k, filas=int(1000 * t), t_medicion_s=10 * t + 1 + 0.1 * k)
+             for r in ("azar", "bajas") for t in (1.0, 0.5) for j in ("C", "C@1") for k in range(3) if not (r == "bajas" and t == 1.0)]
+    html = reporte.tabla_a_fijo({"filas": [{"variante": "U0.5", "A": 1.8}]}, pd.DataFrame(filas))
+    assert "1.8" in html or "1.80" in html and "<td>0.5</td>" in html
+    assert "pendiente" in reporte.tabla_calibracion(pd.DataFrame(dict(tipo=["trial"], instancia=["v"], momento=["inicio"], t_s=[1.0],
+                                                                      cociente_ancla_trial=[1.0], cociente_ancla_fase7=[1.0],
+                                                                      cociente_ancla_crep=[1.0])))
+
+
 def _predicciones(tmp_path, variante, semilla_azar, k):
     import numpy as np
     import pandas as pd

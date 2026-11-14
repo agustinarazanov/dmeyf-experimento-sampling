@@ -692,6 +692,7 @@ def calcular_bloque_a(ctx: Contexto, fin: pd.DataFrame, ap: pd.DataFrame, n_boot
             "desglose": desglose_tiempo(ctx, fin, ap), "semillas": delta_semillas(ctx, finr),
             "g_cR": None if c_rep is None else float(c_rep["g_media_replicas"]),
             "n_cR": None if c_rep is None else int(c_rep["n_replicas"]), "t_cR": t_cr,
+            "finr": finr, "estudios": estudios,
             "delta": float(ap["delta_g_margen"].iloc[0]), "g_c0": float(ap["g_control"].iloc[0]),
             "t_c0": float(ap["tiempo_total_control_s"].iloc[0]), "g_rep": g_rep}
 
@@ -1661,6 +1662,180 @@ def tabla_pares(rep: pd.DataFrame) -> str:
     return html_tabla(CAB_PARES, filas)
 
 
+# --- cobertura de la grilla (D11), diferencias directas (D12) y tiempos (D4, D6, D7) ---
+
+def tabla_cobertura(filas_a: list[dict], variantes: dict | None = None, filas_grilla: dict | None = None,
+                    tasas: tuple | None = None, sin_correr: dict | None = None, fuera: dict | None = None) -> str:
+    """Una fila por forma de muestrear de la grilla y una columna por tasa: la variante y su veredicto, `pendiente` si no
+    tiene corridas, `no se corre` con el motivo si la celda está declarada en `CELDAS_SIN_CORRER` y `sin variante` si no
+    está ni declarada. Debajo, las variantes fuera de la grilla, con lo que cruzan."""
+    variantes = reg.VARIANTES if variantes is None else variantes
+    filas_grilla = reg.FILAS_GRILLA if filas_grilla is None else filas_grilla
+    tasas = reg.TASAS_GRILLA if tasas is None else tasas
+    sin_correr = reg.CELDAS_SIN_CORRER if sin_correr is None else sin_correr
+    fuera = reg.FUERA_DE_GRILLA if fuera is None else fuera
+    por_nombre = {f["variante"]: f for f in filas_a}
+    cuerpo = []
+    for clave, como in filas_grilla.items():
+        fila_t = [f"{clave}: {como}"]
+        for t in tasas:
+            v = next((v for v in variantes.values() if v.grilla == clave and v.tasa == t), None)
+            if (clave, t) in sin_correr:
+                fila_t.append(f"no se corre: {sin_correr[(clave, t)]}")
+            elif v is None:
+                fila_t.append("sin variante")
+            elif v.nombre not in por_nombre or por_nombre[v.nombre].get("veredicto") is None:
+                fila_t.append(celda(v.nombre, ic="pendiente", clases="pend"))
+            else:
+                ve = por_nombre[v.nombre]["veredicto"]
+                fila_t.append(celda(v.nombre, ic=NOMBRE_VEREDICTO.get(clase_veredicto(ve), str(ve)), clases=clase_veredicto(ve)))
+        cuerpo.append(fila_t)
+    tabla = html_tabla(("forma de muestrear", *[f"{t:g}" for t in tasas]), cuerpo)
+    lista = "\n".join(f"- `{n}`: {d}" for n, d in fuera.items())
+    return tabla + ("\n\nFuera de la grilla:\n\n" + lista if lista else "")
+
+
+CAB_DIF = ("diferencia", "qué aísla", "principal", "filas de cada lado", "Δ [IC] (M$)", "réplicas", "IC", "veredicto")
+
+
+def tabla_diferencias(rep: pd.DataFrame, pares: pd.DataFrame | None = None, declarados: list | None = None,
+                      info: dict | None = None) -> str:
+    """Los pares declarados en el registro (`PARES_APAREADOS` y `PARES_WELCH`), de `replicas.csv` o de `pares.csv`: con qué
+    decisión difiere cada par, si es principal y las filas de entrenamiento de cada lado. Un par sin corridas sale pendiente."""
+    declarados = [*reg.PARES_APAREADOS, *reg.PARES_WELCH] if declarados is None else declarados
+    info = reg.PARES_INFO if info is None else info
+    pares = pd.DataFrame(columns=["variante"]) if pares is None else pares
+    pares = pares.set_index("variante") if "variante" in pares.columns else pares
+    filas = []
+    for a, b in declarados:
+        k = f"{a} - {b}"
+        aisla, principal = info.get((a, b), ("", False))
+        r = pares.loc[k] if k in pares.index else (rep.loc[k] if k in rep.index else None)
+        if r is None or pd.isna(r.get("delta_g_media")):
+            filas.append([k, aisla, "sí" if principal else "no", "pendiente", "pendiente", "pendiente", "pendiente", "pendiente"])
+            continue
+        fa, fb = r.get("filas_train_a"), r.get("filas_train_b")
+        lados = f"{int(fa):,} / {int(fb):,}" if pd.notna(fa) and pd.notna(fb) else "pendiente"
+        welch = str(r.get("nota", "")).startswith("sin aparear") or str(r.get("tipo", "")) == "welch"
+        filas.append([k, aisla, "sí" if principal else "no", lados,
+                      celda_ic((r["delta_g_media"], r["delta_g_ic_inf"], r["delta_g_ic_sup"])), f"{int(r['n_replicas'])}",
+                      "Welch, sin aparear" if welch else "t, apareado", celda_veredicto(r["veredicto"])])
+    filas.sort(key=lambda f: f[2] != "sí")  # los principales primero (sort estable)
+    return html_tabla(CAB_DIF, filas)
+
+
+def _cv(x: pd.Series) -> float:
+    return float(x.std(ddof=1) / x.mean()) if len(x) > 1 and x.mean() else float("nan")
+
+
+def _med_rango(x) -> str:
+    x = pd.Series(list(x), dtype=float).dropna()
+    return "pendiente" if x.empty else f"{x.median():.2f} [{x.min():.2f}; {x.max():.2f}]"
+
+
+def tabla_a_fijo(a: dict, hp: pd.DataFrame | None = None) -> str:
+    """Por tasa r: A a hiperparámetros fijos (mediana de T(1)/T(r) entre juegos, con su rango) de las dos recetas, al lado
+    del A del bloque A de `U{r}` y `H4O-{r}`; el cociente entre recetas con las filas de cada una y el CV entre repeticiones."""
+    if hp is None:
+        ruta = rutas.ledger(reg.AGREGADOR) / "tiempos_hp_fijos.csv"
+        if not ruta.exists():
+            return pendiente("falta tiempos_hp_fijos.csv (medición a hiperparámetros fijos)")
+        hp = pd.read_csv(ruta)
+    t = hp.groupby(["receta", "tasa", "juego"]).agg(t=("t_medicion_s", "mean"), cv=("t_medicion_s", _cv), filas=("filas", "first")).reset_index()
+    base = t[(t.receta == "azar") & (t.tasa == 1.0)].set_index("juego")["t"]
+    a_blq = {f["variante"]: f["A"] for f in a["filas"]}
+    nombre = lambda p, r: f"{p}{r:g}" if p == "U" else f"H4O-{r:g}"  # noqa: E731
+    cuerpo = []
+    for r in sorted({x for x in t.tasa if x < 1.0}, reverse=True):
+        az = t[(t.receta == "azar") & (t.tasa == r)].set_index("juego")
+        ba = t[(t.receta == "bajas") & (t.tasa == r)].set_index("juego")
+        ua, ha = a_blq.get(nombre("U", r)), a_blq.get(nombre("H", r))
+        cuerpo.append([f"{r:g}", f"{az['filas'].median():,.0f}", _med_rango(base / az["t"]),
+                       f"{ua:.2f}" if ua is not None else "—", f"{ba['filas'].median():,.0f}" if len(ba) else "pendiente",
+                       _med_rango(base / ba["t"]) if len(ba) else "pendiente", f"{ha:.2f}" if ha is not None else "—",
+                       f"{(ba['t'] / az['t']).median():.2f}" if len(ba) else "pendiente",
+                       f"{ba['filas'].median() / az['filas'].median():.2f}" if len(ba) else "pendiente",
+                       f"{100 * pd.concat([az['cv'], ba['cv']]).median():.1f} %"])
+    cab = ("r", "filas (al azar)", "A fijo, al azar [mín; máx entre juegos]", "A de U{r} (bloque A)", "filas (bajas con peso)",
+           "A fijo, bajas con peso [mín; máx]", "A de H4O-{r} (bloque A)", "T bajas / T azar", "filas bajas / filas azar",
+           "CV entre repeticiones (mediana)")
+    return html_tabla(cab, cuerpo)
+
+
+def tabla_calibracion(cal: pd.DataFrame | None = None, por_vm: bool = False) -> str:
+    """Calibración por VM: CV entre VMs, cociente fin/inicio por VM y cociente contra las anclas (el trial de la fase 1 y el
+    final de la fase 7 y de `C-rep`). Cada ancla es una sola medición vieja; las VMs corrieron en horarios distintos."""
+    if cal is None:
+        ruta = rutas.ledger(reg.AGREGADOR) / "calibracion.csv"
+        if not ruta.exists():
+            return pendiente("falta calibracion.csv (calibración por VM)")
+        cal = pd.read_csv(ruta)
+    anclas = {"trial": ["cociente_ancla_trial"], "final": ["cociente_ancla_fase7", "cociente_ancla_crep"]}
+    vm = cal.groupby(["tipo", "instancia", "momento"]).agg(t=("t_s", "mean"), **{c: (c, "mean") for cs in anclas.values() for c in cs}).reset_index()
+    cuerpo = []
+    for tipo, cols in anclas.items():
+        v = vm[vm.tipo == tipo]
+        pm = v.pivot(index="instancia", columns="momento", values="t")
+        fin_ini = (pm["fin"] / pm["inicio"]).dropna() if {"fin", "inicio"} <= set(pm.columns) else pd.Series(dtype=float)
+        media_vm = v.groupby("instancia")["t"].mean()
+        if por_vm:
+            for ins in media_vm.index:
+                cuerpo.append([tipo, ins, f"{media_vm[ins]:.2f}", f"{fin_ini.get(ins, float('nan')):.3f}",
+                               *[f"{v[v.instancia == ins][c].mean():.3f}" for c in cols]] + ["—"] * (2 - len(cols)))
+        else:
+            fuera = int(((fin_ini < 0.9) | (fin_ini > 1.1)).sum())
+            cuerpo.append([tipo, f"{len(media_vm)}", f"{100 * _cv(media_vm):.1f} %", _med_rango(fin_ini), f"{fuera} de {len(fin_ini)}",
+                           *[_med_rango(v.groupby('instancia')[c].mean()) for c in cols]] + ["—"] * (2 - len(cols)))
+    if por_vm:
+        cab = ("tipo", "VM", "t medio (s)", "fin / inicio", "contra el ancla del trial (fase 1) o del final de la fase 7", "contra el final de C-rep")
+    else:
+        cab = ("tipo", "VMs", "CV entre VMs", "fin / inicio [mín; máx]", "VMs fuera de [0,9; 1,1]",
+               "contra el ancla del trial (fase 1) o del final de la fase 7", "contra el final de C-rep")
+    return html_tabla(cab, cuerpo)
+
+
+def tabla_busqueda_y_final(ctx: Contexto, a: dict, pestanas: bool = False) -> str:
+    """Por variante, mediana entre réplicas de la búsqueda, del final y de la preparación, y la fracción de T que es
+    búsqueda. La preparación no entra en T: es igual para todas las variantes."""
+    finr, estudios = a.get("finr"), a.get("estudios")
+    if finr is None or not len(finr) or estudios is None or not len(estudios):
+        return pendiente("faltan las réplicas o los tiempos de los estudios")
+    t_est, cuerpo = _tiempos(estudios), []
+    for b in ctx.variantes:
+        v = finr[finr["variante"] == b]
+        ts = [tiempo_replica(v[v["replica_opt"] == k], t_est) for k in sorted(v["replica_opt"].unique())]
+        ts = [t for t in ts if t is not None]
+        if not ts:
+            cuerpo.append([b, ctx.hip_de[b], "pendiente", "pendiente", "pendiente", "pendiente"])
+            continue
+        busq, fin_t = np.median([t[0] for t in ts]), np.median([t[1] for t in ts])
+        prep = v["tiempo_preparacion_s"].median() if "tiempo_preparacion_s" in v else float("nan")
+        cuerpo.append([b, ctx.hip_de[b], f"{busq:,.0f}", f"{fin_t:,.1f}", f"{100 * np.median([t[0] / (t[0] + t[1]) for t in ts]):.0f} %",
+                       f"{prep:,.1f}" if prep == prep else "pendiente"])
+    cab = ("variante", "hipótesis", "búsqueda, mediana (s)", "final, mediana (s)", "fracción de T que es búsqueda",
+           "preparación, mediana (s; no entra en T)")
+    if not pestanas:
+        return html_tabla(cab, cuerpo)
+    # en Resultados, una pestaña por hipótesis para que la tabla entre en 800 px de alto (D16)
+    sangrar = lambda t: "\n".join("    " + linea if linea else "" for linea in t.splitlines())  # noqa: E731
+    return "\n\n".join(f'=== "{h}"\n\n' + sangrar(html_tabla(cab, [f for f in cuerpo if f[1] == h])) for h in ctx.hipotesis)
+
+
+NOTA_TIEMPOS = ("Predicciones de `control/docs/hipotesis.md` § Medición de tiempos; la medición es exploratoria y no cambia veredictos: "
+                "dice cuánto del A del bloque A es tamaño de datos y cuánto es la elección de Optuna. Las VMs corrieron en horarios "
+                "distintos, así que el CV entre VMs junta la VM y la hora; cada ancla es una sola medición vieja.")
+
+
+def bloque_tiempos(ctx: Contexto, a: dict, completo: bool) -> str:
+    """Sección de tiempos de Resultados (`completo=False`) o sus tablas completas del Anexo (calibración por VM)."""
+    partes = [NOTA_TIEMPOS, "**Tiempo a hiperparámetros fijos.**", tabla_a_fijo(a),
+              "**Calibración de las VMs.**", tabla_calibracion(por_vm=completo)]
+    if completo:
+        partes += ["**Calibración, resumen.**", tabla_calibracion()]
+    partes += ["**Búsqueda y final por variante.**", tabla_busqueda_y_final(ctx, a, pestanas=not completo)]
+    return "\n\n".join(partes)
+
+
 # --- bloques entre marcadores (sitio-legible D4) ---
 
 class MarcadorFaltante(Exception):
@@ -1762,8 +1937,8 @@ def _sin_datos(nombres: tuple[str, ...]) -> dict[str, str]:
     return {n: sin for n in nombres}
 
 
-BLOQUES_SAMPLING = ("mapa", "grilla", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "semillas")
-BLOQUES_ANEXO = ("bloque-a-completo", "varianza", "diferencias", "ic-rondas")
+BLOQUES_SAMPLING = ("mapa", "grilla", "cobertura", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
+BLOQUES_ANEXO = ("bloque-a-completo", "cobertura", "varianza", "diferencias", "tiempos-completos", "ic-rondas")
 BLOQUES_INICIO = ("hallazgo-tradeoff", "hallazgo-tiempo", "hallazgo-ensamble")
 
 
@@ -1774,12 +1949,14 @@ def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, st
     return {
         "mapa": fig_tradeoff(ctx, a, figuras),
         "grilla": fig_grilla(ctx, a, figuras),
+        "cobertura": tabla_cobertura(a["filas"]),
         "desglose": fig_desglose(ctx, a, figuras),
         "bloque-a": "\n\n".join([referencia_control(a), AVISO_A_HTML, pestanas_bloque_a(ctx, a["filas"]),
                                  _plegable("Detalle del bloque A", html_tabla(CAB_DETALLE, [celdas_detalle(f) for f in a["filas"]], NOTAS))]),
         "fraccion": fig_fraccion(ctx, a, figuras),
         "ensamble": fig_ensamble(ctx, fin, ap, a, figuras),
         "tiempo-igual": tiempo_igual(ctx, fin, ap) + "\n\n" + fig_tiempo_igual_ic(ctx, a, figuras),
+        "tiempos": bloque_tiempos(ctx, a, completo=False),
         "semillas": fig_semillas(ctx, a, figuras),
     }
 
@@ -1797,11 +1974,15 @@ def bloques_anexo(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
         completo += ["#### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
         if pares_replicas(a["rep"]):
             completo += ["#### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares_replicas(a["rep"]))]
+    ruta_pares = rutas.ledger(reg.AGREGADOR) / "pares.csv"
+    pares = pd.read_csv(ruta_pares) if ruta_pares.exists() else None
     return {
         "bloque-a-completo": _plegable("Tablas completas del bloque A", "\n".join(completo)),
+        "cobertura": tabla_cobertura(a["filas"]),
         "varianza": html_tabla(CAB_VAR, varianza(a["rep"], ctx)) if len(a["rep"]) else pendiente("ninguna variante tiene réplicas"),
-        "diferencias": (tabla_pares(a["rep"]) + "\n\n" + fig_diferencias(ctx, a, figuras)
-                        if pares_replicas(a["rep"]) else pendiente("no hay diferencias entre variantes con réplicas")),
+        "diferencias": (tabla_diferencias(a["rep"], pares) + "\n\n" + fig_diferencias(ctx, a, figuras)
+                        if pares_replicas(a["rep"]) or pares is not None else pendiente("no hay diferencias entre variantes con réplicas")),
+        "tiempos-completos": bloque_tiempos(ctx, a, completo=True),
         "ic-rondas": fig_ic_rondas(ctx, a, figuras),
     }
 

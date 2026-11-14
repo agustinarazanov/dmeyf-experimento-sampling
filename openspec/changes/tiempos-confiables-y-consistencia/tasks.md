@@ -141,13 +141,13 @@ Qué puede ir en paralelo:
 
 ## 3. Código del reporte (sesión: Sonnet)
 
-- [ ] 3.1 `comun/reporte.py`, A con una sola referencia (D1):
+- [x] 3.1 `comun/reporte.py`, A con una sola referencia (D1):
   - la mediana de T_C se calcula una vez, sobre todas las réplicas del control, y se usa en todas las filas del bloque A;
   - la nota `AVISO_A` actualizada, que también dice que el tiempo igual de la réplica 0 sigue con T_C de la réplica 0
     (D3).
 
   Test en `pytest`: A × T(variante) es igual para todas las filas, también con una variante de réplicas incompletas.
-- [ ] 3.2 `comun/reporte.py`, intervalo de A (D2):
+- [x] 3.2 `comun/reporte.py`, intervalo de A (D2):
   - bootstrap por percentiles del cociente de medianas, con semilla fija;
   - una columna nueva al final de la tabla del bloque `bloque-a-completo` de `experimentos/sampling_1/anexo.md`;
   - en el resumen del bloque A de Resultados (bloque `bloque-a` de `experimentos/sampling_1/README.md`), debajo de A,
@@ -157,20 +157,20 @@ Qué puede ir en paralelo:
   - la nota del bloque: qué mide, que una réplica rara lo mueve, y por qué el tiempo igual sigue apareado por k.
 
   Tests para una variante con réplicas y otra sin, y de que el intervalo no cambia al reordenar las réplicas.
-- [ ] 3.3 Regenerar los bloques del Anexo (`bloque-a-completo`, `varianza` y `diferencias`) solo con las corridas
+- [x] 3.3 Regenerar los bloques del Anexo (`bloque-a-completo`, `varianza` y `diferencias`) solo con las corridas
   anteriores a la fase 8 (una copia del ledger sin las filas nuevas; las predicciones de test se siguen leyendo de
   `DATOS_DIR/ledger/<exp>/predicciones/`, no hace falta copiarlas) y verificar el escenario "Tabla de resultados
   intacta": solo cambian A y su intervalo. Guardar el diff en la bitácora.
-- [ ] 3.4 `scripts/comparar_rondas.py` (alimenta § Rondas de `experimentos/sampling_1/anexo.md`, bloques `ic-rondas` y
+- [x] 3.4 `scripts/comparar_rondas.py` (alimenta § Rondas de `experimentos/sampling_1/anexo.md`, bloques `ic-rondas` y
   `rondas`): sacar la fila del control y agregar la nota sobre las variantes que solo existen en la ronda nueva (D16).
-- [ ] 3.5 `comun/reporte.py`, tabla de cobertura (D11), leída del registro que deja 2.2: en Resultados (junto a la
+- [x] 3.5 `comun/reporte.py`, tabla de cobertura (D11), leída del registro que deja 2.2: en Resultados (junto a la
   grilla de § ¿Qué conviene achicar? de `experimentos/sampling_1/README.md`) y en el Anexo, en un bloque generado
   propio. Test con un registro de juguete que tiene una celda sin correr.
-- [ ] 3.6 `comun/reporte.py`, comparaciones directas (D12): la tabla "Diferencias entre variantes" (bloque
+- [x] 3.6 `comun/reporte.py`, comparaciones directas (D12): la tabla "Diferencias entre variantes" (bloque
   `diferencias` del Anexo) lee los pares de `replicas.csv` y de `sampling_1/ledger/pares.csv`, suma las columnas de qué
   aísla cada par y de filas de cada lado, y marca los principales. Un par cuya variante todavía no tiene corridas sale
   como pendiente.
-- [ ] 3.7 `comun/reporte.py`, sección de tiempos de Resultados (`experimentos/sampling_1/README.md`, en un bloque
+- [x] 3.7 `comun/reporte.py`, sección de tiempos de Resultados (`experimentos/sampling_1/README.md`, en un bloque
   generado; las tablas completas, en el Anexo) (D4, D6, D7):
   - por r: A_fijo con su mediana y su rango entre juegos de hiperparámetros, al lado del A del bloque A de `U{r}` y de
     `H4O-{r}`; el cociente entre recetas con las filas de cada una; el CV entre repeticiones;
@@ -179,7 +179,7 @@ Qué puede ir en paralelo:
     nota de que la preparación no entra en T.
 
   Si un CSV no existe, su parte sale como pendiente.
-- [ ] 3.7b Pendientes que dejó la unión (bitácora de `sampling_1`, 14-nov, revisión de 2b), en código del reporte:
+- [x] 3.7b Pendientes que dejó la unión (bitácora de `sampling_1`, 14-nov, revisión de 2b), en código del reporte:
   - la figura `grilla_veredictos.svg` de Resultados (bloque `grilla`) mide 833 px de alto con 30 variantes y el límite
     de `python -m scripts.medir_sitio` es 800: que su alto no crezca con la cantidad de variantes (o que se parta), y
     `mkdocs build` + `medir_sitio` sin avisos;

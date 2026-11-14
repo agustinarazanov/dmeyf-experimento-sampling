@@ -2871,3 +2871,30 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
   `proposal.md` y `sampling_1/docs/rutas.md`. No se reescribió el diseño.
 - 2b.2 sigue abierta (verdes de los verificadores y unir a `main`).
 - Tokens: los cuenta `comun/tokens.py` al cerrar el grupo (esta sesión no lo corre).
+
+### 14-nov-2026 · tiempos-confiables-y-consistencia grupo 3 · código del reporte (Sonnet, headless)
+
+Cambio en `comun/reporte.py` (anunciado en el commit).
+
+- 3.1: A = mediana de T de todas las réplicas del control (`tiempos_por_replica`) / T de la fila, la misma referencia en
+  todas las filas; `AVISO_A` actualizado (el tiempo igual de la réplica 0 sigue con T_C de la réplica 0). Test: A × T da
+  lo mismo en tres filas, una con réplicas incompletas.
+- 3.2: `intervalo_a`, bootstrap por percentiles (10.000, semilla 20261114) del cociente de medianas; los tiempos se ordenan
+  antes de remuestrear, así que no depende del orden de las réplicas. Columna nueva al final de `bloque-a-completo`, letra
+  chica debajo de A en `bloque-a`, barra horizontal en el mapa; sin réplicas, nota de piso (solo mueve el control); el
+  control, `—`. Tests con y sin réplicas.
+- 3.3: el Anexo con el ledger anterior a la fase 8 (`8d5d73a2^`), con el reporte viejo (HEAD) y con el nuevo, comparado
+  celda por celda. «Tabla de resultados intacta»: solo cambian A y su intervalo, en las 8 filas sin réplicas de entonces
+  (`U0.05` 11,45 → 14,40; `U0.1` 9,89 → 12,44; `U0.25` 4,87 → 6,13; `U0.5` 2,25 → 2,83; `B0.1` 1,84 → 2,31; `B0.25`
+  1,23 → 1,54; `B0.5` 0,79 → 0,99; `GOSS` 0,72 → 0,91). Las filas con réplicas completas (H3 y H4) no cambian, y `varianza` y
+  `diferencias` quedan iguales. Es el diff pedido: el Anexo vigente ya tiene la fase 8, así que no sirve de base.
+- 3.4: `comparar_rondas.py` sin la fila del control y con una nota de las variantes que solo existen en la ronda nueva.
+- 3.5: `tabla_cobertura` (bloque `cobertura` en Resultados, junto a la grilla, y en el Anexo), leída de `FILAS_GRILLA`,
+  `CELDAS_SIN_CORRER` y `FUERA_DE_GRILLA`. Test con un registro de juguete con una celda sin correr.
+- 3.6: `tabla_diferencias` lee los pares declarados de `replicas.csv` y de `ledger/pares.csv`, con qué aísla cada par,
+  principales primero y filas de cada lado; un par sin corridas sale pendiente.
+- 3.7: bloques `tiempos` (Resultados) y `tiempos-completos` (Anexo): A fijo por r al lado del A del bloque A, cociente entre
+  recetas, CV, calibración por VM y búsqueda/final/preparación por variante; pendiente si falta un CSV.
+- 3.7b: `grilla_veredictos.svg` con alto tope (8,5 in; las filas se achican): `medir_sitio` sin avisos de alto. Cambian los
+  números generados de los README; `verificar_informe_h3` sigue marcando los 4 números de h2 de 6.2 (1,54, −0,0044, 0,0005 y
+  1,84) y `verificar_readme` queda en verde.
