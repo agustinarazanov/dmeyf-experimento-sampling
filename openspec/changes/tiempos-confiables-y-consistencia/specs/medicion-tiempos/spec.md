@@ -16,7 +16,7 @@ definición de T no cambia.
 - **THEN** para cada fila A × T(variante) da la misma T_C, con diferencias solo de redondeo
 
 ### Requirement: Intervalo de la aceleración
-Junto a cada A, el bloque A de `tabla_resultados.md` y del reporte HTML SHALL mostrar un intervalo del 95 % obtenido por
+Junto a cada A, el bloque A de Resultados (resumen) y del Anexo (`bloque-a-completo`) SHALL mostrar un intervalo del 95 % obtenido por
 bootstrap del cociente de medianas, remuestreando por separado las réplicas del control y las de la variante, con
 semilla fija. El intervalo no SHALL depender de cómo se emparejen las réplicas de una y otra.
 
@@ -47,7 +47,8 @@ semilla fija. El intervalo no SHALL depender de cómo se emparejen las réplicas
 Un script SHALL medir el tiempo de un trial con hiperparámetros fijos para cada juego de hiperparámetros de las réplicas
 del control, con al menos 3 repeticiones por celda y en orden aleatorio con semilla fija, sobre dos recetas de muestra
 del train 201903–201906: al azar y con todas las bajas más una fracción de las CONTINUA con peso. El script SHALL correr
-solo en `n2-highmem-8`, y la predicción y su regla SHALL quedar escritas en `docs/hipotesis.md` antes de la corrida.
+solo en `n2-highmem-8`, y la predicción y su regla SHALL quedar escritas en `experimentos/control/README.md` (§ Medición de tiempos) antes de
+la corrida.
 
 #### Scenario: Celdas
 - **WHEN** se corre la medición con sus valores por defecto

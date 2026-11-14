@@ -36,7 +36,7 @@ su veredicto SHALL salir de Δ con réplicas. La única excepción es `C-rep`, q
 - **THEN** el reporte la muestra con las que tiene y la tabla de cobertura dice cuántas son
 
 ### Requirement: Tabla de cobertura
-El reporte de `sampling_1`, `tabla_resultados.md` y el informe conjunto SHALL mostrar una tabla de cobertura armada del
+Resultados (`experimentos/sampling_1/README.md`) y el Anexo (`anexo.md`) SHALL mostrar, en un bloque generado, una tabla de cobertura armada del
 registro de variantes: una fila por forma de muestrear, una columna por tasa y, en cada celda, la variante y su cantidad
 de réplicas. Ninguna celda SHALL estar escrita a mano en el generador.
 

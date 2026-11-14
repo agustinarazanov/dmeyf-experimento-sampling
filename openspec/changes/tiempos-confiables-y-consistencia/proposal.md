@@ -121,6 +121,14 @@ Fuera de alcance: `Experimentos guion.md` en la raíz, a pedido de Agustina.
   (`H4P`); los estudios `U{r}@k` son de `h1`.
 - `ledger-resultados`: las diferencias entre variantes de experimentos distintos se calculan en `sampling_1`, y un par
   declarado nunca se saltea en silencio.
+- `dependencias-entre-experimentos`: con los `U{r}@k` en `h1`, `h3` declara todos los `U{r}` de `h1` y `h4` deja de
+  declarar `h3` (agregado en 2b.3, después de unir `sitio-legible`, que pasó las dependencias al README).
+
+Después de `sitio-legible` (2b.3), los documentos que nombra este cambio están en otra parte (`sampling_1/docs/rutas.md`):
+los informes y las secciones de `docs/hipotesis.md` y `docs/diseno.md` de cada experimento, en su `README.md`; el
+informe conjunto, `tabla_resultados.md`, `decisiones.md` y `comparacion_rondas.md`, en Resultados
+(`experimentos/sampling_1/README.md`) y en el Anexo (`anexo.md`); `guion.md`, en `sampling_1/docs/`. Las tareas de los
+grupos 3, 4 y 6 ya usan las rutas nuevas.
 
 ## Impact
 

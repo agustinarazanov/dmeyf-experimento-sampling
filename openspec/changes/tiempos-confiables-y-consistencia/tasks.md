@@ -133,9 +133,11 @@ Qué puede ir en paralelo:
   - [x] Revisión en sesión limpia de 2b.1 con `docs/revision.md` § 3 (14-nov, bitácora de `sampling_1`).
 - [ ] 2b.2 `pytest`, `python -m comun.variantes --verificar`, `python -m comun.consolidar --sanity` y el verificador de
   enlaces del sitio sobre la unión. Unir la rama a `main`.
-- [ ] 2b.3 Actualizar con `/opsx:update` las rutas de los grupos 3, 4 y 6 de este cambio a la estructura que dejó
+- [x] 2b.3 Actualizar con `/opsx:update` las rutas de los grupos 3, 4 y 6 de este cambio a la estructura que dejó
   `sitio-legible`, y los deltas de `reporte-visual` y `dependencias-entre-experimentos` contra las specs ya archivadas
-  de aquel. Revisión corta del resultado en sesión limpia.
+  de aquel. Sumados a 3.7b, 6.2 y 6.3 los pendientes de la revisión de 2b. `openspec validate` en verde (14-nov,
+  bitácora de `sampling_1`).
+  - [ ] Revisión corta del resultado en sesión limpia.
 
 ## 3. Código del reporte (sesión: Sonnet)
 
@@ -147,24 +149,29 @@ Qué puede ir en paralelo:
   Test en `pytest`: A × T(variante) es igual para todas las filas, también con una variante de réplicas incompletas.
 - [ ] 3.2 `comun/reporte.py`, intervalo de A (D2):
   - bootstrap por percentiles del cociente de medianas, con semilla fija;
-  - una columna nueva al final de la tabla de `tabla_resultados.md`;
-  - en el HTML, debajo de A, en letra chica;
-  - en el gráfico de tradeoff, como barra horizontal sobre A;
+  - una columna nueva al final de la tabla del bloque `bloque-a-completo` de `experimentos/sampling_1/anexo.md`;
+  - en el resumen del bloque A de Resultados (bloque `bloque-a` de `experimentos/sampling_1/README.md`), debajo de A,
+    en letra chica;
+  - en el mapa del tradeoff (bloque `mapa`, `sampling_1/figuras/tradeoff.svg`), como barra horizontal sobre A;
   - en las filas sin réplicas, la nota de que el intervalo solo mueve el control; en la del control, `—`;
   - la nota del bloque: qué mide, que una réplica rara lo mueve, y por qué el tiempo igual sigue apareado por k.
 
   Tests para una variante con réplicas y otra sin, y de que el intervalo no cambia al reordenar las réplicas.
-- [ ] 3.3 Regenerar la tabla de resultados solo con las corridas anteriores a la fase 8 (una copia del ledger sin las
-  filas nuevas) y verificar el escenario "Tabla de resultados intacta": solo cambian A y su intervalo. Guardar el diff
-  en la bitácora.
-- [ ] 3.4 `scripts/comparar_rondas.py`: sacar la fila del control y agregar la nota sobre las variantes que solo existen
-  en la ronda nueva (D16).
-- [ ] 3.5 `comun/reporte.py`, tabla de cobertura (D11), leída del registro que deja 2.2: en el reporte de `sampling_1` y
-  en `tabla_resultados.md`. Test con un registro de juguete que tiene una celda sin correr.
-- [ ] 3.6 `comun/reporte.py`, comparaciones directas (D12): la tabla "Diferencias entre variantes" lee los pares de
-  `replicas.csv` y de `sampling_1/ledger/pares.csv`, suma las columnas de qué aísla cada par y de filas de cada lado, y
-  marca los principales. Un par cuya variante todavía no tiene corridas sale como pendiente.
-- [ ] 3.7 `comun/reporte.py`, sección de tiempos del informe conjunto (D4, D6, D7):
+- [ ] 3.3 Regenerar los bloques del Anexo (`bloque-a-completo`, `varianza` y `diferencias`) solo con las corridas
+  anteriores a la fase 8 (una copia del ledger sin las filas nuevas; las predicciones de test se siguen leyendo de
+  `DATOS_DIR/ledger/<exp>/predicciones/`, no hace falta copiarlas) y verificar el escenario "Tabla de resultados
+  intacta": solo cambian A y su intervalo. Guardar el diff en la bitácora.
+- [ ] 3.4 `scripts/comparar_rondas.py` (alimenta § Rondas de `experimentos/sampling_1/anexo.md`, bloques `ic-rondas` y
+  `rondas`): sacar la fila del control y agregar la nota sobre las variantes que solo existen en la ronda nueva (D16).
+- [ ] 3.5 `comun/reporte.py`, tabla de cobertura (D11), leída del registro que deja 2.2: en Resultados (junto a la
+  grilla de § ¿Qué conviene achicar? de `experimentos/sampling_1/README.md`) y en el Anexo, en un bloque generado
+  propio. Test con un registro de juguete que tiene una celda sin correr.
+- [ ] 3.6 `comun/reporte.py`, comparaciones directas (D12): la tabla "Diferencias entre variantes" (bloque
+  `diferencias` del Anexo) lee los pares de `replicas.csv` y de `sampling_1/ledger/pares.csv`, suma las columnas de qué
+  aísla cada par y de filas de cada lado, y marca los principales. Un par cuya variante todavía no tiene corridas sale
+  como pendiente.
+- [ ] 3.7 `comun/reporte.py`, sección de tiempos de Resultados (`experimentos/sampling_1/README.md`, en un bloque
+  generado; las tablas completas, en el Anexo) (D4, D6, D7):
   - por r: A_fijo con su mediana y su rango entre juegos de hiperparámetros, al lado del A del bloque A de `U{r}` y de
     `H4O-{r}`; el cociente entre recetas con las filas de cada una; el CV entre repeticiones;
   - calibración: CV entre VMs, cociente fin/inicio por VM y cociente contra las dos anclas;
@@ -172,30 +179,41 @@ Qué puede ir en paralelo:
     nota de que la preparación no entra en T.
 
   Si un CSV no existe, su parte sale como pendiente.
+- [ ] 3.7b Pendientes que dejó la unión (bitácora de `sampling_1`, 14-nov, revisión de 2b), en código del reporte:
+  - la figura `grilla_veredictos.svg` de Resultados (bloque `grilla`) mide 833 px de alto con 30 variantes y el límite
+    de `python -m scripts.medir_sitio` es 800: que su alto no crezca con la cantidad de variantes (o que se parta), y
+    `mkdocs build` + `medir_sitio` sin avisos;
+  - `python -m comun.reporte --todos` después de 3.1–3.7 y `git status` para ver qué números cambian en los README.
 - [ ] 3.8 Revisión en sesión limpia de 3.1–3.7 con `docs/revision.md` § 3. Commit que anuncia el cambio en `comun/`.
 
 ## 4. Texto que no espera a las corridas (sesión: Opus)
 
-- [ ] 4.1 Correcciones de texto que no citan números nuevos (D16):
-  - `h4/informe/informe.md` e informe conjunto, donde dicen que los dos IC quedan enteros debajo de −δ: solo el de
-    `H4H-0.1`; `H4U-0.1` pierde por la media.
-  - `sampling_1/informe/decisiones.md`: aviso de que es de las fases 1–4. El informe conjunto deja de enlazarlo para los
-    números (hoy lo enlaza en dos lugares).
-  - `guion.md` e informe conjunto, donde dan el rango de varianza entre réplicas: sale de la tabla de varianza (hoy, del
-    17 al 58 %).
-  - Informe conjunto, la frase de ΔAUC contra Δ de ganancia: se limita a las variantes en que se cumple, como en el
-    informe de `h3`.
-  - `experimentos/sampling_1/README.md`: agregar `h4`.
-  - Informe conjunto, lista de figuras: agregar `bandas_H4.png`.
-  - `guion.md`, bloque Diseño: "en VMs del mismo tipo", no "en la misma máquina".
-  - `h3/informe/informe.md`: una línea que dice que el δ = 5,52 de `h3/docs/hipotesis.md` es de la ronda anterior y
-    que la ronda vigente usa 5,65, como ya hace `h4`.
-  - `h1/informe/informe.md` § Hipótesis y la hipótesis H1 en el informe conjunto: redactarla como predicción
-    pre-registrada ("predecía que…").
+Rutas desde `sitio-legible` (`sampling_1/docs/rutas.md`): el informe de cada hipótesis es su `README.md` (§ Predicción,
+Diseño, Resultado, Limitaciones); el informe conjunto es Resultados, `experimentos/sampling_1/README.md`, con las tablas
+completas en `anexo.md`; `guion.md` está en `sampling_1/docs/`; `decisiones.md` y la lista de figuras del informe
+conjunto ya no existen. Si una frase ya no está, la subtarea se marca diciendo dónde se buscó.
 
-  Verificar con `verificar_readme.py` y `verificar_informe_h3.py --informe`.
-- [ ] 4.2 Informe conjunto, sección «Diálogo entre H1 y H4» (D17), con lo que ya se sabe: sale de los informes
-  vigentes y de las secciones de 1.1–1.3. No afirma un contraste directo entre H1 y H4: da los dos Δ contra el control y
+- [ ] 4.1 Correcciones de texto que no citan números nuevos (D16):
+  - `h4/README.md` y Resultados, donde dicen que los dos IC quedan enteros debajo de −δ: solo el de `H4H-0.1`;
+    `H4U-0.1` pierde por la media.
+  - `decisiones.md` pasó a Resultados: lo que quede de él en `sampling_1/README.md` con números de las fases 1–4 lleva
+    el aviso de que es de esa ronda, o se saca.
+  - `sampling_1/docs/guion.md` y Resultados, donde dan el rango de varianza entre réplicas: sale del bloque `varianza`
+    del Anexo (hoy, del 17 al 58 %).
+  - Resultados, la frase de ΔAUC contra Δ de ganancia: se limita a las variantes en que se cumple, como en
+    `h3/README.md`.
+  - `experimentos/sampling_1/README.md`: que nombre y enlace `h4` donde nombra las hipótesis.
+  - Figuras: `bandas_H4` se ve en `h4/README.md` o en Resultados (ya no hay lista de figuras del informe conjunto).
+  - `sampling_1/docs/guion.md`, bloque Diseño: "en VMs del mismo tipo", no "en la misma máquina".
+  - `h3/README.md` § Resultado o Limitaciones: una línea que dice que el δ = 5,52 de § Predicción es de la ronda
+    anterior y que la ronda vigente usa 5,65, como ya hace `h4/README.md`.
+  - `h1/README.md` § Predicción y la hipótesis H1 en Resultados: redactarla como predicción pre-registrada
+    ("predecía que…").
+
+  Verificar con `python -m scripts.verificar_readme` y `python -m scripts.verificar_informe_h3 --informe <README>`.
+- [ ] 4.2 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), con lo que ya se
+  sabe: sale de los README vigentes de `h1` y `h4` y de las secciones del 13-nov de 1.1–1.3 (hoy en el README de cada
+  experimento y en `sampling_1/corridas.md`). No afirma un contraste directo entre H1 y H4: da los dos Δ contra el control y
   dice qué se corrió. Va en voz impersonal y cita la pregunta por su id (Zulip 212124). No se escribe ningún borrador
   de mensaje.
 
@@ -222,20 +240,26 @@ Qué puede ir en paralelo:
 ## 6. Informes (sesión: Opus)
 
 - [ ] 6.1 `python -m comun.reporte --todos` y `scripts/comparar_rondas.py`. Aplicar las reglas de 1.1 y 1.2 tal como
-  quedaron escritas y anotar cada resultado en la bitácora del experimento que corresponde (`control`, `h1`–`h4`).
-- [ ] 6.2 Informes por hipótesis, cada uno con sus variantes nuevas, sus veredictos con réplicas, sus limitaciones (el
+  quedaron escritas (hoy en `control/README.md` § Medición de tiempos y en § Predicción de `h1`–`h4/README.md`, con
+  fecha 13-nov) y anotar cada resultado en la bitácora del experimento que corresponde (`control`, `h1`–`h4`).
+- [ ] 6.2 README de cada hipótesis, cada uno con sus variantes nuevas, sus veredictos con réplicas, sus limitaciones (el
   origen después de mirar 201910, los contrastes sin corrección, y en `h4` que los pares con bajas mezclan filas,
-  cantidad y peso) y los A nuevos con su intervalo:
-  - `h1/informe/informe.md`: las cuatro tasas con réplicas; si `U0.5` cambia de veredicto o queda con A < 2, sale de
+  cantidad y peso) y los A nuevos con su intervalo; el texto a mano, fuera de los marcadores `<!-- generado:… -->`:
+  - `h1/README.md`: las cuatro tasas con réplicas; si `U0.5` cambia de veredicto o queda con A < 2, sale de
     "vale la pena";
-  - `h2/informe/informe.md`: réplicas y `B0.05`;
-  - `h3/informe/informe.md`: `H3-0.5`, y donde cita A de la réplica 0, decir que eran contra el T_C de la réplica 0 o
+  - `h2/README.md`: réplicas y `B0.05`; y los cuatro números que hoy marca `verificar_informe_h3` sin fuente (revisión
+    de 2b, 14-nov): el 1,54 de § Predicción (A de una sola referencia, 3.1) y el −0,0044, el 0,0005 y el 1,84 de
+    § Resultado;
+  - `h3/README.md`: `H3-0.5`, y donde cita A de la réplica 0, decir que eran contra el T_C de la réplica 0 o
     reemplazarlos por la regla nueva;
-  - `h4/informe/informe.md`: `H4O-*`, `H4P-*`, los cuatro contrastes principales y `H4P-0.1` contra `H4U-0.1`.
+  - `h4/README.md`: `H4O-*`, `H4P-*`, los cuatro contrastes principales y `H4P-0.1` contra `H4U-0.1`.
 
-  Verificar con `verificar_informe_h3.py --informe` los que lo admiten.
-- [ ] 6.3 Informe conjunto, `guion.md` y README raíz:
-  - la tabla de cobertura y la de comparaciones directas, copiadas de `tabla_resultados.md`;
+  Verificar con `python -m scripts.verificar_informe_h3` (o `--informe <README>`): 0 números sin fuente.
+- [ ] 6.3 Resultados (`experimentos/sampling_1/README.md`), `sampling_1/docs/guion.md` y README raíz:
+  - el 1,23 de `B0.25` que hoy marca `verificar_readme` (dos veces en § ¿Qué conviene achicar?, antes y después del bloque A): A
+    con la regla nueva y su intervalo;
+  - la tabla de cobertura y la de comparaciones directas: en Resultados, del bloque generado (3.5, 3.6); el detalle,
+    en el Anexo;
   - la cantidad de variantes sale del bloque A, y H3 también reusa los estudios de U0.05;
   - la frase que dice que `U*`, `B*` y `GOSS` no tienen réplicas deja de ser cierta: se reescribe;
   - los A nuevos y su intervalo, y la lista de "vale la pena" actualizada en todos los documentos;
@@ -245,11 +269,13 @@ Qué puede ir en paralelo:
   - donde dice "sin cambiar la proporción de clases": H4 la cambia, y se dice dónde y cómo; una frase sobre el corte N*
     fijo en `H4F` y `H4O`, y otra sobre por qué H2 no entra en los pares (D17).
 
-  Verificar con `verificar_readme.py`.
+  Resultados y el README raíz son páginas publicadas: impersonales, como verifica `scripts/sitio.sh`. Verificar con
+  `python -m scripts.verificar_readme` (0 números fuera de `bloque-a-completo`), `scripts/sitio.sh` y
+  `python -m scripts.medir_sitio` sin avisos.
 - [ ] 6.4 `docs/metodo.md` § Agregar una hipótesis y `docs/revision.md` § 2: la regla de D14.
-- [ ] 6.5 Informe conjunto, sección «Diálogo entre H1 y H4» (D17), actualizada con la tabla de cobertura, los cuatro
+- [ ] 6.5 Resultados (`experimentos/sampling_1/README.md`), sección «Diálogo entre H1 y H4» (D17), actualizada con la tabla de cobertura, los cuatro
   contrastes principales con las filas de cada lado y la sección de tiempos. No se escribe ningún borrador de mensaje.
-- [ ] 6.6 Revisión en sesión limpia del informe con `docs/revision.md` § 5, cierre en las bitácoras y
+- [ ] 6.6 Revisión en sesión limpia de Resultados, el Anexo y los README de `h1`–`h4` con `docs/revision.md` § 5, cierre en las bitácoras y
   `comun/tokens.py`.
 
 ## Workflow follow-up

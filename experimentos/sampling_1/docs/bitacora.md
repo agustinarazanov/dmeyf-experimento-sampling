@@ -2832,3 +2832,21 @@ rama, commit y tag `b99aa71`, cuatro carriles de `n2-highmem-8` a pedido en `nor
   hallazgo 2, con comentario; queda en 4 sin fuente (895 números). `tests/test_verificadores.py` pasa.
 - 2b.2 sigue abierta: faltan los verdes de los verificadores (hallazgo 3) y unir la rama a `main`. 2b.3 sin hacer.
 - Tokens: los cuenta `comun/tokens.py` al cerrar el grupo (esta sesión no lo corre).
+
+### 14-nov-2026 · tiempos-confiables-y-consistencia grupo 2b · 2b.3 (`/opsx:update`)
+
+- Sesión headless · modelo: Opus · etapa: **diseno** (solo artefactos de openspec; no se tocó código).
+- `tasks.md`: los grupos 3, 4 y 6 pasan a las rutas de `sitio-legible` (`docs/rutas.md`): `tabla_resultados.md` →
+  bloques `bloque-a-completo`, `varianza` y `diferencias` de `anexo.md`; HTML → resumen `bloque-a` de Resultados;
+  gráfico de tradeoff → bloque `mapa`; informe conjunto → Resultados; `h{n}/informe/informe.md` → `h{n}/README.md`;
+  `guion.md` → `sampling_1/docs/`; `comparacion_rondas.md` → § Rondas del Anexo; `decisiones.md` y la lista de figuras
+  del informe conjunto ya no existen (4.1 lo dice). 3.3 aclara que las predicciones se leen de `DATOS_DIR`.
+- Pendientes de la revisión de 2b sumados: 3.7b, la figura `grilla_veredictos.svg` (833 px > 800 en `medir_sitio`);
+  6.2, los 4 números de `h2/README.md` (1,54; −0,0044; 0,0005; 1,84); 6.3, el 1,23 de `B0.25` en Resultados.
+- Specs: el delta de `reporte-visual` («Comparación limpia en dos bloques») se reescribió sobre la versión archivada
+  por `sitio-legible` (Resultados + Anexo + exploratorios) con las columnas nuevas de este cambio; delta nuevo de
+  `dependencias-entre-experimentos` (dueño de `U{r}@k` en `h1`, `h4` sin `h3`, `sampling_1` y `pares.csv`);
+  `medicion-tiempos` y `grilla-comun` dejan de nombrar `tabla_resultados.md` y `docs/hipotesis.md`. `proposal.md` suma
+  la capacidad modificada y la nota de rutas.
+- `openspec validate tiempos-confiables-y-consistencia`: válido (un aviso de requisito largo en `medicion-tiempos`, que
+  ya estaba). Falta la revisión corta en sesión limpia (sub-ítem de 2b.3).
