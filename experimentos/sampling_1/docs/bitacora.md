@@ -2898,3 +2898,25 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
 - 3.7b: `grilla_veredictos.svg` con alto tope (8,5 in; las filas se achican): `medir_sitio` sin avisos de alto. Cambian los
   números generados de los README; `verificar_informe_h3` sigue marcando los 4 números de h2 de 6.2 (1,54, −0,0044, 0,0005 y
   1,84) y `verificar_readme` queda en verde.
+
+### 2026-11-14 — cierre revisión del grupo 3 de `tiempos-confiables-y-consistencia` (código del reporte, tarea 3.8)
+- Sesión: `72254194-5f87-4d3c-8f75-bcd3c89fbd3a` · modelo: Opus · etapa: **revision** (grupo 3, tareas 3.1–3.7b).
+- Revisor: sesión limpia (headless), sin contexto de la sesión que aplicó.
+- Lista: docs/revision.md § 3; ítems ✓ 1/9 aplicables (no hay datos del dataset en el repo: `git ls-files` sin
+  `.gz`/`.parquet`/`.feather`). Los otros ocho (smoke test, determinismo, 201910 en `optimizar`, columnas del ledger,
+  `codigo_sucio`, filas de train, `consolidar.py`, `vm.sh`) son del código de corridas, que este grupo no toca; se
+  revisaron en 2.8. Para el código del reporte se corrió en su lugar:
+  - ✓ `pytest`: 326 pasan, 2 saltados (15 min). Hay test de cada tarea: A × T igual con réplicas incompletas (3.1),
+    intervalo de A con y sin réplicas y sin depender del orden (3.2), `comparar_rondas` sin el control y con la nota de
+    variantes nuevas (3.4), cobertura con registro de juguete (3.5), diferencias con par pendiente y principales primero
+    (3.6), A fijo y pendiente sin CSV (3.7).
+  - ✓ `python -m comun.reporte --todos` es idempotente: `git status` no muestra ningún README cambiado.
+  - ✓ `AVISO_A` dice que el tiempo igual de las variantes sin réplicas sigue con T_C de la réplica 0 (D3).
+  - ✓ 3.3: el diff está en la entrada anterior (solo cambian A y su intervalo en las 8 filas sin réplicas).
+  - ✓ 3.7b: `mkdocs build` y `python -m scripts.medir_sitio`: 0 problemas en 13 páginas; solo avisos de tablas anchas
+    que se desplazan en su recuadro, ninguno de alto de figura (la grilla ya no pasa de 800 px).
+  - ✓ `python -m comun.variantes --verificar` y `python -m scripts.verificar_readme` en verde.
+- Hallazgos: `verificar_informe_h3` marca 4 números de `h2/README.md` (−0,0044, 0,0005 y 1,84; 1,84 es el A viejo de
+  `B0.1`, hoy 2,31). Es texto a mano y ya está asignado a 6.2; no es del grupo 3.
+- Corregido: nada.
+- Tokens: ≈ 20 turnos · ≈ US$ 0,65 (presupuesto de la sesión US$ 2).

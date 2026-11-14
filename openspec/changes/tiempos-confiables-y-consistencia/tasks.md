@@ -184,7 +184,8 @@ Qué puede ir en paralelo:
     de `python -m scripts.medir_sitio` es 800: que su alto no crezca con la cantidad de variantes (o que se parta), y
     `mkdocs build` + `medir_sitio` sin avisos;
   - `python -m comun.reporte --todos` después de 3.1–3.7 y `git status` para ver qué números cambian en los README.
-- [ ] 3.8 Revisión en sesión limpia de 3.1–3.7 con `docs/revision.md` § 3. Commit que anuncia el cambio en `comun/`.
+- [x] 3.8 Revisión en sesión limpia de 3.1–3.7 con `docs/revision.md` § 3. Commit que anuncia el cambio en `comun/`.
+  Sin correcciones (14-nov, bitácora de `sampling_1`).
 
 ## 4. Texto que no espera a las corridas (sesión: Opus)
 
