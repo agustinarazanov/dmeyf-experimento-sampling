@@ -56,9 +56,31 @@ def test_verificar_readme_revisa_index_y_resultados_fuera_de_los_bloques(tmp_pat
         monkeypatch.setattr(vr, modulo_attr, valor)
     index = tmp_path / "index.md"
     # el 94 % del título de una figura generada es una fuente válida; el 77 de un bloque generado no se revisa
-    index.write_text("Se pierde 3,25 M$ y el 94 % del tiempo.\n\n<!-- generado:hallazgo-tiempo -->\n"
-                     "![La optimización es el 94 % de T](figuras/x.svg)\nnúmero libre 77\n<!-- /generado:hallazgo-tiempo -->\n")
+    index.write_text("Se pierde 3,25 M$ y el 94 % del tiempo.\n\n<!-- generado:hallazgo-tradeoff -->\n"
+                     "![La optimización es el 94 % de T](figuras/x.svg)\nnúmero libre 77\n<!-- /generado:hallazgo-tradeoff -->\n")
     assert vr.main() == 0
     index.write_text("Se pierde 3,26 M$.\n")
     assert vr.main() == 1
     assert "index.md" in capsys.readouterr().out
+
+
+def _paginas_con_respuesta(tmp_path, monkeypatch, en_index, en_resultados):
+    (tmp_path / "experimentos/sampling_1").mkdir(parents=True)
+    tabla = tmp_path / "experimentos/sampling_1/anexo.md"
+    tabla.write_text("# Anexo\n\n" + BLOQUE)
+    readme = tmp_path / "README.md"
+    readme.write_text("Sin números.\n")
+    for modulo_attr, valor in (("RAIZ", tmp_path), ("README", readme), ("TABLA", tabla)):
+        monkeypatch.setattr(vr, modulo_attr, valor)
+    caja = '!!! success "Respuesta"\n    {}\n\nTexto aparte.\n'
+    (tmp_path / "index.md").write_text("# Inicio\n\n" + caja.format(en_index))
+    (tmp_path / "experimentos/sampling_1/README.md").write_text("# Resultados\n\n" + caja.format(en_resultados))
+
+
+def test_verificar_readme_compara_la_respuesta_de_index_y_resultados(tmp_path, monkeypatch, capsys):
+    _paginas_con_respuesta(tmp_path, monkeypatch, "Vale la pena achicar la optimización.", "Vale la pena achicar la optimización.")
+    assert vr.main() == 0
+    _paginas_con_respuesta_distinta = "Vale la pena achicar el final."
+    (tmp_path / "index.md").write_text('# Inicio\n\n!!! success "Respuesta"\n    ' + _paginas_con_respuesta_distinta + "\n")
+    assert vr.main() == 1
+    assert "Respuesta" in capsys.readouterr().out

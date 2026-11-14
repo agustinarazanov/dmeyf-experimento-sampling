@@ -60,12 +60,12 @@ de `control` y `h1` a `h4` tienen que ser iguales a las de `main` antes del camb
 
 ## 6. Portada y Corridas
 
-- [ ] 6.1 `index.md`: pregunta, hipótesis general, el recuadro Respuesta igual al de Resultados, el mapa del tradeoff,
+- [x] 6.1 `index.md`: pregunta, hipótesis general, el recuadro Respuesta igual al de Resultados, el mapa del tradeoff,
   limitaciones y tarjetas; sin `hallazgo-tiempo` ni `hallazgo-ensamble` (marcadores y `BLOQUES_INICIO`). Verificación:
   test de bloques de inicio actualizado; la página construida tiene una sola `<img>` de figura.
-- [ ] 6.2 `verificar_readme` compara el cuerpo de `!!! success "Respuesta"` de `index.md` y de Resultados.
+- [x] 6.2 `verificar_readme` compara el cuerpo de `!!! success "Respuesta"` de `index.md` y de Resultados.
   Verificación: pasa; un test con un texto distinto ve el fallo.
-- [ ] 6.3 § Fases de `corridas.md` a `experimentos/sampling_1/docs/fases.md` sin cambios de texto; Corridas lo enlaza en
+- [x] 6.3 § Fases de `corridas.md` a `experimentos/sampling_1/docs/fases.md` sin cambios de texto; Corridas lo enlaza en
   GitHub. Verificación: `scripts/sitio.sh` sin enlaces rotos; `fases.md` no está en `site/`.
 
 ## 7. Cierre

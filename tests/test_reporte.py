@@ -445,6 +445,7 @@ def test_anexo_e_inicio_tienen_los_bloques_que_salen_de_resultados(ronda_anterio
     por_pagina = {ruta.name if ruta.name != "README.md" else ruta.parent.name: b for ruta, b in plan}
     assert set(reporte.BLOQUES_ANEXO) <= set(por_pagina["anexo.md"])
     assert set(reporte.BLOQUES_INICIO) <= set(por_pagina["index.md"])
+    assert reporte.BLOQUES_INICIO == ("hallazgo-tradeoff",)  # la portada muestra solo el mapa del tradeoff
     sampling = por_pagina["sampling_1"]
     assert {"grilla", "desglose", "fraccion", "semillas"} <= set(sampling)
     assert not {"figuras", "varianza", "diferencias", "bloque-a-completo", "rondas"} & set(sampling)

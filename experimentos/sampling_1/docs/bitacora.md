@@ -3143,3 +3143,17 @@ Cambio en `comun/reporte.py` (anunciado en el commit).
   cierra con «Lo que se concluye sobre el eje», que cita veredictos (`H3-{r}`, `U{r}`, `B0.25`, `H4F-*`, `H4P-{r}`,
   `H4H-0.1`) y los pares `U{r}` − `H3-{r}`, `H4O-{r}` − `U{r}` y `H4P-0.1` − `H4U-0.1`; ninguna presenta el eje como
   hipótesis nueva ni dice «se confirma el eje» (grep vacío).
+
+### informe-por-ejes, grupo 6 (14-nov-2026)
+
+- Tarea 6.1: `index.md` queda con la pregunta, la hipótesis general, el recuadro «Respuesta» (el mismo de Resultados),
+  el mapa del tradeoff con sus líneas de lectura, las limitaciones, el botón a Resultados y las tarjetas. Se quitaron
+  `hallazgo-tiempo` y `hallazgo-ensamble` de la página y de `BLOQUES_INICIO` (ahora solo `hallazgo-tradeoff`); la página
+  construida tiene una sola `<img>`. Cambio en `comun/reporte.py` (`bloques_inicio`), que no afecta a otros experimentos.
+- Tarea 6.2: `scripts/verificar_readme.py` compara el cuerpo de `!!! success "Respuesta"` de `index.md` y de Resultados;
+  `tests/test_verificadores.py` cubre el caso igual y el distinto (falla nombrando «Respuesta»).
+- Tarea 6.3: § Fases de `corridas.md` (con Grilla común y Fase 8) pasó sin cambios de texto a
+  `experimentos/sampling_1/docs/fases.md` (solo se ajustaron los `../` de los enlaces relativos y se agregó una línea de
+  introducción); Corridas lo enlaza en GitHub. `fases.md` no está en `site/`.
+- Verificadores: `verificar_readme`, `verificar_informe_h3`, `comun.variantes --verificar`, `verificar_predicciones` y
+  `scripts/sitio.sh` en verde; `pytest` completo: 342 passed, 2 skipped.

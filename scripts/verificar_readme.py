@@ -44,6 +44,17 @@ def leer_bloque(texto: str, nombre: str) -> str:
     return m.group(1) if m else ""
 
 
+RESPUESTA = re.compile(r'^!!! success "Respuesta"\n((?:(?: {4}.*)?\n)+)', re.M)
+
+
+def cuerpo_respuesta(texto: str) -> str | None:
+    """El cuerpo del recuadro `!!! success "Respuesta"` (líneas con sangría de 4, sin la sangría); None si no hay recuadro."""
+    m = RESPUESTA.search(texto)
+    if not m:
+        return None
+    return " ".join(linea.strip() for linea in m.group(1).splitlines() if linea.strip())
+
+
 GENERADO = re.compile(r"<!-- generado:([\w-]+) -->.*?<!-- /generado:\1 -->", re.S)
 TITULO_FIGURA = re.compile(r"!\[([^\]]*)\]\(")
 
@@ -96,6 +107,16 @@ def main() -> int:
             ruta = unquote(e.split("#", 1)[0])
             if ruta and not (base / ruta).exists():
                 errores.append(f"{nombre}: enlace roto: {e}")
+
+    # la respuesta de la portada es la de Resultados, palabra por palabra (`informe-por-ejes` 6.2)
+    textos = {p: t for p, t in paginas if p in PAGINAS}
+    if len(textos) == len(PAGINAS):
+        cuerpos = {p: cuerpo_respuesta(t) for p, t in textos.items()}
+        for p, c in cuerpos.items():
+            if c is None:
+                errores.append(f"{p}: falta el recuadro `!!! success \"Respuesta\"`")
+        if None not in cuerpos.values() and len(set(cuerpos.values())) > 1:
+            errores.append('el recuadro "Respuesta" de index.md y el de Resultados no son el mismo texto')
 
     print(f"{len(numeros)} números del texto, {len(enlaces)} enlaces")
     for err in errores:

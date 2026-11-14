@@ -3,14 +3,16 @@
 **¿Vale la pena el tradeoff entre velocidad y pérdida de performance?** Sobre el baseline del curso (2019, LightGBM con
 Optuna), cuánto tiempo se ahorra y cuánta ganancia se pierde en test (201910) cuando se usan menos filas.
 
+**Hipótesis general:** hay una forma de usar menos filas que *vale la pena*: no pierde ganancia contra el control y es
+al menos 2 veces más rápida.
+
 !!! success "Respuesta"
-    Vale la pena achicar la **optimización**: correr Optuna sobre una muestra al azar y entrenar el final con todas las
-    filas no pierde contra el control y es varias veces más rápido. Achicar el final al azar pierde o queda
-    indeterminado; conservando todas las bajas y la mitad de CONTINUA con peso, no.
+    Vale la pena achicar la **optimización**, al azar: correr Optuna sobre el 10 % de las filas y entrenar el final con
+    todas no pierde contra el control y es casi 8 veces más rápido. Si además se quiere un final más rápido, conservar
+    todas las bajas y la mitad de CONTINUA con peso 2 tampoco pierde. Ninguna de las dos es una mejora de ganancia por
+    modelo: es lo mismo, más rápido, y el tiempo que sobra se puede gastar en ensamblar.
 
-## Resultados
-
-### ¿Cuánto se pierde y cuánto se gana?
+## El mapa del tradeoff
 
 Un panel por hipótesis y un punto por variante, con su intervalo: a la derecha, más rápida que el control; abajo, pierde
 ganancia. Las que valen la pena quedan arriba y a la derecha del 2×, y casi todas achican solo la optimización.
@@ -19,31 +21,6 @@ ganancia. Las que valen la pena quedan arriba y a la derecha del 2×, y casi tod
 ![15 de 30 variantes no pierden y aceleran 2× o más; la más rápida entre ellas es H4F-0.05 (12.5×)](experimentos/sampling_1/figuras/tradeoff.svg)
 
 <!-- /generado:hallazgo-tradeoff -->
-
-### ¿Dónde se va el tiempo?
-
-En el control, la búsqueda de hiperparámetros se lleva el 94 % del tiempo y el modelo final, el resto. Por eso achicar
-la búsqueda acelera mucho más que achicar el final, y no toca el modelo que se entrega.
-
-<!-- generado:hallazgo-tiempo -->
-![En el control la optimización es el 94 % de T (748 s de 797 s); la variante con la optimización más corta, U0.05, la baja a 67 s](experimentos/sampling_1/figuras/desglose_tiempo.svg)
-
-<!-- /generado:hallazgo-tiempo -->
-
-### ¿Y con el tiempo ahorrado?
-
-Con el mismo tiempo que tarda el control, una variante rápida entrena varios modelos finales con semillas distintas y
-promedia sus probabilidades. Arriba, la ganancia del ensamble según el tiempo gastado; abajo, según la cantidad de
-modelos. Ensamblar el control también suma, así que buena parte de la ventaja es el ensamble.
-
-<!-- generado:hallazgo-ensamble -->
-![Con el tiempo del control (797 s), H4P-0.25 ensambla hasta 296.4 M$; el control con sus 20 semillas llega a 286.6 M$](experimentos/sampling_1/figuras/ensamble.svg)
-
-
-
-![G del ensamble según K: el control con sus 20 semillas llega a 286.6 M$](experimentos/sampling_1/figuras/ensamble_k.svg)
-
-<!-- /generado:hallazgo-ensamble -->
 
 !!! warning "Limitaciones principales"
     - **Test ya mirado.** H4 y las extensiones de H3 salen de un estudio que miró 201910, y no hay otro mes de test.

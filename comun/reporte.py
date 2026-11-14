@@ -8,7 +8,7 @@ del archivo no se toca (sitio-legible D4). Si falta un marcador, falla nombrando
 nada. Bloques: `hN/README.md` → `resultado`; `control/README.md` → `estado`; `sampling_1/README.md` → `mapa`, `ejes`, `grilla`,
 `desglose`, `bloque-a`, `fraccion`, `tiempo-igual`, `semillas`; `sampling_1/anexo.md` → `bloque-a-completo`, `cobertura`, `varianza`,
 `diferencias`, `tiempo-igual-tablas`, `tiempos-completos`, `ic-rondas` (y `rondas`, de `scripts/comparar_rondas.py`); `sampling_1/exploratorios/README.md` → `bloque-b`;
-`index.md` → `hallazgo-tradeoff`, `hallazgo-tiempo`, `hallazgo-ensamble` y `tarjetas`; `sitio/hipotesis/README.md` → `tarjetas`. Las figuras salen como
+`index.md` → `hallazgo-tradeoff` y `tarjetas`; `sitio/hipotesis/README.md` → `tarjetas`. Las figuras salen como
 SVG en `experimentos/<exp>/figuras/` (con `--figuras` también PNG a 200 dpi para el video).
 
 Un archivo sin ningún marcador se omite y `main` lo avisa. Las variantes sin datos salen como pendientes; ningún número
@@ -1992,7 +1992,7 @@ def _sin_datos(nombres: tuple[str, ...]) -> dict[str, str]:
 BLOQUES_SAMPLING = ("mapa", "ejes", "grilla", "desglose", "bloque-a", "fraccion", "ensamble", "tiempo-igual", "tiempos", "semillas")
 BLOQUES_ANEXO = ("bloque-a-completo", "cobertura", "varianza", "diferencias", "tiempo-igual-tablas", "tiempos-completos",
                  "ic-rondas", "replica0-h1", "replica0-h2", "replica0-h3", "replica0-h4")
-BLOQUES_INICIO = ("hallazgo-tradeoff", "hallazgo-tiempo", "hallazgo-ensamble")
+BLOQUES_INICIO = ("hallazgo-tradeoff",)
 
 
 def bloques_sampling(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
@@ -2047,15 +2047,13 @@ def bloques_anexo(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
 
 
 def bloques_inicio(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
-    """Una figura por hallazgo de la portada y las tarjetas; las figuras se enlazan desde la raíz del repo."""
+    """El mapa del tradeoff de la portada (su única figura); se enlaza desde la raíz del repo."""
     ctx, fin, ap, a = _agregador(memo)
     if not a["filas"]:
         return _sin_datos(BLOQUES_INICIO)
     desde_raiz = lambda md: md.replace("](figuras/", f"](experimentos/{exp}/figuras/")  # noqa: E731
     return {
         "hallazgo-tradeoff": desde_raiz(fig_tradeoff(ctx, a, figuras)),
-        "hallazgo-tiempo": desde_raiz(fig_desglose(ctx, a, figuras)),
-        "hallazgo-ensamble": desde_raiz(fig_ensamble(ctx, fin, ap, a, figuras)),
     }
 
 
