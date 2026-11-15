@@ -39,9 +39,11 @@ Resultados (`experimentos/sampling_1/README.md`) SHALL mostrar todas las variant
 control, en una tabla (diferencia apareada con su intervalo, aceleración con su intervalo, veredicto) y en gráficos,
 cada uno con la forma que corresponde a su pregunta. Una tabla de Resultados SHALL NOT repetir lo que ya muestra un
 gráfico de la misma página: el resumen del bloque A, que da los números del mapa del tradeoff, va plegado debajo del
-mapa; la cobertura, las tablas de tiempo igual y las de búsqueda y final van al Anexo. Resultados SHALL ordenarse por pregunta: qué conviene
-achicar, cuánto se puede achicar, qué se hace con el tiempo ahorrado y qué tan estable es el resultado; después,
-limitaciones comunes, conclusiones y qué sigue. Gráficos:
+mapa; la cobertura, las tablas de tiempo igual y las de búsqueda y final van al Anexo. Resultados SHALL ordenarse así:
+pregunta e hipótesis general, configuración común, respuesta (con las variantes que valen la pena antes que el resto),
+el mapa de ejes (lectura-por-ejes), ¿dónde achicar?, ¿cómo muestrear?, cuánto se puede achicar, qué se hace con el
+tiempo ahorrado, cuánto del tiempo es tamaño de datos y qué tan estable es el resultado; después, limitaciones comunes,
+conclusiones y qué sigue. Gráficos:
 - **mapa del tradeoff:** aceleración A en escala logarítmica contra Δ con su IC, un punto por variante coloreado por
   veredicto, con la zona de «no pierde» (Δ > −δ) sombreada y la línea A = 1;
 - **Δ contra tasa:** una línea por familia de variantes con más de una tasa, con su banda de IC y la línea de −δ;
@@ -62,8 +64,7 @@ El Anexo (`experimentos/sampling_1/anexo.md`) SHALL mostrar, además de las tabl
 - **IC por ronda:** para cada variante, el IC de Δ de la ronda anterior y el de la vigente uno al lado del otro, con −δ
   marcado, para ver cuánto se angosta.
 
-La portada SHALL mostrar el mapa del tradeoff, el desglose del tiempo y el ensamble según el tiempo, desde los mismos
-archivos.
+La portada SHALL mostrar el mapa del tradeoff desde el mismo archivo.
 
 La página de cada hipótesis SHALL mostrar su mapa del tradeoff, las curvas de ganancia (ganancia de cada variante y del
 control según la cantidad de envíos, con banda P10–P90 entre semillas y el corte N\*) y la curva de diferencia con el
@@ -71,7 +72,8 @@ control (ganancia de la variante menos la del control, con la banda entre semill
 
 Las figuras SHALL ser vectoriales, guardadas como archivo junto a la página y enlazadas desde ella, con tres
 condiciones:
-- ninguna etiqueta de variante SHALL quedar encima de otra;
+- ninguna etiqueta de variante ni de eje SHALL quedar encima de otra: un rótulo de eje compartido por varios paneles se
+  escribe una sola vez para la figura;
 - un gráfico sin datos SHALL salir como pendiente, sin fallar;
 - cada figura SHALL tener un título que diga qué mirar, no solo qué se grafica.
 
@@ -109,9 +111,10 @@ condiciones:
 
 #### Scenario: Tabla de una hipótesis sin redundancias
 - **WHEN** se lee el bloque `resultado` de `h3/README.md` y todas sus variantes tienen 20 semillas
-- **THEN** no hay columnas «hipótesis» ni «semillas», una línea debajo dice que todas tienen 20 semillas, las semillas
-  ganadas se ven como una barrita con su número, y los encabezados dicen «aceleración (×)», «ganancia contra el control»
-  y «vale la pena (no pierde y ≥ 2×)»
+- **THEN** no hay columnas «hipótesis» ni «semillas», una línea debajo dice que todas tienen 20 semillas por réplica,
+  la columna R dice cuántas réplicas tiene cada variante, y los encabezados dicen «aceleración (×)», «ganancia contra
+  el control» y «vale la pena (no pierde y ≥ 2×)»; las semillas ganadas por semilla están en la tabla de réplica 0 del
+  Anexo
 
 #### Scenario: Clientes contactados
 - **WHEN** se busca «envíos» en el sitio generado
@@ -124,8 +127,8 @@ condiciones:
 
 #### Scenario: Conclusiones cerca de la respuesta
 - **WHEN** se lee Resultados de arriba abajo
-- **THEN** después de las cuatro preguntas vienen las limitaciones comunes y las conclusiones, sin tablas de consulta
-  en el medio
+- **THEN** después de las secciones por eje y de las preguntas de tiempo y estabilidad vienen las limitaciones comunes
+  y las conclusiones, sin tablas de consulta en el medio
 
 #### Scenario: Qué hacer con el tiempo ahorrado
 - **WHEN** se mira el ensamble según el tiempo en Resultados
@@ -328,3 +331,19 @@ Ningún color SHALL ser la única señal: el veredicto se lee en el texto de la 
 #### Scenario: Regenerar resalta igual
 - **WHEN** se regenera el reporte dos veces sin corridas nuevas
 - **THEN** las mismas celdas quedan resaltadas y el archivo resultante es el mismo
+
+### Requirement: Tabla de cada hipótesis con réplicas
+El bloque `resultado` de cada hipótesis SHALL mostrar la misma regla de veredicto que Resultados: Δ con réplicas y su
+IC, aceleración con su IC y veredicto con réplicas, más las columnas propias de la página (G media, ΔAUC, T mediana,
+vale la pena). La tabla de la réplica 0 de cada hipótesis (Δ y semillas ganadas por semilla) SHALL ir al Anexo, en un
+bloque generado por hipótesis. Una variante sin réplicas SHALL mostrar los valores de la réplica 0 con la nota al pie de
+siempre.
+
+#### Scenario: `U0.5` en la página de H1
+- **WHEN** se abre la página de H1
+- **THEN** la tabla dice que `U0.5` es *indeterminado* con Δ = −3,64 [−6,58; −0,71] M$, igual que en Resultados, y su Δ
+  de la réplica 0 (−1,38) está solo en el Anexo
+
+#### Scenario: Mismo veredicto en todas las páginas
+- **WHEN** se compara el veredicto de cada variante en su página, en Resultados, en el Anexo y en la tarjeta de la portada
+- **THEN** es el mismo en las cuatro

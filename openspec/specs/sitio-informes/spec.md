@@ -70,20 +70,24 @@ una sola página donde buscarlo. El sitio SHALL tener búsqueda de texto complet
 - **THEN** la búsqueda devuelve la página de H2
 
 ### Requirement: Portada orientada a la conclusión
-La página de inicio SHALL ser un resumen que se lee sin ir a otra página: la pregunta, la respuesta corta, tres
-hallazgos con su figura y dos o tres líneas cada uno (qué vale la pena, por qué alcanza con achicar la optimización,
-qué se hace con el tiempo ahorrado), las limitaciones principales en un recuadro, un enlace destacado a Resultados y una
-tarjeta por hipótesis. La portada SHALL NOT nombrar personas ni copiar tablas.
+La página de inicio SHALL ser un resumen que se lee sin ir a otra página: la pregunta, la hipótesis general, la
+respuesta corta, el mapa del tradeoff con dos o tres líneas que digan cómo leerlo, las limitaciones principales en un
+recuadro, un enlace destacado a Resultados y una tarjeta por hipótesis. La respuesta corta SHALL ser el mismo texto que
+el recuadro «Respuesta» de Resultados, palabra por palabra. La portada SHALL NOT nombrar personas, copiar tablas ni
+mostrar otra figura que el mapa del tradeoff: el desglose del tiempo y el ensamble quedan en Resultados.
 
 #### Scenario: Primera visita del tutor
 - **WHEN** alguien abre la dirección del sitio
-- **THEN** ve la pregunta, la respuesta en pocas líneas, el mapa del tradeoff, el desglose del tiempo y la comparación a
-  tiempo igual con su explicación, las limitaciones principales, un enlace destacado a Resultados y una tarjeta por
-  hipótesis
+- **THEN** ve la pregunta, la hipótesis general, la respuesta en pocas líneas, el mapa del tradeoff, las limitaciones
+  principales, un enlace destacado a Resultados y una tarjeta por hipótesis, y nada más
+
+#### Scenario: Misma respuesta en dos páginas
+- **WHEN** se compara el recuadro «Respuesta» de la portada con el de Resultados
+- **THEN** el texto es el mismo, y un verificador falla nombrando la diferencia si no lo es
 
 #### Scenario: Figuras de la ronda vigente
 - **WHEN** se regenera con una ronda nueva
-- **THEN** las tres figuras de la portada y sus títulos cambian solos, sin editar el texto escrito a mano
+- **THEN** la figura de la portada y su título cambian solos, sin editar el texto escrito a mano
 
 ### Requirement: Enlaces relativos conservados
 Las páginas SHALL estar en la misma ruta que el archivo del repo, y el `README.md` de una carpeta SHALL ser la página de
@@ -216,8 +220,7 @@ Cada página publicada SHALL ayudar a leer con elementos visuales y no solo con 
 - cada hipótesis tiene un diagrama del pipeline que marca dónde corta;
 - Control y reglas tiene los meses que usa cada etapa (una fila por etapa, una columna por mes) y la regla de
   veredicto como diagrama;
-- Corridas tiene la línea de tiempo de las fases y los pasos del recorrido de una corrida, de la VM al ledger y a las
-  páginas;
+- Corridas tiene los pasos del recorrido de una corrida, de la VM al ledger y a las páginas;
 - Exploratorios tiene un diagrama de qué motivó cada estudio en el experimento.
 
 Una secuencia sin ramas (una caja por paso) SHALL ir como lista de pasos numerados unidos por una línea, no como
@@ -235,8 +238,8 @@ de color, nunca un fondo claro fijo. Un texto largo SHALL NOT ir dentro de una c
 
 #### Scenario: Fases de las corridas
 - **WHEN** se abre Corridas
-- **THEN** las fases se ven en una línea de tiempo y cada fase tiene su sección o su ítem con lo que corrió, sin texto
-  largo dentro de una celda de tabla
+- **THEN** ve el protocolo, la máquina, los pasos de una corrida de la VM a la página, qué cuenta como evidencia y el
+  costo total, y un enlace en GitHub al registro de fases
 
 ### Requirement: Modo oscuro recordado
 El sitio SHALL ofrecer un modo claro y uno oscuro, con un botón en el encabezado para cambiar de uno a otro. La primera
@@ -255,3 +258,24 @@ leerse con contraste suficiente.
 #### Scenario: Figura en oscuro
 - **WHEN** se abre la portada en modo oscuro
 - **THEN** los ejes, las etiquetas y los títulos de las figuras se leen sobre el fondo de la página
+
+### Requirement: Páginas en estado final
+Las páginas publicadas SHALL describir el diseño, los resultados, el veredicto y las limitaciones como quedaron, no cómo
+se llegó a ellos. Fuera de la sección Predicción, ningún título SHALL nombrar un cambio de OpenSpec, una fecha de
+trabajo, una fase o un mensaje de Zulip. El texto SHALL NOT presentar una sección como respuesta a una pregunta
+recibida. Un mensaje de Zulip puede citarse como fuente de una regla del curso (por ejemplo, el baseline 208135),
+nunca como motivo de una sección. La sección Predicción queda como se fijó: sus fechas y commits son la prueba de que
+se escribió antes de correr. Cada hipótesis SHALL tener un solo veredicto, el que sale con réplicas. El historial de
+rondas, fases y veredictos anteriores SHALL quedar en la bitácora y en el Anexo, no en el cuerpo de la página.
+
+#### Scenario: Títulos de una hipótesis
+- **WHEN** se listan los títulos de `experimentos/h4/README.md` fuera de § Predicción
+- **THEN** ninguno contiene «cambio», un nombre de cambio entre comillas invertidas, una fecha ni «Zulip»
+
+#### Scenario: Un veredicto por hipótesis
+- **WHEN** se abre la página de H1
+- **THEN** hay un solo recuadro de veredicto, el de réplicas, y no hay un recuadro que reemplace a otro
+
+#### Scenario: Verificación automática
+- **WHEN** corre `scripts/sitio.sh`
+- **THEN** falla nombrando la página y el título si un título fuera de § Predicción nombra un cambio, una fecha o Zulip
