@@ -29,14 +29,29 @@ def on_config(config):
 
 _DEPENDENCIAS = re.compile(r"^## Dependencias\n.*?(?=^## |\Z)", re.S | re.M)
 _CAMBIO = re.compile(r"cambio `[a-z0-9-]+`, ")
+_FECHA = r"\d{1,2}-(?:ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)(?:-\d{4})?\b"
+# En orden: el ancla de un título con fecha, la fecha sola entre paréntesis, la fecha que abre un paréntesis y
+# «el <fecha>» dentro de una oración.
+_FECHAS = [
+    (re.compile(rf"(#[\w-]+?)-{_FECHA}(?=\))"), r"\1"),
+    (re.compile(rf" \({_FECHA}\)"), ""),
+    (re.compile(rf"\({_FECHA}, "), "("),
+    (re.compile(rf"\(Nota del {_FECHA}, "), "(Nota "),
+    (re.compile(rf"\(El {_FECHA} "), "(Después "),
+    (re.compile(rf" el {_FECHA},"), ""),
+    (re.compile(rf" el {_FECHA}"), ""),
+]
 
 
 def on_page_markdown(markdown, page, config, files):
     """Saca la sección `## Dependencias` de las páginas publicadas: es para `comun.variantes --verificar` (la lee del
     README) y para quien agrega un experimento, no para quien lee el informe. Saca también los nombres de los cambios
-    de OpenSpec («cambio `incorporar-aportes`, »): están en `## Predicción`, que no se toca (verificar_predicciones),
-    y quedan en el repo."""
-    return _CAMBIO.sub("", _DEPENDENCIAS.sub("", markdown))
+    de OpenSpec («cambio `incorporar-aportes`, ») y las fechas («(13-nov-2026)», «Escrito el 13-nov-2026»): casi todos
+    están en `## Predicción`, que no se toca (verificar_predicciones), y quedan en el repo."""
+    markdown = _CAMBIO.sub("", _DEPENDENCIAS.sub("", markdown))
+    for patron, reemplazo in _FECHAS:
+        markdown = patron.sub(reemplazo, markdown)
+    return markdown
 
 
 _NOMBRE = "Sampling_1 · DMEyF 2026"
