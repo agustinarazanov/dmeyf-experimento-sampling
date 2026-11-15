@@ -10,7 +10,7 @@ Las 30 variantes con todas las columnas, la varianza por variante y las diferenc
 <details markdown="1">
 <summary>Tablas completas del bloque A</summary>
 
-#### Bloque A: mismo protocolo
+**Bloque A: mismo protocolo**
 
 Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes contactados; Ḡ_C (réplica 0) = 282.48 M$; Ḡ_C con réplicas = 281.78 M$ (R=8); ensamble de 20 semillas del control = 286.55 M$.
 
@@ -49,7 +49,7 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
 | H4O-0.5 | H4 | 280.44 (R=8) | -0.71 [-3.83; 2.40] | -1.33 [-4.27; 1.60] (R=8) | +0.0004 [-0.0007; +0.0015] (R=8) | 434 | 2.31 | 4.08 [0.49; 7.67] (R=8) | 4.34 [-3.79; 12.60] | no pierde (con réplicas (8)) | [1.64; 2.77] |
 | H4P-0.5 | H4 | 279.23 (R=8) | -1.10 [-3.63; 1.43] | -2.55 [-5.82; 0.72] (R=8) | -0.0008 [-0.0022; +0.0007] (R=8) | 455 | 2.20 | 3.26 [-0.49; 7.01] (R=8) | 2.73 [-6.00; 11.88] | indeterminado (con réplicas (8)) | [1.58; 2.69] |
 
-#### Varianza entre réplicas y entre semillas
+**Varianza entre réplicas y entre semillas**
 
 | variante | réplicas | corridas | sd entre réplicas (M$) | sd entre semillas (M$) | varianza entre réplicas |
 |---|---|---|---|---|---|
@@ -85,7 +85,7 @@ Final entrenado con 201903-201908, 20 semillas por réplica; N* = 3,300 clientes
 | H4P-0.5 | 8 | 160 | 3.28 | 4.78 | 30 % |
 | H4U-0.1 | 8 | 160 | 3.65 | 5.57 | 28 % |
 
-#### Diferencias entre variantes
+**Diferencias entre variantes**
 
 | diferencia | Δ [IC entre réplicas] (M$) | réplicas | IC | veredicto |
 |---|---|---|---|---|

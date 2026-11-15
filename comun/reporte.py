@@ -2019,14 +2019,16 @@ def bloques_anexo(exp: str, figuras: Path | None, memo: dict) -> dict[str, str]:
     if not a["filas"]:
         return _sin_datos(BLOQUES_ANEXO)
     notas = [f"- `{f['variante']}`: {f['nota']}" for f in a["filas"] if f["nota"]]
-    completo = ["#### Bloque A: mismo protocolo\n", referencia_control(a) + "\n", AVISO_A + "\n",
+    # Rótulos en negrita y no títulos: el anexo ya tiene sus secciones de varianza y diferencias y estos repetirían
+    # entradas en el índice de la página.
+    completo = ["**Bloque A: mismo protocolo**\n", referencia_control(a) + "\n", AVISO_A + "\n",
                 tabla_md(CAB_A, [celdas_bloque_a(f) for f in a["filas"]])]
     if notas:
         completo += ["Notas:\n", "\n".join(notas) + "\n"]
     if len(a["rep"]):
-        completo += ["#### Varianza entre réplicas y entre semillas\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
+        completo += ["**Varianza entre réplicas y entre semillas**\n", tabla_md(CAB_VAR, varianza(a["rep"], ctx))]
         if pares_replicas(a["rep"]):
-            completo += ["#### Diferencias entre variantes\n", tabla_md(CAB_PARES, pares_replicas(a["rep"]))]
+            completo += ["**Diferencias entre variantes**\n", tabla_md(CAB_PARES, pares_replicas(a["rep"]))]
     ruta_pares = rutas.ledger(reg.AGREGADOR) / "pares.csv"
     pares = pd.read_csv(ruta_pares) if ruta_pares.exists() else None
     replica0 = {}

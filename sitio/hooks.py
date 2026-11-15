@@ -28,12 +28,15 @@ def on_config(config):
 
 
 _DEPENDENCIAS = re.compile(r"^## Dependencias\n.*?(?=^## |\Z)", re.S | re.M)
+_CAMBIO = re.compile(r"cambio `[a-z0-9-]+`, ")
 
 
 def on_page_markdown(markdown, page, config, files):
     """Saca la sección `## Dependencias` de las páginas publicadas: es para `comun.variantes --verificar` (la lee del
-    README) y para quien agrega un experimento, no para quien lee el informe."""
-    return _DEPENDENCIAS.sub("", markdown)
+    README) y para quien agrega un experimento, no para quien lee el informe. Saca también los nombres de los cambios
+    de OpenSpec («cambio `incorporar-aportes`, »): están en `## Predicción`, que no se toca (verificar_predicciones),
+    y quedan en el repo."""
+    return _CAMBIO.sub("", _DEPENDENCIAS.sub("", markdown))
 
 
 _NOMBRE = "Sampling_1 · DMEyF 2026"
