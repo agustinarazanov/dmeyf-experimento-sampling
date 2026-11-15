@@ -143,7 +143,7 @@ Final entrenado con 201903-201908, 20 semillas; N* = 3,300 clientes contactados 
 
 ## Veredicto
 
-!!! success "Veredicto con réplicas: refutada, y ninguna `B` vale la pena"
+!!! failure "Veredicto con réplicas: refutada, y ninguna `B` vale la pena"
     Con 8 réplicas, `B0.1` *pierde* (−7,31 [−9,76; −4,86]), así que la regla de H2 queda **refutada**. `B0.5` (0,35) y
     `B0.25` (−2,20) *no pierden*, con A = 1,18 [0,86; 1,64] y 1,67 [1,23; 2,08]; `B0.1` y `B0.05` (−14,55) *pierden*,
     con A = 2,96 [2,13; 3,57] y 3,09 [2,27; 3,86]. `GOSS` queda *indeterminado*, con A = 1,27 [0,91; 1,53]. Las cifras

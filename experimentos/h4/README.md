@@ -373,7 +373,7 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
 
 ## Veredicto
 
-!!! success "Veredicto con réplicas"
+!!! warning "Veredicto con réplicas: búsqueda informada refutada, final con bajas confirmado"
     Conservar todas las bajas en la búsqueda no sirve: `H4H-0.1` y `H4U-0.1` pierden contra el control con réplicas, y
     elegir los negativos difíciles no cambia nada contra elegirlos al azar. Conservarlas en el final sí: `H4F-0.05`
     (búsqueda sobre el 5 % uniforme, final con todas las bajas y la mitad de CONTINUA con peso 2) no pierde, acelera
@@ -381,9 +381,8 @@ Las tablas con réplicas, la varianza entre réplicas y las diferencias entre va
     Reoptimizar sobre la receta del final (`H4O-0.5`) no pierde contra el control, pero no mejora a `H4F-0.05` y es más
     de 5 veces más lento. Lo que el exploratorio reportaba como ganador (la búsqueda difícil) es lo que pierde; su
     arquitectura de producción (fast-retrain) es la que se sostiene. En la grilla común, conservar las bajas con peso en
-    la búsqueda y el final (`H4O-{r}`) rinde más que el azar (`U{r}`) salvo en la tasa más grande, donde no cambia, y no pierde contra el control salvo
-    en la más chica; hacerlo
-    solo en la búsqueda (`H4P-{r}`) no le gana a `H3-{r}`.
+    la búsqueda y el final (`H4O-{r}`) rinde más que el azar (`U{r}`) salvo en la tasa más grande, donde no cambia, y no
+    pierde contra el control salvo en la más chica; hacerlo solo en la búsqueda (`H4P-{r}`) no le gana a `H3-{r}`.
 
 Las reglas se aplican tal como quedaron escritas, con el δ de la ronda (5,65 M$; las reglas 1 a 3 se escribieron con el
 de la ronda anterior, y la regla de δ dice que su valor sale del control de cada ronda). Cada línea dice si la
