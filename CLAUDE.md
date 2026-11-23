@@ -52,7 +52,7 @@ commit.
 - Cómputo: VMs spot `n2-highmem-8` desde el template del curso, una por persona, borrar al terminar. Trial de Google
   Cloud de US$ 300 a 90 días; verificar fecha de alta y cuota de vCPU antes de la fase 1.
 - Entorno: pyenv `facultad` (Python 3.14). En la Mac LightGBM necesita `brew install libomp`.
-- Código reutilizable: `../competencia-2/src/fe_panel.py` (lags y deltas en DuckDB) y `competencia.py` (ganancia,
+- Código reutilizable: `../dmeyf-competencia-2/docs/antecedentes/competencia-1/codigo/fe_panel.py` (lags y deltas en DuckDB) y `competencia.py` (ganancia,
   curvas). Se copia lo necesario; no se importa ese repo.
 - Archivo de Zulip: `../zulip/` (Postgres `zulip` en Docker; `PYENV_VERSION=zulip python main.py` lo actualiza).
 - Línea de base de tokens (octubre 2026, sesiones en `dmeyf2026`): ~400.000 tokens de contexto por turno, 2.509
